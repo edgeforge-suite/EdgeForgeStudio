@@ -5,11 +5,16 @@
 > implemented Studio behavior. Historical design documents are retained for
 > decision traceability, not as current planning authority.
 
+**Release-preparation update — 2026-11-07:** the current private Org repository
+prepares package/runtime metadata at 5.0.0. The October source observation above
+is historical. Final Suite source selection, acceptance, tags and publication
+remain later gates; product behavior and dependency inputs are unchanged.
+
 ## Status At A Glance
 
 | Area | Current state |
 |---|---|
-| Studio package | `4.2.0` |
+| Studio package | `5.0.0` (release preparation) |
 | Release state | **Unreleased**; no tag, release, or promoted demo baseline is authorized here |
 | Engine manifest dialect | `schema_version: "2.0"` only |
 | Studio project snapshot | `studio_project_schema_version: "1.4"` |
@@ -18,10 +23,10 @@
 | UX | Refresh and visual-polish work from PRs `#280` and `#281` is the sole presentation |
 | Web security | The Studio baseline through PRs `#284`-`#295` is implemented |
 | Known-limitation policy | A11y-01 remains open; merged coordinated policy makes it alone non-blocking, with audience-accessible disclosure required |
-| Source preparation | Apache-2.0 / Santosh Hommaradi; DCO 1.1, no CLA; selected edgeforge-suite/EdgeForgeStudio destination remains private preparation |
+| Source preparation | Apache-2.0 / Santosh Hommaradi; DCO 1.1, no CLA; current edgeforge-suite/EdgeForgeStudio repository is private release preparation |
 
 `CHANGELOG.md` is authoritative for release history and continues to mark
-`v4.2.0` as unreleased. This context refresh does not create or authorize a tag.
+`v5.0.0` as unreleased preparation. This update does not create or authorize a tag.
 
 ## Product Boundary
 
