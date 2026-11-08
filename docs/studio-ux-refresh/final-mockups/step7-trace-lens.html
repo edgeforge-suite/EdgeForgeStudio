@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 7 — Review Trace Lens (final)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --rest:#0d9488;--fixed:#15803d;--csv:#4f46e5;--xml:#b45309;--soap:#1e3a5f;--stg:#475569;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.rsummary{display:flex;gap:12px;margin:16px 0 16px}
+.rs{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 16px;display:flex;align-items:center;gap:11px}
+.rs .n{font-size:22px;font-weight:800;line-height:1}
+.rs.ok .n{color:var(--ok)}.rs.warn .n{color:var(--warn)}.rs.attn .n{color:var(--danger)}
+.rs .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:600}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.phd h2{font-size:14px;font-weight:700}
+.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.tracepick{display:flex;align-items:center;gap:8px}
+.tracepick .tl{font-size:11.5px;color:var(--mut);font-weight:600}
+.entsel{border:1px solid var(--sel);background:var(--selbg);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--navy)}
+.tracehd{display:grid;grid-template-columns:1fr 260px 1fr;gap:0;background:#f7f9fc;border-bottom:1px solid var(--line)}
+.tracehd div{padding:9px 16px;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;text-align:center}
+.tracehd .mid{color:var(--navy)}
+.trace{display:grid;grid-template-columns:1fr 260px 1fr;align-items:center}
+.col{padding:16px}
+.col.up{border-right:1px dashed var(--line)}
+.col.dn{border-left:1px dashed var(--line)}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;background:#fbfcfe;align-self:stretch}
+.entity{border:2px solid var(--rest);background:#e2f4f2;border-radius:12px;padding:14px 18px;text-align:center;min-width:180px}
+.entity .en{font-weight:800;font-size:16px;color:#0b6e64}
+.entity .ek{font-size:12px;color:#0b6e64;font-family:ui-monospace,Menlo,monospace;margin-top:3px}
+.entity .em{font-size:11px;color:var(--mut);margin-top:5px}
+.ref{display:flex;align-items:center;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:9px;margin-bottom:9px;background:#fff;position:relative}
+.ref .mono{width:42px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0}
+.m-rest{background:var(--rest)}.m-fixed{background:var(--fixed)}.m-csv{background:var(--csv)}.m-xml{background:var(--xml)}.m-soap{background:var(--soap)}.m-stg{background:var(--stg)}
+.ref .rn{flex:1;min-width:0}
+.ref .rt{font-weight:700;font-size:12.5px}
+.ref .rp{font-size:10.5px;color:var(--mut);font-family:ui-monospace,Menlo,monospace}
+.pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}
+.ref.blocked{border-color:#eccaa0;background:#fffdf8}
+.dirnote{font-size:10px;color:var(--mut2);text-align:center;margin-bottom:8px;font-weight:600;letter-spacing:.4px}
+.jump{font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut);display:flex;gap:8px;align-items:center}
+.foot svg{width:14px;height:14px;color:var(--ok)}
+.otherblk{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:11px 14px;background:#fff;border:1px solid #eccaa0;border-radius:10px;font-size:12px;color:#7a531a}
+.otherblk svg{width:15px;height:15px;color:var(--warn);flex-shrink:0;margin-top:1px}
+.ob{display:inline-block;background:var(--warnbg);border:1px solid #eccaa0;border-radius:5px;padding:2px 8px;font-weight:600;margin:4px 5px 0 0;font-size:11px;color:#8a4b08}
+</style></head>
+<body><div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#">3 · Entity Model</a>
+    <a href="#">4 · Data Handoffs</a>
+    <a href="#">5 · Downstream</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#" class="on">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 7 · Review</div>
+  <div class="sub">Confirm the package end to end. The Trace Lens follows one entity across every contract — same readiness as the boards, no second source of truth.</div>
+
+  <div class="rsummary">
+    <div class="rs ok"><span class="n">11</span><span class="l">Ready</span></div>
+    <div class="rs warn"><span class="n">2</span><span class="l">Warnings</span></div>
+    <div class="rs attn"><span class="n">1</span><span class="l">Blocks export</span></div>
+  </div>
+
+  <section class="panel">
+    <div class="phd">
+      <div><h2>Contract Trace Lens</h2><div class="pd">Read-only. Highlights connections; never dims away an unrelated blocker.</div></div>
+      <div class="tracepick"><span class="tl">Trace by entity</span><span class="entsel">Account ▾</span></div>
+    </div>
+    <div class="tracehd"><div>Upstream references</div><div class="mid">Canonical entity</div><div>Downstream references</div></div>
+    <div class="trace">
+      <div class="col up">
+        <div class="dirnote">FEEDS →</div>
+        <div class="ref"><div class="mono m-rest">REST</div><div class="rn"><div class="rt">account-transaction-api</div><div class="rp">3 ops · populates Account</div></div><span class="pill ok">Ready</span></div>
+        <div class="ref"><div class="mono m-fixed">FIXED</div><div class="rn"><div class="rt">account-status-feed</div><div class="rp">inbound · 18 fields</div></div><span class="pill ok">Ready</span></div>
+        <div class="ref"><div class="mono m-xml">XML</div><div class="rn"><div class="rt">account-audit-xml</div><div class="rp">inbound · root AuditMsg</div></div><span class="pill ok">Ready</span></div>
+      </div>
+      <div class="center">
+        <div class="entity"><div class="en">Account</div><div class="ek">🔑 accountId</div><div class="em">12 fields · 2 roles · 4 contracts</div></div>
+      </div>
+      <div class="col dn">
+        <div class="dirnote">→ EMITS</div>
+        <div class="ref"><div class="mono m-stg">STG</div><div class="rn"><div class="rt">account-staging</div><div class="rp">ACCOUNT_STG · 3 maps</div></div><span class="pill ok">Ready</span></div>
+        <div class="ref"><div class="mono m-fixed">FIXED</div><div class="rn"><div class="rt">account-eod-fixed-file</div><div class="rp">142 cols · 12/12</div></div><span class="pill ok">Ready</span></div>
+        <div class="ref blocked"><div class="mono m-soap">SOAP</div><div class="rn"><div class="rt">account-status-soap-out</div><div class="rp">needs operation</div></div><a class="jump">Fix ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="otherblk">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+    <div><b>Other export blockers not connected to Account</b> — kept visible so tracing one entity can never hide them:
+      <span class="ob">Customer Sync SOAP · missing operation</span><span class="ob">customer-audit-xml · 2 required mappings</span></div>
+  </div>
+
+  <div class="foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Every pill above is read from the same readiness view-model that drives the Step-5 board and Export — one truth, four surfaces.</div>
+</main>
+</div></body></html>

@@ -1,0 +1,4528 @@
+{
+  "advisory_db": {
+    "built_utc": "2026-10-14T06:30:34Z",
+    "schema": "v6.1.10"
+  },
+  "assessment_state": "complete-with-findings",
+  "findings": {
+    "by_component_type": {
+      "binary": 2,
+      "deb": 1006
+    },
+    "by_fix_state": {
+      "fixed": 2,
+      "not-fixed": 776,
+      "wont-fix": 230
+    },
+    "by_severity": {
+      "Critical": 23,
+      "High": 129,
+      "Low": 23,
+      "Medium": 133,
+      "Negligible": 684,
+      "Unknown": 16
+    },
+    "components": [
+      {
+        "advisories": 2,
+        "available_fixes": {
+          "CVE-2025-15367": [
+            "3.15.0a6"
+          ],
+          "CVE-2026-12345": [
+            "3.15.0rc3"
+          ]
+        },
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "fixed": 2
+        },
+        "high_critical_ids": [],
+        "name": "python",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "binary",
+        "version": "3.13.16"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1
+        },
+        "high_critical_ids": [],
+        "name": "apt",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "2.6.1"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "binutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "binutils-common",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "binutils-x86-64-linux-gnu",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "bsdutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "1:2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "bzip2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1.0.8-5+b1"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "coreutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 1,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "9.1-1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "cpp-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 26,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7,
+          "wont-fix": 19
+        },
+        "high_critical_ids": [
+          "CVE-2026-10536",
+          "CVE-2026-11856",
+          "CVE-2026-12064",
+          "CVE-2026-13608",
+          "CVE-2026-18924",
+          "CVE-2026-19931",
+          "CVE-2026-6276",
+          "CVE-2026-80230",
+          "CVE-2026-82209",
+          "CVE-2026-8286",
+          "CVE-2026-8924",
+          "CVE-2026-8927",
+          "CVE-2026-8932"
+        ],
+        "name": "curl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 6,
+          "High": 7,
+          "Medium": 6,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 2
+        },
+        "high_critical_ids": [],
+        "name": "dash",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "0.5.12-2"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1
+        },
+        "high_critical_ids": [],
+        "name": "diffutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "1:3.8-4"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "g++-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "gcc-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "gcc-12-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 3
+        },
+        "high_critical_ids": [],
+        "name": "git",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 3
+        },
+        "type": "deb",
+        "version": "1:2.39.5-0+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 3
+        },
+        "high_critical_ids": [],
+        "name": "git-man",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 3
+        },
+        "type": "deb",
+        "version": "1:2.39.5-0+deb12u3"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 4
+        },
+        "high_critical_ids": [],
+        "name": "gpgv",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 2,
+          "Medium": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "2.2.40-1.1+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-41992"
+        ],
+        "name": "gzip",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1.12-1"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-54369",
+          "CVE-2026-54370"
+        ],
+        "name": "libacl1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2
+        },
+        "type": "deb",
+        "version": "2.3.1-3"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1
+        },
+        "high_critical_ids": [],
+        "name": "libapt-pkg6.0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "2.6.1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libasan8",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libatomic1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "libattr1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1:2.5.1-4"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "libbinutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libblkid1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "libbz2-1.0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1.0.8-5+b1"
+      },
+      {
+        "advisories": 23,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 10,
+          "wont-fix": 13
+        },
+        "high_critical_ids": [
+          "CVE-2026-19499",
+          "CVE-2026-5435",
+          "CVE-2026-5450",
+          "CVE-2026-5928"
+        ],
+        "name": "libc-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 1,
+          "High": 3,
+          "Low": 3,
+          "Medium": 9,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 10,
+          "wont-fix": 13
+        },
+        "high_critical_ids": [
+          "CVE-2026-19499",
+          "CVE-2026-5435",
+          "CVE-2026-5450",
+          "CVE-2026-5928"
+        ],
+        "name": "libc-dev-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 1,
+          "High": 3,
+          "Low": 3,
+          "Medium": 9,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 10,
+          "wont-fix": 13
+        },
+        "high_critical_ids": [
+          "CVE-2026-19499",
+          "CVE-2026-5435",
+          "CVE-2026-5450",
+          "CVE-2026-5928"
+        ],
+        "name": "libc6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 1,
+          "High": 3,
+          "Low": 3,
+          "Medium": 9,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 10,
+          "wont-fix": 13
+        },
+        "high_critical_ids": [
+          "CVE-2026-19499",
+          "CVE-2026-5435",
+          "CVE-2026-5450",
+          "CVE-2026-5928"
+        ],
+        "name": "libc6-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 1,
+          "High": 3,
+          "Low": 3,
+          "Medium": 9,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libcc1-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "libctf-nobfd0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "libctf0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 26,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7,
+          "wont-fix": 19
+        },
+        "high_critical_ids": [
+          "CVE-2026-10536",
+          "CVE-2026-11856",
+          "CVE-2026-12064",
+          "CVE-2026-13608",
+          "CVE-2026-18924",
+          "CVE-2026-19931",
+          "CVE-2026-6276",
+          "CVE-2026-80230",
+          "CVE-2026-82209",
+          "CVE-2026-8286",
+          "CVE-2026-8924",
+          "CVE-2026-8927",
+          "CVE-2026-8932"
+        ],
+        "name": "libcurl3-gnutls",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 6,
+          "High": 7,
+          "Medium": 6,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 26,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7,
+          "wont-fix": 19
+        },
+        "high_critical_ids": [
+          "CVE-2026-10536",
+          "CVE-2026-11856",
+          "CVE-2026-12064",
+          "CVE-2026-13608",
+          "CVE-2026-18924",
+          "CVE-2026-19931",
+          "CVE-2026-6276",
+          "CVE-2026-80230",
+          "CVE-2026-82209",
+          "CVE-2026-8286",
+          "CVE-2026-8924",
+          "CVE-2026-8927",
+          "CVE-2026-8932"
+        ],
+        "name": "libcurl4",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 6,
+          "High": 7,
+          "Medium": 6,
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 2,
+          "wont-fix": 4
+        },
+        "high_critical_ids": [
+          "CVE-2026-41080",
+          "CVE-2026-77214"
+        ],
+        "name": "libexpat1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Medium": 3,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "2.5.0-1+deb12u4"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libgcc-12-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libgcc-s1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 2
+        },
+        "high_critical_ids": [],
+        "name": "libgcrypt20",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "1.10.1-3+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7
+        },
+        "high_critical_ids": [],
+        "name": "libgnutls30",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 7
+        },
+        "type": "deb",
+        "version": "3.7.9-2+deb12u7"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libgomp1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 75,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 75
+        },
+        "high_critical_ids": [],
+        "name": "libgprofng0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 75
+        },
+        "type": "deb",
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-107778"
+        ],
+        "name": "libgssapi-krb5-2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libitm1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-107778"
+        ],
+        "name": "libk5crypto3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-107778"
+        ],
+        "name": "libkrb5-3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-107778"
+        ],
+        "name": "libkrb5support0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 5,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2023-2953"
+        ],
+        "name": "libldap-2.5-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Negligible": 5
+        },
+        "type": "deb",
+        "version": "2.5.13+dfsg-5"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "liblsan0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libmount1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 3
+        },
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "libncursesw6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "libnghttp2-14",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1.52.0-1+deb12u3"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [],
+        "name": "libp11-kit0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "0.24.1-2"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [],
+        "name": "libpam-modules",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [],
+        "name": "libpam-modules-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [],
+        "name": "libpam-runtime",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 2
+        },
+        "high_critical_ids": [],
+        "name": "libpam0g",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-82560",
+          "CVE-2026-9538"
+        ],
+        "name": "libperl5.36",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Medium": 1,
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libquadmath0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-107161"
+        ],
+        "name": "libsasl2-2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1
+        },
+        "type": "deb",
+        "version": "2.1.28+dfsg-10"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-107161"
+        ],
+        "name": "libsasl2-modules-db",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1
+        },
+        "type": "deb",
+        "version": "2.1.28+dfsg-10"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libsmartcols1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 9,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 3,
+          "wont-fix": 6
+        },
+        "high_critical_ids": [
+          "CVE-2025-7458",
+          "CVE-2026-11822",
+          "CVE-2026-11824"
+        ],
+        "name": "libsqlite3-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 1,
+          "High": 2,
+          "Medium": 3,
+          "Negligible": 3
+        },
+        "type": "deb",
+        "version": "3.40.1-2+deb12u2"
+      },
+      {
+        "advisories": 7,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7
+        },
+        "high_critical_ids": [
+          "CVE-2026-84782"
+        ],
+        "name": "libssl3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Low": 2,
+          "Medium": 3,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libstdc++-12-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libstdc++6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 3
+        },
+        "high_critical_ids": [],
+        "name": "libsystemd0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 1,
+          "Medium": 2,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "advisories": 1,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2025-13151"
+        ],
+        "name": "libtasn1-6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1
+        },
+        "type": "deb",
+        "version": "4.19.0-2+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 3
+        },
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "libtinfo6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libtsan2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-102010",
+          "CVE-2026-95619"
+        ],
+        "name": "libubsan1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 3
+        },
+        "high_critical_ids": [],
+        "name": "libudev1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 1,
+          "Medium": 2,
+          "Negligible": 4
+        },
+        "type": "deb",
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libuuid1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "login",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 1,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "mount",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 3
+        },
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "ncurses-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 3,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "wont-fix": 3
+        },
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "ncurses-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 2
+        },
+        "type": "deb",
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 7,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 7
+        },
+        "high_critical_ids": [
+          "CVE-2026-84782"
+        ],
+        "name": "openssl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Low": 2,
+          "Medium": 3,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [],
+        "name": "passwd",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Low": 1,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "advisories": 6,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 6
+        },
+        "high_critical_ids": [],
+        "name": "patch",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Negligible": 6
+        },
+        "type": "deb",
+        "version": "2.7.6-7"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-82560",
+          "CVE-2026-9538"
+        ],
+        "name": "perl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Medium": 1,
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-82560",
+          "CVE-2026-9538"
+        ],
+        "name": "perl-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Medium": 1,
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 5,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 4,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-82560",
+          "CVE-2026-9538"
+        ],
+        "name": "perl-modules-5.36",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 2,
+          "Medium": 1,
+          "Negligible": 2
+        },
+        "type": "deb",
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 4,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 3
+        },
+        "high_critical_ids": [],
+        "name": "tar",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Medium": 3,
+          "Negligible": 1
+        },
+        "type": "deb",
+        "version": "1.34+dfsg-1.2+deb12u1"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "util-linux",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 11,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 9,
+          "wont-fix": 2
+        },
+        "high_critical_ids": [
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "util-linux-extra",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 4,
+          "Medium": 3,
+          "Negligible": 2,
+          "Unknown": 2
+        },
+        "type": "deb",
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 2,
+        "available_fixes": {},
+        "disposition": "open; applicability not yet established",
+        "fix_states": {
+          "not-fixed": 1,
+          "wont-fix": 1
+        },
+        "high_critical_ids": [
+          "CVE-2026-85091"
+        ],
+        "name": "zlib1g",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "High": 1,
+          "Medium": 1
+        },
+        "type": "deb",
+        "version": "1:1.2.13.dfsg-1"
+      }
+    ],
+    "total": 1008
+  },
+  "ignored_findings": {
+    "by_fix_state": {
+      "not-fixed": 2455,
+      "wont-fix": 16
+    },
+    "by_severity": {
+      "Critical": 130,
+      "High": 766,
+      "Low": 4,
+      "Medium": 534,
+      "Negligible": 62,
+      "Unknown": 975
+    },
+    "components": [
+      {
+        "advisories": 2471,
+        "advisory_fingerprint_sha256": "592ecd5f06f38a946b63e8190a15bf18b47290955dd4074dbb705d517376b411",
+        "applied_rules": [
+          {
+            "match-type": "exact-indirect-match",
+            "namespace": "",
+            "package": {
+              "language": "",
+              "name": "linux-libc-dev",
+              "type": "deb",
+              "upstream-name": "linux"
+            }
+          }
+        ],
+        "available_fixes": {},
+        "disposition": "open; scanner-excluded, applicability not yet established",
+        "fix_states": {
+          "not-fixed": 2455,
+          "wont-fix": 16
+        },
+        "high_critical_ids": [
+          "CVE-2013-7445",
+          "CVE-2019-19449",
+          "CVE-2019-19814",
+          "CVE-2021-3847",
+          "CVE-2021-3864",
+          "CVE-2023-52452",
+          "CVE-2023-52586",
+          "CVE-2023-52591",
+          "CVE-2023-52624",
+          "CVE-2023-52629",
+          "CVE-2023-52751",
+          "CVE-2023-53218",
+          "CVE-2023-53762",
+          "CVE-2023-53781",
+          "CVE-2023-53823",
+          "CVE-2023-53846",
+          "CVE-2023-53851",
+          "CVE-2023-54088",
+          "CVE-2023-54107",
+          "CVE-2023-54227",
+          "CVE-2023-54280",
+          "CVE-2024-14040",
+          "CVE-2024-21803",
+          "CVE-2024-25743",
+          "CVE-2024-26669",
+          "CVE-2024-26672",
+          "CVE-2024-26836",
+          "CVE-2024-26913",
+          "CVE-2024-26914",
+          "CVE-2024-26944",
+          "CVE-2024-35887",
+          "CVE-2024-38570",
+          "CVE-2024-38630",
+          "CVE-2024-41045",
+          "CVE-2024-41935",
+          "CVE-2024-42118",
+          "CVE-2024-42162",
+          "CVE-2024-44941",
+          "CVE-2024-44942",
+          "CVE-2024-44951",
+          "CVE-2024-46729",
+          "CVE-2024-46811",
+          "CVE-2024-46813",
+          "CVE-2024-47691",
+          "CVE-2024-50029",
+          "CVE-2024-50217",
+          "CVE-2024-50226",
+          "CVE-2024-50282",
+          "CVE-2024-53068",
+          "CVE-2024-53095",
+          "CVE-2024-53147",
+          "CVE-2024-53168",
+          "CVE-2024-53179",
+          "CVE-2024-53216",
+          "CVE-2024-53218",
+          "CVE-2024-56538",
+          "CVE-2024-56775",
+          "CVE-2024-57795",
+          "CVE-2024-57857",
+          "CVE-2024-57900",
+          "CVE-2024-57982",
+          "CVE-2024-57984",
+          "CVE-2025-21693",
+          "CVE-2025-21714",
+          "CVE-2025-21729",
+          "CVE-2025-21759",
+          "CVE-2025-21927",
+          "CVE-2025-21967",
+          "CVE-2025-21969",
+          "CVE-2025-21985",
+          "CVE-2025-22037",
+          "CVE-2025-22039",
+          "CVE-2025-23133",
+          "CVE-2025-37750",
+          "CVE-2025-37776",
+          "CVE-2025-37777",
+          "CVE-2025-37861",
+          "CVE-2025-37952",
+          "CVE-2025-37957",
+          "CVE-2025-38069",
+          "CVE-2025-38081",
+          "CVE-2025-38182",
+          "CVE-2025-38204",
+          "CVE-2025-38248",
+          "CVE-2025-38369",
+          "CVE-2025-38582",
+          "CVE-2025-38585",
+          "CVE-2025-38595",
+          "CVE-2025-38636",
+          "CVE-2025-38722",
+          "CVE-2025-38734",
+          "CVE-2025-39744",
+          "CVE-2025-39797",
+          "CVE-2025-39810",
+          "CVE-2025-39859",
+          "CVE-2025-39952",
+          "CVE-2025-39981",
+          "CVE-2025-39990",
+          "CVE-2025-40025",
+          "CVE-2025-40074",
+          "CVE-2025-40075",
+          "CVE-2025-40158",
+          "CVE-2025-40170",
+          "CVE-2025-40266",
+          "CVE-2025-40303",
+          "CVE-2025-40328",
+          "CVE-2025-40337",
+          "CVE-2025-40354",
+          "CVE-2025-68183",
+          "CVE-2025-68304",
+          "CVE-2025-68320",
+          "CVE-2025-68379",
+          "CVE-2025-68736",
+          "CVE-2025-68745",
+          "CVE-2025-68809",
+          "CVE-2025-68822",
+          "CVE-2025-71068",
+          "CVE-2025-71073",
+          "CVE-2025-71152",
+          "CVE-2026-100075",
+          "CVE-2026-23171",
+          "CVE-2026-23191",
+          "CVE-2026-23208",
+          "CVE-2026-23226",
+          "CVE-2026-23239",
+          "CVE-2026-23240",
+          "CVE-2026-23327",
+          "CVE-2026-23361",
+          "CVE-2026-23383",
+          "CVE-2026-23393",
+          "CVE-2026-23447",
+          "CVE-2026-23448",
+          "CVE-2026-31432",
+          "CVE-2026-31486",
+          "CVE-2026-31493",
+          "CVE-2026-31502",
+          "CVE-2026-31505",
+          "CVE-2026-31516",
+          "CVE-2026-31527",
+          "CVE-2026-31536",
+          "CVE-2026-31557",
+          "CVE-2026-31568",
+          "CVE-2026-31648",
+          "CVE-2026-31663",
+          "CVE-2026-31675",
+          "CVE-2026-31706",
+          "CVE-2026-31707",
+          "CVE-2026-31729",
+          "CVE-2026-31771",
+          "CVE-2026-43009",
+          "CVE-2026-43016",
+          "CVE-2026-43042",
+          "CVE-2026-43048",
+          "CVE-2026-43049",
+          "CVE-2026-43083",
+          "CVE-2026-43091",
+          "CVE-2026-43101",
+          "CVE-2026-43125",
+          "CVE-2026-43126",
+          "CVE-2026-43153",
+          "CVE-2026-43172",
+          "CVE-2026-43185",
+          "CVE-2026-43198",
+          "CVE-2026-43213",
+          "CVE-2026-43215",
+          "CVE-2026-43239",
+          "CVE-2026-43248",
+          "CVE-2026-43249",
+          "CVE-2026-43250",
+          "CVE-2026-43253",
+          "CVE-2026-43258",
+          "CVE-2026-43352",
+          "CVE-2026-43353",
+          "CVE-2026-43362",
+          "CVE-2026-43414",
+          "CVE-2026-43456",
+          "CVE-2026-43490",
+          "CVE-2026-45859",
+          "CVE-2026-45893",
+          "CVE-2026-45894",
+          "CVE-2026-45942",
+          "CVE-2026-45943",
+          "CVE-2026-45944",
+          "CVE-2026-45957",
+          "CVE-2026-45988",
+          "CVE-2026-46054",
+          "CVE-2026-46068",
+          "CVE-2026-46090",
+          "CVE-2026-46130",
+          "CVE-2026-46157",
+          "CVE-2026-46175",
+          "CVE-2026-46181",
+          "CVE-2026-46204",
+          "CVE-2026-46219",
+          "CVE-2026-46241",
+          "CVE-2026-46274",
+          "CVE-2026-46293",
+          "CVE-2026-46324",
+          "CVE-2026-46330",
+          "CVE-2026-52956",
+          "CVE-2026-52988",
+          "CVE-2026-52991",
+          "CVE-2026-53000",
+          "CVE-2026-53005",
+          "CVE-2026-53009",
+          "CVE-2026-53024",
+          "CVE-2026-53025",
+          "CVE-2026-53053",
+          "CVE-2026-53070",
+          "CVE-2026-53076",
+          "CVE-2026-53078",
+          "CVE-2026-53091",
+          "CVE-2026-53115",
+          "CVE-2026-53117",
+          "CVE-2026-53118",
+          "CVE-2026-53120",
+          "CVE-2026-53129",
+          "CVE-2026-53132",
+          "CVE-2026-53143",
+          "CVE-2026-53156",
+          "CVE-2026-53178",
+          "CVE-2026-53179",
+          "CVE-2026-53185",
+          "CVE-2026-53224",
+          "CVE-2026-53229",
+          "CVE-2026-53230",
+          "CVE-2026-53232",
+          "CVE-2026-53246",
+          "CVE-2026-53262",
+          "CVE-2026-53265",
+          "CVE-2026-53267",
+          "CVE-2026-53272",
+          "CVE-2026-53284",
+          "CVE-2026-53330",
+          "CVE-2026-53358",
+          "CVE-2026-53368",
+          "CVE-2026-53401",
+          "CVE-2026-63805",
+          "CVE-2026-63816",
+          "CVE-2026-63819",
+          "CVE-2026-63825",
+          "CVE-2026-63845",
+          "CVE-2026-63846",
+          "CVE-2026-63847",
+          "CVE-2026-63848",
+          "CVE-2026-63853",
+          "CVE-2026-63854",
+          "CVE-2026-63855",
+          "CVE-2026-63856",
+          "CVE-2026-63858",
+          "CVE-2026-63940",
+          "CVE-2026-63974",
+          "CVE-2026-64001",
+          "CVE-2026-64017",
+          "CVE-2026-64025",
+          "CVE-2026-64026",
+          "CVE-2026-64036",
+          "CVE-2026-64076",
+          "CVE-2026-64077",
+          "CVE-2026-64078",
+          "CVE-2026-64109",
+          "CVE-2026-64112",
+          "CVE-2026-64138",
+          "CVE-2026-64160",
+          "CVE-2026-64210",
+          "CVE-2026-64305",
+          "CVE-2026-64319",
+          "CVE-2026-64320",
+          "CVE-2026-64341",
+          "CVE-2026-64348",
+          "CVE-2026-64388",
+          "CVE-2026-64389",
+          "CVE-2026-64391",
+          "CVE-2026-64392",
+          "CVE-2026-64400",
+          "CVE-2026-64424",
+          "CVE-2026-64463",
+          "CVE-2026-64481",
+          "CVE-2026-64556",
+          "CVE-2026-68083",
+          "CVE-2026-68085",
+          "CVE-2026-68097",
+          "CVE-2026-68098",
+          "CVE-2026-68118",
+          "CVE-2026-68152",
+          "CVE-2026-68161",
+          "CVE-2026-68236",
+          "CVE-2026-68258",
+          "CVE-2026-68273",
+          "CVE-2026-68287",
+          "CVE-2026-68293",
+          "CVE-2026-68323",
+          "CVE-2026-68329",
+          "CVE-2026-68391",
+          "CVE-2026-68399",
+          "CVE-2026-68401",
+          "CVE-2026-68404",
+          "CVE-2026-68409",
+          "CVE-2026-68426",
+          "CVE-2026-68445",
+          "CVE-2026-68447",
+          "CVE-2026-68453",
+          "CVE-2026-68470",
+          "CVE-2026-68471",
+          "CVE-2026-72009",
+          "CVE-2026-72042",
+          "CVE-2026-72098",
+          "CVE-2026-72130",
+          "CVE-2026-72144",
+          "CVE-2026-72162",
+          "CVE-2026-72198",
+          "CVE-2026-72200",
+          "CVE-2026-72203",
+          "CVE-2026-72213",
+          "CVE-2026-72254",
+          "CVE-2026-72288",
+          "CVE-2026-72315",
+          "CVE-2026-72320",
+          "CVE-2026-72329",
+          "CVE-2026-72334",
+          "CVE-2026-72338",
+          "CVE-2026-72369",
+          "CVE-2026-72373",
+          "CVE-2026-72375",
+          "CVE-2026-72380",
+          "CVE-2026-72382",
+          "CVE-2026-72383",
+          "CVE-2026-72397",
+          "CVE-2026-72398",
+          "CVE-2026-72404",
+          "CVE-2026-72405",
+          "CVE-2026-72416",
+          "CVE-2026-72420",
+          "CVE-2026-72423",
+          "CVE-2026-72434",
+          "CVE-2026-72438",
+          "CVE-2026-72440",
+          "CVE-2026-72454",
+          "CVE-2026-72469",
+          "CVE-2026-72470",
+          "CVE-2026-72472",
+          "CVE-2026-72488",
+          "CVE-2026-72493",
+          "CVE-2026-72494",
+          "CVE-2026-74257",
+          "CVE-2026-74264",
+          "CVE-2026-74268",
+          "CVE-2026-74269",
+          "CVE-2026-74289",
+          "CVE-2026-74294",
+          "CVE-2026-74302",
+          "CVE-2026-74314",
+          "CVE-2026-74317",
+          "CVE-2026-74334",
+          "CVE-2026-74338",
+          "CVE-2026-74345",
+          "CVE-2026-74347",
+          "CVE-2026-74350",
+          "CVE-2026-74356",
+          "CVE-2026-74374",
+          "CVE-2026-74388",
+          "CVE-2026-74397",
+          "CVE-2026-74401",
+          "CVE-2026-74405",
+          "CVE-2026-74407",
+          "CVE-2026-74417",
+          "CVE-2026-74474",
+          "CVE-2026-74496",
+          "CVE-2026-74506",
+          "CVE-2026-74521",
+          "CVE-2026-74527",
+          "CVE-2026-74537",
+          "CVE-2026-74544",
+          "CVE-2026-74565",
+          "CVE-2026-74592",
+          "CVE-2026-74611",
+          "CVE-2026-74684",
+          "CVE-2026-74687",
+          "CVE-2026-74690",
+          "CVE-2026-74695",
+          "CVE-2026-74700",
+          "CVE-2026-74713",
+          "CVE-2026-74715",
+          "CVE-2026-74723",
+          "CVE-2026-74725",
+          "CVE-2026-74733",
+          "CVE-2026-74747",
+          "CVE-2026-74752",
+          "CVE-2026-80521",
+          "CVE-2026-80526",
+          "CVE-2026-80551",
+          "CVE-2026-80554",
+          "CVE-2026-80556",
+          "CVE-2026-80576",
+          "CVE-2026-80579",
+          "CVE-2026-80580",
+          "CVE-2026-80587",
+          "CVE-2026-80628",
+          "CVE-2026-80631",
+          "CVE-2026-80634",
+          "CVE-2026-80637",
+          "CVE-2026-80653",
+          "CVE-2026-80668",
+          "CVE-2026-80670",
+          "CVE-2026-80671",
+          "CVE-2026-80694",
+          "CVE-2026-80710",
+          "CVE-2026-80738",
+          "CVE-2026-80747",
+          "CVE-2026-80914",
+          "CVE-2026-80928",
+          "CVE-2026-80931",
+          "CVE-2026-80932",
+          "CVE-2026-80937",
+          "CVE-2026-80944",
+          "CVE-2026-80947",
+          "CVE-2026-80952",
+          "CVE-2026-80967",
+          "CVE-2026-80971",
+          "CVE-2026-80976",
+          "CVE-2026-80977",
+          "CVE-2026-80978",
+          "CVE-2026-80980",
+          "CVE-2026-80982",
+          "CVE-2026-80987",
+          "CVE-2026-80989",
+          "CVE-2026-80991",
+          "CVE-2026-80992",
+          "CVE-2026-80994",
+          "CVE-2026-81000",
+          "CVE-2026-81001",
+          "CVE-2026-81002",
+          "CVE-2026-81003",
+          "CVE-2026-81007",
+          "CVE-2026-81008",
+          "CVE-2026-81016",
+          "CVE-2026-81017",
+          "CVE-2026-89440",
+          "CVE-2026-89441",
+          "CVE-2026-89448",
+          "CVE-2026-89452",
+          "CVE-2026-89456",
+          "CVE-2026-89465",
+          "CVE-2026-89469",
+          "CVE-2026-89470",
+          "CVE-2026-89471",
+          "CVE-2026-89472",
+          "CVE-2026-89476",
+          "CVE-2026-89477",
+          "CVE-2026-89478",
+          "CVE-2026-89479",
+          "CVE-2026-89480",
+          "CVE-2026-89481",
+          "CVE-2026-89482",
+          "CVE-2026-89483",
+          "CVE-2026-89485",
+          "CVE-2026-89487",
+          "CVE-2026-89488",
+          "CVE-2026-89489",
+          "CVE-2026-89492",
+          "CVE-2026-89493",
+          "CVE-2026-89494",
+          "CVE-2026-89495",
+          "CVE-2026-89497",
+          "CVE-2026-89504",
+          "CVE-2026-89508",
+          "CVE-2026-89510",
+          "CVE-2026-89511",
+          "CVE-2026-89520",
+          "CVE-2026-89524",
+          "CVE-2026-89526",
+          "CVE-2026-89528",
+          "CVE-2026-89530",
+          "CVE-2026-89532",
+          "CVE-2026-89533",
+          "CVE-2026-89537",
+          "CVE-2026-89538",
+          "CVE-2026-89540",
+          "CVE-2026-89541",
+          "CVE-2026-89542",
+          "CVE-2026-89544",
+          "CVE-2026-89545",
+          "CVE-2026-89548",
+          "CVE-2026-89549",
+          "CVE-2026-89550",
+          "CVE-2026-89551",
+          "CVE-2026-89553",
+          "CVE-2026-89554",
+          "CVE-2026-89555",
+          "CVE-2026-89557",
+          "CVE-2026-89559",
+          "CVE-2026-89560",
+          "CVE-2026-89561",
+          "CVE-2026-89562",
+          "CVE-2026-89563",
+          "CVE-2026-89564",
+          "CVE-2026-89569",
+          "CVE-2026-89573",
+          "CVE-2026-89574",
+          "CVE-2026-89579",
+          "CVE-2026-89580",
+          "CVE-2026-89583",
+          "CVE-2026-89585",
+          "CVE-2026-89586",
+          "CVE-2026-89587",
+          "CVE-2026-89594",
+          "CVE-2026-89596",
+          "CVE-2026-89597",
+          "CVE-2026-89599",
+          "CVE-2026-89601",
+          "CVE-2026-89603",
+          "CVE-2026-89605",
+          "CVE-2026-89606",
+          "CVE-2026-89607",
+          "CVE-2026-89608",
+          "CVE-2026-89609",
+          "CVE-2026-89610",
+          "CVE-2026-89611",
+          "CVE-2026-89615",
+          "CVE-2026-89616",
+          "CVE-2026-89617",
+          "CVE-2026-89622",
+          "CVE-2026-89626",
+          "CVE-2026-89631",
+          "CVE-2026-89633",
+          "CVE-2026-89634",
+          "CVE-2026-89636",
+          "CVE-2026-89637",
+          "CVE-2026-89638",
+          "CVE-2026-89640",
+          "CVE-2026-89643",
+          "CVE-2026-89647",
+          "CVE-2026-89648",
+          "CVE-2026-89649",
+          "CVE-2026-89650",
+          "CVE-2026-89652",
+          "CVE-2026-89653",
+          "CVE-2026-89654",
+          "CVE-2026-89655",
+          "CVE-2026-89656",
+          "CVE-2026-89659",
+          "CVE-2026-89662",
+          "CVE-2026-89663",
+          "CVE-2026-89665",
+          "CVE-2026-89669",
+          "CVE-2026-89671",
+          "CVE-2026-89672",
+          "CVE-2026-89674",
+          "CVE-2026-89675",
+          "CVE-2026-89676",
+          "CVE-2026-89680",
+          "CVE-2026-89682",
+          "CVE-2026-89684",
+          "CVE-2026-89685",
+          "CVE-2026-89686",
+          "CVE-2026-89696",
+          "CVE-2026-89697",
+          "CVE-2026-89699",
+          "CVE-2026-89702",
+          "CVE-2026-89704",
+          "CVE-2026-89706",
+          "CVE-2026-89707",
+          "CVE-2026-89708",
+          "CVE-2026-89709",
+          "CVE-2026-89711",
+          "CVE-2026-89712",
+          "CVE-2026-89713",
+          "CVE-2026-89720",
+          "CVE-2026-89723",
+          "CVE-2026-89724",
+          "CVE-2026-89725",
+          "CVE-2026-89729",
+          "CVE-2026-89733",
+          "CVE-2026-89736",
+          "CVE-2026-89738",
+          "CVE-2026-89741",
+          "CVE-2026-89742",
+          "CVE-2026-89744",
+          "CVE-2026-89746",
+          "CVE-2026-89761",
+          "CVE-2026-89762",
+          "CVE-2026-89763",
+          "CVE-2026-89777",
+          "CVE-2026-89778",
+          "CVE-2026-89779",
+          "CVE-2026-89781",
+          "CVE-2026-89782",
+          "CVE-2026-89783",
+          "CVE-2026-89786",
+          "CVE-2026-89788",
+          "CVE-2026-89789",
+          "CVE-2026-89792",
+          "CVE-2026-89793",
+          "CVE-2026-89795",
+          "CVE-2026-89799",
+          "CVE-2026-89803",
+          "CVE-2026-89808",
+          "CVE-2026-89810",
+          "CVE-2026-89811",
+          "CVE-2026-89818",
+          "CVE-2026-89823",
+          "CVE-2026-89832",
+          "CVE-2026-89838",
+          "CVE-2026-89840",
+          "CVE-2026-89846",
+          "CVE-2026-89847",
+          "CVE-2026-89848",
+          "CVE-2026-89849",
+          "CVE-2026-89854",
+          "CVE-2026-89856",
+          "CVE-2026-89860",
+          "CVE-2026-89861",
+          "CVE-2026-89863",
+          "CVE-2026-89870",
+          "CVE-2026-89877",
+          "CVE-2026-89880",
+          "CVE-2026-89883",
+          "CVE-2026-89887",
+          "CVE-2026-89888",
+          "CVE-2026-89890",
+          "CVE-2026-89893",
+          "CVE-2026-89894",
+          "CVE-2026-89897",
+          "CVE-2026-89899",
+          "CVE-2026-89906",
+          "CVE-2026-89912",
+          "CVE-2026-89913",
+          "CVE-2026-89920",
+          "CVE-2026-89922",
+          "CVE-2026-89927",
+          "CVE-2026-89929",
+          "CVE-2026-89930",
+          "CVE-2026-89932",
+          "CVE-2026-89938",
+          "CVE-2026-89947",
+          "CVE-2026-89951",
+          "CVE-2026-89954",
+          "CVE-2026-89957",
+          "CVE-2026-89959",
+          "CVE-2026-89960",
+          "CVE-2026-89965",
+          "CVE-2026-89968",
+          "CVE-2026-89969",
+          "CVE-2026-89970",
+          "CVE-2026-89972",
+          "CVE-2026-89973",
+          "CVE-2026-89979",
+          "CVE-2026-89980",
+          "CVE-2026-89988",
+          "CVE-2026-89992",
+          "CVE-2026-89995",
+          "CVE-2026-89997",
+          "CVE-2026-89998",
+          "CVE-2026-89999",
+          "CVE-2026-90000",
+          "CVE-2026-90002",
+          "CVE-2026-90003",
+          "CVE-2026-90007",
+          "CVE-2026-90011",
+          "CVE-2026-90013",
+          "CVE-2026-90016",
+          "CVE-2026-90017",
+          "CVE-2026-90018",
+          "CVE-2026-90025",
+          "CVE-2026-90032",
+          "CVE-2026-90036",
+          "CVE-2026-90037",
+          "CVE-2026-90041",
+          "CVE-2026-90044",
+          "CVE-2026-90045",
+          "CVE-2026-90048",
+          "CVE-2026-90049",
+          "CVE-2026-90057",
+          "CVE-2026-90062",
+          "CVE-2026-90067",
+          "CVE-2026-90071",
+          "CVE-2026-90091",
+          "CVE-2026-90092",
+          "CVE-2026-90093",
+          "CVE-2026-90102",
+          "CVE-2026-90103",
+          "CVE-2026-90104",
+          "CVE-2026-90110",
+          "CVE-2026-90111",
+          "CVE-2026-90141",
+          "CVE-2026-90143",
+          "CVE-2026-90146",
+          "CVE-2026-90149",
+          "CVE-2026-90151",
+          "CVE-2026-90153",
+          "CVE-2026-90161",
+          "CVE-2026-90162",
+          "CVE-2026-90174",
+          "CVE-2026-90176",
+          "CVE-2026-90199",
+          "CVE-2026-90203",
+          "CVE-2026-90204",
+          "CVE-2026-90205",
+          "CVE-2026-90207",
+          "CVE-2026-90223",
+          "CVE-2026-90224",
+          "CVE-2026-90225",
+          "CVE-2026-90227",
+          "CVE-2026-90228",
+          "CVE-2026-90229",
+          "CVE-2026-90230",
+          "CVE-2026-90234",
+          "CVE-2026-90235",
+          "CVE-2026-90237",
+          "CVE-2026-90255",
+          "CVE-2026-90286",
+          "CVE-2026-90289",
+          "CVE-2026-90292",
+          "CVE-2026-90293",
+          "CVE-2026-90294",
+          "CVE-2026-90301",
+          "CVE-2026-90308",
+          "CVE-2026-90309",
+          "CVE-2026-90316",
+          "CVE-2026-90320",
+          "CVE-2026-90321",
+          "CVE-2026-90325",
+          "CVE-2026-90326",
+          "CVE-2026-90329",
+          "CVE-2026-90341",
+          "CVE-2026-90343",
+          "CVE-2026-90347",
+          "CVE-2026-90353",
+          "CVE-2026-90357",
+          "CVE-2026-90358",
+          "CVE-2026-90372",
+          "CVE-2026-90379",
+          "CVE-2026-90383",
+          "CVE-2026-90388",
+          "CVE-2026-90392",
+          "CVE-2026-90398",
+          "CVE-2026-90401",
+          "CVE-2026-90403",
+          "CVE-2026-90407",
+          "CVE-2026-90413",
+          "CVE-2026-90414",
+          "CVE-2026-90419",
+          "CVE-2026-90435",
+          "CVE-2026-92485",
+          "CVE-2026-92488",
+          "CVE-2026-92504",
+          "CVE-2026-92507",
+          "CVE-2026-92508",
+          "CVE-2026-92510",
+          "CVE-2026-92511",
+          "CVE-2026-92522",
+          "CVE-2026-92525",
+          "CVE-2026-93037",
+          "CVE-2026-93039",
+          "CVE-2026-93042",
+          "CVE-2026-93046",
+          "CVE-2026-93054",
+          "CVE-2026-93063",
+          "CVE-2026-93095",
+          "CVE-2026-93105",
+          "CVE-2026-93116",
+          "CVE-2026-93122",
+          "CVE-2026-93125",
+          "CVE-2026-93137",
+          "CVE-2026-93138",
+          "CVE-2026-93151",
+          "CVE-2026-93154",
+          "CVE-2026-93165",
+          "CVE-2026-93170",
+          "CVE-2026-93175",
+          "CVE-2026-93176",
+          "CVE-2026-93177",
+          "CVE-2026-93178",
+          "CVE-2026-93189",
+          "CVE-2026-93190",
+          "CVE-2026-93192",
+          "CVE-2026-93196",
+          "CVE-2026-93203",
+          "CVE-2026-93221",
+          "CVE-2026-93228",
+          "CVE-2026-93260",
+          "CVE-2026-93262",
+          "CVE-2026-93280",
+          "CVE-2026-93282",
+          "CVE-2026-93287",
+          "CVE-2026-93288",
+          "CVE-2026-93782",
+          "CVE-2026-93786",
+          "CVE-2026-93787",
+          "CVE-2026-93790",
+          "CVE-2026-93793",
+          "CVE-2026-93796",
+          "CVE-2026-93798",
+          "CVE-2026-93799",
+          "CVE-2026-93806",
+          "CVE-2026-93810",
+          "CVE-2026-93813",
+          "CVE-2026-93816",
+          "CVE-2026-93817",
+          "CVE-2026-93826",
+          "CVE-2026-93830",
+          "CVE-2026-97409",
+          "CVE-2026-97413",
+          "CVE-2026-97415",
+          "CVE-2026-97417",
+          "CVE-2026-97421",
+          "CVE-2026-97437",
+          "CVE-2026-97438",
+          "CVE-2026-97442",
+          "CVE-2026-97444",
+          "CVE-2026-97445",
+          "CVE-2026-97448",
+          "CVE-2026-97450",
+          "CVE-2026-97451",
+          "CVE-2026-97452",
+          "CVE-2026-97454",
+          "CVE-2026-97455",
+          "CVE-2026-97478",
+          "CVE-2026-97496",
+          "CVE-2026-97497",
+          "CVE-2026-97508",
+          "CVE-2026-97509",
+          "CVE-2026-97523",
+          "CVE-2026-97524",
+          "CVE-2026-97531",
+          "CVE-2026-97536",
+          "CVE-2026-97555",
+          "CVE-2026-97557",
+          "CVE-2026-97562",
+          "CVE-2026-97573",
+          "CVE-2026-97576",
+          "CVE-2026-97594",
+          "CVE-2026-97608",
+          "CVE-2026-97609",
+          "CVE-2026-97611",
+          "CVE-2026-97612",
+          "CVE-2026-97910",
+          "CVE-2026-97926",
+          "CVE-2026-97931",
+          "CVE-2026-97940",
+          "CVE-2026-97953",
+          "CVE-2026-97957",
+          "CVE-2026-97990",
+          "CVE-2026-97991",
+          "CVE-2026-98017",
+          "CVE-2026-98023",
+          "CVE-2026-98027",
+          "CVE-2026-98030",
+          "CVE-2026-98041",
+          "CVE-2026-98056",
+          "CVE-2026-98069",
+          "CVE-2026-98070",
+          "CVE-2026-98073",
+          "CVE-2026-98096",
+          "CVE-2026-98108",
+          "CVE-2026-98116",
+          "CVE-2026-98130",
+          "CVE-2026-98154",
+          "CVE-2026-98156",
+          "CVE-2026-98169",
+          "CVE-2026-98171",
+          "CVE-2026-98173",
+          "CVE-2026-98174",
+          "CVE-2026-98175",
+          "CVE-2026-98180",
+          "CVE-2026-98197",
+          "CVE-2026-98229",
+          "CVE-2026-98239",
+          "CVE-2026-98241",
+          "CVE-2026-98251",
+          "CVE-2026-98252",
+          "CVE-2026-98253",
+          "CVE-2026-98254",
+          "CVE-2026-98257",
+          "CVE-2026-98260",
+          "CVE-2026-98276",
+          "CVE-2026-98282",
+          "CVE-2026-98283",
+          "CVE-2026-98290",
+          "CVE-2026-98311",
+          "CVE-2026-98320",
+          "CVE-2026-98323",
+          "CVE-2026-98330",
+          "CVE-2026-98331",
+          "CVE-2026-98339",
+          "CVE-2026-98341",
+          "CVE-2026-98348",
+          "CVE-2026-98349",
+          "CVE-2026-98357",
+          "CVE-2026-98359",
+          "CVE-2026-98360",
+          "CVE-2026-98364",
+          "CVE-2026-98365",
+          "CVE-2026-98367",
+          "CVE-2026-98368",
+          "CVE-2026-98369"
+        ],
+        "name": "linux-libc-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "Critical": 130,
+          "High": 766,
+          "Low": 4,
+          "Medium": 534,
+          "Negligible": 62,
+          "Unknown": 975
+        },
+        "type": "deb",
+        "version": "6.1.187-1"
+      }
+    ],
+    "rules": [
+      {
+        "advisory_fingerprint_sha256": "592ecd5f06f38a946b63e8190a15bf18b47290955dd4074dbb705d517376b411",
+        "ignored_matches": 2471,
+        "rule": {
+          "match-type": "exact-indirect-match",
+          "namespace": "",
+          "package": {
+            "language": "",
+            "name": "linux-libc-dev",
+            "type": "deb",
+            "upstream-name": "linux"
+          }
+        }
+      }
+    ],
+    "total": 2471
+  },
+  "image_config_digest": "sha256:ec452cf2a3bb7d80b61751105cf284a43ee8e1715476c3ae76d35a344f59c882",
+  "image_index_digest": "sha256:af69209c3b195d1ac6547f6f7fd5d756682ffc821961ffa7a7010f828192b104",
+  "inventory": {
+    "copied_jdk": {
+      "name": "openjdk",
+      "version": "21.0.12.1+1-LTS"
+    },
+    "debian_packages": 166,
+    "java_archives": 52,
+    "python_packages": 106,
+    "trivy_imported_python_sbom_records": 18
+  },
+  "schema_version": 2,
+  "trivy_findings": {
+    "by_category": {
+      "debian": 3520,
+      "inventory_unresolved_python": 6
+    },
+    "by_severity": {
+      "debian": {
+        "CRITICAL": 3,
+        "HIGH": 269,
+        "LOW": 1113,
+        "MEDIUM": 2130,
+        "UNKNOWN": 5
+      },
+      "inventory_unresolved_python": {
+        "HIGH": 4,
+        "MEDIUM": 2
+      }
+    },
+    "components": [
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "8ea7fa76765355ca8f0351473b980381865d5ae1c67d590903eee13bb65af558",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "apt",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "2.6.1"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "59e3f05eb41f82f48fb256a1e17f2846f642e89b1d23ecd95ebda7793c626c00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "bash",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "5.2.15-2+b13"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "binutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "binutils-common",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "binutils-x86-64-linux-gnu",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "bsdutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "1:2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "a7c55ee8577621f6a0478e1463fa98ef914e6966fb4d1c97ae2c21cca251f0c6",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "bzip2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "1.0.8-5+b1"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "e979b3e1c067bb36605cb4fe90e7496e167ea8028ad38f8b4b72906e689cb2df",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "coreutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 5
+        },
+        "version": "9.1-1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "cpp-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 38,
+        "advisory_fingerprint_sha256": "5ed0f2e7f912381c5532fc18d0616aeaae75c5dfa3a207ba91ce0587bae548ef",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-12064",
+          "CVE-2026-6276",
+          "CVE-2026-8286",
+          "CVE-2026-8458",
+          "CVE-2026-8927"
+        ],
+        "name": "curl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 23,
+          "MEDIUM": 10
+        },
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "e2cc2444babc30e6a88bbc62e04fd96a8609ec7d7c9360bc0bc07b55a7df0719",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "dash",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 2
+        },
+        "version": "0.5.12-2"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "b10783733621cc1d83fd3589c4cf9f50c7183f551fd4b224426408c9ef973091",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "diffutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "1:3.8-4"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "g++-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "gcc-12",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "gcc-12-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "66fd44932c953d413c10a6bb9ed12d1d791052896a0a4060e9936c6523a55416",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "git",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 3
+        },
+        "version": "1:2.39.5-0+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "66fd44932c953d413c10a6bb9ed12d1d791052896a0a4060e9936c6523a55416",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "git-man",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 3
+        },
+        "version": "1:2.39.5-0+deb12u3"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "b71bf0461fcb1b3b5d952ca526edb2e2b3d3326b15aab213312ce0b88695b915",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "gpgv",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 3,
+          "MEDIUM": 2
+        },
+        "version": "2.2.40-1.1+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "e4f42e1f001a2a213083ec09d9c912a83157acdacc1ae8a69b1a062889ea2554",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-41992"
+        ],
+        "name": "gzip",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "MEDIUM": 1
+        },
+        "version": "1.12-1"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "abb4635e904465878c670d33a4b6817e63226babccdf1d34543c3e72b3cdb57e",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-54369"
+        ],
+        "name": "libacl1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "MEDIUM": 1
+        },
+        "version": "2.3.1-3"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "8ea7fa76765355ca8f0351473b980381865d5ae1c67d590903eee13bb65af558",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libapt-pkg6.0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "2.6.1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libasan8",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libatomic1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "bdd067bceeeef947a76badb6a6e0496d268217cd083e804a4c79c75e4b1bc751",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libattr1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "1:2.5.1-4"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libbinutils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libblkid1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "a7c55ee8577621f6a0478e1463fa98ef914e6966fb4d1c97ae2c21cca251f0c6",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libbz2-1.0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "1.0.8-5+b1"
+      },
+      {
+        "advisories": 23,
+        "advisory_fingerprint_sha256": "2294530156cfa1c3dfbc2f6a5899a9bbdb505411acf6f1664e4e1b747ff55752",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libc-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 8,
+          "MEDIUM": 15
+        },
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "advisory_fingerprint_sha256": "2294530156cfa1c3dfbc2f6a5899a9bbdb505411acf6f1664e4e1b747ff55752",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libc-dev-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 8,
+          "MEDIUM": 15
+        },
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "advisory_fingerprint_sha256": "2294530156cfa1c3dfbc2f6a5899a9bbdb505411acf6f1664e4e1b747ff55752",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libc6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 8,
+          "MEDIUM": 15
+        },
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 23,
+        "advisory_fingerprint_sha256": "2294530156cfa1c3dfbc2f6a5899a9bbdb505411acf6f1664e4e1b747ff55752",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libc6-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 8,
+          "MEDIUM": 15
+        },
+        "version": "2.36-9+deb12u14"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libcc1-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libctf-nobfd0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libctf0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 38,
+        "advisory_fingerprint_sha256": "5ed0f2e7f912381c5532fc18d0616aeaae75c5dfa3a207ba91ce0587bae548ef",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-12064",
+          "CVE-2026-6276",
+          "CVE-2026-8286",
+          "CVE-2026-8458",
+          "CVE-2026-8927"
+        ],
+        "name": "libcurl3-gnutls",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 23,
+          "MEDIUM": 10
+        },
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 38,
+        "advisory_fingerprint_sha256": "5ed0f2e7f912381c5532fc18d0616aeaae75c5dfa3a207ba91ce0587bae548ef",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-12064",
+          "CVE-2026-6276",
+          "CVE-2026-8286",
+          "CVE-2026-8458",
+          "CVE-2026-8927"
+        ],
+        "name": "libcurl4",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 23,
+          "MEDIUM": 10
+        },
+        "version": "7.88.1-10+deb12u15"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "c34dc7d2e08e6a2c0a06e90a069d156069ab0ee4a2cd2f7391ce732ab697afd3",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-77214"
+        ],
+        "name": "libexpat1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 3
+        },
+        "version": "2.5.0-1+deb12u4"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgcc-12-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgcc-s1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "17249e7dd7eeda7e14a598d578421de180a8ff699f5d3121a72995bdd8c17521",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgcrypt20",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 2
+        },
+        "version": "1.10.1-3+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "advisory_fingerprint_sha256": "02781967e9358ad8d1a224ad3ed77611d501163a8b85c0c8475c8ef95af3b934",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgnutls30",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 7
+        },
+        "version": "3.7.9-2+deb12u7"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgomp1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 75,
+        "advisory_fingerprint_sha256": "3f4220e1a35cd919f4d5eabd179bb81ea8b18a62efe1e0e078beaccaf56bba00",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgprofng0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 75
+        },
+        "version": "2.40-2"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "98716871c254ff17f37494e263cab9903e1503bc8f7236f4bead480a71634c08",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libgssapi-krb5-2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 4,
+          "MEDIUM": 2
+        },
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libitm1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "98716871c254ff17f37494e263cab9903e1503bc8f7236f4bead480a71634c08",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libk5crypto3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 4,
+          "MEDIUM": 2
+        },
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "98716871c254ff17f37494e263cab9903e1503bc8f7236f4bead480a71634c08",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libkrb5-3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 4,
+          "MEDIUM": 2
+        },
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "98716871c254ff17f37494e263cab9903e1503bc8f7236f4bead480a71634c08",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libkrb5support0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 4,
+          "MEDIUM": 2
+        },
+        "version": "1.20.1-2+deb12u5"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "45e2759dd189a4e9d1729c2f1f0845a81bf347216c4e196b5f3ee64d2cb39712",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2023-2953"
+        ],
+        "name": "libldap-2.5-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 5
+        },
+        "version": "2.5.13+dfsg-5"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "liblsan0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libmount1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "57d1b8a2a3f278397938674d272af3a9e8039646b8ff0c7859bd375ac7d27581",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "libncursesw6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 1,
+          "MEDIUM": 1
+        },
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "d6affcdbca904de3b57436f26c62dfb572ae35f273f44124f7b752c7dbd485b2",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libnghttp2-14",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "1.52.0-1+deb12u3"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "b5295ee5c4bc5fb1572a53ad1bc7798358c9e09ac7761d7e21b25172b7d9f1d4",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libp11-kit0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 2
+        },
+        "version": "0.24.1-2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "45eb52e7939c77127cdacab36f59fa754a95de4771003ad8acceedd6ee940b6c",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libpam-modules",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 2
+        },
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "45eb52e7939c77127cdacab36f59fa754a95de4771003ad8acceedd6ee940b6c",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libpam-modules-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 2
+        },
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "45eb52e7939c77127cdacab36f59fa754a95de4771003ad8acceedd6ee940b6c",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libpam-runtime",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 2
+        },
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "45eb52e7939c77127cdacab36f59fa754a95de4771003ad8acceedd6ee940b6c",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libpam0g",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 2
+        },
+        "version": "1.5.2-6+deb12u2"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "ea16dbaa25a29a5074600c0721fb3f241d0f471b8404fdc21453cb4aa199d274",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-9538"
+        ],
+        "name": "libperl5.36",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 1,
+          "UNKNOWN": 1
+        },
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libquadmath0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "718efc5971ca0fceb68a2f8a9137bee6fe51497706b222decd0e7d33732e87c8",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libsasl2-2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "2.1.28+dfsg-10"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "718efc5971ca0fceb68a2f8a9137bee6fe51497706b222decd0e7d33732e87c8",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libsasl2-modules-db",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "MEDIUM": 1
+        },
+        "version": "2.1.28+dfsg-10"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libsmartcols1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 9,
+        "advisory_fingerprint_sha256": "0919fbaab394350a60cad539268d0177b74a6f0646e81322010181cbbfd00ba6",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2025-7458",
+          "CVE-2026-11822",
+          "CVE-2026-11824"
+        ],
+        "name": "libsqlite3-0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "CRITICAL": 1,
+          "HIGH": 2,
+          "LOW": 3,
+          "MEDIUM": 3
+        },
+        "version": "3.40.1-2+deb12u2"
+      },
+      {
+        "advisories": 7,
+        "advisory_fingerprint_sha256": "ca7d1aeedbfdd9d001d4f41f134a766e3ee8f3e2afe1eeb42b5d6eb7bd7b3adf",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-84782"
+        ],
+        "name": "libssl3",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libstdc++-12-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libstdc++6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "advisory_fingerprint_sha256": "4e0342ab376cc04f5e35659bd962c1a62fd299be3cf0983deaf4ea46b3a0d063",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-16742"
+        ],
+        "name": "libsystemd0",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 5,
+          "MEDIUM": 1
+        },
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "be5dfc1da23b7b83f60723dba8bef76f96f12df9baad9729acd5388b42eb3961",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libtasn1-6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "4.19.0-2+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "57d1b8a2a3f278397938674d272af3a9e8039646b8ff0c7859bd375ac7d27581",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "libtinfo6",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 1,
+          "MEDIUM": 1
+        },
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libtsan2",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "d0d2b2b796d568061922aeb5b9200e8966a419ffa03017522ed782942189fead",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "libubsan1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1,
+          "MEDIUM": 2
+        },
+        "version": "12.2.0-14+deb12u1"
+      },
+      {
+        "advisories": 7,
+        "advisory_fingerprint_sha256": "4e0342ab376cc04f5e35659bd962c1a62fd299be3cf0983deaf4ea46b3a0d063",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-16742"
+        ],
+        "name": "libudev1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 5,
+          "MEDIUM": 1
+        },
+        "version": "252.39-1~deb12u2"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "libuuid1",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 2472,
+        "advisory_fingerprint_sha256": "a9ea7c3d4751c287282ecfdcfb6d34042e11ad93a688d56366fcc15cafb8d9bb",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2013-7445",
+          "CVE-2019-19449",
+          "CVE-2019-19814",
+          "CVE-2021-3847",
+          "CVE-2021-3864",
+          "CVE-2023-52452",
+          "CVE-2023-52586",
+          "CVE-2023-52624",
+          "CVE-2023-52751",
+          "CVE-2023-53218",
+          "CVE-2024-21803",
+          "CVE-2024-26669",
+          "CVE-2024-26836",
+          "CVE-2024-26913",
+          "CVE-2024-26914",
+          "CVE-2024-26944",
+          "CVE-2024-35887",
+          "CVE-2024-38570",
+          "CVE-2024-38630",
+          "CVE-2024-41045",
+          "CVE-2024-41935",
+          "CVE-2024-42118",
+          "CVE-2024-42162",
+          "CVE-2024-44941",
+          "CVE-2024-44942",
+          "CVE-2024-44951",
+          "CVE-2024-46729",
+          "CVE-2024-46811",
+          "CVE-2024-46813",
+          "CVE-2024-47691",
+          "CVE-2024-50029",
+          "CVE-2024-50217",
+          "CVE-2024-50226",
+          "CVE-2024-50282",
+          "CVE-2024-53068",
+          "CVE-2024-53147",
+          "CVE-2024-53168",
+          "CVE-2024-53179",
+          "CVE-2024-53218",
+          "CVE-2024-56538",
+          "CVE-2024-56775",
+          "CVE-2024-57900",
+          "CVE-2024-57982",
+          "CVE-2025-21927",
+          "CVE-2025-21967",
+          "CVE-2025-21969",
+          "CVE-2025-21985",
+          "CVE-2025-22039",
+          "CVE-2025-23133",
+          "CVE-2025-37750",
+          "CVE-2025-37776",
+          "CVE-2025-37777",
+          "CVE-2025-37861",
+          "CVE-2025-37952",
+          "CVE-2025-37957",
+          "CVE-2025-38069",
+          "CVE-2025-38081",
+          "CVE-2025-38182",
+          "CVE-2025-38204",
+          "CVE-2025-38248",
+          "CVE-2025-38369",
+          "CVE-2025-38582",
+          "CVE-2025-38585",
+          "CVE-2025-38595",
+          "CVE-2025-38636",
+          "CVE-2025-38722",
+          "CVE-2025-38734",
+          "CVE-2025-39744",
+          "CVE-2025-39797",
+          "CVE-2025-39810",
+          "CVE-2025-39859",
+          "CVE-2025-39952",
+          "CVE-2025-40025",
+          "CVE-2025-40354",
+          "CVE-2025-68809",
+          "CVE-2025-71068",
+          "CVE-2025-71073",
+          "CVE-2025-71152",
+          "CVE-2026-23171",
+          "CVE-2026-23191",
+          "CVE-2026-23208",
+          "CVE-2026-23226",
+          "CVE-2026-23327",
+          "CVE-2026-23361",
+          "CVE-2026-23447",
+          "CVE-2026-23448",
+          "CVE-2026-31432",
+          "CVE-2026-31493",
+          "CVE-2026-31527",
+          "CVE-2026-31536",
+          "CVE-2026-31568",
+          "CVE-2026-31706",
+          "CVE-2026-31729",
+          "CVE-2026-43049",
+          "CVE-2026-43125",
+          "CVE-2026-43185",
+          "CVE-2026-43198",
+          "CVE-2026-43250",
+          "CVE-2026-43490",
+          "CVE-2026-45893",
+          "CVE-2026-45943",
+          "CVE-2026-45957",
+          "CVE-2026-46054",
+          "CVE-2026-46068",
+          "CVE-2026-46130",
+          "CVE-2026-46181",
+          "CVE-2026-46219",
+          "CVE-2026-46241",
+          "CVE-2026-46293",
+          "CVE-2026-52991",
+          "CVE-2026-53000",
+          "CVE-2026-53091",
+          "CVE-2026-53115",
+          "CVE-2026-53117",
+          "CVE-2026-53118",
+          "CVE-2026-53120",
+          "CVE-2026-53129",
+          "CVE-2026-53143",
+          "CVE-2026-53156",
+          "CVE-2026-53179",
+          "CVE-2026-53262",
+          "CVE-2026-53272",
+          "CVE-2026-53330",
+          "CVE-2026-63962",
+          "CVE-2026-64001",
+          "CVE-2026-64017",
+          "CVE-2026-64026",
+          "CVE-2026-64305",
+          "CVE-2026-64341",
+          "CVE-2026-64348",
+          "CVE-2026-64424",
+          "CVE-2026-64556",
+          "CVE-2026-68236",
+          "CVE-2026-68409",
+          "CVE-2026-68426",
+          "CVE-2026-68470",
+          "CVE-2026-72042",
+          "CVE-2026-72098",
+          "CVE-2026-72130",
+          "CVE-2026-74269",
+          "CVE-2026-74345",
+          "CVE-2026-74752",
+          "CVE-2026-80521",
+          "CVE-2026-80837",
+          "CVE-2026-80841",
+          "CVE-2026-80951",
+          "CVE-2026-81000",
+          "CVE-2026-81003",
+          "CVE-2026-89479",
+          "CVE-2026-89481",
+          "CVE-2026-89487",
+          "CVE-2026-89488",
+          "CVE-2026-89526",
+          "CVE-2026-89530",
+          "CVE-2026-89545",
+          "CVE-2026-89563",
+          "CVE-2026-89564",
+          "CVE-2026-89569",
+          "CVE-2026-89603",
+          "CVE-2026-89607",
+          "CVE-2026-89631",
+          "CVE-2026-89633",
+          "CVE-2026-89638",
+          "CVE-2026-89652",
+          "CVE-2026-89653",
+          "CVE-2026-89656",
+          "CVE-2026-89659",
+          "CVE-2026-89663",
+          "CVE-2026-89669",
+          "CVE-2026-89675",
+          "CVE-2026-89676",
+          "CVE-2026-89708",
+          "CVE-2026-89713",
+          "CVE-2026-89777",
+          "CVE-2026-89811",
+          "CVE-2026-89846",
+          "CVE-2026-89894",
+          "CVE-2026-89932",
+          "CVE-2026-89970",
+          "CVE-2026-89972",
+          "CVE-2026-89980",
+          "CVE-2026-90036",
+          "CVE-2026-90049",
+          "CVE-2026-90111",
+          "CVE-2026-90227",
+          "CVE-2026-90315",
+          "CVE-2026-93288",
+          "CVE-2026-93787",
+          "CVE-2026-93817",
+          "CVE-2026-97417",
+          "CVE-2026-98116",
+          "CVE-2026-98222",
+          "CVE-2026-98260",
+          "CVE-2026-98320",
+          "CVE-2026-98323",
+          "CVE-2026-98364",
+          "CVE-2026-98378"
+        ],
+        "name": "linux-libc-dev",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "CRITICAL": 1,
+          "HIGH": 196,
+          "LOW": 357,
+          "MEDIUM": 1917,
+          "UNKNOWN": 1
+        },
+        "version": "6.1.187-1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "a744dd09ca981ec927ef339042f65a016aeb1c73af18d002f50f37bf6ded888e",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "login",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 3
+        },
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "mount",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "57d1b8a2a3f278397938674d272af3a9e8039646b8ff0c7859bd375ac7d27581",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "ncurses-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 1,
+          "MEDIUM": 1
+        },
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "57d1b8a2a3f278397938674d272af3a9e8039646b8ff0c7859bd375ac7d27581",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2025-69720"
+        ],
+        "name": "ncurses-bin",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 1,
+          "MEDIUM": 1
+        },
+        "version": "6.4-4"
+      },
+      {
+        "advisories": 7,
+        "advisory_fingerprint_sha256": "ca7d1aeedbfdd9d001d4f41f134a766e3ee8f3e2afe1eeb42b5d6eb7bd7b3adf",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-84782"
+        ],
+        "name": "openssl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "3.0.22-1~deb12u1"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "a744dd09ca981ec927ef339042f65a016aeb1c73af18d002f50f37bf6ded888e",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "passwd",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 3
+        },
+        "version": "1:4.13+dfsg1-1+deb12u2"
+      },
+      {
+        "advisories": 6,
+        "advisory_fingerprint_sha256": "caa61b82fcb2ee5172cd553056a7bb471c319af6c248ae0dde0d967f0550cbdd",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "patch",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 6
+        },
+        "version": "2.7.6-7"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "ea16dbaa25a29a5074600c0721fb3f241d0f471b8404fdc21453cb4aa199d274",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-9538"
+        ],
+        "name": "perl",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 1,
+          "UNKNOWN": 1
+        },
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "ea16dbaa25a29a5074600c0721fb3f241d0f471b8404fdc21453cb4aa199d274",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-9538"
+        ],
+        "name": "perl-base",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 1,
+          "UNKNOWN": 1
+        },
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "ea16dbaa25a29a5074600c0721fb3f241d0f471b8404fdc21453cb4aa199d274",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-9538"
+        ],
+        "name": "perl-modules-5.36",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 2,
+          "MEDIUM": 1,
+          "UNKNOWN": 1
+        },
+        "version": "5.36.0-7+deb12u4"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "a4344ab93ecb5e9fbed244f8323654a5d5dba62775da10e03c2311c8145bd197",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "sysvinit-utils",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 1
+        },
+        "version": "3.06-4"
+      },
+      {
+        "advisories": 5,
+        "advisory_fingerprint_sha256": "c2e73a17322a45903b5a9af2c3a089888e4ae1073849ab54950304ecb98adabb",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [],
+        "name": "tar",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "LOW": 2,
+          "MEDIUM": 3
+        },
+        "version": "1.34+dfsg-1.2+deb12u1"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "util-linux",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 11,
+        "advisory_fingerprint_sha256": "82434a79c966bb57ea1a12cbf3f4bed080f1dd16c92d0e5b3b034243229549a0",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2026-53613",
+          "CVE-2026-76642",
+          "CVE-2026-78408",
+          "CVE-2026-78409",
+          "CVE-2026-78410"
+        ],
+        "name": "util-linux-extra",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "HIGH": 5,
+          "LOW": 2,
+          "MEDIUM": 4
+        },
+        "version": "2.38.1-5+deb12u3"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "29c90d259229f0a47131e335081eb9fc7f0a2a3fa98214e19e7fff756c119551",
+        "available_fixes": {},
+        "category": "debian",
+        "disposition": "open; applicability not yet established",
+        "high_critical_ids": [
+          "CVE-2023-45853"
+        ],
+        "name": "zlib1g",
+        "scope": "final-image OS/tooling; runtime applicability unproven",
+        "severities": {
+          "CRITICAL": 1,
+          "MEDIUM": 2
+        },
+        "version": "1:1.2.13.dfsg-1"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "9459a7c5ea9feba5a029239a12869d4b0478b4c33718804074b1e56eed07dcd4",
+        "available_fixes": {
+          "GHSA-6v7p-g79w-8964": "1.2.1"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "GHSA-6v7p-g79w-8964"
+        ],
+        "name": "msgpack",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 1
+        },
+        "version": "1.1.2"
+      },
+      {
+        "advisories": 2,
+        "advisory_fingerprint_sha256": "e78e62143a3fb88aa62df48fd5e1d4818774fcb9d81e7077a9bda7c43eddb29f",
+        "available_fixes": {
+          "CVE-2025-47273": "78.1.1",
+          "CVE-2026-59890": "83.0.0"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "CVE-2025-47273"
+        ],
+        "name": "setuptools",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 1,
+          "MEDIUM": 1
+        },
+        "version": "70.3.0"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "55ace078131ad0838777ad20be49c94f1fbb2fc0b68b8520c200a07bd2e2af22",
+        "available_fixes": {
+          "CVE-2026-97687": "2.8.0",
+          "CVE-2026-97688": "2.8.0",
+          "CVE-2026-97689": "2.8.0"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "CVE-2026-97687",
+          "CVE-2026-97689"
+        ],
+        "name": "urllib3",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 2,
+          "MEDIUM": 1
+        },
+        "version": "2.7.0"
+      }
+    ],
+    "observed_result_types": [
+      "debian",
+      "jar",
+      "python-pkg"
+    ]
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Synthetic Authorization Status API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com"
+    }
+  ],
+  "paths": {
+    "/authorizations/{authorizationId}": {
+      "get": {
+        "operationId": "getAuthorization",
+        "parameters": [
+          {
+            "name": "authorizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic authorization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authorization"
+                },
+                "example": {
+                  "authorizationId": "AUTH-0002",
+                  "memberId": "MBR-0002",
+                  "status": "PENDED",
+                  "serviceUnits": 6.0,
+                  "submittedAt": "2026-02-11"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authorizations": {
+      "post": {
+        "operationId": "createAuthorization",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Authorization"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Synthetic authorization created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Authorization"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listAuthorizations",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "APPROVED",
+                "PENDED",
+                "DENIED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic authorization list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Authorization"
+                  }
+                },
+                "example": [
+                  {
+                    "authorizationId": "AUTH-0001",
+                    "memberId": "MBR-0001",
+                    "status": "APPROVED",
+                    "serviceUnits": 4.0,
+                    "submittedAt": "2026-02-10"
+                  },
+                  {
+                    "authorizationId": "AUTH-0002",
+                    "memberId": "MBR-0002",
+                    "status": "PENDED",
+                    "serviceUnits": 6.0,
+                    "submittedAt": "2026-02-11"
+                  },
+                  {
+                    "authorizationId": "AUTH-0003",
+                    "memberId": "MBR-0003",
+                    "status": "DENIED",
+                    "serviceUnits": 2.0,
+                    "submittedAt": "2026-02-12"
+                  },
+                  {
+                    "authorizationId": "AUTH-0004",
+                    "memberId": "MBR-0004",
+                    "status": "APPROVED",
+                    "serviceUnits": 8.0,
+                    "submittedAt": "2026-02-13"
+                  },
+                  {
+                    "authorizationId": "AUTH-0005",
+                    "memberId": "MBR-0005",
+                    "status": "PENDED",
+                    "serviceUnits": 3.0,
+                    "submittedAt": "2026-02-14"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Authorization": {
+        "type": "object",
+        "required": [
+          "authorizationId",
+          "memberId",
+          "status",
+          "serviceUnits",
+          "submittedAt"
+        ],
+        "properties": {
+          "authorizationId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "memberId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "PENDED",
+              "DENIED"
+            ]
+          },
+          "serviceUnits": {
+            "type": "number",
+            "format": "double"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  }
+}

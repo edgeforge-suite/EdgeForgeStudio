@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 3: Passthrough Router Setup{% endblock %}
+
+{% block content %}
+<div class="card step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 3: Route &amp; Transform</h2>
+      <p class="subtitle">Keep the router flow focused: choose the inbound operation, define downstream targets, map route rules, and capture the flat transforms needed for the current passthrough MVP.</p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Passthrough Scope</span>
+      <div class="step-surface-kicker-title">One inbound op, clear routing</div>
+      <div class="text-muted text-sm">All routing and transform semantics stay on the current route contract.</div>
+    </div>
+  </div>
+
+  {% if not session.raw_spec_content %}
+  <div class="alert alert-warn">
+    Ingest the inbound OpenAPI spec first. This passthrough flow reuses Step 2 for the single upstream contract, then keeps the router-specific authoring separate from the CRUD entity screens.
+  </div>
+  <div class="step-actions">
+    <a href="/upstream" class="btn btn-primary">Go to Upstream Contract →</a>
+    <a href="/upstream" class="btn btn-secondary">Previous</a>
+  </div>
+  {% else %}
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Inbound Operation</h3>
+        <p class="text-muted text-sm">Pick the single inbound REST operation that anchors the constrained router flow.</p>
+      </div>
+      <span class="step-section-chip">Start here</span>
+    </div>
+    <div class="field">
+      <label for="upstream-operation">Selected inbound REST operation <span style="color:var(--danger)">*</span></label>
+      <select id="upstream-operation" onchange="renderUpstreamSummary()">
+        <option value="">— Select one operation —</option>
+        {% for op in upstream_operations %}
+        <option value="{{ op.name }}" {{ 'selected' if session.passthrough_flow.upstream_operation_name == op.name else '' }}>
+          {{ op.name }} — {{ op.method }} {{ op.path }}
+        </option>
+        {% endfor %}
+      </select>
+      <div class="hint">Studio still exports a filtered one-operation upstream spec so the package stays inside the current Engine passthrough contract.</div>
+    </div>
+    <div id="upstream-summary" class="text-muted text-sm"></div>
+  </section>
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Downstream Targets</h3>
+        <p class="text-muted text-sm">Add the downstream systems you may route to and choose one operation per system.</p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addTargetCard()">+ Add Target</button>
+    </div>
+    <div id="downstream-targets" class="step-stack" style="margin-top:16px"></div>
+  </section>
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Routing</h3>
+        <p class="text-muted text-sm">Equality-match routes stay explicit so the default target and route rows are easy to review.</p>
+      </div>
+    </div>
+    <div class="field">
+      <label for="route-field">Route Field <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="route-field" value="{{ session.passthrough_flow.route_field }}" placeholder="e.g. paymentType">
+      <div class="hint">Must be one of the selected inbound request fields. Equality-match rows only in this MVP.</div>
+    </div>
+    <div class="field">
+      <label for="default-target">Default Target <span style="color:var(--danger)">*</span></label>
+      <select id="default-target">
+        <option value="">— Select a default target —</option>
+      </select>
+    </div>
+    <div class="step-section-heading" style="margin-top:8px">
+      <div>
+        <h4 style="margin:0">Route Rows</h4>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addRouteRow()">+ Add Route</button>
+    </div>
+    <div id="route-rows" class="step-stack" style="margin-top:12px"></div>
+  </section>
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Transforms</h3>
+        <p class="text-muted text-sm">Keep transforms flat and intentional: source fields come from the inbound request and target fields come from one of the selected downstream request contracts.</p>
+      </div>
+      <div class="step-heading-actions">
+        {% if mapping_suggestion_badge %}
+        <button
+          type="button"
+          class="ka-suggestion-badge"
+          data-suggestion-drawer-open
+          data-suggestion-drawer-url="{{ mapping_suggestion_badge.drawer_url }}"
+        >
+          {{ mapping_suggestion_badge.label }}
+        </button>
+        {% endif %}
+        <button type="button" class="btn btn-secondary btn-sm" onclick="addTransformRow()">+ Add Transform</button>
+      </div>
+    </div>
+    <div id="transform-rows" class="step-stack" style="margin-top:12px"></div>
+  </section>
+
+  <div id="passthrough-status" class="alert hidden" style="margin-top:16px"></div>
+
+  <div class="step-actions">
+    <button type="button" class="btn btn-primary" onclick="savePassthrough()">Save &amp; Continue →</button>
+    <a href="/upstream" class="btn btn-secondary">Previous</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if session.raw_spec_content %}
+<script>
+const upstreamOperations = {{ upstream_operations | tojson }};
+const existingTargets = {{ downstream_targets | tojson }};
+const existingRoutes = {{ existing_routes | tojson }};
+const existingTransforms = {{ existing_transforms | tojson }};
+
+function selectedUpstream() {
+  const name = document.getElementById('upstream-operation').value;
+  return upstreamOperations.find(op => op.name === name) || null;
+}
+
+function renderUpstreamSummary() {
+  const selected = selectedUpstream();
+  const el = document.getElementById('upstream-summary');
+  if (!selected) {
+    el.innerHTML = '<span class="text-muted text-sm">Select one inbound operation to unlock routing and transform validation.</span>';
+    return;
+  }
+  const fields = selected.request_fields.length
+    ? selected.request_fields.map(field => `<code>${escapeHtml(field)}</code>`).join(', ')
+    : '<em>none</em>';
+  el.innerHTML = `
+    <div><strong>${escapeHtml(selected.method)}</strong> <code>${escapeHtml(selected.path)}</code></div>
+    <div style="margin-top:6px">Inbound request fields: ${fields}</div>
+  `;
+}
+
+function makeSelectOptions(values, selectedValue, placeholder) {
+  const options = [`<option value="">${escapeHtml(placeholder)}</option>`];
+  values.forEach(value => {
+    const selected = value === selectedValue ? 'selected' : '';
+    options.push(`<option value="${escapeHtml(value)}" ${selected}>${escapeHtml(value)}</option>`);
+  });
+  return options.join('');
+}
+
+function currentSystems() {
+  return Array.from(document.querySelectorAll('.target-system-input'))
+    .map(el => el.value.trim())
+    .filter(Boolean);
+}
+
+function refreshTargetOptions() {
+  const systems = currentSystems();
+  document.querySelectorAll('.route-target-select').forEach(select => {
+    const current = select.value;
+    select.innerHTML = makeSelectOptions(systems, current, 'Select target');
+  });
+  const defaultTarget = document.getElementById('default-target');
+  const currentDefault = defaultTarget.value;
+  defaultTarget.innerHTML = makeSelectOptions(systems, currentDefault, '— Select a default target —');
+}
+
+function targetCardTemplate(target = null) {
+  const sourceMode = target?.source_mode || 'text';
+  const operations = target?.operations || [];
+  const opOptions = operations.length
+    ? makeSelectOptions(operations.map(op => op.name), target?.selected_operation_name || '', 'Select target operation')
+    : '<option value="">Load operations first</option>';
+  return `
+    <div class="card passthrough-target-card workflow-surface-card" style="margin:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <strong>Downstream Target</strong>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.passthrough-target-card').remove(); refreshTargetOptions();">Remove</button>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px">
+        <div class="field">
+          <label>Interface Name</label>
+          <input type="text" class="target-name-input" value="${escapeHtml(target?.name || '')}" placeholder="e.g. sct-api">
+        </div>
+        <div class="field">
+          <label>System Name</label>
+          <input type="text" class="target-system-input" value="${escapeHtml(target?.system || '')}" placeholder="e.g. SCT" oninput="refreshTargetOptions()">
+        </div>
+      </div>
+      <div class="field">
+        <label>Contract Source</label>
+        <select class="target-source-mode" onchange="toggleTargetSource(this)">
+          <option value="text" ${sourceMode === 'text' ? 'selected' : ''}>Paste OpenAPI YAML/JSON</option>
+          <option value="url" ${sourceMode === 'url' ? 'selected' : ''}>OpenAPI URL</option>
+        </select>
+      </div>
+      <div class="field target-source-url ${sourceMode === 'url' ? '' : 'hidden'}">
+        <label>Spec URL</label>
+        <input type="url" class="target-spec-url" value="${escapeHtml(target?.spec_url || '')}" placeholder="https://example.com/openapi.json">
+      </div>
+      <div class="field target-source-text ${sourceMode === 'text' ? '' : 'hidden'}">
+        <label>Pasted OpenAPI</label>
+        <textarea class="target-spec-content" rows="8" placeholder="Paste OpenAPI YAML or JSON">${escapeHtml(target?.spec_content || '')}</textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="describeTargetSpec(this)">Load Operations</button>
+        <span class="text-muted text-sm target-describe-status"></span>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Selected Target Operation</label>
+        <select class="target-operation-select">${opOptions}</select>
+        <div class="hint target-operation-fields">
+          ${target?.selected_operation ? `Request fields: ${target.selected_operation.request_fields.map(field => `<code>${escapeHtml(field)}</code>`).join(', ')}` : 'Request fields will appear after you load operations.'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function addTargetCard(target = null) {
+  const container = document.getElementById('downstream-targets');
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = targetCardTemplate(target);
+  container.appendChild(wrapper.firstElementChild);
+  const select = container.lastElementChild.querySelector('.target-operation-select');
+  select.addEventListener('change', () => updateTargetFieldHint(select));
+  refreshTargetOptions();
+}
+
+function toggleTargetSource(select) {
+  const card = select.closest('.passthrough-target-card');
+  card.querySelector('.target-source-url').classList.toggle('hidden', select.value !== 'url');
+  card.querySelector('.target-source-text').classList.toggle('hidden', select.value !== 'text');
+}
+
+function updateTargetFieldHint(select) {
+  const card = select.closest('.passthrough-target-card');
+  const ops = JSON.parse(card.dataset.operations || '[]');
+  const selected = ops.find(op => op.name === select.value);
+  const hint = card.querySelector('.target-operation-fields');
+  if (!selected) {
+    hint.innerHTML = 'Request fields will appear after you load operations.';
+    return;
+  }
+  const fields = selected.request_fields.length
+    ? selected.request_fields.map(field => `<code>${escapeHtml(field)}</code>`).join(', ')
+    : '<em>none</em>';
+  hint.innerHTML = `Request fields: ${fields}`;
+}
+
+async function describeTargetSpec(button) {
+  const card = button.closest('.passthrough-target-card');
+  const sourceMode = card.querySelector('.target-source-mode').value;
+  const specUrl = card.querySelector('.target-spec-url')?.value?.trim() || '';
+  const specContent = card.querySelector('.target-spec-content')?.value || '';
+  const status = card.querySelector('.target-describe-status');
+  status.textContent = 'Loading operations...';
+  const data = await postJSON('/passthrough/describe-spec', {
+    source_mode: sourceMode,
+    spec_url: specUrl,
+    spec_content: specContent,
+  });
+  if (!data.ok) {
+    status.textContent = data.error;
+    return;
+  }
+  if (sourceMode === 'text' && data.normalized_spec_content) {
+    card.querySelector('.target-spec-content').value = data.normalized_spec_content;
+  }
+  card.dataset.operations = JSON.stringify(data.operations);
+  const select = card.querySelector('.target-operation-select');
+  const current = select.value;
+  select.innerHTML = makeSelectOptions(data.operations.map(op => op.name), current, 'Select target operation');
+  updateTargetFieldHint(select);
+  status.textContent = `${data.operations.length} operation(s) loaded`;
+}
+
+function addRouteRow(route = null) {
+  const container = document.getElementById('route-rows');
+  const row = document.createElement('div');
+  row.className = 'mapping-row workflow-surface-detail';
+  row.style.gridTemplateColumns = '1fr 1fr auto';
+  row.innerHTML = `
+    <input type="text" class="route-match" placeholder="match value" value="${escapeHtml(route?.match || '')}">
+    <select class="route-target-select"></select>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+  refreshTargetOptions();
+  if (route?.target) {
+    row.querySelector('.route-target-select').value = route.target;
+  }
+}
+
+function addTransformRow(transform = null) {
+  const container = document.getElementById('transform-rows');
+  const row = document.createElement('div');
+  row.className = 'mapping-row workflow-surface-detail';
+  row.style.gridTemplateColumns = '1fr 1fr 1fr auto';
+  row.innerHTML = `
+    <input type="text" class="transform-source" placeholder="source field" value="${escapeHtml(transform?.source || '')}">
+    <input type="text" class="transform-target" placeholder="target field" value="${escapeHtml(transform?.target || '')}">
+    <input type="text" class="transform-default" placeholder="optional default" value="${escapeHtml(transform?.default || '')}">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function collectTargets() {
+  return Array.from(document.querySelectorAll('.passthrough-target-card')).map(card => ({
+    name: card.querySelector('.target-name-input').value.trim(),
+    system: card.querySelector('.target-system-input').value.trim(),
+    source_mode: card.querySelector('.target-source-mode').value,
+    spec_url: card.querySelector('.target-spec-url')?.value?.trim() || '',
+    spec_content: card.querySelector('.target-spec-content')?.value || '',
+    selected_operation_name: card.querySelector('.target-operation-select').value,
+  })).filter(target => target.name || target.system || target.spec_url || target.spec_content);
+}
+
+function collectRoutes() {
+  return Array.from(document.querySelectorAll('#route-rows .mapping-row')).map(row => ({
+    match: row.querySelector('.route-match').value.trim(),
+    target: row.querySelector('.route-target-select').value,
+  })).filter(route => route.match && route.target);
+}
+
+function collectTransforms() {
+  return Array.from(document.querySelectorAll('#transform-rows .mapping-row')).map(row => ({
+    source: row.querySelector('.transform-source').value.trim(),
+    target: row.querySelector('.transform-target').value.trim(),
+    default: row.querySelector('.transform-default').value.trim() || null,
+  })).filter(transform => transform.source && transform.target);
+}
+
+async function savePassthrough() {
+  const payload = {
+    upstream_operation_name: document.getElementById('upstream-operation').value,
+    downstream_targets: collectTargets(),
+    route_field: document.getElementById('route-field').value.trim(),
+    default_target: document.getElementById('default-target').value,
+    routes: collectRoutes(),
+    transforms: collectTransforms(),
+  };
+  const data = await postJSON('/passthrough/save', payload);
+  if (data.ok) {
+    location.href = '/review';
+    return;
+  }
+  showStatus('passthrough-status', data.error || 'Unable to save passthrough flow.', 'error');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  existingTargets.forEach(addTargetCard);
+  if (!existingTargets.length) addTargetCard();
+  existingRoutes.forEach(addRouteRow);
+  if (!existingRoutes.length) addRouteRow();
+  existingTransforms.forEach(addTransformRow);
+  if (!existingTransforms.length) addTransformRow();
+  renderUpstreamSummary();
+  refreshTargetOptions();
+});
+</script>
+{% endif %}
+{% endblock %}

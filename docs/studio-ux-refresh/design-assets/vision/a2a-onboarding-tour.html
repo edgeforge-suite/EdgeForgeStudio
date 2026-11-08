@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A2a — Studio First-Run Onboarding (proposed)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--pd:#1a3465;--sel:#2563eb;--ink:#10233f;--mut:#5e718f;--line:#dde3ec;
+  --zone-scan:#eaf0f8;--zone-ready:#e8f2f2;--derivedbg:#f1ecfb;--derived:#6d47c9;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:#f4f6f9;color:var(--ink);padding:26px 34px 34px}
+.badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;font-size:11px;font-weight:800;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin:4px 0 18px;font-size:12.5px;max-width:980px}
+.frames{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.frame{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.fhd{padding:9px 13px;border-bottom:1px solid var(--line);background:#fbfcfe;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mut)}
+.stage{position:relative;height:400px;background:#dce8f5;overflow:hidden}
+/* faux studio behind */
+.faux{position:absolute;inset:0;display:flex}
+.frail{width:118px;background:#e4edf7;border-right:1px solid #b0c5d8;padding:10px 0}
+.frail .b{font-size:8.5px;font-weight:800;color:var(--navy);padding:0 10px 8px}
+.frail a{display:block;font-size:8px;color:#5e718f;padding:4px 10px;border-left:2px solid transparent}
+.frail a.on{background:#eef4fe;color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.fmain{flex:1;padding:12px}
+.fcard{background:#fff;border:1px solid #b8ccde;border-radius:8px;padding:10px;margin-bottom:8px}
+.fcard .t{font-size:9.5px;font-weight:800;color:var(--navy)}
+.fcard .l{height:6px;border-radius:3px;background:#edf3fa;margin-top:6px}
+.fcard .l.w60{width:60%}.fcard .l.w80{width:80%}
+.dim{position:absolute;inset:0;background:rgba(16,35,63,.45)}
+/* welcome modal */
+.modal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:300px;background:#fff;border-radius:12px;box-shadow:0 18px 48px rgba(10,20,40,.35);padding:18px}
+.modal .k{font-size:9px;font-weight:800;letter-spacing:1.6px;color:#7d9ac1;margin-bottom:6px}
+.modal h3{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-.2px}
+.modal p{font-size:11px;color:#43566e;margin:8px 0 0}
+.flow{display:flex;gap:5px;align-items:center;margin:12px 0;font-size:9px;font-weight:700}
+.fstep{background:var(--zone-scan);border:1px solid #c8d6e8;border-radius:6px;padding:4px 8px;color:var(--navy)}
+.farr{color:#8a97a8}
+.modal .btns{display:flex;gap:8px;margin-top:12px}
+.bp{font-size:11px;font-weight:700;padding:7px 12px;border-radius:7px;background:var(--pd);color:#fff;flex:1;text-align:center}
+.bs{font-size:11px;font-weight:600;padding:7px 12px;border-radius:7px;border:1px solid var(--line);color:var(--mut);flex:1;text-align:center}
+.modal .esc{font-size:9px;color:#8a97a8;text-align:center;margin-top:8px}
+/* coach-mark */
+.spot{position:absolute;border:2px solid #7db8ff;border-radius:10px;box-shadow:0 0 0 3000px rgba(16,35,63,.45)}
+.coach{position:absolute;width:250px;background:#fff;border-radius:10px;box-shadow:0 14px 40px rgba(10,20,40,.35);padding:13px 15px}
+.coach:before{content:"";position:absolute;width:10px;height:10px;background:#fff;transform:rotate(45deg)}
+.coach.right:before{left:-5px;top:22px}
+.coach.top:before{bottom:-5px;left:26px}
+.coach .n{font-size:9px;font-weight:800;color:var(--sel);margin-bottom:4px}
+.coach h4{font-size:12.5px;font-weight:800;color:var(--navy)}
+.coach p{font-size:10.5px;color:#43566e;margin-top:5px}
+.coach .row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.dots{display:flex;gap:4px}
+.dot{width:6px;height:6px;border-radius:50%;background:#d5dfec}.dot.on{background:var(--sel)}
+.coach .nx{font-size:10.5px;font-weight:700;color:#fff;background:var(--pd);border-radius:6px;padding:4px 11px}
+.coach .sk{font-size:10px;color:#8a97a8}
+.cap{padding:11px 13px;font-size:11px;color:#43566e;border-top:1px solid var(--line)}
+.cap b{color:var(--navy)}
+.princ{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;font-size:11.5px;color:#43566e}
+.princ b{color:var(--navy)}
+</style></head>
+<body>
+<div class="badge">⚠ PROPOSED FIRST-RUN — nothing like this ships today · demo/vision asset</div>
+<h1>A2a · Studio first-run onboarding — 3-beat tour (proposed)</h1>
+<div class="sub">Studio has no onboarding today. Proposal: one welcome moment + two coach-marks — 60 seconds, skippable at every beat, never blocks input, never returns after completion (re-run lives under Help). Storyboard below.</div>
+
+<div class="frames">
+  <!-- BEAT 1 -->
+  <div class="frame">
+    <div class="fhd">Beat 1 · Welcome — first launch only</div>
+    <div class="stage">
+      <div class="faux">
+        <div class="frail"><div class="b">EdgeForge Studio</div><a class="on">1 · Project Setup</a><a>2 · Upstream Contract</a><a>3 · Entity Model</a><a>4 · Data Handoffs</a><a>5 · Downstream</a><a>6 · Rules</a><a>7 · Review</a><a>8 · Export &amp; Build</a></div>
+        <div class="fmain"><div class="fcard"><div class="t">Project Setup</div><div class="l w80"></div><div class="l w60"></div></div><div class="fcard"><div class="l w60"></div><div class="l w80"></div></div></div>
+      </div>
+      <div class="dim"></div>
+      <div class="modal">
+        <div class="k">EDGEFORGE STUDIO</div>
+        <h3>Author governed apps from your contracts</h3>
+        <div class="flow"><span class="fstep">AUTHOR</span><span class="farr">→</span><span class="fstep">GENERATE</span><span class="farr">→</span><span class="fstep">PROVE</span></div>
+        <p>You author and review every contract here; the Engine generates a standalone Spring Boot app from what you approve — nothing is guessed.</p>
+        <div class="btns"><span class="bp">Take the 60-sec tour</span><span class="bs">Skip</span></div>
+        <div class="esc">Esc closes · re-run any time from Help</div>
+      </div>
+    </div>
+    <div class="cap"><b>Calm entry:</b> one card, two choices. Skip goes straight to Project Setup — no multi-screen gauntlet, no forced tour.</div>
+  </div>
+
+  <!-- BEAT 2 -->
+  <div class="frame">
+    <div class="fhd">Beat 2 · The wizard rail — where am I</div>
+    <div class="stage">
+      <div class="faux">
+        <div class="frail"><div class="b">EdgeForge Studio</div><a class="on">1 · Project Setup</a><a>2 · Upstream Contract</a><a>3 · Entity Model</a><a>4 · Data Handoffs</a><a>5 · Downstream</a><a>6 · Rules</a><a>7 · Review</a><a>8 · Export &amp; Build</a></div>
+        <div class="fmain"><div class="fcard"><div class="t">Project Setup</div><div class="l w80"></div><div class="l w60"></div></div><div class="fcard"><div class="l w60"></div><div class="l w80"></div></div></div>
+      </div>
+      <div class="spot" style="left:6px;top:8px;width:126px;height:250px"></div>
+      <div class="coach right" style="left:150px;top:60px">
+        <div class="n">2 OF 4</div>
+        <h4>Eight steps, one project</h4>
+        <p>Ingest upstream contracts, model entities, author downstream obligations, then review and export. The rail always shows where you are — and what still needs attention.</p>
+        <div class="row"><div class="dots"><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><span class="sk">Skip tour</span><span class="nx">Next</span></div>
+      </div>
+    </div>
+    <div class="cap"><b>Coach-mark, not modal:</b> the page stays visible and clickable behind the spotlight; clicking anywhere outside advances or dismisses.</div>
+  </div>
+
+  <!-- BEAT 3 -->
+  <div class="frame">
+    <div class="fhd">Beat 3 · Two speeds + provenance — how to work</div>
+    <div class="stage">
+      <div class="faux">
+        <div class="frail"><div class="b">EdgeForge Studio</div><a>1 · Project Setup</a><a>2 · Upstream Contract</a><a>3 · Entity Model</a><a>4 · Data Handoffs</a><a class="on">5 · Downstream</a><a>6 · Rules</a><a>7 · Review</a><a>8 · Export &amp; Build</a></div>
+        <div class="fmain">
+          <div class="fcard" style="background:var(--zone-scan)"><div class="t">Board — scan every contract</div><div class="l w80" style="background:#fff"></div><div class="l w60" style="background:#fff"></div></div>
+          <div class="fcard"><div class="t">Editor — one item, focused</div><div class="l w60"></div><div class="l w80" style="background:var(--derivedbg)"></div></div>
+        </div>
+      </div>
+      <div class="spot" style="left:132px;top:8px;right:8px;height:250px"></div>
+      <div class="coach top" style="left:150px;top:232px">
+        <div class="n">4 OF 4</div>
+        <h4>Scan the board · edit one at a time</h4>
+        <p>Boards keep every item scannable; the editor focuses one. Anything Studio pre-fills is chip-marked <b style="color:var(--derived)">DERIVED</b> and never applied without you — provenance on every field.</p>
+        <div class="row"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot on"></span></div><span class="nx">Got it — start authoring</span></div>
+      </div>
+    </div>
+    <div class="cap"><b>Ends where work begins:</b> the last beat lands on the surface the user will actually use, then never reappears.</div>
+  </div>
+</div>
+
+<div class="princ"><b>Interaction principles:</b> skippable at every beat (Skip · Esc · click-outside) · never blocks input or steals focus traps beyond the active mark · state persists (`onboarding_done`, a local/session-scoped Studio preference — no profile/tenant/RBAC model) so it shows once · re-run from Help ▸ "Show the tour" · beats 2–4 reuse one coach-mark component (spotlight + card + dots) — cheap to build, no library. <b>Beat count intentionally ≤4.</b> (Beat 1 = welcome, 2 = rail, 3 = two-speed + provenance, with the 4-dot progress including the welcome.)</div>
+</body></html>

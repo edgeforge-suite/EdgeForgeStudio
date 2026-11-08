@@ -1,0 +1,197 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Synthetic Account Servicing API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com"
+    }
+  ],
+  "paths": {
+    "/accounts/{accountId}": {
+      "get": {
+        "operationId": "getAccount",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                },
+                "example": {
+                  "accountId": "ACCT-0002",
+                  "customerId": "CUST-0002",
+                  "status": "FROZEN",
+                  "balance": 875.5,
+                  "currencyCode": "USD",
+                  "openedAt": "2026-01-16"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "post": {
+        "operationId": "createAccount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Synthetic account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listAccounts",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "CLOSED",
+                "FROZEN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic account list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                },
+                "example": [
+                  {
+                    "accountId": "ACCT-0001",
+                    "customerId": "CUST-0001",
+                    "status": "OPEN",
+                    "balance": 1250.0,
+                    "currencyCode": "USD",
+                    "openedAt": "2026-01-15"
+                  },
+                  {
+                    "accountId": "ACCT-0002",
+                    "customerId": "CUST-0002",
+                    "status": "FROZEN",
+                    "balance": 875.5,
+                    "currencyCode": "USD",
+                    "openedAt": "2026-01-16"
+                  },
+                  {
+                    "accountId": "ACCT-0003",
+                    "customerId": "CUST-0003",
+                    "status": "CLOSED",
+                    "balance": 0.0,
+                    "currencyCode": "EUR",
+                    "openedAt": "2026-01-17"
+                  },
+                  {
+                    "accountId": "ACCT-0004",
+                    "customerId": "CUST-0004",
+                    "status": "OPEN",
+                    "balance": 3200.75,
+                    "currencyCode": "GBP",
+                    "openedAt": "2026-01-18"
+                  },
+                  {
+                    "accountId": "ACCT-0005",
+                    "customerId": "CUST-0005",
+                    "status": "OPEN",
+                    "balance": 640.25,
+                    "currencyCode": "USD",
+                    "openedAt": "2026-01-19"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Account": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "customerId",
+          "status",
+          "balance",
+          "openedAt"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "customerId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "FROZEN"
+            ]
+          },
+          "balance": {
+            "type": "number",
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string",
+            "maxLength": 3,
+            "format": "iso-4217"
+          },
+          "openedAt": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  }
+}

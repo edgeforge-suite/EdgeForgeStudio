@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeForge Studio Mockup - Contract Board</title>
+  <style>
+    :root {
+      --bg: #dce8f5;
+      --surface: #fff;
+      --surface-muted: #edf3fa;
+      --surface-strong: #dce8f5;
+      --border: #b8ccde;
+      --border-strong: #8eaac6;
+      --primary: #2563eb;
+      --primary-dark: #1a3465;
+      --primary-soft: #c7dcf5;
+      --text: #10233f;
+      --muted: #5e718f;
+      --success: #16814a;
+      --success-soft: #ecfdf3;
+      --warn: #b7791f;
+      --warn-soft: #fff7e8;
+      --danger: #c0392b;
+      --danger-soft: #fff1ef;
+      --shadow-sm: 0 8px 18px rgba(16, 35, 63, .08);
+      --shadow-md: 0 18px 40px rgba(16, 35, 63, .14);
+      --radius: 14px;
+      --family-file: #16814a;
+      --family-csv: #0f766e;
+      --family-xml: #9a6a00;
+      --family-soap: #1a3465;
+      --family-rest: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #dce8f5 0%, #f8fbff 62%, #e8f1fa 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: #e4edf7;
+      border-right: 1px solid var(--border);
+      padding: 26px 20px;
+    }
+    .brand { font-weight: 800; font-size: 19px; color: var(--primary-dark); margin-bottom: 26px; }
+    .step { padding: 10px 12px; border-radius: 12px; color: var(--muted); margin: 3px 0; }
+    .step.active { background: var(--primary-soft); color: var(--primary-dark); font-weight: 700; }
+    main { padding: 30px; }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .summary {
+      padding: 15px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: #fff;
+    }
+    .summary strong { display: block; font-size: 26px; }
+    .summary span { color: var(--muted); text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(360px, .9fr);
+      gap: 18px;
+    }
+    .board-header, .editor-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .filter.active { background: var(--primary-dark); color: #fff; }
+    .board { padding: 12px; display: grid; gap: 10px; }
+    .contract-row {
+      display: grid;
+      grid-template-columns: 110px minmax(180px, 1.2fr) minmax(130px, .8fr) minmax(130px, .8fr) 118px 96px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fff;
+      border-left-width: 6px;
+    }
+    .contract-row.file { border-left-color: var(--family-file); }
+    .contract-row.csv { border-left-color: var(--family-csv); }
+    .contract-row.xml { border-left-color: var(--family-xml); }
+    .contract-row.soap { border-left-color: var(--family-soap); }
+    .type {
+      display: inline-flex;
+      width: max-content;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: #fff;
+    }
+    .type.file { background: var(--family-file); }
+    .type.csv { background: var(--family-csv); }
+    .type.xml { background: var(--family-xml); }
+    .type.soap { background: var(--family-soap); }
+    .name { font-weight: 800; }
+    .meta { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--primary-dark);
+    }
+    .ready { background: var(--success-soft); color: var(--success); border-color: #bbf7d0; }
+    .btn {
+      border: 1px solid var(--primary-dark);
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .btn.secondary { background: #fff; color: var(--primary-dark); }
+    .editor { min-height: 680px; }
+    .editor-body { padding: 18px 20px; display: grid; gap: 16px; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: grid; gap: 6px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    .section {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-muted);
+      padding: 14px;
+    }
+    .section h3 { margin: 0 0 10px; font-size: 15px; }
+    .map-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .note {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--warn-soft);
+      border: 1px solid #fde68a;
+      color: #7a4e00;
+      font-size: 13px;
+    }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .workspace { grid-template-columns: 1fr; }
+      .summary-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .contract-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">EdgeForge Studio</div>
+      <div class="step">1 Project Setup</div>
+      <div class="step">2 Upstream Contract</div>
+      <div class="step">3 Entity Model</div>
+      <div class="step">4 Data Handoffs</div>
+      <div class="step active">5 Downstream Interfaces</div>
+      <div class="step">6 Rules &amp; Mappings</div>
+      <div class="step">7 Review</div>
+      <div class="step">8 Export &amp; Build</div>
+    </aside>
+    <main>
+      <div class="hero">
+        <div>
+          <h1>Step 5: Downstream Contract Board</h1>
+          <p>Review every outbound contract in one compact board. Edit one contract at a time without scrolling through the whole package.</p>
+        </div>
+        <button class="btn">+ Add Contract</button>
+      </div>
+
+      <div class="summary-strip">
+        <div class="summary"><strong>4</strong><span>Contracts</span></div>
+        <div class="summary"><strong>4</strong><span>Ready</span></div>
+        <div class="summary"><strong>3</strong><span>Mapped Entities</span></div>
+        <div class="summary"><strong>0</strong><span>Export Blockers</span></div>
+      </div>
+
+      <div class="workspace">
+        <section class="card">
+          <div class="board-header">
+            <div>
+              <h2 style="margin:0;font-size:18px">Loaded downstream interfaces</h2>
+              <p style="font-size:13px">Readiness, mapping coverage, and artifact paths live in the row.</p>
+            </div>
+            <div class="filters">
+              <span class="filter active">All</span>
+              <span class="filter">File</span>
+              <span class="filter">XML/XSD</span>
+              <span class="filter">SOAP</span>
+            </div>
+          </div>
+          <div class="board">
+            <div class="contract-row file">
+              <span class="type file">FIXED</span>
+              <div><span class="name">Account Fixed-Width Archive</span><span class="meta">downstream/account-fixed-layout.yaml</span></div>
+              <span class="chip">Account</span>
+              <span class="chip">3 mappings</span>
+              <span class="chip ready">Ready</span>
+              <button class="btn secondary">Edit</button>
+            </div>
+            <div class="contract-row csv">
+              <span class="type csv">CSV</span>
+              <div><span class="name">Account CSV Reconciliation</span><span class="meta">delimiter |, header true</span></div>
+              <span class="chip">Account</span>
+              <span class="chip">3 mappings</span>
+              <span class="chip ready">Ready</span>
+              <button class="btn secondary">Edit</button>
+            </div>
+            <div class="contract-row xml">
+              <span class="type xml">XML/XSD</span>
+              <div><span class="name">Account XML Document Outbound</span><span class="meta">root AccountMessage</span></div>
+              <span class="chip">Account</span>
+              <span class="chip">3 paths</span>
+              <span class="chip ready">Ready</span>
+              <button class="btn secondary">Edit</button>
+            </div>
+            <div class="contract-row soap">
+              <span class="type soap">SOAP</span>
+              <div><span class="name">Customer Sync Client</span><span class="meta">operation syncCustomer</span></div>
+              <span class="chip">Customer</span>
+              <span class="chip">invoke_by_id</span>
+              <span class="chip ready">Ready</span>
+              <button class="btn secondary">Edit</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card editor">
+          <div class="editor-header">
+            <div>
+              <h2 style="margin:0;font-size:18px">Edit: Account CSV Reconciliation</h2>
+              <p style="font-size:13px">Focused editor for one selected contract.</p>
+            </div>
+            <span class="type csv">CSV</span>
+          </div>
+          <div class="editor-body">
+            <div class="field-grid">
+              <label>Contract name<input value="Account CSV Reconciliation"></label>
+              <label>Mapped entity<select><option>Account</option></select></label>
+              <label>Delimiter<input value="|"></label>
+              <label>Header row<select><option>true</option><option>false</option></select></label>
+            </div>
+            <div class="section">
+              <h3>Deterministic seeds from layout</h3>
+              <p style="font-size:13px">These rows come exactly from the saved CSV spec. Nothing is applied silently.</p>
+              <div class="map-row"><input value="accountId"><input value="Account.accountId"><button class="btn secondary">Keep</button></div>
+              <div class="map-row"><input value="accountStatus"><input value="Account.status"><button class="btn secondary">Keep</button></div>
+              <div class="map-row"><input value="balanceMinor"><input value="Account.balanceMinor"><button class="btn secondary">Keep</button></div>
+            </div>
+            <div class="section">
+              <h3>Package artifact</h3>
+              <textarea>columns:
+  - accountId
+  - accountStatus
+  - balanceMinor
+delimiter: "|"
+has_header_row: true</textarea>
+            </div>
+            <div class="note">This editor changes the same manifest/package fields Studio exports today. It does not change Engine behavior.</div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button class="btn secondary">Cancel</button>
+              <button class="btn">Save Contract</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

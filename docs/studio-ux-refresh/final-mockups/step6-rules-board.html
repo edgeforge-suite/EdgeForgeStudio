@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 6 — Rules Board + Field-Grouped Editor (final)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#5e718f;--mut2:#5e718f;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#0f6a32;--okbg:#e7f5ec;--warn:#96450a;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--ka:#0d7490;--kabg:#e3f3f7;--ent:#475569;
+  /* locked §1.5 zones */
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;--muted-on-tint:#546580;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a .cnt{float:right;font-size:11px;color:var(--mut2)}.nav a .cnt b{color:var(--warn)}
+.main{flex:1;padding:22px 26px;min-width:0;max-width:1120px}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--muted-on-tint);margin-top:2px;font-size:12.5px}
+.viewcap{margin:26px 0 10px;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted-on-tint);display:flex;align-items:center;gap:10px}
+.viewcap:after{content:"";flex:1;height:1px;background:var(--line)}
+/* stat strip (shipped pattern) */
+.statstrip{display:flex;gap:18px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin:14px 0 10px;font-size:12px;color:var(--muted-on-tint)}
+.statstrip.zone-attn{background:var(--zone-attn);border-color:var(--zone-attn-line)}
+.statstrip strong{font-size:15px;color:var(--navy);margin-right:4px}
+.statstrip .attn strong{color:var(--warn)}
+/* filter chips (shipped pattern) */
+.filters{display:flex;gap:6px;margin:0 0 10px;flex-wrap:wrap}
+.chip{font-size:11px;font-weight:700;padding:4px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;color:#43566e;cursor:pointer}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip .c{font-weight:600;opacity:.75;margin-left:3px}
+/* board (shipped .uxr-board pattern, zone-scan) */
+.board{background:var(--zone-scan);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.grp{padding:8px 14px 5px;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted-on-tint)}
+.grp.attn{background:var(--zone-attn);color:#8a5a12;border-top:1px solid var(--zone-attn-line);border-bottom:1px solid var(--zone-attn-line)}
+.row{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-top:1px solid #dbe4ef;position:relative;background:rgba(255,255,255,.45)}
+.row.attnrow{background:var(--zone-attn)}
+.row.sel{background:var(--selbg)}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.etile{width:42px;height:30px;border-radius:6px;background:var(--ent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;flex-shrink:0;margin-top:2px}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:700;font-size:13px;color:var(--ink)}
+.rmeta{font-size:11px;color:var(--muted-on-tint);margin-top:1px}
+.rtags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;align-items:center}
+.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:#eef1f6;color:#5a6b7e}
+.cap{font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 7px;border-radius:5px;background:#e9eefb;color:#3b4da6}
+.pv{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.pv.spec{background:var(--okbg);color:var(--ok)}.pv.man{background:#eef1f6;color:#4f6075}.pv.ka{background:var(--kabg);color:var(--ka)}
+.adv{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;border:1px dashed var(--zone-attn-line);background:var(--zone-attn);color:#8a5a12}
+.blkline{font-size:11px;color:var(--danger);font-weight:600;margin-top:5px}
+.warnline{font-size:11px;color:var(--warn);font-weight:600;margin-top:5px}
+.rright{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}
+.pill{font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:16px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:#96450a}.pill.rev{background:var(--warnbg);color:#96450a}
+.editbtn{font-size:11.5px;font-weight:600;padding:5px 14px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer}
+/* focus editor (shipped data-uxr-focus-editor pattern; zone-editor elevation) */
+.editor{background:var(--zone-editor);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px rgba(16,35,63,.09);overflow:hidden}
+.ehd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #e8edf4}
+.ehd .etile{margin:0}
+.ehd h2{font-size:15px;font-weight:800;color:var(--navy);flex:1}
+.ehd .close{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:7px;padding:4px 12px;background:#fff}
+.banner{display:flex;gap:9px;align-items:flex-start;margin:12px 16px 0;padding:9px 12px;border-radius:9px;font-size:12px;background:var(--zone-attn);border:1px solid var(--zone-attn-line);color:#7a531a}
+.banner b{color:#8a5a12}
+.badges{display:flex;gap:7px;margin:9px 16px 0;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;border:1px solid var(--zone-attn-line);background:var(--zone-attn);color:#8a5a12;border-radius:14px;padding:3px 10px;cursor:pointer}
+.badge .n{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--danger);color:#fff;font-size:9px;font-weight:800}
+/* field-grouped cards */
+.fgrid{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.fcard{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.fcard.open{border-color:#b9cdf2;box-shadow:0 2px 10px rgba(37,99,235,.07)}
+.fhd{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fbfcfe;border-bottom:1px solid #eef2f8}
+.fhd .fname{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:700;color:var(--navy);flex:1}
+.fhd .fmeta{font-size:10.5px;color:var(--mut2)}
+.rrow{display:flex;align-items:center;gap:9px;padding:7px 12px;border-top:1px solid #f0f3f8;font-size:12px}
+.rtype{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:700;color:#3b4da6;background:#e9eefb;border-radius:5px;padding:2px 7px;white-space:nowrap}
+.rdesc{flex:1;min-width:0;color:#33465e}
+.rdesc code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#eef1f6;border-radius:4px;padding:0 4px}
+.xok{font-size:10px;font-weight:700;color:var(--ok);background:var(--okbg);border-radius:5px;padding:2px 7px;white-space:nowrap}
+.xmiss{font-size:10px;font-weight:700;color:#96450a;background:var(--warnbg);border-radius:5px;padding:2px 7px;white-space:nowrap}
+.addpre{font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 9px;background:#fff;white-space:nowrap;cursor:pointer}
+.editrow{display:grid;grid-template-columns:130px 1fr auto;gap:8px;align-items:center;padding:8px 12px;border-top:1px solid #f0f3f8;background:#fdfefe}
+.editrow label{font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.inp{border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:12px;font-family:ui-monospace,Menlo,monospace;background:#fff;color:var(--ink)}
+/* advisory strip — dashed, read-only, never blocking */
+.advisory{margin:2px 16px 0;border:1.5px dashed var(--zone-attn-line);background:var(--zone-attn);border-radius:10px;padding:9px 12px;font-size:11.5px;color:#7a531a}
+.advisory b{color:#8a5a12}
+.advisory .ro{font-size:9px;font-weight:800;letter-spacing:.5px;background:rgba(255,255,255,.7);border-radius:4px;padding:1px 6px;margin-left:6px;color:#8a5a12}
+/* legacy notes — one quiet section */
+.legacy{margin:10px 16px 0}
+.legacy summary{font-size:11.5px;color:var(--mut);cursor:pointer;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe}
+/* conflict recovery annotation (hidden-until-409 shipped panel) */
+.conflict{margin:10px 16px 0;border:1.5px dashed #d3b9b4;background:#fdf6f5;border-radius:10px;padding:8px 12px;font-size:11px;color:#8c5049}
+.efoot{display:flex;align-items:center;gap:9px;padding:12px 16px;border-top:1px solid #e8edf4;margin-top:12px}
+.btn{font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn.pri{background:#1a3465;color:#fff;border-color:#1a3465;font-weight:700}
+.efoot .note{font-size:10.5px;color:var(--mut2);margin-left:auto;max-width:420px;text-align:right}
+.stepbar{display:flex;gap:9px;justify-content:flex-end;margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line)}
+/* legend + footnotes */
+.legend{display:flex;gap:12px;align-items:center;margin:16px 0 0;font-size:10.5px;color:var(--muted-on-tint);flex-wrap:wrap}
+.lg{display:inline-flex;align-items:center;gap:5px}
+.sw{width:14px;height:11px;border-radius:3px;border:1px solid rgba(16,35,63,.14);display:inline-block}
+.foot{margin-top:14px;font-size:11px;color:var(--muted-on-tint);max-width:1120px}
+.foot b{color:var(--navy)}
+</style></head>
+<body>
+<div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract <span class="cnt">5</span></a>
+    <a href="#">3 · Entity Model <span class="cnt">4</span></a>
+    <a href="#">4 · Data Handoffs <span class="cnt">3</span></a>
+    <a href="#">5 · Downstream <span class="cnt">5</span></a>
+    <a href="#" class="on">6 · Rules &amp; Mappings <span class="cnt">4 · <b>1</b></span></a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 6 · Rules &amp; Mappings</div>
+  <div class="sub">One board row per <b>entity rule-set</b> (locked L9) — rules stay grouped by the entity they govern. Same readiness vocabulary as every other step; the rail reads the same view-model. <b>Matrix Lite is out (locked L10).</b></div>
+
+  <!-- ============================= VIEW 1 · BOARD ============================= -->
+  <div class="viewcap">View 1 · Rule-set board — <span style="text-transform:none;letter-spacing:0">item kind <code style="font-family:ui-monospace,Menlo,monospace">rule_set</code> (arrives with PR-19)</span></div>
+
+  <div class="statstrip zone-attn" data-uxr-stat-strip>
+    <span><strong data-uxr-stat="total">4</strong> entity rule-sets</span>
+    <span><strong data-uxr-stat="ready">2</strong> ready</span>
+    <span class="attn"><strong data-uxr-stat="attention">1</strong> needs action</span>
+    <span><strong data-uxr-stat="review">1</strong> needs review</span>
+    <span style="margin-left:auto;font-size:11px">28 rules · 21 of 30 fields covered</span>
+  </div>
+
+  <div class="filters" role="group" aria-label="Filter rule-sets">
+    <button class="chip on" data-uxr-filter="state:all" aria-pressed="true">All<span class="c">4</span></button>
+    <button class="chip" data-uxr-filter="state:attention" aria-pressed="false">Needs action<span class="c">1</span></button>
+    <button class="chip" data-uxr-filter="state:review" aria-pressed="false">Needs review<span class="c">1</span></button>
+    <button class="chip" data-uxr-filter="state:ready" aria-pressed="false">Ready<span class="c">2</span></button>
+  </div>
+
+  <div class="board" data-uxr-board="rules" role="region" aria-label="Entity rule-set board">
+    <div class="grp attn">▾ Needs action — blocked first, always visible</div>
+    <div class="row attnrow sel" data-uxr-row-name="Account" data-uxr-row-state="needs_action" data-uxr-row-kind="rule_set">
+      <span class="etile" aria-label="Account entity rule-set">ACCT</span>
+      <div class="rmain">
+        <div class="rname">Account</div>
+        <div class="rmeta">8 rules · rule file <code>rules/account-business-rules.yaml</code></div>
+        <div class="rtags">
+          <span class="tag">6/7 fields</span>
+          <span class="pv spec">SPEC-DERIVED 4</span><span class="pv man">MANUAL 3</span><span class="pv ka">KA-APPLIED 1</span>
+          <span class="adv">1 advisory</span>
+          <span class="cap">MANIFEST REF</span>
+        </div>
+        <div class="blkline">⚠ cross-entity-field-check on ledgerRef references LedgerEntry — add a cross-entity-exists prerequisite first</div>
+      </div>
+      <div class="rright"><span class="pill attn">Needs prerequisite</span><button type="button" class="editbtn" data-uxr-edit-target="Account" data-uxr-focus-url="/rules?focus=Account">Edit</button></div>
+    </div>
+
+    <div class="grp">▾ Needs review</div>
+    <div class="row" data-uxr-row-name="Transaction" data-uxr-row-state="warning" data-uxr-row-kind="rule_set">
+      <span class="etile" aria-label="Transaction entity rule-set">TXN</span>
+      <div class="rmain">
+        <div class="rname">Transaction</div>
+        <div class="rmeta">9 rules · rule file <code>rules/transaction-business-rules.yaml</code></div>
+        <div class="rtags">
+          <span class="tag">7/9 fields</span>
+          <span class="pv spec">SPEC-DERIVED 5</span><span class="pv man">MANUAL 4</span>
+          <span class="adv">2 advisories</span>
+          <span class="cap">MANIFEST REF</span>
+        </div>
+        <div class="warnline">△ 2 advisory conflicts with the OpenAPI constraints — review, never blocks export</div>
+      </div>
+      <div class="rright"><span class="pill rev">Review advisories</span><button type="button" class="editbtn" data-uxr-edit-target="Transaction" data-uxr-focus-url="/rules?focus=Transaction">Edit</button></div>
+    </div>
+
+    <div class="grp">▾ Ready</div>
+    <div class="row" data-uxr-row-name="Customer" data-uxr-row-state="ready" data-uxr-row-kind="rule_set">
+      <span class="etile" aria-label="Customer entity rule-set">CUST</span>
+      <div class="rmain">
+        <div class="rname">Customer</div>
+        <div class="rmeta">7 rules · rule file <code>rules/customer-business-rules.yaml</code></div>
+        <div class="rtags">
+          <span class="tag">5/8 fields</span>
+          <span class="pv spec">SPEC-DERIVED 3</span><span class="pv man">MANUAL 3</span><span class="pv ka">KA-APPLIED 1</span>
+          <span class="cap">MANIFEST REF</span>
+        </div>
+      </div>
+      <div class="rright"><span class="pill ok">Ready</span><button type="button" class="editbtn" data-uxr-edit-target="Customer" data-uxr-focus-url="/rules?focus=Customer">Edit</button></div>
+    </div>
+    <div class="row" data-uxr-row-name="LedgerEntry" data-uxr-row-state="ready" data-uxr-row-kind="rule_set">
+      <span class="etile" aria-label="LedgerEntry entity rule-set">LDG</span>
+      <div class="rmain">
+        <div class="rname">LedgerEntry</div>
+        <div class="rmeta">4 rules · rule file <code>rules/ledgerentry-business-rules.yaml</code></div>
+        <div class="rtags">
+          <span class="tag">3/6 fields</span>
+          <span class="pv spec">SPEC-DERIVED 2</span><span class="pv man">MANUAL 2</span>
+          <span class="cap">MANIFEST REF</span>
+        </div>
+      </div>
+      <div class="rright"><span class="pill ok">Ready</span><button type="button" class="editbtn" data-uxr-edit-target="LedgerEntry" data-uxr-focus-url="/rules?focus=LedgerEntry">Edit</button></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="lg"><span class="sw" style="background:var(--zone-scan)"></span> board · scan</span>
+    <span class="lg"><span class="sw" style="background:var(--zone-editor)"></span> editor · act here</span>
+    <span class="lg"><span class="sw" style="background:var(--zone-attn);border-color:var(--zone-attn-line)"></span> needs action</span>
+    <span class="lg"><span class="sw" style="background:var(--zone-derived);border-color:var(--zone-derived-line)"></span> derived / seeded</span>
+    <span style="margin-left:auto">state is never colour alone — every signal carries its label (§1.5)</span>
+  </div>
+
+  <!-- ============================= VIEW 2 · FOCUS EDITOR ============================= -->
+  <div class="viewcap">View 2 · Focused rule-set editor — field-grouped cards · <span style="text-transform:none;letter-spacing:0"><code style="font-family:ui-monospace,Menlo,monospace">/rules?focus=Account</code></span></div>
+
+  <section class="editor" data-uxr-focus-editor="Account" data-source-of-truth-version="rev-42">
+    <div class="ehd">
+      <span class="etile" aria-label="Account entity rule-set">ACCT</span>
+      <h2>Account — entity rule-set</h2>
+      <span style="font-size:10.5px;color:var(--mut2)">8 rules · 6/7 fields</span>
+      <button class="close">Close</button>
+    </div>
+
+    <div class="banner" data-uxr-editor-banner data-state="needs_action">⚠ <span><b>1 blocker:</b> the cross-entity rule on <b>ledgerRef</b> references LedgerEntry without a <code>cross-entity-exists</code> prerequisite. Add the prerequisite, then save.</span></div>
+
+    <div class="badges" data-uxr-tab-badges aria-live="polite">
+      <button type="button" class="badge" data-section-ref="cross-entity" data-field-ref="ledgerRef"><span class="n">1</span> Cross-entity · ledgerRef ↓</button>
+    </div>
+
+    <div class="fgrid">
+      <!-- field card: accountId -->
+      <div class="fcard">
+        <div class="fhd"><span class="fname">accountId</span><span class="fmeta">2 rules</span></div>
+        <div class="rrow"><span class="rtype">not-null</span><span class="rdesc">must be present</span><span class="pv spec">SPEC-DERIVED</span></div>
+        <div class="rrow"><span class="rtype">max-length</span><span class="rdesc">at most <code>36</code></span><span class="pv spec">SPEC-DERIVED</span></div>
+      </div>
+
+      <!-- field card: status — open/editable -->
+      <div class="fcard open">
+        <div class="fhd"><span class="fname">status</span><span class="fmeta">2 rules · editing</span></div>
+        <div class="editrow">
+          <label>allowed-values</label>
+          <input class="inp" value="A, C, F" aria-label="Allowed values for status">
+          <span class="pv man">MANUAL</span>
+        </div>
+        <div class="editrow">
+          <label>default</label>
+          <input class="inp" value="A" style="max-width:120px" aria-label="Default value for status">
+          <span class="pv spec">SPEC-DERIVED</span>
+        </div>
+      </div>
+
+      <!-- field card: currency -->
+      <div class="fcard">
+        <div class="fhd"><span class="fname">currency</span><span class="fmeta">1 rule</span></div>
+        <div class="rrow"><span class="rtype">iso-4217</span><span class="rdesc">valid currency code</span><span class="pv spec">SPEC-DERIVED</span></div>
+      </div>
+
+      <!-- field card: customerId — satisfied prerequisite -->
+      <div class="fcard">
+        <div class="fhd"><span class="fname">customerId</span><span class="fmeta">2 rules</span></div>
+        <div class="rrow"><span class="rtype">cross-entity-exists</span><span class="rdesc">must exist in <code>Customer</code></span><span class="xok">via customerId ✓</span><span class="pv ka">KA-APPLIED</span></div>
+        <div class="rrow"><span class="rtype">cross-entity-field-compare</span><span class="rdesc"><code>Account.creditUsed</code> ≤ <code>Customer.creditLimit</code></span><span class="xok">prerequisite in place ✓</span><span class="pv man">MANUAL</span></div>
+      </div>
+
+      <!-- field card: ledgerRef — UNSATISFIED prerequisite (the blocker) -->
+      <div class="fcard" id="ledgerRef">
+        <div class="fhd"><span class="fname">ledgerRef</span><span class="fmeta">1 rule · blocked</span></div>
+        <div class="rrow" style="background:var(--zone-attn)">
+          <span class="rtype">cross-entity-field-check</span>
+          <span class="rdesc"><code>LedgerEntry.status</code> must equal <code>OPEN</code> for the referenced entry</span>
+          <span class="xmiss">add cross-entity-exists first</span>
+          <span class="pv man">MANUAL</span>
+          <button class="addpre">+ Add prerequisite rule</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- advisory conflicts — dashed, read-only, never blocking -->
+    <div class="advisory" role="note">△ <b>1 advisory:</b> the OpenAPI enum for <code>status</code> lists <code>A, C, F, S</code> — your allowed-values omit <code>S</code>. Advisory only — state <code>warning</code>, never an export blocker. Source: Step 2 · <code>accounts-openapi.yaml</code>.<span class="ro">READ-ONLY</span></div>
+
+    <!-- legacy notes — one quiet section -->
+    <details class="legacy"><summary>Legacy Notes (3) — read-only, imported reference · unchanged posture</summary></details>
+
+    <!-- conflict recovery — shipped panel, hidden until 409 -->
+    <div class="conflict">⛉ <b>Conflict recovery (hidden until a 409):</b> if another save updated this session, the shipped recovery panel offers <i>Reload saved version</i> / <i>Return to current board</i> — same pattern as Steps 2/4/5.</div>
+
+    <div class="efoot">
+      <button class="btn pri" data-uxr-save-one>Save rule-set</button>
+      <button class="btn">Cancel</button>
+      <span class="note"><code>POST /rules/save-one</code> — this entity's rule-set only; the server re-validates cross-entity prerequisites <b>session-wide</b> before accepting.</span>
+    </div>
+  </section>
+
+  <div class="stepbar">
+    <button class="btn">Previous</button>
+    <button class="btn pri">Continue →</button>
+  </div>
+
+  <div class="foot"><b>Contract notes:</b> board item = entity rule-set (L9) · advisory conflicts are a dashed read-only strip, state <code>warning</code>, never blocking · cross-entity prerequisites explicit in both forms (<code>via customerId ✓</code> / "add cross-entity-exists first") · Legacy Notes stays one quiet section · rail chip <code>4 · 1 need action</code> reads the same view-model, disappears at 0 · Save = save-one, Continue = validate + navigate — one button never does both · <b>Matrix Lite OUT (L10)</b> — the archived matrix mock is superseded, not revived. Drawn single-column (base pattern); the PR-17 split presents this same editor in the right-hand column unchanged.</div>
+</main>
+</div></body></html>

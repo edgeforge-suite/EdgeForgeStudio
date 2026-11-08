@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 4 — Data Handoff Board (final)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--stg:#475569;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a .cnt{float:right;font-size:11px;color:var(--mut2)}.nav a .cnt b{color:var(--warn)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stgbanner{display:flex;gap:9px;align-items:center;margin:14px 0;padding:9px 13px;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:9px;font-size:12px;color:#7a6a3a}
+.stgbanner svg{width:15px;height:15px;color:var(--warn);flex-shrink:0}
+.stats{display:flex;gap:12px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.warn .n{color:var(--warn)}.stat.warn{background:var(--warnbg);border-color:#eccfa6}
+.split{display:grid;grid-template-columns:.82fr 1.18fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.phd h2{font-size:13.5px;font-weight:700}.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.add{font-size:11.5px;font-weight:600;color:#fff;background:var(--navy);border-radius:6px;padding:5px 11px}
+table.board{width:100%;border-collapse:collapse}
+table.board th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;padding:8px 12px;border-bottom:1px solid var(--line)}
+table.board td{padding:11px 12px;border-bottom:1px solid #eef1f5;font-size:12.5px}
+table.board tr.secrow td{font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--danger);background:#fff;padding:9px 12px 3px;border-bottom:none}
+table.board tr.secrow.ok td{color:var(--mut)}
+table.board tr.sel td{background:var(--selbg)}
+table.board tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--sel)}
+.hn{font-weight:700;color:var(--navy)}.hsub{font-size:11px;color:var(--mut)}
+.tbl{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--ink)}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}
+/* editor blocks */
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.ehd h2{font-size:15px;font-weight:800;color:var(--navy)}
+.ehd .et{font-size:11.5px;color:var(--mut);margin-top:1px}
+.ddlbadge{font-size:10px;font-weight:800;color:#0b6e64;background:#e2f4f2;padding:3px 9px;border-radius:5px}
+.ebody{padding:14px 15px}
+.block{border:1px solid var(--line);border-radius:10px;margin-bottom:13px;overflow:hidden}
+.bkhd{background:#f7f9fc;padding:8px 12px;border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px}
+.bkhd .step{width:17px;height:17px;border-radius:50%;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.bkbody{padding:11px 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fld .fl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;margin-bottom:4px}
+.inp{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:12.5px;background:#fff}
+.subsec{font-size:11px;font-weight:700;color:var(--mut);margin:4px 0 6px;display:flex;align-items:center;gap:6px}
+.subsec .lab{font-size:9.5px;padding:1px 6px;border-radius:4px;letter-spacing:.3px}
+.lab.derv{color:var(--derived);background:var(--derivedbg)}.lab.man{color:#5a6b7e;background:#eef1f6}
+.colrow{display:grid;grid-template-columns:1.2fr .8fr .6fr auto;gap:8px;align-items:center;padding:5px 0;font-size:12px}
+.colrow .cn{font-family:ui-monospace,Menlo,monospace}
+.colrow .ct{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.chip{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px}
+.chip.derv{color:var(--derived);background:var(--derivedbg)}.chip.man{color:#5a6b7e;background:#eef1f6}
+.mrow{display:grid;grid-template-columns:1fr 22px 1fr;gap:8px;align-items:center;padding:5px 0;font-size:12px;font-family:ui-monospace,Menlo,monospace}
+.mrow .ar{text-align:center;color:var(--mut2)}
+.ddlcmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ddlcol .cl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;margin-bottom:4px}
+.ddl{background:#0f1b2a;color:#cfe3ea;border-radius:7px;padding:9px 11px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;line-height:1.55;white-space:pre;overflow:auto}
+.ddl .add{color:#7fe0a0;background:none;padding:0}
+.ddl .del{color:#f2a4a4;text-decoration:line-through}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;flex:1}
+.btns{display:flex;gap:8px}.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+</style></head>
+<body><div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#">3 · Entity Model</a>
+    <a href="#" class="on">4 · Data Handoffs <span class="cnt"><b>1</b> to fix</span></a>
+    <a href="#">5 · Downstream</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 4 · Data Handoffs — Handoff Board</div>
+  <div class="sub">Staging-table specs, scanned in one board. Edit one handoff at a time in three clear blocks.</div>
+  <div class="stgbanner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>This page authors <b>staging tables only</b>. File / XML / SOAP artifact transforms remain in Step 5 — kept separate on purpose.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Handoffs</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Ready</div></div>
+    <div class="stat warn"><div class="n">1</div><div class="l">Needs action</div></div>
+  </div>
+
+  <div class="split">
+    <section class="panel">
+      <div class="phd"><div><h2>Loaded data handoffs</h2><div class="pd">Table identity, coverage, DDL mode, readiness</div></div><span class="add">+ Add handoff</span></div>
+      <table class="board">
+        <thead><tr><th>Handoff</th><th>Table</th><th>Cols</th><th>Maps</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="secrow"><td colspan="5">▾ Needs action</td></tr>
+          <tr><td><div class="hn">Payment staging</div><div class="hsub">Payment · manual DDL</div></td><td class="tbl">PAYMENT_STG</td><td>6</td><td>5</td><td><span class="pill attn">Review DDL</span></td></tr>
+          <tr class="secrow ok"><td colspan="5">▾ Ready</td></tr>
+          <tr class="sel"><td><div class="hn">Account staging</div><div class="hsub">Account · batch/ETL</div></td><td class="tbl">ACCOUNT_STG</td><td>4</td><td>3</td><td><span class="pill ok">Ready</span></td></tr>
+          <tr><td><div class="hn">Customer staging</div><div class="hsub">Customer · batch/ETL</div></td><td class="tbl">CUSTOMER_STG</td><td>5</td><td>4</td><td><span class="pill ok">Ready</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <div class="ehd"><div><h2>Account staging</h2><div class="et">Focused handoff editor — replaces the always-expanded card stack.</div></div><span class="ddlbadge">DERIVED DDL PREVIEW</span></div>
+      <div class="ebody">
+        <div class="block">
+          <div class="bkhd"><span class="step">1</span>Identity</div>
+          <div class="bkbody"><div class="grid2">
+            <div class="fld"><div class="fl">Handoff name</div><div class="inp">Account staging</div></div>
+            <div class="fld"><div class="fl">Table name</div><div class="inp">ACCOUNT_STG</div></div>
+            <div class="fld"><div class="fl">Mapped entity</div><div class="inp">Account ▾</div></div>
+            <div class="fld"><div class="fl">Owner</div><div class="inp">batch/ETL</div></div>
+          </div></div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd"><span class="step">2</span>Staging columns</div>
+          <div class="bkbody">
+            <div class="subsec"><span class="lab derv">DERIVED</span> Derived from Account</div>
+            <div class="colrow"><span class="cn">ACCOUNT_ID</span><span class="ct">VARCHAR(36)</span><span class="chip derv">from accountId</span><span></span></div>
+            <div class="colrow"><span class="cn">STATUS</span><span class="ct">VARCHAR(16)</span><span class="chip derv">from status</span><span></span></div>
+            <div class="colrow"><span class="cn">BALANCE_MINOR</span><span class="ct">BIGINT</span><span class="chip derv">from balanceMinor</span><span></span></div>
+            <div class="subsec" style="margin-top:10px"><span class="lab man">MANUAL</span> Operational columns (not from the entity)</div>
+            <div class="colrow"><span class="cn">LOADED_AT</span><span class="ct">TIMESTAMP</span><span class="chip man">operational</span><span></span></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd"><span class="step">3</span>Entity → staging mappings</div>
+          <div class="bkbody">
+            <div class="mrow"><span>Account.accountId</span><span class="ar">→</span><span>ACCOUNT_ID</span></div>
+            <div class="mrow"><span>Account.status</span><span class="ar">→</span><span>STATUS</span></div>
+            <div class="mrow"><span>Account.balanceMinor</span><span class="ar">→</span><span>BALANCE_MINOR</span></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd">DDL preview — before / after this change</div>
+          <div class="bkbody"><div class="ddlcmp">
+            <div class="ddlcol"><div class="cl">Current</div><div class="ddl">CREATE TABLE ACCOUNT_STG (
+  ACCOUNT_ID VARCHAR(36) NOT NULL,
+  STATUS VARCHAR(16),
+  BALANCE_MINOR BIGINT
+);</div></div>
+            <div class="ddlcol"><div class="cl">After save</div><div class="ddl">CREATE TABLE ACCOUNT_STG (
+  ACCOUNT_ID VARCHAR(36) NOT NULL,
+  STATUS VARCHAR(16),
+  BALANCE_MINOR BIGINT,
+<span class="add">+ LOADED_AT TIMESTAMP   -- added</span>
+);</div></div>
+          </div></div>
+        </div>
+      </div>
+      <div class="efoot">
+        <div class="note"><code>data_handoffs[]</code> shape is unchanged — this edits the same staging fields Studio exports today.</div>
+        <div class="btns"><span class="btn">Cancel</span><span class="btn pri">Save handoff</span></div>
+      </div>
+    </section>
+  </div>
+</main>
+</div></body></html>

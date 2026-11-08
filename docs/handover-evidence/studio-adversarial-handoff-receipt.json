@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "prompt_id": "EF-V5-M2-STUDIO-CONSOLIDATED-S1",
+  "revision": 1,
+  "phase": 2,
+  "status": "builder evidence; independent approval not claimed",
+  "observation_local_date": "2026-10-02 America/Chicago",
+  "receipt_capture_utc_date": "2026-10-03",
+  "studio_base": "14a379fffaeeb8b3334b5f6c937714f3aa90e159",
+  "tested_product_head": "e621544d26c43296b1694e20f85bb4d24204755c",
+  "engine_pin": "5793cb2f8779322ce13c5e758806b54e5e9d835a",
+  "ks_pin": "d5cf86b6f77ab4d12a898707f4048e04beb2702f",
+  "raw_root_local_only": "/private/tmp/edgeforge-studio-consolidated-handoff-proof",
+  "runtimes": {
+    "host": "macOS 26.5 arm64",
+    "python": "3.11.15",
+    "studio": {"fastmcp": "3.4.0", "mcp": "1.28.1", "pydantic": "2.11.7", "PyYAML": "6.0.2"},
+    "engine": {"fastmcp": "3.2.3", "mcp": "1.30.0", "pydantic": "2.11.7", "PyYAML": "6.0.3"},
+    "ks": {"fastmcp": "3.4.2", "mcp": "1.28.1", "pydantic": "2.13.4", "PyYAML": "6.0.3"},
+    "pytest": "9.0.3",
+    "bootstrap_pip": "26.0.1",
+    "gitleaks": "8.30.1"
+  },
+  "results": {
+    "product_head_focused": {"passed": 23, "skipped": 0, "seconds": 7.68},
+    "local_non_smoke": {"passed": 2225, "skipped": 18, "deselected": 31, "seconds": 72.47, "qualification": "preceded final smoke-only limiter-reset line/import; final head CI separate"},
+    "l2": {"passed": 1, "skipped": 0},
+    "changed_file_ruff": "passed",
+    "gitleaks": "exit 0; no leaks",
+    "ci_and_review": "exact submitted head and source checkout verification retained outside Git; no verdict claimed here"
+  },
+  "sha256_local_receipts": {
+    "engine.tar": "65418b19cb11855068a302abe90964f7c1b8424e836b0bbdf564a4c0f3aecb01",
+    "ks.tar": "09526f07c59a3c63cbeb1e23c288d833639dbdcc68e8926575dc656cf03fde67",
+    "studio-freeze.txt": "7b416b174d379686eb8109c205ba42d1e631adbad343587926535c33a68ec872",
+    "engine-freeze.txt": "a1a756bee759598f1306186ad6eaa935b3fc64edefea7fc7ac889e5aff4bd930",
+    "ks-freeze.txt": "4e69e50bbf40b301be2b9dbe00af7a01a08278b1fda157a8b729ca92b25c7bbf",
+    "product-head-proof.log": "eb1266b0c138a6e5b72cc4cbb410da3cbf466de20aff5c23b8f3a4b06e6e8f98",
+    "product-source.sha256": "854204c1938da433dd1683dfd6ae8c3f98acc0046c1aa30690145303c46b48c7",
+    "unit-suite-round2.log": "ecd2b20f9f88330027b6b9cdd196ab30fcbd2a60913b0fed0b64c39aaf7a0993",
+    "l2.log": "0c33791aa03cbc8826ba04efd1b062adb3baa875c47625e4de7090bd753d7635",
+    "base-counterexamples.log": "97b98d58e37e0330d5c843cc7f5e1bb513da9ff03f04cd6fc4c8e3e99cecd861",
+    "ks-counterexamples.log": "82bc0d1874ae5d7d34dc86ec114931599037bc496aaf4911492d4304fb3eaacf",
+    "negative-input-detail.log": "bfa376ed5094b5fc6a860811bd1fd52c4dc7c0eab0f30c3112687a4390f8e740",
+    "gitleaks.log": "b5661f433e5672b35eca702354b3c20f6ab6826517ec4d118b75c7330cdef00b",
+    "gitleaks.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "source_file_sha256": {
+    "app/routes/export.py": "9fde636de7ccda7b980d42b5b06da77681b89137658ce18e457a34f2688cc2ce",
+    "app/routes/knowledge.py": "17dc2db7541be0a3200ee6599a37b7e576caaee428acb725e1cc611123dc7cf6",
+    "app/routes/review.py": "cd5048e4d71dc020c12e4ad54d947edab41db0af90fed22edb32419c62cbab75",
+    "app/services/ks_workspace.py": "f7b5ddde1731843232f01e5e23f55149a88655b12c0cafb61d03b4fd1f2b3659",
+    "app/services/package_writer.py": "edc1fc8e3ae21a1f430959a196d64d522461827d8eb55e9d617f38d4bcc64edb",
+    "app/services/path_resolver.py": "69796b0684ea4a0d13038b633373fe59d2c2589cb2dbcf165f90807326c29dc0",
+    "tests/test_output_path_expansion.py": "e822e3e66d2f81d18e8a5cf733ea68e7bc27994e1b59bdd244eabfbed79fdf45",
+    "tests/test_adversarial_handoff.py": "939c417ad72b640b77ef2f23f33087f3715254dcc9c1cf7d9238c1785f063a44"
+  },
+  "limits": [
+    "Anonymous signed-cookie isolation, not real authentication or stolen-cookie protection",
+    "Static regular-file package preflight, not atomic filesystem race or OS sandbox proof",
+    "Frozen Engine entrypoint roots do not universally confine nested inputs; shared Studio preflight required",
+    "Child entrypoint/KS out-of-root auxiliary probes distinguished from real HTTP request attacks",
+    "17 optional direct-KS tests and one optional Engine-schema test skipped, not credited; no full L5, Build & Run or final image/release proof",
+    "Initial default-sibling exploratory child excluded; tracked/untracked sibling status preserved, ignored bytecode not asserted immutable",
+    "No independent review, risk acceptance, merge or release approval"
+  ]
+}

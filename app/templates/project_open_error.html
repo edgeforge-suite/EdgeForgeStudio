@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Open Project Error{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>Open Project — Error</h2>
+  <p class="subtitle">The project file could not be opened.</p>
+
+  <div class="alert alert-error">
+    <strong>Error:</strong> {{ error }}
+  </div>
+
+  <div class="step-actions">
+    <a href="/" class="btn btn-secondary">&larr; Back to Project Setup</a>
+  </div>
+</div>
+{% endblock %}

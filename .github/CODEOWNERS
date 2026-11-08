@@ -1,0 +1,36 @@
+# CODEOWNERS — TEMPLATE ONLY (no active owners)
+#
+# Every line below is COMMENTED OUT and references no real GitHub user or team.
+# The maintainer configures public-project owners at repository setup. Uncomment
+# the intended lines and replace each `@<org>/<team>` placeholder with a real GitHub team or
+# user. Until then, no code ownership is enforced.
+#
+# Recommended ownership split (see CONTRIBUTING.md and the Engine repo's
+# docs/suite-architecture.md):
+#   - Studio owns the authoring / review / export UX.
+#   - Engine and Knowledge Server are separate repos and set their own CODEOWNERS.
+#
+# Syntax: <path-pattern>   @<org>/<team-or-user>
+#
+# Default — everything in this repo:
+# *                          @<org>/<studio-team>
+#
+# Web app: routes, services, wizard, generators, validators, models:
+# /app/routes/               @<org>/<studio-team>
+# /app/services/             @<org>/<studio-team>
+# /app/generators/           @<org>/<studio-team>
+# /app/validators/           @<org>/<studio-team>
+# /app/models/               @<org>/<studio-team>
+# /app/wizard_registry.py    @<org>/<studio-team>
+#
+# Engine / Knowledge Server integration (subprocess orchestration):
+# /app/integrations/         @<org>/<studio-team>
+#
+# UI (templates + static assets):
+# /app/templates/            @<org>/<studio-ux-team>
+# /app/static/               @<org>/<studio-ux-team>
+#
+# Docs and governance:
+# /docs/                     @<org>/<docs-or-studio-team>
+# /CONTRIBUTING.md           @<org>/<studio-team>
+# /SECURITY.md               @<org>/<security-team>

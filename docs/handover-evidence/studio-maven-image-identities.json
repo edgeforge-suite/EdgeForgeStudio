@@ -1,0 +1,489 @@
+{
+  "advisory_databases": {
+    "grype": {
+      "built_utc": "2026-09-27T06:30:30Z",
+      "download_archive_sha256": "0567d832ad6f47af3f67f0d8aa36397f8a3557dc51311cff68e2bb4332ba3c56",
+      "sha256": "24b7c0db32df3a3d2417564662ab7f4745fc9896fe98675ba2b00aafcb38726c"
+    },
+    "trivy": {
+      "metadata": {
+        "DownloadedAt": "2026-09-28T03:53:52.011254Z",
+        "NextUpdate": "2026-09-29T01:11:56.448285732Z",
+        "UpdatedAt": "2026-09-28T01:11:56.448286045Z",
+        "Version": 2
+      },
+      "sha256": "421a221c8a66575d5b2549e774a32a035d9734ebc98e088a0c8b258fe94b8e14"
+    },
+    "trivy_java": {
+      "metadata": {
+        "DownloadedAt": "2026-09-28T03:57:29.053016Z",
+        "NextUpdate": "2026-10-01T00:58:56.072613623Z",
+        "UpdatedAt": "2026-09-28T00:58:56.072614124Z",
+        "Version": 1
+      },
+      "sha256": "479740ff802ce7a8ea906f217ab9f7febfc00a8e35149eb8bcd1e0cd1cf13400"
+    }
+  },
+  "apt_delta": {
+    "added": [],
+    "changed": [],
+    "removed": [
+      {
+        "name": "ca-certificates-java",
+        "version": "20230710~deb12u1"
+      },
+      {
+        "name": "default-jre-headless",
+        "version": "2:1.17-74"
+      },
+      {
+        "name": "fontconfig-config",
+        "version": "2.14.1-4"
+      },
+      {
+        "name": "fonts-dejavu-core",
+        "version": "2.37-6"
+      },
+      {
+        "name": "java-common",
+        "version": "0.74"
+      },
+      {
+        "name": "libaopalliance-java",
+        "version": "20070526-7"
+      },
+      {
+        "name": "libapache-pom-java",
+        "version": "29-2"
+      },
+      {
+        "name": "libasound2",
+        "version": "1.2.8-1+b1"
+      },
+      {
+        "name": "libasound2-data",
+        "version": "1.2.8-1"
+      },
+      {
+        "name": "libatinject-jsr330-api-java",
+        "version": "1.0+ds1-5"
+      },
+      {
+        "name": "libavahi-client3",
+        "version": "0.8-10+deb12u1"
+      },
+      {
+        "name": "libavahi-common-data",
+        "version": "0.8-10+deb12u1"
+      },
+      {
+        "name": "libavahi-common3",
+        "version": "0.8-10+deb12u1"
+      },
+      {
+        "name": "libcdi-api-java",
+        "version": "1.2-3"
+      },
+      {
+        "name": "libcommons-cli-java",
+        "version": "1.5.0-1"
+      },
+      {
+        "name": "libcommons-io-java",
+        "version": "2.11.0-2"
+      },
+      {
+        "name": "libcommons-lang3-java",
+        "version": "3.12.0-2+deb12u1"
+      },
+      {
+        "name": "libcommons-parent-java",
+        "version": "56-1"
+      },
+      {
+        "name": "libcups2",
+        "version": "2.4.2-3+deb12u9"
+      },
+      {
+        "name": "libdbus-1-3",
+        "version": "1.14.10-1~deb12u1"
+      },
+      {
+        "name": "liberror-prone-java",
+        "version": "2.18.0-1"
+      },
+      {
+        "name": "libfontconfig1",
+        "version": "2.14.1-4"
+      },
+      {
+        "name": "libfreetype6",
+        "version": "2.12.1+dfsg-5+deb12u4"
+      },
+      {
+        "name": "libgeronimo-annotation-1.3-spec-java",
+        "version": "1.3-1"
+      },
+      {
+        "name": "libgeronimo-interceptor-3.0-spec-java",
+        "version": "1.0.1-4"
+      },
+      {
+        "name": "libglib2.0-0",
+        "version": "2.74.6-2+deb12u9"
+      },
+      {
+        "name": "libgraphite2-3",
+        "version": "1.3.14-1+deb12u1"
+      },
+      {
+        "name": "libguava-java",
+        "version": "31.1-1"
+      },
+      {
+        "name": "libguice-java",
+        "version": "4.2.3-2"
+      },
+      {
+        "name": "libharfbuzz0b",
+        "version": "6.0.0+dfsg-3"
+      },
+      {
+        "name": "libjansi-java",
+        "version": "2.4.0-2"
+      },
+      {
+        "name": "libjpeg62-turbo",
+        "version": "1:2.1.5-2"
+      },
+      {
+        "name": "libjsr305-java",
+        "version": "0.1~+svn49-11"
+      },
+      {
+        "name": "liblcms2-2",
+        "version": "2.14-2+deb12u1"
+      },
+      {
+        "name": "libmaven-parent-java",
+        "version": "35-1"
+      },
+      {
+        "name": "libmaven-resolver-java",
+        "version": "1.6.3-1"
+      },
+      {
+        "name": "libmaven-shared-utils-java",
+        "version": "3.3.4-1"
+      },
+      {
+        "name": "libmaven3-core-java",
+        "version": "3.8.7-1"
+      },
+      {
+        "name": "libnspr4",
+        "version": "2:4.35-1"
+      },
+      {
+        "name": "libnss3",
+        "version": "2:3.87.1-1+deb12u4"
+      },
+      {
+        "name": "libpcsclite1",
+        "version": "1.9.9-2"
+      },
+      {
+        "name": "libplexus-cipher-java",
+        "version": "2.0-1"
+      },
+      {
+        "name": "libplexus-classworlds-java",
+        "version": "2.7.0-1"
+      },
+      {
+        "name": "libplexus-component-annotations-java",
+        "version": "2.1.1-1"
+      },
+      {
+        "name": "libplexus-interpolation-java",
+        "version": "1.26-1"
+      },
+      {
+        "name": "libplexus-sec-dispatcher-java",
+        "version": "2.0-3"
+      },
+      {
+        "name": "libplexus-utils2-java",
+        "version": "3.4.2-1"
+      },
+      {
+        "name": "libpng16-16",
+        "version": "1.6.39-2+deb12u5"
+      },
+      {
+        "name": "libsisu-inject-java",
+        "version": "0.3.4-2"
+      },
+      {
+        "name": "libsisu-plexus-java",
+        "version": "0.3.4-3"
+      },
+      {
+        "name": "libslf4j-java",
+        "version": "1.7.32-1"
+      },
+      {
+        "name": "libwagon-file-java",
+        "version": "3.5.3-1"
+      },
+      {
+        "name": "libwagon-http-shaded-java",
+        "version": "3.5.3-1"
+      },
+      {
+        "name": "libwagon-provider-api-java",
+        "version": "3.5.3-1"
+      },
+      {
+        "name": "maven",
+        "version": "3.8.7-1"
+      },
+      {
+        "name": "openjdk-17-jre-headless",
+        "version": "17.0.20.1+1-1~deb12u1"
+      }
+    ]
+  },
+  "assessment_scope": "targeted Maven packaging remediation; complete with open untargeted findings, not M2 clearance",
+  "base_images": {
+    "jdk": {
+      "compressed_layer_digests": [
+        "sha256:09923199ca0ebd3ad9fb1dd1d0ab85d2b86aa388b988c8d4c8ee4f660fdb9e9e",
+        "sha256:d9b9856437537fc061e98f71ecab9d95d7745fbf7d7b871d2e54ca4c3b02ea5a",
+        "sha256:673e839bf3599fc44383ba43dd07d7ff2c73c25e36137c530b4b37d289490ba1",
+        "sha256:be6068777a9bee65ae7a7d7a581d0cfbb6d7708b41ab88137e4c16a5458484b2",
+        "sha256:8245c1b029e96f339f6b50f4dae0f41b2e3e93e05d9bcc01050b607157a144bd",
+        "sha256:a29eeb483926d0106de90ddd51510551da9b174cde0900bb74720d0a5cad3e80"
+      ],
+      "config_digest": "sha256:b389ca026d545339a1ae02b3377cf9a60121811bf877ff0f8f296097031cccbf",
+      "index_digest": "sha256:4d06038800655fe1211760cd561de70ef2ed7a47f5d69255e9834414602b7026",
+      "platform_manifest_digest": "sha256:47ba03cf9270176dd8da310fc89fe940905da6618dc5de19fc6a723b8872b3ad"
+    },
+    "python": {
+      "compressed_layer_digests": [
+        "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+        "sha256:246ac8b7cadc4ee7c220a2d4e02a37a296797f40648480115ae41e083aa60b6e",
+        "sha256:dc22b8c341d91e21b901b9eb1e414c18b487f4de1a165c539ecb32bb590acbd4",
+        "sha256:f57cecf87087697ab89776daeb60b1b2b2149c876d4aa69ae6765ae7ad66a470"
+      ],
+      "config_digest": "sha256:3ad37ccd1797321f4bda14f483941a4f7a2b9eca454847b22652e59f5baab8c9",
+      "index_digest": "sha256:a36c24f9cbdf4fd0f52d67f0823eeac19c2028c637cecc392d97f980d4fec56b",
+      "platform_manifest_digest": "sha256:4b4c524dc3dce996864e030c7bd9c6b0e517597189fee48f48e05b499442444b"
+    }
+  },
+  "candidate_id": "EF-V5-M2-STUDIO-IMAGE-MAVEN-S1",
+  "controlled_recipe_sha256": {
+    "candidate": "8af38682d3bbc52c53fc46208fd4dc9593b08bbee64188c9950719ba97fdfc53",
+    "control": "adb16fea5415dfcf47a7104880a684acba31a611a43900d083018d64f97da22a"
+  },
+  "engine_sha": "127439a54bb9e1fc787cf981490e6c33e8a45da2",
+  "images": {
+    "candidate": {
+      "bundled_license_notice_present": {
+        "LICENSE": true,
+        "NOTICE": true
+      },
+      "compressed_layer_digests": [
+        "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+        "sha256:246ac8b7cadc4ee7c220a2d4e02a37a296797f40648480115ae41e083aa60b6e",
+        "sha256:dc22b8c341d91e21b901b9eb1e414c18b487f4de1a165c539ecb32bb590acbd4",
+        "sha256:f57cecf87087697ab89776daeb60b1b2b2149c876d4aa69ae6765ae7ad66a470",
+        "sha256:51e246817c49a2a46fcc15e5611750aa93062f74bdbd4902e32967c66102a8b7",
+        "sha256:26b1613d03755041971acc2dfc2c5e638d44c893cdea483ae78ab00279ee14bb",
+        "sha256:a5c9bb7d7353d902f44d00be9d3922dc648eda35a2af0bdba7330d0e7bdc795d",
+        "sha256:1f3aeb848ec5b29803cd10952317f8ac2212723885e41903d6535d0ead4c7bde",
+        "sha256:403cdba491b8ef7870e5feb6883a6bc358d63098a843ac8ee82f94bc2f4455d0",
+        "sha256:eb4372c1b3febe68bea68d37e6488dd89ad017a741b2f9a97ab6355027ffe3df",
+        "sha256:3ff775f8442b25b06ae1d0b45787b1cd62635bc8e3329ee8dea4b14d4c0917ea",
+        "sha256:e7ec52ad75203886c116017bd6f2300d5710acfb38c62a8461b7865fd6fc5c56",
+        "sha256:2adbc46eb3314ec8c23936dec78543a9046ef2ef4e01861c2a73358a04c37537",
+        "sha256:a04a0a3136cad0d48c5ea73ad51dc34d646bd3111799594fd698459e15a2251a",
+        "sha256:3a6253ee4fb07b486791e615929f96b82521013310affeaa719af930d353f351",
+        "sha256:cfb2a4d912849858a021d5debafbca6b53eeb4d90d5f5aee6eede4cb4e9e4dea"
+      ],
+      "config_digest": "sha256:7c0cd3f651c91bacdbf0ca79a46da6bf9cee6d531dacaf1592c3aaefe37de088",
+      "image_created_utc": "2026-09-28T03:53:55.120315133Z",
+      "installed_guava_archives": [
+        {
+          "path": "/opt/maven/lib/guava-33.6.0-jre.jar",
+          "properties": "groupId=com.google.guava\nartifactId=guava\nversion=33.6.0-jre\n",
+          "sha256": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3"
+        }
+      ],
+      "maven_version": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)\nMaven home: /opt/maven\nJava version: 21.0.12.1, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en, platform encoding: UTF-8\nOS name: \"linux\", version: \"6.12.76-linuxkit\", arch: \"amd64\", family: \"unix\"",
+      "mvn_executable": "/opt/maven/bin/mvn",
+      "oci_index_digest": "sha256:c1b42cc589d667877bae2839356e96064a58bf527a1c3922e20007569a85e1fe",
+      "oci_platform_manifest_digest": "sha256:197465ecba5c00bbd745e90f79bef29d4a4766420394e9cd04a081418e129c76",
+      "raw_reports_sha256": {
+        "grype": "ec4b7729eb481e0012fac421eff233467028edde5f86ccdafe0f10798de0f027",
+        "sbom": "3d20411c4e279a82392c7a4a785b9f7e901db99af25af281e7d4843e5a4b0297",
+        "syft": "e6d6fd896ac4fdf210f51846b41f1c9ba7d497391312498ffe240f8b0ef90a3a",
+        "toolchain": "2112cdf1c7942e42b3c4ce06a751495ab22cba314535206b801d99d98aae4ce6",
+        "trivy": "51fa1aaa372b578b912e6c3e83af28e7f7f663e412a561d7fc4434fff78600ba"
+      },
+      "scanner_daemon_serialized_manifest_digest": "sha256:be2e7619862b1b55177556d9f905cf187aeffc432e80adde1c8bb2d4e616da56",
+      "summary_sha256": "6ae801ae844398b79d7a4a1f7677c7e0c53f66f18eeb035a595598baba97a99a",
+      "syft_observed_at": "2026-09-27T22:57:39-05:00",
+      "trivy_observed_at": "2026-09-27T22:59:27.443667-05:00",
+      "uncompressed_layer_diffids": [
+        "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+        "sha256:b3445de4503d21b3ebc42db2f284bc6c8ad96184ea91ce55fb57f5e87910e1f2",
+        "sha256:546c86e4df2dc808fcf1953c346bfeef32f4c953933634d57c1d38730b750e9c",
+        "sha256:6b6ff8eb9da6c277f4b33452c77d59f8b5ff04e0bcca1a3054570b9db343da79",
+        "sha256:fc50c23a53b5c87d6ca0d3b454aacd6ad6a2c85afd07c454df9602394bd3a223",
+        "sha256:8a81592646f39041d22a2deedcabe6d06a6f2667b30ef70775ae2308667e240a",
+        "sha256:f74b1cdaa85695b74ace0ef730a10b1c8f1f006969a927aaecb835fa2d33897e",
+        "sha256:0af9e09aa200f9f82dc68943847e070079f99c26b3ad2465d58e74ef4fffc428",
+        "sha256:5ea4f73773fbe8608291d438906dae1925a8e404a71f1e16eba19f907dfe66d2",
+        "sha256:fc5225ae3b6d2782dcb6b8ff56f1740ccee0be2a69b086012e89a4940cb5b38e",
+        "sha256:80057639bd3b46ce7e35fc28c20c3408b66ac6fc35e27a9dc922fa40cc6f54b0",
+        "sha256:d860562fdf6142423dca531f840805c9067211956e1c41454a4708897a97e3e0",
+        "sha256:97be8f25547b344ec13cd60808d841d242b94adc2b6339077d18034dcbd95656",
+        "sha256:4869682a576004a05167b4df2abe28b010431e71e8b37febc0128e13f9c53b12",
+        "sha256:4fa85535efd6d635864bd62dd5641a54ee3473ba54705d5ba1746a4d1d72c5e6",
+        "sha256:2ab415629d3fc23d6f36387d29c0199da6df2a7bc6ae0a83082ad6fc470ea3fb"
+      ]
+    },
+    "control": {
+      "bundled_license_notice_present": {
+        "LICENSE": false,
+        "NOTICE": false
+      },
+      "compressed_layer_digests": [
+        "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+        "sha256:246ac8b7cadc4ee7c220a2d4e02a37a296797f40648480115ae41e083aa60b6e",
+        "sha256:dc22b8c341d91e21b901b9eb1e414c18b487f4de1a165c539ecb32bb590acbd4",
+        "sha256:f57cecf87087697ab89776daeb60b1b2b2149c876d4aa69ae6765ae7ad66a470",
+        "sha256:51e246817c49a2a46fcc15e5611750aa93062f74bdbd4902e32967c66102a8b7",
+        "sha256:37143cd00011d0817139691a9e9aa6759e00ad922a347be71ae6e3d806317858",
+        "sha256:f67648f8d25ebf80cfa96bd47148554e1868c7d5e4823edf230eb628a50dcdd4",
+        "sha256:41e2a393ea54d9e141093ee600f5935b91a40bd574cdf02d699bfb5a21eba0f6",
+        "sha256:d854dd4125cba046ec4ce460bab1d868310bb1fd72f0d2d5aeff39b502b04c66",
+        "sha256:92a04f1945a5f8f3a3247381119ae4cb4c28c9d94ae46145ada94898966c8f70",
+        "sha256:cf15e91506f7d726030129273827e0b0085f074bf2b6ea2cb71e66710981fa20",
+        "sha256:220854e75dd3425863dfa0160364d77be5b869f84613c171de2ccb0149ff9cb5",
+        "sha256:fbb89ccd1b81db009edb612b9375bdf78de9c3e1d0277a9080fbe9f968c3fdea",
+        "sha256:3b3dc8629c75b2a34de95db266197c10c22f09c238c909a5c56d06847f23d10f",
+        "sha256:ab24df0640d8d6a81639b027505b9e988f77291b9b7ef7eeaf194b4cdd892484"
+      ],
+      "config_digest": "sha256:4d02e8f9884f5ad3ef1c9631e0d8f4f42b1ea34132b16cb092b028d62b4e3025",
+      "image_created_utc": "2026-09-28T03:51:20.054733755Z",
+      "installed_guava_archives": [
+        {
+          "path": "/usr/share/java/guava.jar",
+          "properties": "#Generated by org.apache.felix.bundleplugin\n#2022-12-12 17:38:25 UTC\ngroupId=com.google.guava\nartifactId=guava\nversion=31.1-jre\n",
+          "sha256": "1d4ca0e3ee66921e8cb6521b62ecce32cc62abad391bf70b2fd14d40e7681f3a"
+        }
+      ],
+      "maven_version": "\u001b[1mApache Maven 3.8.7\u001b[m\nMaven home: /usr/share/maven\nJava version: 21.0.12.1, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en, platform encoding: UTF-8\nOS name: \"linux\", version: \"6.12.76-linuxkit\", arch: \"amd64\", family: \"unix\"\n\u001b[0m",
+      "mvn_executable": "/usr/bin/mvn",
+      "oci_index_digest": "sha256:577c8f0f30bff093dacc1efbd611ddbe44b50ce362664a255bd151e06d3b8a74",
+      "oci_platform_manifest_digest": "sha256:09d293f09bafb62ad68f43fb3e2470805b17807e09e9f9b7e30b76a5a63d1886",
+      "raw_reports_sha256": {
+        "grype": "63d707e58289ca696a4afff16a1af6e5c1fe342a57d8e84cc600dc85edfbb459",
+        "sbom": "23b2faeedf81a38f9a8b9d5be247212a1275f4ce6d28bda2e82b7b7f85bf473a",
+        "syft": "369d54e874590d64e83183fb60dae7bbe554a5a5880c0b41f5e8a1010bfbcc3a",
+        "toolchain": "f4140effd28bbbd5cbae1aac0e217ca5f1d03693ffbee2d8932bbe3e96bcc467",
+        "trivy": "3d22b6e518d444afbf073e4887cb5fa524249fe1e7c888ed3c3a9a9f4501f666"
+      },
+      "scanner_daemon_serialized_manifest_digest": "sha256:abbbad3026c50d519074a45cac8c7c732df0f3543acc6ab6c1756bce9712e41a",
+      "summary_sha256": "ae9508dcfdc55b4b31f22617d9cef599256556e53a002f433810a6289212d10a",
+      "syft_observed_at": "2026-09-27T22:57:40-05:00",
+      "trivy_observed_at": "2026-09-27T22:58:29.750529-05:00",
+      "uncompressed_layer_diffids": [
+        "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+        "sha256:b3445de4503d21b3ebc42db2f284bc6c8ad96184ea91ce55fb57f5e87910e1f2",
+        "sha256:546c86e4df2dc808fcf1953c346bfeef32f4c953933634d57c1d38730b750e9c",
+        "sha256:6b6ff8eb9da6c277f4b33452c77d59f8b5ff04e0bcca1a3054570b9db343da79",
+        "sha256:fc50c23a53b5c87d6ca0d3b454aacd6ad6a2c85afd07c454df9602394bd3a223",
+        "sha256:4bc9f52abe18d2f547c77b65aef4b5e8168653de487c3da1d19023003dc3500f",
+        "sha256:50feff12eff71f04c652d24e319db09751de2c3de831a86f583df2a07d20d1da",
+        "sha256:2c8fd798ee8b6d7c917f2d0cd8925a713a7c2e680af7400d8538dbe36210b007",
+        "sha256:e029a7979cc64a56567899e8c0035965d156a11be00ffe6354d887852f265ab3",
+        "sha256:1ce06da8dae65a245c875c4e253bb669e2971e20903eaa8d5497f47127ac5e62",
+        "sha256:c4571cefb8c9ef3aa5b2a0955d98fb1bd80a2d6a169570d6e44af8f0010a7d6f",
+        "sha256:32a269f86bfb344414a2919fe63e5eacbbdea41ff3e3192fbe0188842e0d3d89",
+        "sha256:f7f92e69b6d08d0615e3258db2408778d2db36b5beac7b47d33472497f83f4c9",
+        "sha256:f0718ea7f43a708e90414fbb4637f0c12402eb442f81751e2919a799e77e0467",
+        "sha256:fb88d958ee0982c7792813c18e9b7b06f37ae2dd5b69b435e1e7ac91cfa790d0"
+      ]
+    }
+  },
+  "platform": "linux/amd64",
+  "proof_runner_followup": {
+    "image_config_digest": "sha256:7c0cd3f651c91bacdbf0ca79a46da6bf9cee6d531dacaf1592c3aaefe37de088",
+    "image_oci_index_digest": "sha256:c1b42cc589d667877bae2839356e96064a58bf527a1c3922e20007569a85e1fe",
+    "image_rebuilt_or_rescanned": false,
+    "observations_recorded_utc": "2026-09-29T00:51:11Z",
+    "original_assessment_source_hashes_preserved": true,
+    "reviewed_head": "b3563dd0a304802c2a4b3d0d9c4e1558ecf41c32",
+    "runner_sha256": "098be9f42ade6c6b44f7a1edc4ea1e6f0830e41fc6f6e1798a8f9d2eff831af7",
+    "runs": [
+      {
+        "health_http_status": 200,
+        "health_status": "UP",
+        "jobless": false,
+        "maven_tests": {"tests": 1, "failures": 0, "errors": 0, "skipped": 0},
+        "profile": "springboot-legacy-compatible",
+        "result": "pass",
+        "result_sha256": "e511b147d104f521acfa78953dad893ec6a5d04b41f5e8b74c54fe57027916c2",
+        "verify_log_sha256": "65f07f0bd1aeef208f24abcf38960e37d0809d13b7b952d811d275688d1f40d0"
+      },
+      {
+        "health_http_status": 200,
+        "health_status": "UP",
+        "jobless": true,
+        "maven_tests": {"tests": 1, "failures": 0, "errors": 0, "skipped": 0},
+        "profile": "springboot-legacy-compatible-boot41-preview",
+        "result": "pass",
+        "result_sha256": "57b850ca2cc066bd2f1e7964e3d73196654c8720e3f9d8e0a8a1c4f8a01e5ee1",
+        "verify_log_sha256": "5fa420764dc878a1535213e7e62c4d84f74e96a5269a63b1895433a3f7ce43e2"
+      }
+    ],
+    "uid": 1000,
+    "validation": {
+      "focused_passed": 81,
+      "image_smoke_passed": 1,
+      "l2_passed": 1,
+      "non_smoke_deselected": 29,
+      "non_smoke_passed": 2222,
+      "non_smoke_skipped": 0,
+      "runner_regressions_passed": 11,
+      "runner_regressions_python_optimized_passed": 11
+    }
+  },
+  "revision": 1,
+  "scanner_archives_sha256": {
+    "Grype 0.119.0": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+    "Syft 1.52.0": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+    "Trivy 0.74.0": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11"
+  },
+  "source_files_sha256": {
+    "Dockerfile": "2e2824c878e79be554a169c131b8303ac570fabfe371ebf2a61e18a2448542ec",
+    "scripts/install_apache_maven.py": "8fba8bc732681c191551369bad797df829fd730e6bdfcff52c5e9bc0bc5dd3b3",
+    "scripts/maven_image_build_run_proof.py": "6d750affec9c53fa6de74a4a86ac1cc3d9d38a0ff5e8dfe35a4cad5d95cccc05"
+  },
+  "studio_base_sha": "5e966225684bfabac972f7522cc6447949df02dc",
+  "targeted_advisories": {
+    "CVE-2020-8908": {
+      "alias": "GHSA-5mg8-w23w-74h3",
+      "candidate_disposition": "remediated by verified whole Maven distribution replacement; Guava 33.6.0-jre",
+      "vendor_evidence": "https://github.com/google/guava/releases/tag/v32.0.0"
+    },
+    "CVE-2023-2976": {
+      "alias": "GHSA-7g45-4rm6-3mm3",
+      "candidate_disposition": "remediated by verified whole Maven distribution replacement; Guava 33.6.0-jre",
+      "vendor_evidence": "https://github.com/google/guava/releases/tag/v32.0.0"
+    }
+  }
+}

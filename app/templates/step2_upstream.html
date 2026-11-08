@@ -1,0 +1,2132 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 2: Upstream Contract{% endblock %}
+
+{% block content %}
+{% set uxr_us_items = upstream_readiness_items %}
+{% set uxr_us_attn = uxr_us_items | selectattr('state', 'in', ['blocks_export', 'needs_action']) | list %}
+{% set uxr_us_warning = uxr_us_items | selectattr('state', 'equalto', 'warning') | list %}
+{% set uxr_us_ready_or_draft = uxr_us_items | selectattr('state', 'in', ['ready', 'draft']) | list %}
+{% set uxr_us_ready_count = uxr_us_items | selectattr('state', 'equalto', 'ready') | list | length %}
+{% set uxr_us_blockers_count = uxr_us_items | selectattr('state', 'equalto', 'blocks_export') | list | length %}
+{% set uxr_us_total = uxr_us_items | length %}
+<div class="card step-surface workflow-surface-group js-tabs" data-tab-group="upstream-ingest">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 2: Upstream Contract</h2>
+      {% if session.app_archetype == "passthrough-router" %}
+      <p class="subtitle">Bring in the single inbound OpenAPI contract, then continue into constrained route and transform setup.</p>
+      {% else %}
+      <p class="subtitle">Load the upstream contract from a URL or file, or use manual exploration when you only need to inspect entity scope before a real ingest.</p>
+      {% endif %}
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Contract Source</span>
+      <div class="step-surface-kicker-title">One source per interface</div>
+      <div class="text-muted text-sm">URL and file ingest remain the export-ready paths.</div>
+    </div>
+  </div>
+
+  <div class="tabs step-tab-strip" id="ingest-tabs">
+    <button class="tab-btn" data-tab="url">OpenAPI URL</button>
+    <button class="tab-btn" data-tab="file">Upload Spec File</button>
+    <button class="tab-btn" data-tab="manual">Manual / Samples Only</button>
+  </div>
+
+  <p class="data-handling-notice" role="note">
+    Use synthetic or approved content only. Studio does not sanitize uploaded or pasted content. Depending on the workflow, it may be retained in project state, Knowledge Workspace storage, and exported packages.
+  </p>
+
+  <div class="tab-panel">
+    <div class="step-section-card workflow-surface-card">
+      <div class="step-section-heading">
+        <div>
+          <h3>Fetch from URL</h3>
+          <p class="text-muted text-sm">Use a hosted OpenAPI contract when the source system already publishes one.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>Spec URL</label>
+        <input type="url" id="spec-url" placeholder="https://internal.example.com/api/swagger.json"
+               value="{{ session.raw_spec_url or '' }}">
+      </div>
+      <div class="step-actions" style="margin-top:0">
+        <button class="btn btn-primary" onclick="ingestUrl()">
+          <span id="url-spinner" class="spinner hidden"></span>
+          Fetch &amp; Classify
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel">
+    <div class="step-section-card workflow-surface-card">
+      <div class="step-section-heading">
+        <div>
+          <h3>Upload a local spec</h3>
+          <p class="text-muted text-sm">Use a checked-in or exported OpenAPI JSON/YAML file from your local workspace.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>OpenAPI JSON or YAML file</label>
+        <input type="file" id="spec-file" accept=".json,.yaml,.yml">
+      </div>
+      <div class="step-actions" style="margin-top:0">
+        <button class="btn btn-primary" onclick="ingestFile()">
+          <span id="file-spinner" class="spinner hidden"></span>
+          Upload &amp; Classify
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel">
+    <div class="step-section-card workflow-surface-card">
+      <div class="step-section-heading">
+        <div>
+          <h3>Manual exploration</h3>
+          <p class="text-muted text-sm">Useful for a quick entity pass, but still not sufficient for export until you come back and ingest a real contract.</p>
+        </div>
+      </div>
+      <div class="alert alert-warn" style="margin-bottom:12px">
+        <strong>Manual mode is exploration only.</strong> The exported package still requires exactly one real upstream spec source: a local <code>spec</code> file or a <code>spec_url</code>.
+      </div>
+      <div class="field">
+        <label>Primary Entity Name <span class="text-muted text-sm">(for exploration only)</span></label>
+        <input type="text" id="manual-entity" placeholder="e.g. Account">
+      </div>
+      <div class="step-actions" style="margin-top:0">
+        <button class="btn btn-secondary" onclick="saveManual()">Continue with Manual Entry (exploration only) →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ingest-status" class="alert hidden" style="margin-top:16px"></div>
+</div>
+
+{% if edge_contract_readiness %}
+{# mirrors readiness_view._FAMILY_BY_CONTRACT_TYPE — keep in sync if that map changes #}
+{% set uxr_family_by_type = {'file-fixed-width': 'fixed', 'file-csv': 'csv', 'xml-xsd': 'xml', 'soap-wsdl': 'soap'} %}
+{% set uxr_family_mono = {'rest': 'REST', 'fixed': 'FIX', 'csv': 'CSV', 'xml': 'XML', 'soap': 'SOAP', 'staging': 'STG'} %}
+{% set uxr_family_label = {'rest': 'REST', 'fixed': 'Fixed-width file', 'csv': 'CSV / delimited file', 'xml': 'XML / XSD', 'soap': 'SOAP / WSDL', 'staging': 'Staging / Handoff'} %}
+{# readiness/capability chip labels (PR-11) — sourced from readiness_view.ReadinessItem, never re-derived.
+   needs_action/blocks_export share the same "blocked" danger treatment: both are more severe than a
+   plain warning per the §1.2 state precedence (blocks_export > needs_action > warning > draft > ready). #}
+{% set uxr_state_chip_class = {'ready': 'uxr-chip-ready', 'warning': 'uxr-chip-warning', 'draft': 'uxr-chip-draft', 'needs_action': 'uxr-chip-blocked', 'blocks_export': 'uxr-chip-blocked'} %}
+{% set uxr_state_chip_label = {'ready': 'Ready', 'warning': 'Review', 'needs_action': 'Needs action', 'blocks_export': 'Blocked', 'draft': 'Draft'} %}
+{% set uxr_capability_label = {'manifest_reference': 'Manifest ref', 'populates_entities': 'Entity-populating', 'metadata_only': 'Metadata only'} %}
+{% macro uxr_us_row(item, artifact_paths, family_facts) %}
+{% set uxr_artifact_path = artifact_paths.get(item.display_name) %}
+{% set uxr_family_fact = family_facts.get(item.display_name) %}
+<div class="uxr-board-row" data-uxr-row-name="{{ item.display_name }}" data-uxr-row-state="{{ item.state }}" data-uxr-row-family="{{ item.family }}">
+  <span class="uxr-fam-tile uxr-fam-{{ item.family }}" aria-label="{{ uxr_family_label[item.family] }}">{{ uxr_family_mono[item.family] }}</span>
+  <div class="uxr-board-row-main">
+    <div class="uxr-board-row-name">{{ item.display_name }}</div>
+    {% if uxr_artifact_path or uxr_family_fact %}
+    <div class="uxr-board-row-meta">
+      {% if uxr_artifact_path %}<code>{{ uxr_artifact_path }}</code>{% endif %}
+      {% if uxr_artifact_path and uxr_family_fact %} &middot; {% endif %}
+      {% if uxr_family_fact %}{{ uxr_family_fact }}{% endif %}
+    </div>
+    {% endif %}
+    {% if item.coverage %}
+    <div class="uxr-board-row-tags">
+      {% for cov in item.coverage %}<span class="uxr-board-tag">{{ cov.complete }}/{{ cov.total }} {{ cov.label | lower }}</span>{% endfor %}
+      <span class="uxr-board-cap">{{ 'MANIFEST REF' if item.capability == 'manifest_reference' else ('ENTITY-POPULATING' if item.capability == 'populates_entities' else 'METADATA ONLY') }}</span>
+    </div>
+    {% endif %}
+    {% if item.state in ['blocks_export', 'needs_action'] and item.blockers %}
+    <div class="uxr-board-row-blocker">{{ item.blockers[0].label }}</div>
+    {% elif item.state == 'warning' and item.warnings %}
+    <div class="uxr-board-row-warning">{{ item.warnings[0].label | replace('uploaded artifact content', 'pasted artifact content') }}</div>
+    {% endif %}
+  </div>
+  <div class="uxr-board-row-right">
+    <span class="badge badge-{{ 'ready' if item.state == 'ready' else ('draft' if item.state == 'draft' else 'warning') }}">{{ 'Ready' if item.state == 'ready' else ('Draft' if item.state == 'draft' else ('Blocked' if item.state == 'blocks_export' else ('Needs action' if item.state == 'needs_action' else 'Review'))) }}</span>
+    <a href="/upstream?focus={{ item.display_name | urlencode }}" class="uxr-board-edit-btn" data-uxr-edit-target="{{ item.display_name }}">Edit</a>
+  </div>
+</div>
+{% endmacro %}
+
+<div class="card step-surface workflow-surface-group" style="margin-top:16px">
+  <div class="step-section-heading uxr-zone-scan">
+    <div>
+      <h3>Loaded Edge Contracts</h3>
+      <p class="text-muted text-sm">Review edge-contract readiness, then open one contract to inspect or apply deterministic seed suggestions. REST/OpenAPI sources remain in their dedicated sections below.</p>
+    </div>
+    <span class="step-section-chip">Contract Export Readiness</span>
+  </div>
+  {% if edge_contract_only %}
+  <div class="alert alert-info" style="margin-bottom:12px">
+    This reopened project has reviewed edge-contract interface references. No OpenAPI classification source is loaded for Step 3 entity modeling.
+  </div>
+  {% endif %}
+  {# The focused editor owns the single ambient strip in focus mode. #}
+  {% if not focus_name %}
+  <div class="uxr-stat-strip {{ 'uxr-zone-attn' if uxr_us_attn else 'uxr-zone-ready' }}" data-uxr-stat-strip>
+    <span><strong data-uxr-stat="total">{{ uxr_us_total }}</strong> upstream contract{{ 's' if uxr_us_total != 1 }}</span>
+    <span><strong data-uxr-stat="ready">{{ uxr_us_ready_count }}</strong> ready</span>
+    <span><strong data-uxr-stat="attention">{{ uxr_us_attn | length }}</strong> need action</span>
+    {% if uxr_us_warning %}<span><strong data-uxr-stat="review">{{ uxr_us_warning | length }}</strong> need review</span>{% endif %}
+    {% if uxr_us_blockers_count %}<span><strong data-uxr-stat="blockers">{{ uxr_us_blockers_count }}</strong> export blocker{{ 's' if uxr_us_blockers_count != 1 }}</span>{% endif %}
+  </div>
+  {% endif %}
+  <div class="uxr-board uxr-zone-scan" data-uxr-board="upstream" role="region" aria-label="Upstream contract triage board">
+    <div class="uxr-board-filters" role="group" aria-label="Filter upstream contracts">
+      <button type="button" class="uxr-chip is-on" aria-pressed="true" data-uxr-filter="state:all">All &middot; <span class="uxr-chip-count">{{ uxr_us_total }}</span></button>
+      {% if uxr_us_attn %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:attention">Needs action &middot; <span class="uxr-chip-count">{{ uxr_us_attn | length }}</span></button>{% endif %}
+      {% if uxr_us_warning %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:review">Needs review &middot; <span class="uxr-chip-count">{{ uxr_us_warning | length }}</span></button>{% endif %}
+      {% if uxr_us_ready_count %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:ready">Ready &middot; <span class="uxr-chip-count">{{ uxr_us_ready_count }}</span></button>{% endif %}
+      {% set uxr_us_families_present = uxr_us_items | map(attribute='family') | unique | list %}
+      {% if uxr_us_families_present | length > 1 %}
+      <span class="uxr-chip-sep" aria-hidden="true"></span>
+      {% for fam in ['fixed', 'csv', 'xml', 'soap'] %}
+        {% if fam in uxr_us_families_present %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="family:{{ fam }}">{{ uxr_family_mono[fam] }}</button>{% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% if uxr_us_attn %}
+    <div class="uxr-board-group uxr-board-group-attn" data-uxr-group="attention">Needs action</div>
+    {% for item in uxr_us_attn %}{{ uxr_us_row(item, upstream_artifact_paths, upstream_family_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_us_warning %}
+    <div class="uxr-board-group" data-uxr-group="review">Needs review</div>
+    {% for item in uxr_us_warning %}{{ uxr_us_row(item, upstream_artifact_paths, upstream_family_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_us_ready_or_draft %}
+    <div class="uxr-board-group" data-uxr-group="ready">Ready</div>
+    {% for item in uxr_us_ready_or_draft %}{{ uxr_us_row(item, upstream_artifact_paths, upstream_family_facts) }}{% endfor %}
+    {% endif %}
+  </div>
+  <div class="uxr-readiness-legend" role="note" aria-label="Readiness and capability legend">
+    <span class="uxr-readiness-legend-item"><span class="badge badge-ready">Ready</span> Export allowed</span>
+    <span class="uxr-readiness-legend-item"><span class="badge badge-warning">Review</span> Export allowed, review recommended</span>
+    <span class="uxr-readiness-legend-item"><span class="badge badge-warning">Blocked</span> Export disabled until fixed</span>
+    <span class="uxr-readiness-legend-item"><span class="badge badge-draft">Draft</span> Intentionally incomplete</span>
+    <span class="uxr-readiness-legend-item"><span class="uxr-board-cap">MANIFEST REF</span> Capability (also shown as ENTITY-POPULATING / METADATA ONLY)</span>
+  </div>
+</div>
+{% endif %}
+
+{% if edge_contract_readiness %}
+<details class="card step-surface" style="margin-top:16px"{% if focus_name %} open{% endif %}>
+  <summary>
+    <strong>{% if focus_name %}Edit {{ focus_name }}{% else %}Add another upstream edge contract{% endif %}</strong>
+    <span class="text-muted text-sm">{% if focus_name %}Review one saved contract without changing its siblings.{% else %}Save one additional package-relative contract reference.{% endif %}</span>
+  </summary>
+  <div style="margin-top:14px">
+{% else %}
+<div class="card step-surface workflow-surface-group" style="margin-top:16px">
+{% endif %}
+  {% if focus_name %}
+  <section class="uxr-zone-scan" data-uxr-focus-editor="{{ focus_name }}" data-source-of-truth-version="{{ focus_source_of_truth_version }}">
+    <div class="step-section-heading">
+      <div>
+        <p class="text-muted text-sm" style="margin:0 0 4px">Focused upstream contract</p>
+        <h3 style="margin:0" data-uxr-focus-title>{{ focus_item.display_name }}</h3>
+      </div>
+      <a href="/upstream" class="btn btn-secondary btn-sm" data-dirty-ignore>Close</a>
+    </div>
+    <div class="alert {{ 'alert-error' if focus_item.state == 'blocks_export' else ('alert-warn' if focus_item.state in ['warning', 'needs_action'] else 'alert-success') }}" data-uxr-editor-banner data-state="{{ focus_item.state }}">
+      <strong>{{ 'Blocked' if focus_item.state == 'blocks_export' else ('Needs action' if focus_item.state == 'needs_action' else ('Review' if focus_item.state == 'warning' else 'Ready')) }}</strong>
+      <span data-uxr-editor-banner-copy>{% if focus_item.blockers %}{{ focus_item.blockers[0].label }}{% elif focus_item.warnings %}{{ focus_item.warnings[0].label }}{% else %}This contract is ready to export.{% endif %}</span>
+    </div>
+    <div class="uxr-stat-strip {{ 'uxr-zone-attn' if uxr_us_attn else 'uxr-zone-ready' }}" data-uxr-stat-strip>
+      <span><strong data-uxr-stat="total">{{ uxr_us_total }}</strong> upstream contracts</span>
+      <span><strong data-uxr-stat="attention">{{ uxr_us_attn | length }}</strong> need action</span>
+    </div>
+    <div class="text-sm" data-uxr-tab-badges aria-live="polite">
+      {% for ref in focus_item.blockers %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+      {% for ref in focus_item.warnings %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+    </div>
+    <div class="alert alert-warn hidden" data-uxr-conflict-review role="alert" aria-live="assertive">
+      <strong>Saved state changed</strong>
+      <p data-uxr-conflict-message style="margin:6px 0"></p>
+      <details data-uxr-conflict-server-details>
+        <summary>Review current saved values</summary>
+        <pre class="review-drawer-code" data-uxr-conflict-server-state style="max-height:260px;overflow:auto"></pre>
+      </details>
+      <p class="text-sm hidden" data-uxr-conflict-current-list></p>
+      <div class="step-actions" style="margin-top:10px">
+        <button type="button" class="btn btn-primary btn-sm" data-uxr-conflict-reload data-dirty-ignore>Reload saved version</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-conflict-board data-dirty-ignore>Return to current list</button>
+      </div>
+    </div>
+  {% endif %}
+  <div class="step-section-heading">
+    <div>
+      <h3>{% if focus_name %}Edit Upstream Edge Contract{% else %}Add Upstream Edge Contract{% endif %}</h3>
+      <p class="text-muted text-sm">
+        Add one upstream contract at a time. Saved contracts appear in Loaded Edge Contracts.
+        Multiple upstream edge contracts are supported. Save one contract at a time.
+        Enter the package-relative artifact path and optionally paste reviewed content.
+        Studio saves and exports the contract reference. Format-specific inspection helps select metadata,
+        but does not derive CRUD entities or mappings yet.
+      </p>
+    </div>
+    <span class="step-section-chip">Explicit inspect</span>
+  </div>
+
+  <div id="edge-contract-status" class="alert hidden" style="margin-bottom:12px" role="status" aria-live="polite"></div>
+  {% if not edge_contract_readiness %}
+  <div class="alert alert-info" style="margin-bottom:12px">
+    Saved contracts will appear in Loaded Edge Contracts after you save them.
+  </div>
+  {% endif %}
+  <div class="review-kv-grid">
+    <div class="field">
+      <label>Contract Type</label>
+      <select id="edge-contract-type" onchange="refreshEdgeContractFields()">
+        <option value="">Select contract type...</option>
+        {% for value, label in edge_contract_type_labels.items() %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label>Interface Name *</label>
+      <input id="edge-contract-name" type="text" placeholder="e.g. account-status-feed">
+    </div>
+    <div class="field">
+      <label>System</label>
+      <input id="edge-contract-system" type="text" placeholder="e.g. LEGACY_CORE">
+    </div>
+    <div class="field">
+      <label>Version</label>
+      <input id="edge-contract-version" type="text" placeholder="e.g. v1">
+    </div>
+    <div class="field edge-contract-field edge-field-file" id="layout">
+      <label>Layout / spec path</label>
+      <input id="edge-contract-spec" type="text" placeholder="upstream/account-feed-layout.yaml">
+    </div>
+    <div class="field edge-contract-field edge-field-csv">
+      <label>CSV delimiter</label>
+      <input id="edge-contract-csv-delimiter" type="text" value="," maxlength="8" placeholder=",">
+      <p class="text-muted text-sm">Use comma <code>,</code>, pipe <code>|</code>, tilde <code>~</code>, or <code>tab</code>. This updates the pasted CSV layout/spec YAML.</p>
+    </div>
+    <div class="field edge-contract-field edge-field-csv">
+      <label>Has header row</label>
+      <select id="edge-contract-csv-has-header">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+      <p class="text-muted text-sm">Saved as <code>has_header_row</code> in the CSV layout/spec YAML.</p>
+    </div>
+    <div class="field edge-contract-field edge-field-xml" id="xsd">
+      <label>XSD path</label>
+      <input id="edge-contract-xsd-path" type="text" placeholder="contracts/account-status.xsd">
+    </div>
+    <div class="field edge-contract-field edge-field-xml">
+      <label>Root element *</label>
+      <input id="edge-contract-root-element" type="text" placeholder="acct:AccountStatus">
+    </div>
+    <div class="field edge-contract-field edge-field-xml">
+      <label>Namespace</label>
+      <input id="edge-contract-namespace" type="text" placeholder="urn:accounts:v1">
+    </div>
+    <div class="field edge-contract-field edge-field-xml">
+      <label>Namespace alias</label>
+      <input id="edge-contract-namespace-alias" type="text" placeholder="acct">
+    </div>
+    <div class="field edge-contract-field edge-field-soap" id="wsdl">
+      <label>WSDL path</label>
+      <input id="edge-contract-wsdl-path" type="text" placeholder="contracts/account-service.wsdl">
+    </div>
+    <div class="field edge-contract-field edge-field-soap">
+      <label>Service</label>
+      <input id="edge-contract-service" type="text" placeholder="AccountService">
+    </div>
+    <div class="field edge-contract-field edge-field-soap">
+      <label>Port</label>
+      <input id="edge-contract-port" type="text" placeholder="AccountServiceSoap11Port">
+    </div>
+    <div class="field edge-contract-field edge-field-soap">
+      <label>Binding</label>
+      <input id="edge-contract-binding" type="text" placeholder="AccountServiceSoap11Binding">
+    </div>
+    <div class="field edge-contract-field edge-field-soap">
+      <label>Operation</label>
+      <input id="edge-contract-operation" type="text" placeholder="GetAccountStatus">
+      <p class="text-muted text-sm">
+        Selected operation exports inbound SOAP endpoint metadata. Choose adapter-only for a generated handler scaffold,
+        or canonical read-by-id to wire a simple repository lookup. SOAP body/header/fault field mapping beyond this
+        read-by-id slice is still future work.
+      </p>
+    </div>
+  </div>
+
+  <div class="edge-contract-field edge-field-soap" style="margin-top:12px">
+    <div class="step-section-heading">
+      <div>
+        <h4>SOAP operation mapping</h4>
+        <p class="text-muted text-sm">
+          Adapter-only preserves the current generated handler scaffold. Canonical read-by-id maps the selected SOAP
+          operation to a canonical entity lookup and response paths; it does not infer entities or nested SOAP mappings.
+        </p>
+      </div>
+      <span class="step-section-chip">Inbound SOAP</span>
+    </div>
+    <div class="review-kv-grid">
+      <div class="field">
+        <label>Mapping mode</label>
+        <select id="edge-contract-soap-operation-mode" onchange="refreshSoapMappingMode()">
+          <option value="adapter_only">Adapter-only handler scaffold</option>
+          <option value="canonical">Canonical read_by_id lookup</option>
+        </select>
+      </div>
+      <div class="field" id="edge-contract-soap-adapter-fields">
+        <label>Handler method</label>
+        <input id="edge-contract-soap-handler-method" type="text" placeholder="handleGetCustomer">
+        <p class="text-muted text-sm">Leave blank to use Studio's deterministic handler name.</p>
+      </div>
+    </div>
+    <div id="edge-contract-soap-canonical-fields" class="hidden" style="margin-top:8px">
+      <div class="review-kv-grid">
+        <div class="field">
+          <label>Canonical entity *</label>
+          <input id="edge-contract-soap-canonical-entity" type="text" placeholder="Customer">
+        </div>
+        <div class="field">
+          <label>Lookup field *</label>
+          <input id="edge-contract-soap-lookup-field" type="text" placeholder="customerId">
+          <p class="text-muted text-sm">Use the reviewed persistence ID field when Studio knows it.</p>
+        </div>
+        <div class="field" style="grid-column: span 2">
+          <label>SOAP request path *</label>
+          <input id="edge-contract-soap-request-path" type="text" placeholder="/GetCustomerRequest/customerId">
+        </div>
+        <div class="field">
+          <label>Not-found fault</label>
+          <input id="edge-contract-soap-not-found-fault" type="text" placeholder="customerFault">
+        </div>
+        <div class="field">
+          <label>Not-found message</label>
+          <input id="edge-contract-soap-not-found-message" type="text" placeholder="Customer not found">
+        </div>
+      </div>
+      <div class="step-section-heading" style="margin-top:10px">
+        <div>
+          <h5>Response mappings</h5>
+          <p class="text-muted text-sm">Map canonical fields to direct SOAP response paths, for example <code>Customer.status</code> → <code>/GetCustomerResponse/status</code>.</p>
+        </div>
+        <button id="edge-contract-soap-add-response-mapping" class="btn btn-secondary btn-sm" type="button" onclick="addSoapResponseMappingRow()">+ Add response mapping</button>
+      </div>
+      <div id="edge-contract-soap-response-mappings" style="display:grid;gap:8px"></div>
+    </div>
+  </div>
+
+  <div class="field edge-contract-field edge-field-file" style="margin-top:8px">
+    <label>Layout / spec content (optional)</label>
+    <textarea id="edge-contract-spec-content" rows="4" placeholder="Paste reviewed CSV/fixed-width layout YAML..." onblur="refreshUpstreamCsvControlsFromSpec()"></textarea>
+    <p class="text-muted text-sm">
+      Inspect pasted file layout/spec and optional sample content to preview fields, delimiter, sample values, and mapping guidance.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" onclick="inspectUpstreamFileContract()">Inspect layout/sample</button>
+  </div>
+  <div class="edge-contract-field edge-field-file edge-field-xml" style="margin-top:12px">
+    <div class="step-section-heading">
+      <div>
+        <h4>Canonical mapping</h4>
+        <p class="text-muted text-sm">
+          This maps parsed file/XML fields to canonical metadata. It does not infer entities automatically.
+          Enter contract field names on the left and canonical paths such as <code>Account.accountId</code> on the right.
+        </p>
+      </div>
+      <span class="step-section-chip">MVP</span>
+    </div>
+    <div class="field">
+      <label>Canonical entity name</label>
+      <input id="edge-contract-entity-name" type="text" placeholder="Account">
+      <p class="text-muted text-sm">Plain canonical targets like <code>accountId</code> will export as <code>Entity.accountId</code> when this is set.</p>
+    </div>
+    <div id="edge-contract-field-mappings" style="display:grid;gap:8px"></div>
+    <div class="step-actions" style="margin-top:8px">
+      <button class="btn btn-secondary btn-sm" type="button" onclick="addEdgeFieldMappingRow()">+ Add mapping</button>
+    </div>
+    <p class="text-muted text-sm">
+      Enter canonical entity name before seeding target paths. XML/XSD runtime generation needs reviewed XML-to-canonical mappings.
+      Inspect the artifact to review deterministic seeds; applying them fills empty mapping fields only.
+    </p>
+  </div>
+  <div class="field edge-contract-field edge-field-xml" style="margin-top:8px">
+    <label>XSD content (optional)</label>
+    <textarea id="edge-contract-xsd-content" rows="4" placeholder="Paste reviewed XSD content..."></textarea>
+    <p class="text-muted text-sm">Select the XML root element to export with this contract.</p>
+    <button class="btn btn-secondary btn-sm" type="button" onclick="inspectUpstreamEdgeContract()">Inspect artifact</button>
+  </div>
+  <div class="field edge-contract-field edge-field-soap" style="margin-top:8px">
+    <label>WSDL content (optional)</label>
+    <textarea id="edge-contract-wsdl-content" rows="4" placeholder="Paste reviewed WSDL content..."></textarea>
+    <p class="text-muted text-sm">
+      Select WSDL service, port, binding, and operation metadata. Studio exports the selected operation
+      for inbound SOAP endpoint scaffolding; SOAP body/header/fault mapping is a later slice.
+    </p>
+    <button class="btn btn-secondary btn-sm" type="button" onclick="inspectUpstreamEdgeContract()">Inspect artifact</button>
+  </div>
+  <div id="edge-contract-inspect-panel" class="alert alert-info hidden" style="margin-top:12px"></div>
+  <div class="field" style="margin-top:8px">
+    <label>Sample path / content (optional)</label>
+    <input id="edge-contract-sample-path" type="text" placeholder="upstream/sample.xml">
+    <textarea id="edge-contract-sample-content" rows="3" placeholder="Paste optional sample payload..." style="margin-top:8px"></textarea>
+  </div>
+
+  <div class="step-actions" style="margin-top:12px">
+    {% if focus_name %}
+    <button class="btn btn-primary" type="button" data-uxr-save-one>Save</button>
+    <button class="btn btn-secondary" type="button" data-uxr-cancel-focus data-dirty-ignore>Cancel</button>
+    <a href="{{ step2_continue_href }}" class="btn btn-primary" data-dirty-navigation>Continue →</a>
+    {% else %}
+    <button class="btn btn-primary" type="button" onclick="saveEdgeContract()">Save Contract Reference</button>
+    {% endif %}
+  </div>
+  {% if focus_name %}
+  </section>
+  {% endif %}
+{% if edge_contract_readiness %}
+  </div>
+</details>
+{% else %}
+</div>
+{% endif %}
+
+{% if session.raw_spec_url or session.raw_spec_filename or saved_openapi_interfaces %}
+<div class="card step-surface workflow-surface-group" style="margin-top:16px">
+  <div class="step-section-heading">
+    <div>
+      <h3>Current Contract Source</h3>
+      <p class="text-muted text-sm">
+        Review the currently loaded OpenAPI contract reference. Uploaded file inputs stay blank after reopen because browsers do not allow repopulating local file pickers.
+      </p>
+    </div>
+    <span class="step-section-chip">Current session</span>
+  </div>
+
+  {% if session.raw_spec_url %}
+  <div class="review-kv-grid">
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Source Type</span>
+      <strong>OpenAPI URL</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail" style="grid-column: span 2">
+      <span class="review-kv-label">Spec URL</span>
+      <strong style="word-break:break-all">{{ session.raw_spec_url }}</strong>
+    </div>
+  </div>
+  {% elif session.raw_spec_filename %}
+  <div class="review-kv-grid">
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Source Type</span>
+      <strong>Uploaded Spec File</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail" style="grid-column: span 2">
+      <span class="review-kv-label">File Name</span>
+      <strong>{{ session.raw_spec_filename }}</strong>
+    </div>
+  </div>
+  {% else %}
+  <div class="review-drawer-section">
+    <p class="text-muted text-sm" style="margin-top:0">
+      This reopened project currently retains saved OpenAPI interface references from prior authoring or export state.
+    </p>
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Interface</th>
+            <th>Saved Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for iface in saved_openapi_interfaces %}
+            {% if iface.spec_url or iface.spec or iface.xsd_path or iface.wsdl_path %}
+            <tr>
+              <td><strong>{{ iface.name }}</strong></td>
+              <td>
+                {% if iface.spec_url %}
+                <code style="word-break:break-all">{{ iface.spec_url }}</code>
+                {% elif iface.spec %}
+                <code>{{ iface.spec }}</code>
+                {% elif iface.xsd_path %}
+                <code>{{ iface.xsd_path }}</code>
+                {% elif iface.wsdl_path %}
+                <code>{{ iface.wsdl_path }}</code>
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if session.classified_entities or (session.app_archetype == 'passthrough-router' and session.classified_operations) %}
+<div class="card step-surface workflow-surface-group">
+  <div class="step-section-heading">
+    <div>
+      <h2>{% if session.app_archetype == "passthrough-router" %}Detected Operations{% else %}Classification Results{% endif %}</h2>
+      <p class="subtitle">
+        {% if session.app_archetype == "passthrough-router" %}
+        Review the inbound operations detected from the contract, then continue into router authoring.
+        {% else %}
+        Review how the contract was classified, then continue to entity and operation modeling in Step 3.
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  {% if session.app_archetype == "passthrough-router" %}
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Method</th><th>Path</th></tr>
+    </thead>
+    <tbody>
+    {% for op in session.classified_operations %}
+    <tr>
+      <td><strong>{{ op.name }}</strong></td>
+      <td>{{ op.method }}</td>
+      <td><code>{{ op.path }}</code></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <table>
+    <thead>
+      <tr><th>Schema</th><th>Classification</th><th>Confidence</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+    {% for e in session.classified_entities %}
+    <tr>
+      <td><strong>{{ e.name }}</strong></td>
+      <td>
+        <span class="badge badge-{{ e.classification }}">{{ e.classification }}</span>
+      </td>
+      <td><span class="badge badge-{{ 'confirmed' if e.confidence == 'confirmed' else 'draft' }}">{{ e.confidence }}</span></td>
+      <td class="text-muted text-sm">{{ e.reason or '—' }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+</div>
+{% endif %}
+
+<div class="card step-surface workflow-surface-group" style="margin-top:16px">
+  <div class="step-section-heading">
+    <div>
+      <h3>Wizard Navigation</h3>
+      <p class="text-muted text-sm">{{ step2_continue_copy }}</p>
+    </div>
+  </div>
+  <div class="step-actions">
+    <a href="/" class="btn btn-secondary">Previous</a>
+    <a href="{{ step2_continue_href }}" class="btn btn-primary">{{ step2_continue_label }}</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function ingestUrl() {
+  const url = document.getElementById('spec-url').value.trim();
+  if (!url) { showStatus('ingest-status', 'Enter a URL first.', 'warn'); return; }
+  document.getElementById('url-spinner').classList.remove('hidden');
+  const fd = new FormData();
+  fd.append('spec_url', url);
+  const r = await fetch('/upstream/ingest-url', { method: 'POST', body: fd });
+  const data = await r.json();
+  document.getElementById('url-spinner').classList.add('hidden');
+  if (data.ok) {
+    showStatus('ingest-status', `Classified ${data.entities.length} schemas. Proceed to Step 3 when ready.`, 'success');
+    setTimeout(() => location.reload(), 800);
+  } else {
+    showStatus('ingest-status', 'Error: ' + data.error, 'error');
+  }
+}
+
+async function ingestFile() {
+  const file = document.getElementById('spec-file').files[0];
+  if (!file) { showStatus('ingest-status', 'Select a file first.', 'warn'); return; }
+  document.getElementById('file-spinner').classList.remove('hidden');
+  const fd = new FormData();
+  fd.append('spec_file', file);
+  const r = await fetch('/upstream/ingest-file', { method: 'POST', body: fd });
+  const data = await r.json();
+  document.getElementById('file-spinner').classList.add('hidden');
+  if (data.ok) {
+    showStatus('ingest-status', `Classified ${data.entities.length} schemas. Proceed to Step 3 when ready.`, 'success');
+    setTimeout(() => location.reload(), 800);
+  } else {
+    showStatus('ingest-status', 'Error: ' + data.error, 'error');
+  }
+}
+
+async function saveManual() {
+  const name = document.getElementById('manual-entity').value.trim() || 'Entity';
+  const data = await postJSON('/upstream/save-samples', { entity_name: name });
+  if (data.ok) location.href = '/entities';
+}
+
+function edgeValue(id) {
+  return document.getElementById(id)?.value?.trim() || null;
+}
+
+function edgeRawValue(id) {
+  return document.getElementById(id)?.value || '';
+}
+
+function normalizeCsvDelimiterControl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return ',';
+  if (raw.toLowerCase() === 'tab' || raw === '\\t') return 'tab';
+  if (raw.toLowerCase() === 'comma') return ',';
+  if (raw.toLowerCase() === 'pipe') return '|';
+  if (raw.toLowerCase() === 'tilde') return '~';
+  return raw;
+}
+
+function readCsvScalarFromSpecContent(content, key) {
+  const pattern = new RegExp(`^\\s*${key}\\s*:\\s*(.+?)\\s*$`, 'mi');
+  const match = String(content || '').match(pattern);
+  if (!match) return null;
+  return match[1].replace(/^['"]|['"]$/g, '').trim();
+}
+
+function refreshUpstreamCsvControlsFromSpec() {
+  const content = edgeRawValue('edge-contract-spec-content');
+  const delimiter = readCsvScalarFromSpecContent(content, 'delimiter') || readCsvScalarFromSpecContent(content, 'separator');
+  const header = readCsvScalarFromSpecContent(content, 'has_header_row') || readCsvScalarFromSpecContent(content, 'header');
+  const delimiterInput = document.getElementById('edge-contract-csv-delimiter');
+  const headerSelect = document.getElementById('edge-contract-csv-has-header');
+  if (delimiterInput && delimiter) delimiterInput.value = normalizeCsvDelimiterControl(delimiter);
+  if (headerSelect && header !== null) {
+    headerSelect.value = ['true', '1', 'yes', 'on'].includes(String(header).toLowerCase()) ? 'true' : 'false';
+  }
+}
+
+function yamlScalarForCsvDelimiter(delimiter) {
+  const normalized = normalizeCsvDelimiterControl(delimiter);
+  if (normalized === 'tab') return 'tab';
+  return `"${String(normalized).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+}
+
+function upsertYamlScalarLine(content, key, renderedValue) {
+  const lines = String(content || '').split(/\r?\n/);
+  const pattern = new RegExp(`^(\\s*)${key}\\s*:`);
+  for (let index = 0; index < lines.length; index += 1) {
+    const match = lines[index].match(pattern);
+    if (match) {
+      lines[index] = `${match[1]}${key}: ${renderedValue}`;
+      return lines.join('\n');
+    }
+  }
+  let insertAt = 0;
+  const formatIndex = lines.findIndex(line => /^\s*format\s*:/.test(line));
+  if (formatIndex >= 0) insertAt = formatIndex + 1;
+  lines.splice(insertAt, 0, `${key}: ${renderedValue}`);
+  return lines.join('\n');
+}
+
+function applyUpstreamCsvControlsToSpec() {
+  if (edgeValue('edge-contract-type') !== 'file-csv') return true;
+  const spec = document.getElementById('edge-contract-spec-content');
+  if (!spec || !spec.value.trim()) return true;
+  const delimiter = normalizeCsvDelimiterControl(document.getElementById('edge-contract-csv-delimiter')?.value || ',');
+  if (delimiter !== 'tab' && delimiter.length !== 1) {
+    showStatus('edge-contract-status', 'CSV delimiter must be one character, or use tab.', 'warn');
+    return false;
+  }
+  const header = document.getElementById('edge-contract-csv-has-header')?.value === 'true';
+  spec.value = upsertYamlScalarLine(spec.value, 'has_header_row', header ? 'true' : 'false');
+  spec.value = upsertYamlScalarLine(spec.value, 'delimiter', yamlScalarForCsvDelimiter(delimiter));
+  return true;
+}
+
+function refreshEdgeContractFields() {
+  const type = edgeValue('edge-contract-type');
+  document.querySelectorAll('.edge-contract-field').forEach(el => el.classList.add('hidden'));
+  if (!type) {
+    refreshSoapMappingMode();
+    return;
+  }
+  const group = type === 'xml-xsd' ? 'xml' : (type === 'soap-wsdl' ? 'soap' : 'file');
+  document.querySelectorAll(`.edge-field-${group}`).forEach(el => el.classList.remove('hidden'));
+  document.querySelectorAll('.edge-field-csv').forEach(el => el.classList.toggle('hidden', type !== 'file-csv'));
+  if (type === 'file-csv') refreshUpstreamCsvControlsFromSpec();
+  refreshSoapMappingMode();
+}
+
+function refreshSoapMappingMode() {
+  const type = edgeValue('edge-contract-type');
+  const mode = edgeValue('edge-contract-soap-operation-mode') || 'adapter_only';
+  const adapter = document.getElementById('edge-contract-soap-adapter-fields');
+  const canonical = document.getElementById('edge-contract-soap-canonical-fields');
+  if (!adapter || !canonical) return;
+  const showSoap = type === 'soap-wsdl';
+  adapter.classList.toggle('hidden', !showSoap || mode !== 'adapter_only');
+  canonical.classList.toggle('hidden', !showSoap || mode !== 'canonical');
+}
+
+function upstreamEdgeContractPayload() {
+  return {
+    direction: 'upstream',
+    type: edgeValue('edge-contract-type'),
+    name: edgeValue('edge-contract-name'),
+    system: edgeValue('edge-contract-system'),
+    version: edgeValue('edge-contract-version'),
+    spec: edgeValue('edge-contract-spec'),
+    spec_content: edgeValue('edge-contract-spec-content'),
+    xsd_path: edgeValue('edge-contract-xsd-path'),
+    xsd_content: edgeValue('edge-contract-xsd-content'),
+    root_element: edgeValue('edge-contract-root-element'),
+    namespace: edgeValue('edge-contract-namespace'),
+    namespace_alias: edgeValue('edge-contract-namespace-alias'),
+    wsdl_path: edgeValue('edge-contract-wsdl-path'),
+    wsdl_content: edgeValue('edge-contract-wsdl-content'),
+    service: edgeValue('edge-contract-service'),
+    port: edgeValue('edge-contract-port'),
+    binding: edgeValue('edge-contract-binding'),
+    selected_operation_name: edgeValue('edge-contract-operation'),
+    soap_operation_mode: edgeValue('edge-contract-soap-operation-mode') || 'adapter_only',
+    soap_handler_method: edgeValue('edge-contract-soap-handler-method'),
+    soap_canonical_operation: collectSoapCanonicalOperation(),
+    entity_name: edgeValue('edge-contract-entity-name'),
+    field_mappings: collectEdgeFieldMappings(),
+    sample_path: edgeValue('edge-contract-sample-path'),
+    sample_content: edgeValue('edge-contract-sample-content'),
+    csv_delimiter: edgeValue('edge-contract-csv-delimiter'),
+    csv_has_header_row: edgeValue('edge-contract-csv-has-header'),
+  };
+}
+
+async function saveEdgeContract() {
+  if (!edgeValue('edge-contract-type')) {
+    showStatus('edge-contract-status', 'Select a contract type before saving.', 'warn');
+    return;
+  }
+  if (!applyUpstreamCsvControlsToSpec()) return;
+  const payload = upstreamEdgeContractPayload();
+  const result = await postJSON('/upstream/edge-contract/save', payload);
+  if (result.ok) {
+    showStatus('edge-contract-status', result.message || 'Saved contract reference.', 'success');
+    setTimeout(() => location.reload(), 600);
+  } else {
+    const errors = Array.isArray(result.errors) ? result.errors.join(' ') : 'Unable to save contract reference.';
+    showStatus('edge-contract-status', errors, 'error');
+  }
+}
+
+function addSoapResponseMappingRow(source = '', targetPath = '') {
+  const container = document.getElementById('edge-contract-soap-response-mappings');
+  if (!container) return;
+  const row = document.createElement('div');
+  row.className = 'edge-soap-response-mapping-row';
+  row.style = 'display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center';
+  row.innerHTML = `
+    <input type="text" class="edge-soap-map-source" placeholder="Customer.customerId">
+    <input type="text" class="edge-soap-map-target-path" placeholder="/GetCustomerResponse/customerId">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.edge-soap-response-mapping-row').remove()">Remove</button>
+  `;
+  row.querySelector('.edge-soap-map-source').value = source;
+  row.querySelector('.edge-soap-map-target-path').value = targetPath;
+  container.appendChild(row);
+}
+
+function collectSoapResponseMappings() {
+  return Array.from(document.querySelectorAll('#edge-contract-soap-response-mappings .edge-soap-response-mapping-row'))
+    .map(row => ({
+      source: row.querySelector('.edge-soap-map-source')?.value?.trim() || null,
+      target_path: row.querySelector('.edge-soap-map-target-path')?.value?.trim() || null,
+    }))
+    .filter(row => row.source && row.target_path);
+}
+
+function collectSoapCanonicalOperation() {
+  const mode = edgeValue('edge-contract-soap-operation-mode') || 'adapter_only';
+  if (mode !== 'canonical') return null;
+  return {
+    kind: 'read_by_id',
+    entity: edgeValue('edge-contract-soap-canonical-entity'),
+    lookup_field: edgeValue('edge-contract-soap-lookup-field'),
+    request_path: edgeValue('edge-contract-soap-request-path'),
+    response_mappings: collectSoapResponseMappings(),
+    not_found_fault: edgeValue('edge-contract-soap-not-found-fault'),
+    not_found_message: edgeValue('edge-contract-soap-not-found-message'),
+  };
+}
+
+function addEdgeFieldMappingRow(source = '', target = '') {
+  const container = document.getElementById('edge-contract-field-mappings');
+  if (!container) return;
+  const sourceHint = edgeValue('edge-contract-type') === 'xml-xsd' ? 'xml_field_or_attribute' : 'file_field_name';
+  const row = document.createElement('div');
+  row.className = 'edge-field-mapping-row';
+  row.style = 'display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center';
+  row.innerHTML = `
+    <input type="text" class="edge-map-source" placeholder="${escapeHtml(sourceHint)}">
+    <input type="text" class="edge-map-target" placeholder="Account.accountId">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.edge-field-mapping-row').remove()">Remove</button>
+  `;
+  row.querySelector('.edge-map-source').value = source;
+  row.querySelector('.edge-map-target').value = target;
+  container.appendChild(row);
+}
+
+function fileFieldToCanonicalField(name) {
+  const raw = String(name || '').trim();
+  if (/^[A-Za-z][A-Za-z0-9]*$/.test(raw)) {
+    return raw.charAt(0).toLowerCase() + raw.slice(1);
+  }
+  const parts = raw
+    .replace(/[^A-Za-z0-9]+/g, '_')
+    .split('_')
+    .filter(Boolean)
+    .map(part => part.toLowerCase());
+  if (parts.length === 0) return '';
+  return parts
+    .map((part, index) => index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+function upstreamSeedPatchContext() {
+  return {
+    type: edgeValue('edge-contract-type') || '',
+    entity_name: edgeValue('edge-contract-entity-name') || '',
+    spec_content: edgeRawValue('edge-contract-spec-content'),
+    sample_content: edgeRawValue('edge-contract-sample-content'),
+    xsd_content: edgeRawValue('edge-contract-xsd-content'),
+    csv_delimiter: edgeRawValue('edge-contract-csv-delimiter'),
+    csv_has_header_row: edgeRawValue('edge-contract-csv-has-header'),
+  };
+}
+
+function upstreamSeedPatchContextFingerprint() {
+  return window.EdgeForgeSeedPatch.contextFingerprint(upstreamSeedPatchContext());
+}
+
+function clearUpstreamMappingDerivedSeeds() {
+  document.querySelectorAll('#edge-contract-field-mappings .edge-field-mapping-row').forEach(row => {
+    row.querySelectorAll('.edge-map-source, .edge-map-target').forEach(clearDerivedSeed);
+  });
+}
+
+function discardStaleUpstreamInspection(requestContextFingerprint) {
+  if (upstreamSeedPatchContextFingerprint() === requestContextFingerprint) return false;
+  clearUpstreamMappingDerivedSeeds();
+  showStatus(
+    'edge-contract-status',
+    'The entity or artifact changed while inspection was running. Inspect again to refresh suggestions.',
+    'warn',
+  );
+  return true;
+}
+
+function upstreamMappingSeedValues() {
+  return Array.from(document.querySelectorAll('#edge-contract-field-mappings .edge-field-mapping-row'))
+    .map(row => {
+      const source = row.querySelector('.edge-map-source')?.value?.trim() || '';
+      const target = row.querySelector('.edge-map-target')?.value?.trim() || '';
+      const targetParts = target.split('.').filter(Boolean);
+      return {
+        // A target-only row is still an empty slot. Use its canonical tail as
+        // a matcher hint so a compatible inspected field fills that source
+        // input rather than causing a duplicate mapping row.
+        target_field: source || targetParts[targetParts.length - 1] || '',
+        proposed_value: { source, target },
+      };
+    })
+    .filter(value => value.target_field);
+}
+
+function buildUpstreamMappingSeedRows(names) {
+  const entity = edgeValue('edge-contract-entity-name') || '';
+  const targets = (names || []).filter(Boolean).map(name => ({ name: String(name) }));
+  const sources = entity
+    ? targets.map(({ name }) => ({
+        // The saved mapping source stays artifact-raw, while the matcher
+        // compares the canonical candidate to that raw name. This keeps the
+        // exact/case/snake↔camel basis honest in the patch sheet.
+        name: fileFieldToCanonicalField(name),
+        proposed_value: {
+          source: name,
+          target: `${entity}.${fileFieldToCanonicalField(name)}`,
+        },
+      }))
+    : [];
+  return window.EdgeForgeSeedPatch.buildRows(sources, targets, upstreamMappingSeedValues());
+}
+
+function recomputeUpstreamMappingDerivedSeeds(rows) {
+  clearUpstreamMappingDerivedSeeds();
+  const mappingRows = Array.from(
+    document.querySelectorAll('#edge-contract-field-mappings .edge-field-mapping-row'),
+  );
+  (rows || []).filter(row => row.state === 'matched').forEach(seed => {
+    const mappingRow = mappingRows.find(candidate => (
+      candidate.querySelector('.edge-map-source')?.value?.trim() === seed.target_field
+    ));
+    const selectors = { source: '.edge-map-source', target: '.edge-map-target' };
+    (seed.matching_slots || []).forEach(slot => {
+      markDerivedSeed(mappingRow?.querySelector(selectors[slot]), seed.basis);
+    });
+  });
+}
+
+function applyUpstreamMappingSeedPatch(rows, checkedKeys) {
+  const result = window.EdgeForgeSeedPatch.applyRows(
+    rows,
+    upstreamMappingSeedValues(),
+    checkedKeys,
+  );
+  const container = document.getElementById('edge-contract-field-mappings');
+  result.applied.forEach(applied => {
+    const proposed = applied.proposed_value || {};
+    let row = Array.from(container.querySelectorAll('.edge-field-mapping-row')).find(candidate => (
+      candidate.querySelector('.edge-map-source')?.value?.trim() === applied.target_field
+    ));
+    if (!row && proposed.target) {
+      row = Array.from(container.querySelectorAll('.edge-field-mapping-row')).find(candidate => (
+        !candidate.querySelector('.edge-map-source')?.value?.trim()
+        && candidate.querySelector('.edge-map-target')?.value?.trim() === proposed.target
+      ));
+    }
+    if (!row) {
+      row = Array.from(container.querySelectorAll('.edge-field-mapping-row')).find(candidate => (
+        !candidate.querySelector('.edge-map-source')?.value?.trim()
+        && !candidate.querySelector('.edge-map-target')?.value?.trim()
+      ));
+    }
+    if (!row) {
+      addEdgeFieldMappingRow();
+      const allRows = Array.from(container.querySelectorAll('.edge-field-mapping-row'));
+      row = allRows[allRows.length - 1];
+    }
+    const controls = {
+      source: row?.querySelector('.edge-map-source'),
+      target: row?.querySelector('.edge-map-target'),
+    };
+    Object.entries(controls).forEach(([slot, control]) => {
+      if (control && !control.value.trim() && proposed[slot]) control.value = proposed[slot];
+    });
+    (applied.changed_slots || []).forEach(slot => {
+      markDerivedSeed(controls[slot], applied.basis);
+    });
+  });
+  return result;
+}
+
+function renderUpstreamMappingSeedPatch(panel, names) {
+  const contextFingerprint = upstreamSeedPatchContextFingerprint();
+  const rows = buildUpstreamMappingSeedRows(names);
+  const entity = edgeValue('edge-contract-entity-name') || '';
+  recomputeUpstreamMappingDerivedSeeds(rows);
+  return renderDeterministicSeedPatch(panel, {
+    title: 'Deterministic mapping seeds',
+    description: entity
+      ? `Match inspected contract fields to ${entity} canonical paths; nothing is written until you keep it.`
+      : 'Enter a canonical entity to produce deterministic targets. Unmatched rows stay blank.',
+    rows,
+    sourceLabel: row => row.source_field || (row.state === 'collision' ? '— multiple matches' : '— no match'),
+    targetLabel: row => row.proposed_value?.target || '— left blank',
+    onApply: checkedKeys => applyUpstreamMappingSeedPatch(rows, checkedKeys),
+    isCurrent: () => upstreamSeedPatchContextFingerprint() === contextFingerprint,
+    onStale: clearUpstreamMappingDerivedSeeds,
+    statusId: 'edge-contract-status',
+  });
+}
+function collectEdgeFieldMappings() {
+  return Array.from(document.querySelectorAll('#edge-contract-field-mappings .edge-field-mapping-row'))
+    .map(row => ({
+      source: row.querySelector('.edge-map-source')?.value?.trim() || null,
+      target: row.querySelector('.edge-map-target')?.value?.trim() || null,
+    }))
+    .filter(row => row.source && row.target);
+}
+
+async function inspectUpstreamEdgeContract() {
+  const type = edgeValue('edge-contract-type');
+  if (type !== 'xml-xsd' && type !== 'soap-wsdl') {
+    showStatus('edge-contract-status', 'Artifact inspection is available for XML/XSD and SOAP/WSDL contracts.', 'warn');
+    return;
+  }
+  const content = type === 'xml-xsd' ? edgeValue('edge-contract-xsd-content') : edgeValue('edge-contract-wsdl-content');
+  const requestContextFingerprint = upstreamSeedPatchContextFingerprint();
+  const result = await postJSON('/upstream/edge-contract/inspect', {
+    direction: 'upstream',
+    type,
+    content,
+  });
+  if (discardStaleUpstreamInspection(requestContextFingerprint)) return;
+  renderEdgeInspectionResult(result);
+}
+
+async function inspectUpstreamFileContract() {
+  const type = edgeValue('edge-contract-type');
+  if (type !== 'file-fixed-width' && type !== 'file-csv') {
+    showStatus('edge-contract-status', 'File inspection is available for fixed-width and CSV/delimited contracts.', 'warn');
+    return;
+  }
+  if (!applyUpstreamCsvControlsToSpec()) return;
+  const requestContextFingerprint = upstreamSeedPatchContextFingerprint();
+  const result = await postJSON('/upstream/edge-contract/file-inspect', {
+    direction: 'upstream',
+    type,
+    spec_content: edgeValue('edge-contract-spec-content'),
+    sample_content: edgeRawValue('edge-contract-sample-content'),
+    csv_delimiter: edgeValue('edge-contract-csv-delimiter'),
+    csv_has_header_row: edgeValue('edge-contract-csv-has-header'),
+  });
+  if (discardStaleUpstreamInspection(requestContextFingerprint)) return;
+  renderFileInspectionResult(
+    document.getElementById('edge-contract-inspect-panel'),
+    result,
+    {
+      emptyTitle: 'File layout/sample inspection could not run',
+      seedLabel: 'Seed mapping rows from inspected fields',
+    },
+  );
+}
+
+function renderFileInspectionResult(panel, result, options = {}) {
+  if (!panel) return;
+  panel.className = result.ok ? 'alert alert-info' : 'alert alert-error';
+  panel.innerHTML = '';
+
+  const heading = document.createElement('strong');
+  heading.textContent = result.ok ? 'File layout/sample inspection' : (options.emptyTitle || 'File inspection could not run');
+  panel.appendChild(heading);
+
+  const help = document.createElement('p');
+  help.className = 'text-sm';
+  help.style.margin = '6px 0';
+  help.textContent = 'Inspection reads pasted layout/spec and sample content only. It does not infer canonical entities automatically.';
+  panel.appendChild(help);
+
+  const errors = Array.isArray(result.errors) ? result.errors : [];
+  if (errors.length > 0) panel.appendChild(buildInspectionList(errors, 'Errors'));
+  const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+  if (warnings.length > 0) panel.appendChild(buildInspectionList(warnings, 'Warnings'));
+
+  const layout = result.layout || {};
+  const fields = Array.isArray(layout.fields) ? layout.fields : [];
+  if (result.ok) {
+    const meta = document.createElement('div');
+    meta.className = 'text-sm';
+    meta.style.margin = '8px 0';
+    if (layout.type === 'file-csv') {
+      meta.innerHTML = `<strong>Delimiter:</strong> ${escapeHtml(layout.delimiter_label || layout.delimiter || 'comma (,)' )} · <strong>Header:</strong> ${layout.has_header_row === null || layout.has_header_row === undefined ? 'Not specified' : escapeHtml(String(layout.has_header_row))}`;
+    } else {
+      meta.innerHTML = `<strong>Expected line length:</strong> ${escapeHtml(layout.expected_line_length || 'Not available')}`;
+    }
+    panel.appendChild(meta);
+    panel.appendChild(buildFileInspectionFieldTable(layout));
+    panel.appendChild(buildFileSamplePreview(result.sample_preview || {}));
+    renderUpstreamMappingSeedPatch(panel, fields.map(field => field.name).filter(Boolean));
+  }
+  panel.classList.remove('hidden');
+}
+
+function buildFileInspectionFieldTable(layout) {
+  const table = document.createElement('table');
+  table.style.marginTop = '8px';
+  const fields = Array.isArray(layout.fields) ? layout.fields : [];
+  const isCsv = layout.type === 'file-csv';
+  table.innerHTML = `
+    <thead><tr>
+      <th>Field</th>
+      <th>${isCsv ? 'Column' : 'Start'}</th>
+      <th>${isCsv ? 'Type' : 'Length'}</th>
+      <th>Required</th>
+    </tr></thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  fields.forEach(field => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${escapeHtml(field.name || 'Unnamed')}</code></td>
+      <td>${escapeHtml(isCsv ? field.column : field.start)}</td>
+      <td>${escapeHtml(isCsv ? (field.type || 'Not specified') : field.length)}</td>
+      <td>${field.required === null || field.required === undefined ? 'Not specified' : escapeHtml(String(field.required))}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  if (fields.length === 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = '<td colspan="4" class="text-muted">No fields were parsed from this layout/spec.</td>';
+    tbody.appendChild(row);
+  }
+  return table;
+}
+
+function buildFileSamplePreview(samplePreview) {
+  const rows = Array.isArray(samplePreview.rows) ? samplePreview.rows : [];
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const heading = document.createElement('strong');
+  heading.textContent = 'Sample preview';
+  section.appendChild(heading);
+  if (rows.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'text-muted text-sm';
+    empty.textContent = 'No sample content was provided for preview.';
+    section.appendChild(empty);
+    return section;
+  }
+  rows.slice(0, 3).forEach(row => {
+    const list = document.createElement('ul');
+    list.style.margin = '6px 0 0 18px';
+    (row.values || row.columns || []).forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<code>${escapeHtml(item.field)}</code>: ${escapeHtml(item.value)}`;
+      list.appendChild(li);
+    });
+    section.appendChild(list);
+  });
+  return section;
+}
+
+function renderEdgeInspectionResult(result) {
+  const panel = document.getElementById('edge-contract-inspect-panel');
+  if (!panel) return;
+  panel.className = result.ok ? 'alert alert-info' : 'alert alert-error';
+  panel.innerHTML = '';
+
+  const heading = document.createElement('strong');
+  heading.textContent = result.ok ? 'Artifact inspection candidates' : 'Artifact inspection could not run';
+  panel.appendChild(heading);
+
+  const help = document.createElement('p');
+  help.className = 'text-sm';
+  help.style.margin = '6px 0';
+  help.textContent = 'Inspection reads pasted artifact content to help select contract metadata. It does not derive CRUD entities or mappings yet.';
+  panel.appendChild(help);
+
+  const errors = Array.isArray(result.errors) ? result.errors : [];
+  if (errors.length > 0) {
+    panel.appendChild(buildInspectionList(errors, 'Errors'));
+  }
+  const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+  if (warnings.length > 0) {
+    panel.appendChild(buildInspectionList(warnings, 'Warnings'));
+  }
+  if (result.ok) {
+    const type = edgeValue('edge-contract-type');
+    if (type === 'xml-xsd') {
+      renderXmlInspectionControls(panel, result);
+    } else if (type === 'soap-wsdl') {
+      renderSoapInspectionControls(panel, result);
+    }
+  }
+  panel.classList.remove('hidden');
+}
+
+function renderXmlInspectionControls(panel, result) {
+  const candidates = result.candidates || {};
+  const roots = Array.isArray(candidates.root_elements) ? candidates.root_elements : [];
+  const selected = result.selected || {};
+  const grid = document.createElement('div');
+  grid.className = 'review-kv-grid';
+  grid.style.marginTop = '8px';
+
+  grid.appendChild(buildReadOnlyInspectionValue('Target namespace', candidates.target_namespace || 'Not detected'));
+  grid.appendChild(buildReadOnlyInspectionValue('Namespace alias', candidates.namespace_alias || 'Not detected'));
+  const rootSelect = document.createElement('select');
+  rootSelect.id = 'edge-contract-inspect-root';
+  roots.forEach(root => {
+    const option = document.createElement('option');
+    option.value = root.qualified_name || root.name || '';
+    option.textContent = `${root.qualified_name || root.name}${root.type ? ` (${root.type})` : ''}`;
+    if (option.value === selected.root_element) option.selected = true;
+    rootSelect.appendChild(option);
+  });
+  grid.appendChild(buildInspectionField('Root element candidate', rootSelect));
+  panel.appendChild(grid);
+
+  renderXmlFieldCandidates(panel, candidates.fields || [], {
+    seedLabel: 'Seed XML mapping rows from inspected fields',
+  });
+
+  const apply = document.createElement('button');
+  apply.type = 'button';
+  apply.className = 'btn btn-secondary btn-sm';
+  apply.style.marginTop = '8px';
+  apply.textContent = 'Apply selected metadata';
+  apply.onclick = () => {
+    const rootValue = document.getElementById('edge-contract-inspect-root')?.value || selected.root_element || null;
+    if (rootValue) document.getElementById('edge-contract-root-element').value = rootValue;
+    if (candidates.target_namespace) document.getElementById('edge-contract-namespace').value = candidates.target_namespace;
+    if (candidates.namespace_alias) document.getElementById('edge-contract-namespace-alias').value = candidates.namespace_alias;
+    showStatus('edge-contract-status', 'Applied inspected XML/XSD metadata to the form.', 'success');
+  };
+  panel.appendChild(apply);
+}
+
+function renderXmlFieldCandidates(panel, fields, options = {}) {
+  const cleanFields = Array.isArray(fields) ? fields.filter(field => field?.name) : [];
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const heading = document.createElement('strong');
+  heading.textContent = 'XML field candidates';
+  section.appendChild(heading);
+  if (cleanFields.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'text-muted text-sm';
+    empty.textContent = 'No XML field candidates were extracted. Add mapping rows manually if needed.';
+    section.appendChild(empty);
+    panel.appendChild(section);
+    return;
+  }
+  const table = document.createElement('table');
+  table.style.marginTop = '8px';
+  table.innerHTML = `
+    <thead><tr><th>Field</th><th>Kind</th><th>Type</th><th>Required</th></tr></thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  cleanFields.forEach(field => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${escapeHtml(field.name || '')}</code></td>
+      <td>${escapeHtml(field.kind || 'element')}</td>
+      <td>${escapeHtml(field.type || 'Not specified')}</td>
+      <td>${field.required === null || field.required === undefined ? 'Not specified' : escapeHtml(String(field.required))}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  section.appendChild(table);
+  renderUpstreamMappingSeedPatch(section, cleanFields.map(field => field.name).filter(Boolean));
+  panel.appendChild(section);
+}
+
+function renderSoapInspectionControls(panel, result) {
+  const candidates = result.candidates || {};
+  const selected = result.selected || {};
+  const grid = document.createElement('div');
+  grid.className = 'review-kv-grid';
+  grid.style.marginTop = '8px';
+  grid.appendChild(buildReadOnlyInspectionValue('Target namespace', candidates.target_namespace || 'Not detected'));
+  grid.appendChild(buildInspectionField('Service candidate', buildCandidateSelect('edge-contract-inspect-service', candidates.services, 'name', selected.service)));
+  grid.appendChild(buildInspectionField('Port candidate', buildCandidateSelect('edge-contract-inspect-port', candidates.ports, 'name', selected.port)));
+  grid.appendChild(buildInspectionField('Binding candidate', buildCandidateSelect('edge-contract-inspect-binding', candidates.bindings, 'name', selected.binding)));
+  grid.appendChild(buildInspectionField('Operation candidate', buildCandidateSelect('edge-contract-inspect-operation', candidates.operations, 'name', selected.operation)));
+  panel.appendChild(grid);
+
+  const apply = document.createElement('button');
+  apply.type = 'button';
+  apply.className = 'btn btn-secondary btn-sm';
+  apply.style.marginTop = '8px';
+  apply.textContent = 'Apply selected metadata';
+  apply.onclick = () => {
+    const mappings = [
+      ['edge-contract-inspect-service', 'edge-contract-service'],
+      ['edge-contract-inspect-port', 'edge-contract-port'],
+      ['edge-contract-inspect-binding', 'edge-contract-binding'],
+      ['edge-contract-inspect-operation', 'edge-contract-operation'],
+    ];
+    mappings.forEach(([sourceId, targetId]) => {
+      const value = document.getElementById(sourceId)?.value || '';
+      if (value) document.getElementById(targetId).value = value;
+    });
+    showStatus('edge-contract-status', 'Applied inspected SOAP/WSDL metadata to the form.', 'success');
+  };
+  panel.appendChild(apply);
+}
+
+function buildCandidateSelect(id, rows, valueKey, selectedValue) {
+  const select = document.createElement('select');
+  select.id = id;
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = 'Select...';
+  select.appendChild(empty);
+  (Array.isArray(rows) ? rows : []).forEach(row => {
+    const value = row?.[valueKey] || '';
+    if (!value) return;
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    if (value === selectedValue) option.selected = true;
+    select.appendChild(option);
+  });
+  return select;
+}
+
+function buildInspectionField(label, input) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'field';
+  const labelEl = document.createElement('label');
+  labelEl.textContent = label;
+  wrapper.appendChild(labelEl);
+  wrapper.appendChild(input);
+  return wrapper;
+}
+
+function buildReadOnlyInspectionValue(label, value) {
+  const item = document.createElement('div');
+  item.className = 'review-kv-item';
+  const labelEl = document.createElement('span');
+  labelEl.className = 'review-kv-label';
+  labelEl.textContent = label;
+  const strong = document.createElement('strong');
+  strong.textContent = value;
+  item.appendChild(labelEl);
+  item.appendChild(strong);
+  return item;
+}
+
+function buildInspectionList(items, label) {
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const strong = document.createElement('strong');
+  strong.textContent = label;
+  section.appendChild(strong);
+  const list = document.createElement('ul');
+  list.style.margin = '6px 0 0 18px';
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    list.appendChild(li);
+  });
+  section.appendChild(list);
+  return section;
+}
+
+document.addEventListener('DOMContentLoaded', refreshEdgeContractFields);
+const uxrUpstreamFocusName = {{ focus_name | tojson }};
+let uxrUpstreamFocusOriginalName = uxrUpstreamFocusName;
+let uxrUpstreamFocusSourceVersion = {{ focus_source_of_truth_version | tojson }};
+let uxrUpstreamLastSavedItem = {{ focus_interface | tojson }};
+let uxrUpstreamDirtyTracker = null;
+let uxrUpstreamConflictData = null;
+let uxrActiveStateFilter = 'all';
+let uxrActiveFamilyFilter = null;
+
+function setUpstreamControl(id, value) {
+  const control = document.getElementById(id);
+  if (control) control.value = value ?? '';
+}
+
+function loadUpstreamInterface(data) {
+  if (!data) return;
+  const fields = {
+    'edge-contract-type': data.type,
+    'edge-contract-name': data.name,
+    'edge-contract-system': data.system,
+    'edge-contract-version': data.version,
+    'edge-contract-spec': data.spec,
+    'edge-contract-spec-content': data.spec_content,
+    'edge-contract-xsd-path': data.xsd_path,
+    'edge-contract-xsd-content': data.xsd_content,
+    'edge-contract-root-element': data.root_element,
+    'edge-contract-namespace': data.namespace,
+    'edge-contract-namespace-alias': data.namespace_alias,
+    'edge-contract-wsdl-path': data.wsdl_path,
+    'edge-contract-wsdl-content': data.wsdl_content,
+    'edge-contract-service': data.service,
+    'edge-contract-port': data.port,
+    'edge-contract-binding': data.binding,
+    'edge-contract-operation': data.selected_operation_name,
+    'edge-contract-soap-operation-mode': data.soap_operation_mode || 'adapter_only',
+    'edge-contract-soap-handler-method': data.soap_handler_method,
+    'edge-contract-entity-name': data.entity_name,
+    'edge-contract-sample-path': data.sample_path,
+    'edge-contract-sample-content': data.sample_content,
+  };
+  Object.entries(fields).forEach(([id, value]) => setUpstreamControl(id, value));
+
+  const canonical = data.soap_canonical_operation || {};
+  setUpstreamControl('edge-contract-soap-canonical-entity', canonical.entity);
+  setUpstreamControl('edge-contract-soap-lookup-field', canonical.lookup_field);
+  setUpstreamControl('edge-contract-soap-request-path', canonical.request_path);
+  setUpstreamControl('edge-contract-soap-not-found-fault', canonical.not_found_fault);
+  setUpstreamControl('edge-contract-soap-not-found-message', canonical.not_found_message);
+
+  const soapMappings = document.getElementById('edge-contract-soap-response-mappings');
+  soapMappings?.replaceChildren();
+  (canonical.response_mappings || []).forEach(mapping => {
+    addSoapResponseMappingRow(mapping.source || '', mapping.target_path || '');
+  });
+
+  const fieldMappings = document.getElementById('edge-contract-field-mappings');
+  fieldMappings?.replaceChildren();
+  (data.field_mappings || []).forEach(mapping => {
+    addEdgeFieldMappingRow(mapping.source || '', mapping.target || '');
+  });
+
+  refreshEdgeContractFields();
+  refreshUpstreamCsvControlsFromSpec();
+  refreshSoapMappingMode();
+}
+
+function uxrUpstreamStateLabel(state) {
+  if (state === 'blocks_export') return 'Blocked';
+  if (state === 'needs_action') return 'Needs action';
+  if (state === 'warning') return 'Review';
+  if (state === 'draft') return 'Draft';
+  return 'Ready';
+}
+
+function uxrRenderUpstreamReadiness(readiness) {
+  const banner = document.querySelector('[data-uxr-editor-banner]');
+  if (banner) {
+    banner.dataset.state = readiness.state;
+    banner.classList.remove('alert-error', 'alert-warn', 'alert-success');
+    banner.classList.add(
+      readiness.state === 'blocks_export'
+        ? 'alert-error'
+        : (readiness.state === 'warning' || readiness.state === 'needs_action' ? 'alert-warn' : 'alert-success'),
+    );
+    const heading = banner.querySelector('strong');
+    if (heading) heading.textContent = uxrUpstreamStateLabel(readiness.state);
+    const copy = banner.querySelector('[data-uxr-editor-banner-copy]');
+    const firstRef = readiness.blockers?.[0] || readiness.warnings?.[0];
+    if (copy) copy.textContent = firstRef?.label || 'This contract is ready to export.';
+  }
+
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    [...(readiness.blockers || []), ...(readiness.warnings || [])].forEach(ref => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = ref.section_ref || '';
+      badge.dataset.fieldRef = ref.field_ref || '';
+      badge.textContent = ref.label || '';
+      badges.appendChild(badge);
+    });
+  }
+}
+
+const UXR_UPSTREAM_READINESS_FIELD_SELECTORS = {
+  'xsd-path-or-uploaded-xsd-content': '#edge-contract-xsd-path',
+  'wsdl-path-or-uploaded-wsdl-content': '#edge-contract-wsdl-path',
+  'layout-spec-path-or-uploaded-layout-spec-content': '#edge-contract-spec',
+  'root-element': '#edge-contract-root-element',
+};
+
+// Raw field names emitted by edge_contract_validation_blockers. This map is
+// intentionally separate from readiness_view's slug vocabulary above.
+const UXR_UPSTREAM_SAVE_BLOCKER_FIELD_SELECTORS = {
+  name: '#edge-contract-name',
+  type: '#edge-contract-type',
+  xsd_path: '#edge-contract-xsd-path',
+  root_element: '#edge-contract-root-element',
+  wsdl_path: '#edge-contract-wsdl-path',
+  spec: '#edge-contract-spec',
+  entity_name: '#edge-contract-entity-name',
+  soap_operation_mode: '#edge-contract-soap-operation-mode',
+  soap_canonical_entity: '#edge-contract-soap-canonical-entity',
+  soap_lookup_field: '#edge-contract-soap-lookup-field',
+  soap_request_field: '#edge-contract-soap-request-path',
+  selected_operation_name: '#edge-contract-operation',
+  soap_response_mappings: '#edge-contract-soap-response-mappings .edge-soap-map-source, #edge-contract-soap-add-response-mapping',
+};
+
+const UXR_UPSTREAM_SECTION_SELECTORS = {
+  layout: '#edge-contract-spec',
+  xsd: '#edge-contract-xsd-path',
+  wsdl: '#edge-contract-wsdl-path',
+  contract: '#edge-contract-name',
+};
+
+function uxrUpstreamFieldSelector(fieldRef, sectionRef = '') {
+  return UXR_UPSTREAM_READINESS_FIELD_SELECTORS[fieldRef]
+    || UXR_UPSTREAM_SAVE_BLOCKER_FIELD_SELECTORS[fieldRef]
+    || UXR_UPSTREAM_SECTION_SELECTORS[sectionRef]
+    || null;
+}
+
+function uxrScrollToUpstreamSection(sectionRef) {
+  if (!sectionRef) return;
+  document.querySelector(`[id="${sectionRef}"]`)?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+  });
+}
+
+function uxrActivateUpstreamBadge(badge) {
+  const sectionRef = badge.dataset.sectionRef || '';
+  uxrScrollToUpstreamSection(sectionRef);
+  const selector = uxrUpstreamFieldSelector(badge.dataset.fieldRef || '', sectionRef);
+  if (selector) document.querySelector(selector)?.focus();
+}
+
+function uxrRenderUpstreamSaveBlockers(blockers) {
+  const items = blockers || [];
+  const labels = items.map(blocker => blocker.label || blocker.code).filter(Boolean);
+  if (labels.length) {
+    showWarningStatusList(
+      'edge-contract-status',
+      'This contract needs attention before it can be saved:',
+      labels,
+    );
+  } else {
+    showStatus('edge-contract-status', 'The upstream interface could not be saved.', 'error');
+  }
+
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    items.forEach(blocker => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = blocker.section_ref || '';
+      badge.dataset.fieldRef = blocker.field_ref || '';
+      badge.textContent = blocker.label || blocker.code || '';
+      badges.appendChild(badge);
+    });
+  }
+
+  const first = items[0];
+  if (first) {
+    uxrScrollToUpstreamSection(first.section_ref || '');
+    const selector = uxrUpstreamFieldSelector(first.field_ref || '', first.section_ref || '');
+    if (selector) document.querySelector(selector)?.focus();
+  }
+}
+
+const UXR_CONDITIONAL_CHIPS = [
+  { count: 'attention', filter: 'state:attention', label: 'Needs action' },
+  { count: 'review', filter: 'state:review', label: 'Needs review' },
+  { count: 'ready', filter: 'state:ready', label: 'Ready' },
+];
+const UXR_CONDITIONAL_STATS = [
+  { count: 'review', suffix: () => ' need review' },
+  { count: 'blockers', suffix: value => ` export blocker${value === 1 ? '' : 's'}` },
+];
+const UXR_STAT_ORDER = ['total', 'ready', 'attention', 'review', 'blockers'];
+const UXR_BOARD_GROUPS = [
+  { key: 'attention', label: 'Needs action', className: 'uxr-board-group uxr-board-group-attn' },
+  { key: 'review', label: 'Needs review', className: 'uxr-board-group' },
+  { key: 'ready', label: 'Ready', className: 'uxr-board-group' },
+];
+const UXR_BOARD_CAPABILITY_LABELS = {
+  manifest_reference: 'MANIFEST REF',
+  populates_entities: 'ENTITY-POPULATING',
+  metadata_only: 'METADATA ONLY',
+};
+const UXR_UPSTREAM_FAMILY_MONO = { fixed: 'FIX', csv: 'CSV', xml: 'XML', soap: 'SOAP' };
+const UXR_UPSTREAM_FAMILY_LABEL = {
+  fixed: 'Fixed-width file',
+  csv: 'CSV / delimited file',
+  xml: 'XML / XSD',
+  soap: 'SOAP / WSDL',
+};
+const UXR_UPSTREAM_FAMILY_ORDER = ['fixed', 'csv', 'xml', 'soap'];
+const UXR_UPLOADED_ARTIFACT_COPY = ['uploaded', 'artifact', 'content'].join(' ');
+
+function uxrBoardStatStrip() {
+  const board = document.querySelector('[data-uxr-board]');
+  if (!board) return null;
+  let el = board.previousElementSibling;
+  while (el && !el.hasAttribute('data-uxr-stat-strip')) el = el.previousElementSibling;
+  return el;
+}
+
+function uxrResetStateFilterToAll() {
+  uxrActiveStateFilter = 'all';
+  document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(chip => {
+    const isAll = chip.dataset.uxrFilter === 'state:all';
+    chip.classList.toggle('is-on', isAll);
+    chip.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+  });
+}
+
+function uxrSyncConditionalStats(counts) {
+  const strip = uxrBoardStatStrip();
+  if (!strip) return;
+  UXR_CONDITIONAL_STATS.forEach(spec => {
+    const value = counts[spec.count];
+    const existing = strip.querySelector(`[data-uxr-stat="${spec.count}"]`);
+    if (!value) {
+      if (existing) existing.closest('span').remove();
+      return;
+    }
+    if (existing) {
+      existing.textContent = String(value);
+      if (existing.nextSibling) existing.nextSibling.textContent = spec.suffix(value);
+      return;
+    }
+    const span = document.createElement('span');
+    const strong = document.createElement('strong');
+    strong.dataset.uxrStat = spec.count;
+    strong.textContent = String(value);
+    span.append(strong, spec.suffix(value));
+    const before = UXR_STAT_ORDER.slice(UXR_STAT_ORDER.indexOf(spec.count) + 1)
+      .map(key => strip.querySelector(`[data-uxr-stat="${key}"]`))
+      .find(Boolean);
+    if (before) strip.insertBefore(span, before.closest('span'));
+    else strip.append(span);
+  });
+}
+
+function uxrSyncConditionalChips(counts) {
+  const filters = document.querySelector('.uxr-board-filters');
+  if (!filters) return;
+  let previous = filters.querySelector('[data-uxr-filter="state:all"]');
+  UXR_CONDITIONAL_CHIPS.forEach(spec => {
+    let chip = filters.querySelector(`[data-uxr-filter="${spec.filter}"]`);
+    const value = counts[spec.count];
+    if (!value) {
+      if (chip) {
+        const wasActive = chip.classList.contains('is-on');
+        chip.remove();
+        if (wasActive) uxrResetStateFilterToAll();
+      }
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'uxr-chip';
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.uxrFilter = spec.filter;
+      chip.append(`${spec.label} · `);
+      const countEl = document.createElement('span');
+      countEl.className = 'uxr-chip-count';
+      chip.append(countEl);
+      if (previous) previous.after(chip);
+      else filters.prepend(chip);
+    }
+    chip.querySelector('.uxr-chip-count').textContent = String(value);
+    previous = chip;
+  });
+}
+
+function uxrSyncFamilyChips() {
+  const filters = document.querySelector('.uxr-board-filters');
+  if (!filters) return;
+  const families = new Set(
+    Array.from(document.querySelectorAll('.uxr-board-row'))
+      .map(row => row.dataset.uxrRowFamily)
+      .filter(Boolean),
+  );
+  let separator = filters.querySelector('.uxr-chip-sep');
+  const familyChips = Array.from(filters.querySelectorAll('[data-uxr-filter^="family:"]'));
+
+  if (families.size <= 1) {
+    familyChips.forEach(chip => chip.remove());
+    separator?.remove();
+    uxrActiveFamilyFilter = null;
+    return;
+  }
+
+  if (uxrActiveFamilyFilter && !families.has(uxrActiveFamilyFilter)) {
+    uxrActiveFamilyFilter = null;
+  }
+  familyChips.forEach(chip => {
+    const family = (chip.dataset.uxrFilter || '').split(':')[1];
+    if (!families.has(family) || !UXR_UPSTREAM_FAMILY_ORDER.includes(family)) chip.remove();
+  });
+
+  if (!separator) {
+    separator = document.createElement('span');
+    separator.className = 'uxr-chip-sep';
+    separator.setAttribute('aria-hidden', 'true');
+    const stateChips = filters.querySelectorAll('[data-uxr-filter^="state:"]');
+    stateChips[stateChips.length - 1]?.after(separator);
+  }
+
+  let anchor = separator;
+  UXR_UPSTREAM_FAMILY_ORDER.forEach(family => {
+    if (!families.has(family)) return;
+    let chip = filters.querySelector(`[data-uxr-filter="family:${family}"]`);
+    if (!chip) {
+      chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'uxr-chip';
+      chip.dataset.uxrFilter = `family:${family}`;
+      chip.textContent = UXR_UPSTREAM_FAMILY_MONO[family];
+    }
+    const active = uxrActiveFamilyFilter === family;
+    chip.classList.toggle('is-on', active);
+    chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+    anchor.after(chip);
+    anchor = chip;
+  });
+}
+
+function uxrRecomputeStatsAndFilterCounts() {
+  const rows = Array.from(document.querySelectorAll('.uxr-board-row'));
+  const counts = {
+    total: rows.length,
+    ready: rows.filter(row => row.dataset.uxrRowState === 'ready').length,
+    attention: rows.filter(row => ['blocks_export', 'needs_action'].includes(row.dataset.uxrRowState)).length,
+    review: rows.filter(row => row.dataset.uxrRowState === 'warning').length,
+    blockers: rows.filter(row => row.dataset.uxrRowState === 'blocks_export').length,
+  };
+  Object.entries(counts).forEach(([key, value]) => {
+    document.querySelectorAll(`[data-uxr-stat="${key}"]`).forEach(stat => {
+      stat.textContent = String(value);
+    });
+  });
+  uxrSyncConditionalStats(counts);
+  uxrSyncConditionalChips(counts);
+  uxrSyncFamilyChips();
+  document.querySelectorAll('[data-uxr-stat-strip]').forEach(strip => {
+    strip.classList.toggle('uxr-zone-attn', counts.attention > 0);
+    strip.classList.toggle('uxr-zone-ready', counts.attention === 0);
+  });
+  const allCount = document.querySelector('[data-uxr-filter="state:all"] .uxr-chip-count');
+  if (allCount) allCount.textContent = String(counts.total);
+}
+
+function uxrApplyBoardFilters() {
+  document.querySelectorAll('.uxr-board-row').forEach(row => {
+    const state = row.dataset.uxrRowState;
+    const stateOk = uxrActiveStateFilter === 'all'
+      || (uxrActiveStateFilter === 'attention' && ['blocks_export', 'needs_action'].includes(state))
+      || (uxrActiveStateFilter === 'review' && state === 'warning')
+      || (uxrActiveStateFilter === 'ready' && ['ready', 'draft'].includes(state));
+    const familyOk = !uxrActiveFamilyFilter || row.dataset.uxrRowFamily === uxrActiveFamilyFilter;
+    row.classList.toggle('hidden', !(stateOk && familyOk));
+  });
+  document.querySelectorAll('.uxr-board-group').forEach(group => {
+    let sibling = group.nextElementSibling;
+    let anyVisible = false;
+    while (sibling && !sibling.classList.contains('uxr-board-group')) {
+      if (sibling.classList.contains('uxr-board-row') && !sibling.classList.contains('hidden')) {
+        anyVisible = true;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    group.classList.toggle('hidden', !anyVisible);
+  });
+}
+
+function uxrBoardGroupForState(state) {
+  if (state === 'blocks_export' || state === 'needs_action') return 'attention';
+  if (state === 'warning') return 'review';
+  return 'ready';
+}
+
+function uxrEnsureBoardGroup(board, key) {
+  let heading = board.querySelector(`.uxr-board-group[data-uxr-group="${key}"]`);
+  if (heading) return heading;
+  const spec = UXR_BOARD_GROUPS.find(group => group.key === key);
+  heading = document.createElement('div');
+  heading.className = spec.className;
+  heading.dataset.uxrGroup = key;
+  heading.textContent = spec.label;
+  const laterKeys = UXR_BOARD_GROUPS.slice(UXR_BOARD_GROUPS.findIndex(group => group.key === key) + 1)
+    .map(group => group.key);
+  const before = laterKeys
+    .map(laterKey => board.querySelector(`.uxr-board-group[data-uxr-group="${laterKey}"]`))
+    .find(Boolean);
+  board.insertBefore(heading, before || null);
+  return heading;
+}
+
+function uxrRegroupBoardRow(row) {
+  const board = row.closest('[data-uxr-board]');
+  if (!board) return;
+  const target = uxrBoardGroupForState(row.dataset.uxrRowState || '');
+  let heading = row.previousElementSibling;
+  while (heading && !heading.classList.contains('uxr-board-group')) heading = heading.previousElementSibling;
+  if (heading?.dataset.uxrGroup === target) return;
+  let anchor = uxrEnsureBoardGroup(board, target);
+  while (anchor.nextElementSibling?.classList.contains('uxr-board-row')) {
+    anchor = anchor.nextElementSibling;
+  }
+  anchor.after(row);
+}
+
+function uxrRenderBoardRowReadinessDetails(row, readiness) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+  main.querySelectorAll('.uxr-board-row-tags, .uxr-board-row-blocker, .uxr-board-row-warning')
+    .forEach(detail => detail.remove());
+  const coverage = Array.isArray(readiness.coverage) ? readiness.coverage : [];
+  if (coverage.length) {
+    const tags = document.createElement('div');
+    tags.className = 'uxr-board-row-tags';
+    coverage.forEach(cov => {
+      const tag = document.createElement('span');
+      tag.className = 'uxr-board-tag';
+      tag.textContent = `${cov.complete}/${cov.total} ${String(cov.label || '').toLowerCase()}`.trim();
+      tags.appendChild(tag);
+    });
+    const capability = document.createElement('span');
+    capability.className = 'uxr-board-cap';
+    capability.textContent = UXR_BOARD_CAPABILITY_LABELS[readiness.capability] || 'METADATA ONLY';
+    tags.appendChild(capability);
+    main.appendChild(tags);
+  }
+  const ref = ['blocks_export', 'needs_action'].includes(readiness.state)
+    ? readiness.blockers?.[0]
+    : (readiness.state === 'warning' ? readiness.warnings?.[0] : null);
+  if (!ref?.label) return;
+  const detail = document.createElement('div');
+  detail.className = readiness.state === 'warning'
+    ? 'uxr-board-row-warning'
+    : 'uxr-board-row-blocker';
+  detail.textContent = readiness.state === 'warning'
+    ? ref.label.replace(UXR_UPLOADED_ARTIFACT_COPY, 'pasted artifact content')
+    : ref.label;
+  main.appendChild(detail);
+}
+
+function uxrRenderBoardRowMetadata(row, boardMetadata) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+  main.querySelector('.uxr-board-row-meta')?.remove();
+  const artifactPath = boardMetadata?.artifact_path;
+  const familyFact = boardMetadata?.family_fact;
+  if (!artifactPath && !familyFact) return;
+  const meta = document.createElement('div');
+  meta.className = 'uxr-board-row-meta';
+  if (artifactPath) {
+    const path = document.createElement('code');
+    path.textContent = artifactPath;
+    meta.appendChild(path);
+  }
+  if (artifactPath && familyFact) meta.appendChild(document.createTextNode(' · '));
+  if (familyFact) meta.appendChild(document.createTextNode(familyFact));
+  main.querySelector('.uxr-board-row-name')?.after(meta);
+}
+
+function uxrUpdateBoardRowFromSaved(readiness, previousName, boardMetadata) {
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(previousName)}"]`);
+  if (!row) return;
+  row.dataset.uxrRowName = readiness.display_name;
+  row.dataset.uxrRowState = readiness.state;
+  row.dataset.uxrRowFamily = readiness.family;
+  const name = row.querySelector('.uxr-board-row-name');
+  if (name) name.textContent = readiness.display_name;
+  const tile = row.querySelector('.uxr-fam-tile');
+  if (tile) {
+    tile.className = `uxr-fam-tile uxr-fam-${readiness.family}`;
+    tile.textContent = UXR_UPSTREAM_FAMILY_MONO[readiness.family] || readiness.family.toUpperCase();
+    tile.setAttribute('aria-label', UXR_UPSTREAM_FAMILY_LABEL[readiness.family] || readiness.family);
+  }
+  const badge = row.querySelector('.uxr-board-row-right .badge');
+  if (badge) {
+    badge.className = `badge badge-${readiness.state === 'ready' ? 'ready' : (readiness.state === 'draft' ? 'draft' : 'warning')}`;
+    badge.textContent = uxrUpstreamStateLabel(readiness.state);
+  }
+  const edit = row.querySelector('[data-uxr-edit-target]');
+  if (edit) {
+    edit.dataset.uxrEditTarget = readiness.display_name;
+    edit.href = `/upstream?focus=${encodeURIComponent(readiness.display_name)}`;
+  }
+  uxrRenderBoardRowMetadata(row, boardMetadata);
+  uxrRenderBoardRowReadinessDetails(row, readiness);
+  uxrRegroupBoardRow(row);
+  uxrRecomputeStatsAndFilterCounts();
+  uxrApplyBoardFilters();
+}
+
+function uxrUpdateAmbientAndRail(data) {
+  const stepTwo = data.step_counts?.['2'] || data.step_counts?.[2];
+  if (stepTwo) {
+    document.querySelectorAll('[data-uxr-stat="total"]').forEach(element => {
+      element.textContent = String(stepTwo.count);
+    });
+    document.querySelectorAll('[data-uxr-stat="attention"]').forEach(element => {
+      element.textContent = String(stepTwo.attention);
+    });
+  }
+  (data.rail || []).forEach(entry => {
+    const link = Array.from(document.querySelectorAll('.wizard-nav-link')).find(candidate => (
+      candidate.querySelector('.wizard-nav-marker')?.textContent?.trim() === String(entry.step)
+    ));
+    if (!link) return;
+    let chip = link.querySelector('.uxr-rail-chip');
+    if (!entry.count) {
+      chip?.remove();
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('span');
+      chip.className = 'badge uxr-rail-chip';
+      link.querySelector('.wizard-nav-copy')?.appendChild(chip);
+    }
+    chip.textContent = entry.attention
+      ? `${entry.count} · ${entry.attention} need action`
+      : `${entry.count} items`;
+  });
+}
+
+function uxrHideUpstreamConflict() {
+  document.querySelector('[data-uxr-conflict-review]')?.classList.add('hidden');
+  uxrUpstreamConflictData = null;
+}
+
+function uxrPresentUpstreamConflict(data) {
+  uxrUpstreamConflictData = data;
+  const panel = document.querySelector('[data-uxr-conflict-review]');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  const hasCurrentItem = Boolean(data.item && data.readiness);
+  const message = panel.querySelector('[data-uxr-conflict-message]');
+  if (message) {
+    message.textContent = hasCurrentItem
+      ? 'Your unsaved edits are preserved. Compare them with the current saved values, then reload only when you are ready to discard your draft.'
+      : 'Your unsaved edits are preserved, but this contract was renamed or removed. Return to the current list when you are ready.';
+  }
+  panel.querySelector('[data-uxr-conflict-server-details]')?.classList.toggle('hidden', !hasCurrentItem);
+  const serverState = panel.querySelector('[data-uxr-conflict-server-state]');
+  if (serverState) serverState.textContent = hasCurrentItem ? JSON.stringify(data.item, null, 2) : '';
+  panel.querySelector('[data-uxr-conflict-reload]')?.classList.toggle('hidden', !hasCurrentItem);
+  const currentList = panel.querySelector('[data-uxr-conflict-current-list]');
+  if (currentList) {
+    const names = (data.current_items || []).map(item => item.name).filter(Boolean);
+    currentList.textContent = names.length
+      ? `Current upstream contracts: ${names.join(', ')}`
+      : 'There are no current upstream contracts.';
+    currentList.classList.toggle('hidden', hasCurrentItem);
+  }
+}
+
+function uxrReloadUpstreamConflictItem() {
+  if (!uxrUpstreamConflictData?.item || !uxrUpstreamConflictData?.readiness) return;
+  if (uxrUpstreamDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and reload the current saved version?')) return;
+  uxrUpstreamLastSavedItem = JSON.parse(JSON.stringify(uxrUpstreamConflictData.item));
+  uxrUpstreamFocusOriginalName = uxrUpstreamConflictData.item.name;
+  uxrUpstreamFocusSourceVersion = uxrUpstreamConflictData.source_of_truth_version;
+  loadUpstreamInterface(uxrUpstreamLastSavedItem);
+  const title = document.querySelector('[data-uxr-focus-title]');
+  if (title) title.textContent = uxrUpstreamConflictData.readiness.display_name;
+  uxrRenderUpstreamReadiness(uxrUpstreamConflictData.readiness);
+  history.replaceState({}, '', `/upstream?focus=${encodeURIComponent(uxrUpstreamLastSavedItem.name)}`);
+  uxrUpstreamDirtyTracker?.markClean();
+  uxrHideUpstreamConflict();
+  showStatus('edge-contract-status', 'Reloaded the current saved version.', 'success');
+}
+
+function uxrReturnToUpstreamList() {
+  if (uxrUpstreamDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and return to the current list?')) return;
+  uxrUpstreamDirtyTracker?.destroy();
+  window.location.href = '/upstream';
+}
+
+async function uxrSaveFocusedUpstreamInterface() {
+  if (!edgeValue('edge-contract-type')) {
+    uxrRenderUpstreamSaveBlockers([{
+      code: 'invalid-select-a-contract-type-before-saving',
+      label: 'Select a contract type before saving.',
+      field_ref: 'type',
+      section_ref: 'contract',
+    }]);
+    return;
+  }
+  if (!applyUpstreamCsvControlsToSpec()) return;
+  const previousName = uxrUpstreamFocusOriginalName;
+  const data = await postJSON('/upstream/edge-contract/save', {
+    item: upstreamEdgeContractPayload(),
+    original_name: uxrUpstreamFocusOriginalName,
+    source_of_truth_version: uxrUpstreamFocusSourceVersion,
+  });
+  if (!data.ok) {
+    if (data.recovery && data.source_of_truth_version) {
+      uxrPresentUpstreamConflict(data);
+      showStatus('edge-contract-status', data.error || 'This contract changed. Review the fresh saved state.', 'warn');
+      return;
+    }
+    uxrRenderUpstreamSaveBlockers(data.blockers);
+    return;
+  }
+
+  uxrUpstreamLastSavedItem = JSON.parse(JSON.stringify(data.item));
+  uxrUpstreamFocusOriginalName = data.item.name;
+  uxrUpstreamFocusSourceVersion = data.source_of_truth_version;
+  const title = document.querySelector('[data-uxr-focus-title]');
+  if (title) title.textContent = data.readiness.display_name;
+  uxrRenderUpstreamReadiness(data.readiness);
+  uxrUpdateBoardRowFromSaved(data.readiness, previousName, data.board_metadata);
+  uxrUpdateAmbientAndRail(data);
+  uxrHideUpstreamConflict();
+  history.replaceState({}, '', `/upstream?focus=${encodeURIComponent(data.item.name)}`);
+  uxrUpstreamDirtyTracker?.markClean();
+  const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+  if (warnings.length) {
+    showWarningStatusList(
+      'edge-contract-status',
+      'Saved with guidance.',
+      warnings.map(warning => warning.message || warning.label || String(warning)),
+    );
+  } else {
+    showStatus('edge-contract-status', data.message || 'Saved contract reference.', 'success');
+  }
+}
+
+function uxrInitUpstreamFocusEditor() {
+  if (!uxrUpstreamFocusName || !uxrUpstreamLastSavedItem) return;
+  loadUpstreamInterface(uxrUpstreamLastSavedItem);
+  if (window.location.hash) uxrScrollToUpstreamSection(window.location.hash.slice(1));
+  uxrUpstreamDirtyTracker = window.createDirtyTracker({
+    snapshot: upstreamEdgeContractPayload,
+  });
+  uxrUpstreamDirtyTracker.markClean();
+  document.querySelector('[data-uxr-save-one]')?.addEventListener('click', uxrSaveFocusedUpstreamInterface);
+  document.querySelector('[data-uxr-conflict-reload]')?.addEventListener('click', uxrReloadUpstreamConflictItem);
+  document.querySelector('[data-uxr-conflict-board]')?.addEventListener('click', uxrReturnToUpstreamList);
+  document.querySelector('[data-uxr-cancel-focus]')?.addEventListener('click', () => {
+    if (uxrUpstreamDirtyTracker?.isDirty() && !window.confirm('Discard changes to this upstream interface?')) return;
+    loadUpstreamInterface(uxrUpstreamLastSavedItem);
+    uxrUpstreamDirtyTracker?.markClean();
+    uxrUpstreamDirtyTracker?.destroy();
+    window.location.href = '/upstream';
+  });
+  document.querySelector('[data-uxr-tab-badges]')?.addEventListener('click', event => {
+    const badge = event.target.closest('.badge');
+    if (badge) uxrActivateUpstreamBadge(badge);
+  });
+}
+
+function uxrInitStep2TriageBoard() {
+  if (!document.body.classList.contains('ux-refresh')) return;
+  uxrInitUpstreamFocusEditor();
+
+  document.querySelectorAll('[data-uxr-edit-target]').forEach(button => {
+    button.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      event.preventDefault();
+      const buttons = Array.from(document.querySelectorAll(
+        '.uxr-board-row:not(.hidden) [data-uxr-edit-target]',
+      ));
+      const offset = event.key === 'ArrowDown' ? 1 : -1;
+      buttons[(buttons.indexOf(button) + offset + buttons.length) % buttons.length]?.focus();
+    });
+  });
+
+  document.querySelector('.uxr-board-filters')?.addEventListener('click', event => {
+    const chip = event.target.closest('[data-uxr-filter]');
+    if (!chip) return;
+    const [kind, value] = (chip.dataset.uxrFilter || '').split(':');
+    if (kind === 'state') {
+      document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(candidate => {
+        candidate.classList.remove('is-on');
+        candidate.setAttribute('aria-pressed', 'false');
+      });
+      chip.classList.add('is-on');
+      chip.setAttribute('aria-pressed', 'true');
+      uxrActiveStateFilter = value;
+    } else if (kind === 'family') {
+      const alreadyOn = chip.classList.contains('is-on');
+      document.querySelectorAll('[data-uxr-filter^="family:"]').forEach(candidate => {
+        candidate.classList.remove('is-on');
+        candidate.setAttribute('aria-pressed', 'false');
+      });
+      if (alreadyOn) {
+        uxrActiveFamilyFilter = null;
+      } else {
+        chip.classList.add('is-on');
+        chip.setAttribute('aria-pressed', 'true');
+        uxrActiveFamilyFilter = value;
+      }
+    }
+    uxrApplyBoardFilters();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', uxrInitStep2TriageBoard);
+</script>
+{% endblock %}

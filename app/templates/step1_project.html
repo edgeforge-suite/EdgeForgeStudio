@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 1: Project Setup{% endblock %}
+
+{% block content %}
+<div class="card kickoff-card workflow-surface-group">
+  <div class="kickoff-header">
+    <div>
+      <h2>Step 1: Project Kickoff</h2>
+      <p class="subtitle">
+        Define project identity, choose the governed flow, and launch the document foundation that later workflow steps use for Knowledge Assist provenance and evidence export. These fields still map directly to the EdgeForge Engine manifest.
+      </p>
+    </div>
+    <div class="kickoff-next-step">
+      <span class="kickoff-section-label">Next Step</span>
+      <div class="kickoff-next-title">{{ next_step_label }}</div>
+      <div class="text-muted text-sm">{{ next_step_hint }}</div>
+    </div>
+  </div>
+
+  <form method="post" action="/">
+    <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+    <div class="kickoff-layout">
+      <div class="kickoff-form-column">
+        {% if project_notice_message %}
+        <div class="alert alert-warn">
+          {{ project_notice_message }}
+        </div>
+        {% endif %}
+
+        <div class="field">
+          <label>App Type / Archetype <span style="color:var(--danger)">*</span></label>
+          <div class="kickoff-archetype-grid">
+            {% for archetype in app_archetypes %}
+            <label class="kickoff-archetype-card workflow-surface-card">
+              <div class="kickoff-archetype-radio">
+                <input
+                  type="radio"
+                  name="app_archetype"
+                  value="{{ archetype.id }}"
+                  {{ 'checked' if session.app_archetype == archetype.id else '' }}
+                >
+              </div>
+              <div class="kickoff-archetype-copy">
+                <div class="kickoff-archetype-label">{{ archetype.label }}</div>
+                <div class="text-muted text-sm">{{ archetype.description }}</div>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+          <div class="hint">Changing the archetype resets later wizard state so the selected flow stays consistent.</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="app_name">App Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="app_name" name="app_name" value="{{ session.app_name }}" placeholder="e.g. DDA App" required>
+          </div>
+
+          <div class="field">
+            <label for="bounded_context">Bounded Context <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="bounded_context" name="bounded_context" value="{{ session.bounded_context }}" placeholder="e.g. dda, accounts, loans" required>
+            <div class="hint">Used as the Java package root and project folder name.</div>
+          </div>
+
+          <div class="field">
+            <label for="target_profile">Target Profile <span style="color:var(--danger)">*</span></label>
+            <select id="target_profile" name="target_profile" required>
+              <option value="">— Select a profile —</option>
+              {% for p in profiles %}
+              <option value="{{ p.id }}" {{ 'selected' if session.target_profile == p.id else '' }}>{{ p.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="output_path">Output Path</label>
+            <input type="text" id="output_path" name="output_path" value="{{ session.output_path }}" placeholder="e.g. ~/Documents/GitHub/AppBuilder/GeneratedApps">
+            <div class="hint">Where to write the generated package. Defaults to ~/Documents/GitHub/AppBuilder/GeneratedApps.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="appbuilder_repo_path">EdgeForge Local Repo Path</label>
+          <input type="text" id="appbuilder_repo_path" name="appbuilder_repo_path" value="{{ session.appbuilder_repo_path }}" placeholder="e.g. ../EdgeForge or set EDGEFORGE_STUDIO_DEFAULT_ENGINE_REPO">
+          <div class="hint">Local filesystem path to your EdgeForge checkout. Used for manifest validation, <code>assess</code>, and <code>generate</code>.</div>
+        </div>
+      </div>
+
+      <aside
+        id="knowledge-assist-settings"
+        class="kickoff-workspace-panel kickoff-assist-panel workflow-surface-card"
+        data-knowledge-assist-panel
+        data-assist-enabled="{{ 'true' if knowledge_assist_enabled else 'false' }}"
+      >
+        {% if assist_notice_message %}
+        <div class="alert alert-info kickoff-workspace-alert">
+          {{ assist_notice_message }}
+          <div class="text-sm kickoff-workspace-alert-guidance">
+            Use the On/Off switch in this panel, then save Step 1. The workspace remains unavailable while the switch is Off.
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="kickoff-workspace-header">
+          <div>
+            <span class="kickoff-section-label">Assistive Features</span>
+            <h3>Knowledge Assist</h3>
+          </div>
+          <label class="assist-toggle" for="knowledge_assist_enabled">
+            <input
+              type="checkbox"
+              id="knowledge_assist_enabled"
+              name="knowledge_assist_enabled"
+              {{ 'checked' if knowledge_assist_enabled else '' }}
+              data-knowledge-assist-toggle
+            >
+            <span class="assist-toggle-track" aria-hidden="true"></span>
+            <span class="assist-toggle-label" data-assist-toggle-label>{{ 'On' if knowledge_assist_enabled else 'Off' }}</span>
+          </label>
+        </div>
+
+        <div data-assist-off-state class="{{ '' if not knowledge_assist_enabled else 'hidden' }}">
+          <p class="text-muted">
+            Knowledge Assist is off. Enable it to upload documents and get evidence-backed field, rule, and mapping suggestions.
+          </p>
+        </div>
+
+        <div data-assist-on-state class="{{ '' if knowledge_assist_enabled else 'hidden' }}">
+          <p class="text-muted">
+            Knowledge Assist adds a document foundation for later evidence-backed review and provenance workflows. Opening the workspace is still a deliberate next action.
+          </p>
+
+          <div class="kickoff-assist-actions" data-assist-live-actions>
+            {% if knowledge_assist_enabled %}
+            <a href="/knowledge" class="btn btn-secondary btn-sm">Open Knowledge Workspace</a>
+            {% endif %}
+          </div>
+
+          {% if knowledge_assist_enabled and workspace_summary %}
+            {% if workspace_summary.warning %}
+            <div class="alert alert-warn kickoff-workspace-alert">
+              <strong>Degraded mode:</strong> {{ workspace_summary.warning }}
+            </div>
+            {% endif %}
+
+            <div class="kickoff-workspace-stats">
+              <div class="kickoff-stat workflow-surface-detail">
+                <span class="kickoff-stat-label">Linkage</span>
+                <div class="kickoff-stat-value">
+                  {% if workspace_summary.namespace %}
+                  <code>{{ workspace_summary.namespace }}</code>
+                  {% else %}
+                  {{ workspace_summary.linkage_label }}
+                  {% endif %}
+                </div>
+                <div class="kickoff-stat-detail">{{ workspace_summary.linkage_detail }}</div>
+              </div>
+
+              <div class="kickoff-stat workflow-surface-detail">
+                <span class="kickoff-stat-label">Workspace Status</span>
+                <div class="kickoff-stat-value">
+                  <span class="shell-pill kickoff-status-pill is-{{ workspace_summary.ks_status }}">{{ workspace_summary.ks_status_label }}</span>
+                </div>
+                <div class="kickoff-stat-detail">{{ workspace_summary.ks_status_detail }}</div>
+              </div>
+
+              <div class="kickoff-stat workflow-surface-detail">
+                <span class="kickoff-stat-label">Documents</span>
+                <div class="kickoff-stat-value">
+                  {% if workspace_summary.document_count is not none %}
+                  {{ workspace_summary.document_count }}
+                  {% else %}
+                  —
+                  {% endif %}
+                </div>
+                <div class="kickoff-stat-detail">{{ workspace_summary.document_summary }}</div>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="kickoff-workspace-note workflow-surface-detail">
+            Toggle state is saved with the project. Existing workspace linkage and review history are preserved if you turn Knowledge Assist off.
+          </div>
+
+          <div class="hint">
+            Future work remains broader suggestion scopes, manifest prefill, richer reconnect automation, and larger-scale UX polish.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="step-actions">
+      <button type="submit" class="btn btn-primary">Save &amp; Continue →</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

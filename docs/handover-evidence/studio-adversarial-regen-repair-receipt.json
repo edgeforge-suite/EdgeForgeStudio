@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "phase": "PR309 follow-up repair round 1 of at most 2",
+  "status": "builder repair evidence; new-head independent review pending",
+  "observation_utc_date": "2026-10-03",
+  "finding": "P2-1: regeneration preview/apply bypassed shared package symlink preflight",
+  "previous_submitted_head": "01ef8600deb378f7ba7fe8da115921888a2cd5be",
+  "previous_receipt": "studio-adversarial-handoff-receipt.json (historical, unchanged)",
+  "updated_main_base": "baa73a495ae3a45e7d74e0b1fcf33e66dca6a757",
+  "nonrewriting_merge_commit": "70f39b079b313665a4bf06492985975eb217f339",
+  "tested_product_head": "d28162ce3075eb5475fb50a354502714f662c632",
+  "engine_pin": "5793cb2f8779322ce13c5e758806b54e5e9d835a",
+  "ks_pin": "d5cf86b6f77ab4d12a898707f4048e04beb2702f",
+  "raw_root_local_only": "/private/tmp/edgeforge-studio-pr309-regen-fix-proof",
+  "retained_runtime_root_local_only": "/private/tmp/edgeforge-studio-consolidated-handoff-proof",
+  "runtimes": {
+    "host": "macOS 26.5 arm64",
+    "python": "3.11.15",
+    "studio": {"fastmcp": "3.4.0", "mcp": "1.28.1", "pydantic": "2.11.7", "PyYAML": "6.0.2"},
+    "engine_mcp": {"fastmcp": "3.2.3", "mcp": "1.30.0", "pydantic": "2.11.7", "PyYAML": "6.0.3"},
+    "regen_cli": "actual adapter uses Studio interpreter with frozen Engine CLI source; not an MCP child",
+    "ks": {"fastmcp": "3.4.2", "mcp": "1.28.1", "pydantic": "2.13.4", "PyYAML": "6.0.3"},
+    "pytest": "9.0.3",
+    "pip_audit": "2.9.0",
+    "gitleaks": "8.30.1"
+  },
+  "results": {
+    "before_repair_counterexamples": {"failed": 10, "qualification": "all reached forbidden Engine invocation"},
+    "prototype_live": {"passed": 33, "failed": 1, "qualification": "production quota blocked final repeated request; existing test-only limiter reset separates cases"},
+    "product_head_handoff": {"passed": 42, "skipped": 0, "seconds": 13.26},
+    "focused_suites": {"passed": 189, "skipped": 0, "seconds": 16.63},
+    "non_smoke": {"passed": 2274, "skipped": 17, "deselected": 32, "seconds": 86.17, "qualification": "same product/test sources as product commit; explicit archived Engine selectors; 17 direct-KS import tests skipped, not credited"},
+    "l2": {"passed": 1, "skipped": 0, "seconds": 0.61},
+    "strict_constraints_audit": "exit 0; no known vulnerabilities found",
+    "changed_file_ruff": "passed",
+    "gitleaks": "exit 0; no leaks",
+    "ci_and_review": "final submitted head/source-tree equivalence and verdict retained outside Git; no approval claimed"
+  },
+  "source_file_sha256": {
+    "app/integrations/appbuilder_integration.py": "c07cbf6ee8b5e18042430d9c3e9d6c43fc9d8259f02ad399b4ab16b562478706",
+    "app/routes/export.py": "8f5b260d8c058f558ff67a88bf41bec1c82394645427e9f122b209eab00a4407",
+    "app/services/path_resolver.py": "0a950d00ba3c122d23ef8b9b7110f868948b76f507b7e41075d0eebe8b2be49a",
+    "app/services/regen_preview.py": "aa8a37f36cb4687117edb74af776e9af01bb617fb9981b919ba26a3e65f3f84c",
+    "tests/test_adversarial_handoff.py": "434f5390fb5c13149ad29581dd23c990fc992a409df03e9728e3b88009db9a49"
+  },
+  "sha256_local_receipts": {
+    "product-head.log": "39ac360f019e17094d81e9dcd95e01f5c8c83d06ac46eb1f370413206d8c15d6",
+    "focused-final.log": "41aa7d177fc48abb484cb7a35e9e1ed6a7d24d37db43410a8c05032f9af02d71",
+    "unit-final.log": "0e197b3ec440f5b762fb4772f0eac44dfd777a7ae34c093d3643eed3309b1092",
+    "counterexample.log": "33152a4aaa4aa6f09192e70a95e4684c9395095ddd98724dba1f52e9ea84ba8a",
+    "live1.log": "6597f7d68b67fba392a91eed5864270abae050d5822da00cadda0e0d4bfe0bbb",
+    "audit-final.log": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+    "ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gitleaks.log": "25a8a61095f51c79a5c1512e5d535841fbae019a1023330f8008c7c19ad97b8f",
+    "gitleaks.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "l2.log": "8a5d3f8c1b452931de963c4bdff9775f7404361fdf3f79b4d740fb5a4f7e6e92",
+    "product-source.sha256": "ea7d56d969dddcdd46af245ee1b811d3dcbd187c24f84b02aad76ea89ec075ec"
+  },
+  "retained_artifact_sha256": {
+    "engine.tar": "65418b19cb11855068a302abe90964f7c1b8424e836b0bbdf564a4c0f3aecb01",
+    "ks.tar": "09526f07c59a3c63cbeb1e23c288d833639dbdcc68e8926575dc656cf03fde67",
+    "studio-freeze.txt": "7b416b174d379686eb8109c205ba42d1e631adbad343587926535c33a68ec872",
+    "engine-freeze.txt": "a1a756bee759598f1306186ad6eaa935b3fc64edefea7fc7ac889e5aff4bd930",
+    "ks-freeze.txt": "4e69e50bbf40b301be2b9dbe00af7a01a08278b1fda157a8b729ca92b25c7bbf"
+  },
+  "limits": [
+    "Anonymous signed-cookie isolation, not real authentication or stolen-cookie protection",
+    "Planted symlink is defensive restored/server-filesystem state, not an HTTP symlink-upload capability",
+    "Static preflight and caller containment, not atomic no-follow opens or host-race/hardlink/mount/plugin sandbox proof",
+    "Universal nested-input confinement for external/direct Engine clients remains OPEN for Engine owner",
+    "Regen CLI intentionally uses Studio Python; shared generation remains MCP-only with no CLI fallback",
+    "No Engine/KS edits, dependency changes, image build/fix, full Suite L5, Java Build & Run or final-release-pair proof",
+    "17 direct-KS import tests skipped, not credited; three actual child cases executed separately without skips",
+    "No new-head independent approval, native-loop pass, risk acceptance, merge, M2 or release clearance"
+  ]
+}

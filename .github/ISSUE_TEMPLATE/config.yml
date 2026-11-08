@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security policy - read before reporting a vulnerability
+    url: https://github.com/edgeforge-suite/EdgeForgeStudio/blob/main/SECURITY.md
+    about: Keep undisclosed vulnerabilities private; selected reporting routes still require activation and verification.

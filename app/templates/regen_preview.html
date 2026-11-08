@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Regeneration Preview{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2>Regeneration Preview</h2>
+  <p class="subtitle">Read-only view of the Engine Change Plan. Studio renders this plan; the Engine owns every delta and safety classification.</p>
+  <div class="step-actions" style="margin-top:12px">
+    <a href="/export" class="btn btn-secondary">Back to Export</a>
+  </div>
+
+  {% if apply_result %}
+    {% if apply_result.state == 'applied' %}
+    <div class="alert alert-success" style="margin-top:14px">
+      {{ apply_result.message }}
+      {% if apply_result.summary %}
+      <div class="text-sm" style="margin-top:6px">
+        New managed baseline:
+        <code>{{ apply_result.summary.managed_package_ref or 'n/a' }}</code>
+      </div>
+      {% endif %}
+    </div>
+    {% elif apply_result.state == 'drift' %}
+    <div class="alert alert-warn" style="margin-top:14px">
+      {{ apply_result.message }}
+    </div>
+    {% elif apply_result.state == 'blocked' %}
+    <div class="alert alert-warn" style="margin-top:14px">
+      {{ apply_result.message }}
+    </div>
+    {% elif apply_result.state == 'busy' %}
+    <div class="alert alert-warn" style="margin-top:14px">
+      {{ apply_result.message }}
+    </div>
+    {% elif apply_result.state == 'error' %}
+    <div class="alert alert-error" style="margin-top:14px">
+      {{ apply_result.message }}
+    </div>
+    {% endif %}
+  {% endif %}
+
+  {% if preview.state == 'ready' %}
+    {% if preview.is_additive_only %}
+    <div class="alert alert-success" style="margin-top:14px">
+      This Change Plan is additive-only. Studio will pass your approval hash to the Engine and refresh the managed baseline after apply succeeds.
+    </div>
+    <form method="post" action="/regen/apply" class="step-actions" style="margin-top:12px">
+      <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+      <input type="hidden" name="approved_plan_hash" value="{{ preview.plan_hash or '' }}">
+      <button type="submit" class="btn btn-primary">Apply additive changes</button>
+    </form>
+    {% else %}
+    <div class="alert alert-warn" style="margin-top:14px">
+      Apply is blocked because this Change Plan contains destructive, unsafe, or unclassified changes. Studio only applies additive plans.
+    </div>
+    {% endif %}
+  {% elif preview.state == 'manifest-only' %}
+  <div class="alert alert-warn" style="margin-top:14px">
+    {{ preview.message }}
+  </div>
+  {% elif preview.state == 'empty' %}
+  <div class="alert" style="margin-top:14px">
+    {{ preview.message }}
+  </div>
+  {% elif preview.state == 'unsupported' %}
+  <div class="alert alert-error" style="margin-top:14px">
+    {{ preview.message }}
+  </div>
+  {% else %}
+  <div class="alert alert-error" style="margin-top:14px">
+    {{ preview.message }}
+  </div>
+  {% endif %}
+
+  {% if preview.state == 'ready' %}
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">Plan</span>
+      <h3 class="s8-title">Engine Change Plan</h3>
+    </div>
+
+    <dl class="s8-checkpoint-grid">
+      <div class="s8-checkpoint-item">
+        <dt>Schema Version</dt>
+        <dd>{{ preview.schema_version or 'n/a' }}</dd>
+      </div>
+      <div class="s8-checkpoint-item">
+        <dt>Engine Version</dt>
+        <dd>{{ preview.engine_version or 'n/a' }}</dd>
+      </div>
+      <div class="s8-checkpoint-item">
+        <dt>Plan Hash</dt>
+        <dd><code>{{ preview.plan_hash or 'n/a' }}</code></dd>
+      </div>
+      <div class="s8-checkpoint-item">
+        <dt>Package State Hash</dt>
+        <dd><code>{{ preview.package_state_hash or 'n/a' }}</code></dd>
+      </div>
+    </dl>
+  </section>
+
+  {% if preview.warnings %}
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">Warnings</span>
+      <h3 class="s8-title">Engine Warnings</h3>
+    </div>
+    <ul>
+      {% for warning in preview.warnings %}
+      <li>{{ warning }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if preview.required_manual_actions %}
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">Manual</span>
+      <h3 class="s8-title">Required Manual Actions</h3>
+    </div>
+    <ul>
+      {% for action in preview.required_manual_actions %}
+      <li><code>{{ action }}</code></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% for group in preview.groups %}
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">{{ group["items"]|length }}</span>
+      <h3 class="s8-title">{{ group.label }}</h3>
+    </div>
+    <div class="s8-artifact-list">
+      {% for item in group["items"] %}
+      <article class="s8-artifact-row regen-change regen-{{ item.classification }}" data-classification="{{ item.classification }}">
+        <div class="s8-artifact-main">
+          <div class="s8-artifact-topline">
+            <span class="status-badge {{ 'ok' if item.classification == 'additive' else 'warn' if item.classification == 'unsafe' else 'error' if item.classification == 'destructive' else 'running' }}">
+              {{ item.classification }}
+            </span>
+            <strong>{{ item.title }}</strong>
+            {% if item.is_gated %}
+            <span class="text-muted text-sm">Apply blocked for this change</span>
+            {% endif %}
+          </div>
+          <pre class="s8-log" style="max-height:180px">{{ item.payload_json }}</pre>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">JSON</span>
+      <h3 class="s8-title">Raw Change Plan</h3>
+    </div>
+    <pre class="s8-log">{{ preview.raw_plan_json }}</pre>
+  </section>
+  {% elif preview.engine_output %}
+  <section class="s8-box">
+    <div class="s8-box-header">
+      <span class="s8-chip">Engine</span>
+      <h3 class="s8-title">Engine Output</h3>
+    </div>
+    <pre class="s8-log">{{ preview.engine_output }}</pre>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

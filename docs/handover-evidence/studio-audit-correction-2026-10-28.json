@@ -1,0 +1,774 @@
+{
+  "advisories": [
+    {
+      "cve": "CVE-2026-96760",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.8.0"
+        }
+      ],
+      "database_sha256": "96b5eae01fc0db5f1204ac7477e3df6c3d533bd8bf66c7f419717040f2671cdb",
+      "database_url": "https://github.com/advisories/GHSA-6v38-4h7w-rj9h",
+      "id": "GHSA-6v38-4h7w-rj9h",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "patched_versions": "1.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.8.0"
+        }
+      ],
+      "repository_sha256": "786e461796b9b9b1fcdadbd693efc87fef763f8bc20e0345566b84c317645b4f",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-6v38-4h7w-rj9h",
+      "summary": "Authlib: empty signatures validation in JWS JSON deserialization"
+    },
+    {
+      "cve": "CVE-2026-114618",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "< 1.9.0"
+        }
+      ],
+      "database_sha256": "d0173427ba87cc584da083f0fa8885bf3a265607623c898cd3bbfc4841232e29",
+      "database_url": "https://github.com/advisories/GHSA-fch4-3c6x-j4gc",
+      "id": "GHSA-fch4-3c6x-j4gc",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "patched_versions": "1.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<1.9.0"
+        }
+      ],
+      "repository_sha256": "aa80afd0f11442d9152c263d711cac10a258803837928a0720f2ed32f6cadec4",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-fch4-3c6x-j4gc",
+      "summary": "Authlib: Default JWT bearer grant accepts assertions for the wrong audience"
+    },
+    {
+      "cve": "CVE-2026-114615",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 1.3.1, <= 1.8.0"
+        }
+      ],
+      "database_sha256": "627f165d05a053d669317e1c59eba4dbb688a4ccb412028a5e30b241c77984fb",
+      "database_url": "https://github.com/advisories/GHSA-7vr2-2fgp-9w7p",
+      "id": "GHSA-7vr2-2fgp-9w7p",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "patched_versions": "1.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">=1.3.1,<= 1.8.0"
+        }
+      ],
+      "repository_sha256": "80f66e2dd11b527f616236930aa9deffbaeb81a34c0b5c315d028276b1c00437",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-7vr2-2fgp-9w7p",
+      "summary": "Authlib incomplete algorithm-confusion fix permits HMAC forgery with prefixed public keys"
+    },
+    {
+      "cve": "CVE-2026-114617",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.8.0"
+        }
+      ],
+      "database_sha256": "cee2fd0d2d408796ff90dd7bdad89548710dab925cbf9bdabd4e5a9711c1d9d7",
+      "database_url": "https://github.com/advisories/GHSA-c5mf-xmp2-59rc",
+      "id": "GHSA-c5mf-xmp2-59rc",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "patched_versions": "1.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.8.0"
+        }
+      ],
+      "repository_sha256": "35b2a92a78965dec878b336a03a758c9c1f4e221d938114b27842bbc2c55c884",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-c5mf-xmp2-59rc",
+      "summary": "Authlib: ID token can disable its own nonce validation via the nonce_supported claim"
+    },
+    {
+      "cve": "CVE-2026-114620",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 1.6.0, < 1.9.0"
+        }
+      ],
+      "database_sha256": "de0e2fa7621eb30b2b567c354638490fc75c9e1de3a786942efed462e3ba560b",
+      "database_url": "https://github.com/advisories/GHSA-x4rv-c3wx-4cr8",
+      "id": "GHSA-x4rv-c3wx-4cr8",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "",
+            "name": ""
+          },
+          "patched_versions": "1.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">=1.6.0,<1.9.0"
+        }
+      ],
+      "repository_sha256": "2a4436b3c59f434c1d4dfa28de463a8b1c075c955f4284bcfef855a76feed382",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-x4rv-c3wx-4cr8",
+      "summary": "Authlib: Unvalidated request_uri fetch in JWT-secured authorization request (JAR) leading to SSRF"
+    },
+    {
+      "cve": "CVE-2026-114614",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.8.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.7.2"
+        }
+      ],
+      "database_sha256": "77fe103cbe13a54577b6b38f572f98d65377d7a46aec0b80571e1921434506c0",
+      "database_url": "https://github.com/advisories/GHSA-jj7h-c3hg-m23x",
+      "id": "GHSA-jj7h-c3hg-m23x",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "authlib"
+          },
+          "patched_versions": "1.8.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.7.2"
+        }
+      ],
+      "repository_sha256": "683a4ac3a20a7e756a4c543f3b7d8207d1f9b4b025e1c72ee797e1d348ed37c9",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-jj7h-c3hg-m23x",
+      "summary": "Authlib: is_secure_transport() loopback exemption can be bypassed with a userinfo component, allowing cleartext-HTTP URLs to non-loopback hosts"
+    },
+    {
+      "cve": "CVE-2026-114616",
+      "database_ranges": [
+        {
+          "first_patched_version": "1.9.1",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Authlib"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "< 1.9.1"
+        }
+      ],
+      "database_sha256": "f6e53689d621bd8edd578b3e78bae95fc10173a854d73616e72b3175cb1c6884",
+      "database_url": "https://github.com/advisories/GHSA-8m4g-j4wp-wgcg",
+      "id": "GHSA-8m4g-j4wp-wgcg",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Authlib"
+          },
+          "patched_versions": "",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 1.7.2"
+        }
+      ],
+      "repository_sha256": "385a6f815cda522ef03b22f667d526f674b7c1465bcdd7dd0c121b8654986469",
+      "repository_url": "https://github.com/authlib/authlib/security/advisories/GHSA-8m4g-j4wp-wgcg",
+      "summary": "Authlib accepts an empty HMAC key, allowing JWS/JWT signature forgery (HS256/HS384/HS512)"
+    },
+    {
+      "cve": "CVE-2026-114605",
+      "database_ranges": [
+        {
+          "first_patched_version": "2.9.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "dnspython"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "< 2.9.0"
+        }
+      ],
+      "database_sha256": "8bcbaa571313939f8e829d733fe70384a80d72530ce6c35d7af82823165f31aa",
+      "database_url": "https://github.com/advisories/GHSA-45c3-73f7-pv4m",
+      "id": "GHSA-45c3-73f7-pv4m",
+      "outcome": "corrected standalone dependency selected; no prior Studio exploitability claim",
+      "repository_ranges": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "dnspython"
+          },
+          "patched_versions": "2.9.0",
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "< 2.9.0"
+        }
+      ],
+      "repository_sha256": "6d673e95bc611b214b317f541e11b8e8fa72d471174714c8de5f9fd0f2068425",
+      "repository_url": "https://github.com/rthalley/dnspython/security/advisories/GHSA-45c3-73f7-pv4m",
+      "summary": "dnspython dns.name.from_wire_parser() excessive CPU use"
+    }
+  ],
+  "artifact_source_copy_checks": {
+    "authlib": 215,
+    "dnspython": 161
+  },
+  "audit": {
+    "committed_json_sha256": "7272ec821589d149fd1ad4dce1f54e820c3da9dbbb6a9bdc65b71d3983765f4f",
+    "findings": 0,
+    "packages": 95,
+    "skipped_or_missing_packages": 0,
+    "strict_json_sha256": "7272ec821589d149fd1ad4dce1f54e820c3da9dbbb6a9bdc65b71d3983765f4f"
+  },
+  "base_main": "ecd66fefc19593719d6f6da2b7c950aacfb8d54b",
+  "baseline_ci": {
+    "head": "e7cfc96c545db89a9ef76123d95c782696a8d1d4",
+    "job": 122636340751,
+    "log_sha256": "dd29d13cbf9d6352cc9567971b3eb5f35253e0ebab33f396a23af0fa3d23748a",
+    "merge_ref": "7cc97ed3bdb7b1da0d92bd7536b139f4df989be5",
+    "observations": 8,
+    "packages": 2,
+    "run": 40633901697
+  },
+  "candidate": "EF-V5-STUDIO-AUDIT-CORRECTION-S1 revision 1",
+  "date_local": "2026-10-28",
+  "dependency_delta": {
+    "authlib": [
+      "1.7.2",
+      "1.9.1"
+    ],
+    "dnspython": [
+      "2.8.0",
+      "2.9.0"
+    ]
+  },
+  "executions": {
+    "candidate-controls-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:53:33.792024+00:00",
+      "log": "candidate-controls.log",
+      "log_sha256": "543f457309972e8130ee63733c35c81ddc618cd4880fb13768c81b6ce0f781e7",
+      "started_utc": "2026-10-28T13:53:33.706868+00:00"
+    },
+    "candidate-strict-audit-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:51:37.723290+00:00",
+      "log": "candidate-strict-audit.log",
+      "log_sha256": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+      "started_utc": "2026-10-28T13:51:35.867037+00:00"
+    },
+    "docs-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:59:16.421357+00:00",
+      "log": "docs.log",
+      "log_sha256": "1c6e64b786171388b804ab418d7f25a21eca9f15319cd23934a513e04dcc946e",
+      "started_utc": "2026-10-28T13:59:16.331393+00:00"
+    },
+    "failed-ci-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:47:17.294629+00:00",
+      "log": "failed-ci.log",
+      "log_sha256": "dd29d13cbf9d6352cc9567971b3eb5f35253e0ebab33f396a23af0fa3d23748a",
+      "started_utc": "2026-10-28T13:47:16.369027+00:00"
+    },
+    "generate-current-evidence-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:51:44.381349+00:00",
+      "log": "generate-current-evidence.log",
+      "log_sha256": "e28866bd29a6c5938920f6c150db2ccb08aba5304e66fb9f0028d48b8fb5937c",
+      "started_utc": "2026-10-28T13:51:32.317976+00:00"
+    },
+    "host311-client-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:53:36.606982+00:00",
+      "log": "host311-client.log",
+      "log_sha256": "588a850dea556888d3735813766f8ddd9e3c257ed63493efa7df256a2c997867",
+      "started_utc": "2026-10-28T13:53:35.993082+00:00"
+    },
+    "host311-focused-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:52:16.887659+00:00",
+      "log": "host311-focused.log",
+      "log_sha256": "0227f8fa5cb5b9e475bf653d4babf23be4cb303c45c2de48dea0ce5dbd616b4e",
+      "started_utc": "2026-10-28T13:52:13.477893+00:00"
+    },
+    "host311-install-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:50:48.587037+00:00",
+      "log": "host311-install.log",
+      "log_sha256": "b35f94a7b4a9f0ba403a292dfb16b8f6c0e33e931728365540a58c7680541b1c",
+      "started_utc": "2026-10-28T13:50:43.419091+00:00"
+    },
+    "host311-inventory-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:54:10.289057+00:00",
+      "log": "host311-inventory.log",
+      "log_sha256": "4fa0e77f50607b94c55fb5cc4174ac6e5f8b0b610d12b792e3118929d7d7a9f7",
+      "started_utc": "2026-10-28T13:54:10.198974+00:00"
+    },
+    "host311-packaging-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:50:19.191054+00:00",
+      "log": "host311-packaging.log",
+      "log_sha256": "f78d1fdcd6f7ebc06456f205a3a6719d79b8730a413740049d294862f8c96f40",
+      "started_utc": "2026-10-28T13:50:18.164729+00:00"
+    },
+    "host311-pip-check-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:51:28.026307+00:00",
+      "log": "host311-pip-check.log",
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "started_utc": "2026-10-28T13:51:27.876298+00:00"
+    },
+    "host311-toolchain-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:54:15.726358+00:00",
+      "log": "host311-toolchain.log",
+      "log_sha256": "b2fe5ba42265ba29a028aa3605152b85b68421a784b355e6f3466cd35d75dc4e",
+      "started_utc": "2026-10-28T13:54:15.678305+00:00"
+    },
+    "host313-client-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:53:40.289223+00:00",
+      "log": "host313-client.log",
+      "log_sha256": "588a850dea556888d3735813766f8ddd9e3c257ed63493efa7df256a2c997867",
+      "started_utc": "2026-10-28T13:53:39.657190+00:00"
+    },
+    "host313-focused-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:52:20.260909+00:00",
+      "log": "host313-focused.log",
+      "log_sha256": "ca25dc404577f8a4ad700d231271424cec15e049b0e4320a636fbf82230255fc",
+      "started_utc": "2026-10-28T13:52:16.916972+00:00"
+    },
+    "host313-install-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:50:52.148787+00:00",
+      "log": "host313-install.log",
+      "log_sha256": "c0ad9c87cbfdc3583df983fe7bc95aae22521798bd18c177e5776c0c1ef23d2a",
+      "started_utc": "2026-10-28T13:50:47.084723+00:00"
+    },
+    "host313-inventory-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:54:13.408028+00:00",
+      "log": "host313-inventory.log",
+      "log_sha256": "df6803864e3f1cc72d28b6b5569709fb4f5c4092109c6a889cfd523bc051d86c",
+      "started_utc": "2026-10-28T13:54:13.320986+00:00"
+    },
+    "host313-packaging-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:50:21.488915+00:00",
+      "log": "host313-packaging.log",
+      "log_sha256": "77041c6329693c1927fbef0b7aab65864c1e0ab3195567d7fe005e1d8073d5a6",
+      "started_utc": "2026-10-28T13:50:21.043296+00:00"
+    },
+    "host313-pip-check-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:51:29.858552+00:00",
+      "log": "host313-pip-check.log",
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "started_utc": "2026-10-28T13:51:29.713752+00:00"
+    },
+    "host313-toolchain-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:54:17.971407+00:00",
+      "log": "host313-toolchain.log",
+      "log_sha256": "b2fe5ba42265ba29a028aa3605152b85b68421a784b355e6f3466cd35d75dc4e",
+      "started_utc": "2026-10-28T13:54:17.923389+00:00"
+    },
+    "initial-secret-ci-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T14:02:10.263954+00:00",
+      "log": "initial-secret-ci.log",
+      "log_sha256": "57e5b28995d5e0e2efc9cf49c7f54d87f8d5cae789267ed023da68fb9fc07db2",
+      "started_utc": "2026-10-28T14:02:09.260526+00:00"
+    },
+    "initial-test-ci-log-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T14:04:25.167776+00:00",
+      "log": "initial-test-ci-log.log",
+      "log_sha256": "25eaccb4c71ace0c792c0c2eaf63c8a5d5abc3e51ef8fa0d7ef85c321b5797de",
+      "started_utc": "2026-10-28T14:04:24.163014+00:00"
+    },
+    "install-tools-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:47:51.925387+00:00",
+      "log": "install-tools.log",
+      "log_sha256": "bf0345062c24019e5ee2773cdf2d620cd436c39607b499c886b47c9c06c64d04",
+      "started_utc": "2026-10-28T13:47:48.643069+00:00"
+    },
+    "policy-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:53:43.089084+00:00",
+      "log": "policy.log",
+      "log_sha256": "6a145783a5cbfd88733842418703ac7d87dd27ec619e724919231c769528467e",
+      "started_utc": "2026-10-28T13:53:42.702500+00:00"
+    },
+    "python313-download-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:49:05.336774+00:00",
+      "log": "python313-download.log",
+      "log_sha256": "9eb57271118481326757d78d7295212957b220897be5a76b927a0e3e0768bae7",
+      "started_utc": "2026-10-28T13:49:04.385306+00:00"
+    },
+    "released-old-controls-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:53:30.934849+00:00",
+      "log": "released-old-controls.log",
+      "log_sha256": "715c0867f65df572b4e8ac71005133f7ba39879b515c40ae152b6f071bac0dd6",
+      "started_utc": "2026-10-28T13:53:30.801445+00:00"
+    },
+    "secret-diagnostic-execution.json": {
+      "exit_code": 1,
+      "finished_utc": "2026-10-28T14:02:43.171483+00:00",
+      "log": "secret-diagnostic.log",
+      "log_sha256": "af9eb1e04b10cfb3eae16646015a2f36ef9ae50ad09d6a380bcc4a0817bf2703",
+      "started_utc": "2026-10-28T14:02:41.643370+00:00"
+    },
+    "upstream-execution.json": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-28T13:48:31.769593+00:00",
+      "log": "upstream.log",
+      "log_sha256": "57858a6dbf9ebe5a54fc6aa3a383fbcfefa3d64c89898fa4e408bf78f979cd32",
+      "started_utc": "2026-10-28T13:48:31.619163+00:00"
+    }
+  },
+  "limits": [
+    "No image build/scan; historical images retain original dependency copies",
+    "Python3.13 proof is a separate clean macOS host environment, not image proof",
+    "No full local suite, generated-app runtime, live sibling or Suite acceptance campaign",
+    "Dependency observations are not counts of exploitable Studio paths",
+    "Existing image residuals and release/publication gates unchanged"
+  ],
+  "local_execution_source": "working tree based on preserved intent commit; relevant source hashes bind executed input, final-head CI/review recorded in PR",
+  "pr": 321,
+  "preserved_document_sha256": {
+    "CONTRIBUTING.md": "9b589adc2811c9b57204fa0c4b4924e7198f88b71f6b55c533898a5686d61186",
+    "README.md": "82145da9fd2e8b8b2fcf2f746adcbd04791bc58c8990c8c0685e7054d2346dd7",
+    "docs/publication-preparation.md": "fe88e4d24accde0199696da29b167b026ccd7b1770b597f0e5f3da18f4153c19"
+  },
+  "preserved_intent_commit": "e7cfc96c545db89a9ef76123d95c782696a8d1d4",
+  "private_packet_identifier": "studio-audit-correction-20261028",
+  "python_environments": {
+    "host311": {
+      "inventory_sha256": "4fa0e77f50607b94c55fb5cc4174ac6e5f8b0b610d12b792e3118929d7d7a9f7",
+      "packages": 95,
+      "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 17.0.0 (clang-1700.6.3.2)]"
+    },
+    "host313": {
+      "inventory_sha256": "df6803864e3f1cc72d28b6b5569709fb4f5c4092109c6a889cfd523bc051d86c",
+      "packages": 92,
+      "python": "3.13.16 (main, Oct 14 2026, 00:55:38) [Clang 23.1.3 ]"
+    }
+  },
+  "reference_packages": 95,
+  "schema_version": 1,
+  "source_member_sha256": [
+    {
+      "member": "authlib/common/security.py",
+      "sha256": "55f17be2c3d0ea3cb978435300f080e2e0174b31bceca80c4a727da4d8023e89"
+    },
+    {
+      "member": "authlib/integrations/base_client/sync_openid.py",
+      "sha256": "5bdf3938f654ae5d3407121656324d35c383d3c9c83336d34cc4c5e8fc5b5aa2"
+    },
+    {
+      "member": "authlib/jose/rfc7515/jws.py",
+      "sha256": "6cb440905720000548c1fbefcc65f973ddad39e81db32f65c65b219ad5c3485b"
+    },
+    {
+      "member": "authlib/jose/rfc7518/oct_key.py",
+      "sha256": "152aefcf048deec979cd0d1ad6a1581a7e86ade18047d8e3da74af551dc3587c"
+    },
+    {
+      "member": "authlib/oauth2/rfc7523/jwt_bearer.py",
+      "sha256": "213b0b78da7473c0bdce2453b87300d967a765c9d24407496b54e00c619c9f4e"
+    },
+    {
+      "member": "authlib/oauth2/rfc9101/authorization_server.py",
+      "sha256": "e2a86dc299ebce207c6928a524b6d10d003398ff54aafdb1ddc77f705a1f86d5"
+    },
+    {
+      "member": "dns/name.py",
+      "sha256": "747fb6cee70306a89955fd8651d6712e0803aa463593f4e8c30ed27d0a9d5902"
+    }
+  ],
+  "source_sha256": {
+    "constraints.txt": "d304e6dd9d44eab0286524bd5e41f9451302169cedefbc35337129db5769a548",
+    "pyproject.toml": "578453c43ef3b6bff5abae751fedde3d1a56706e06c899163b13a2707fd66c06",
+    "requirements.txt": "bb635b3df724de75a95c07e5ab92a70c39972b0e46464b4c2ba02418aa287e19",
+    "scripts/generate-dependency-evidence.sh": "fb17ca353c8daed32a8222eff111d917796efacefc21ae7ec49f12450b17fa0d",
+    "tests/test_dependency_audit_policy.py": "cc119791ab8c05b8ca28bcdae7c7f9fab26fbfd472d12578cba6d7ec52f014e2",
+    "tests/test_dependency_security_regressions.py": "a17e62facb1d6f1b68544cf18d4019b7b4288877648cfa3dfe88f5e671b0ca3d"
+  },
+  "unchanged_reference_versions": 93,
+  "upstream_receipts": [
+    {
+      "file_written_utc": "2026-10-28T13:47:19.742133+00:00",
+      "name": "authlib-1.7.2-metadata.json",
+      "sha256": "9c8e9567f2ac7e868eeaaac1321d7937909f75ee4f737654932c78f32a3d108f",
+      "url": "https://pypi.org/pypi/authlib/1.7.2/json"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:19.798195+00:00",
+      "name": "authlib-1.9.1-metadata.json",
+      "sha256": "52e788f4813108013df6944be0e886b00b2112239f742e170a8e19837f70d1d1",
+      "url": "https://pypi.org/pypi/authlib/1.9.1/json"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:19.857320+00:00",
+      "name": "dnspython-2.8.0-metadata.json",
+      "sha256": "552991d895fb1b38fd91103b907988d82e755320431abf07313f387dab123721",
+      "url": "https://pypi.org/pypi/dnspython/2.8.0/json"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:19.944849+00:00",
+      "name": "dnspython-2.9.0-metadata.json",
+      "sha256": "89e6089acd2db053af43e5958a4a1d6627546487a771de4da330151b859875fb",
+      "url": "https://pypi.org/pypi/dnspython/2.9.0/json"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:20.212268+00:00",
+      "name": "uv-metadata.json",
+      "sha256": "a77f3e4565bbe98a58cfc722744785a28c58434e439b35d3997f09d880d3ba4a",
+      "url": "https://pypi.org/pypi/uv/json"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:20.657495+00:00",
+      "name": "GHSA-6v38-4h7w-rj9h-database.json",
+      "sha256": "96b5eae01fc0db5f1204ac7477e3df6c3d533bd8bf66c7f419717040f2671cdb",
+      "url": "https://api.github.com/advisories/GHSA-6v38-4h7w-rj9h"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:21.045886+00:00",
+      "name": "GHSA-6v38-4h7w-rj9h-repository.json",
+      "sha256": "786e461796b9b9b1fcdadbd693efc87fef763f8bc20e0345566b84c317645b4f",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-6v38-4h7w-rj9h"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:21.458895+00:00",
+      "name": "GHSA-fch4-3c6x-j4gc-database.json",
+      "sha256": "d0173427ba87cc584da083f0fa8885bf3a265607623c898cd3bbfc4841232e29",
+      "url": "https://api.github.com/advisories/GHSA-fch4-3c6x-j4gc"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:21.806867+00:00",
+      "name": "GHSA-fch4-3c6x-j4gc-repository.json",
+      "sha256": "aa80afd0f11442d9152c263d711cac10a258803837928a0720f2ed32f6cadec4",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-fch4-3c6x-j4gc"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:22.220281+00:00",
+      "name": "GHSA-7vr2-2fgp-9w7p-database.json",
+      "sha256": "627f165d05a053d669317e1c59eba4dbb688a4ccb412028a5e30b241c77984fb",
+      "url": "https://api.github.com/advisories/GHSA-7vr2-2fgp-9w7p"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:22.598177+00:00",
+      "name": "GHSA-7vr2-2fgp-9w7p-repository.json",
+      "sha256": "80f66e2dd11b527f616236930aa9deffbaeb81a34c0b5c315d028276b1c00437",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-7vr2-2fgp-9w7p"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:22.989252+00:00",
+      "name": "GHSA-c5mf-xmp2-59rc-database.json",
+      "sha256": "cee2fd0d2d408796ff90dd7bdad89548710dab925cbf9bdabd4e5a9711c1d9d7",
+      "url": "https://api.github.com/advisories/GHSA-c5mf-xmp2-59rc"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:23.343327+00:00",
+      "name": "GHSA-c5mf-xmp2-59rc-repository.json",
+      "sha256": "35b2a92a78965dec878b336a03a758c9c1f4e221d938114b27842bbc2c55c884",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-c5mf-xmp2-59rc"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:23.735414+00:00",
+      "name": "GHSA-x4rv-c3wx-4cr8-database.json",
+      "sha256": "de0e2fa7621eb30b2b567c354638490fc75c9e1de3a786942efed462e3ba560b",
+      "url": "https://api.github.com/advisories/GHSA-x4rv-c3wx-4cr8"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:24.108272+00:00",
+      "name": "GHSA-x4rv-c3wx-4cr8-repository.json",
+      "sha256": "2a4436b3c59f434c1d4dfa28de463a8b1c075c955f4284bcfef855a76feed382",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-x4rv-c3wx-4cr8"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:24.546340+00:00",
+      "name": "GHSA-jj7h-c3hg-m23x-database.json",
+      "sha256": "77fe103cbe13a54577b6b38f572f98d65377d7a46aec0b80571e1921434506c0",
+      "url": "https://api.github.com/advisories/GHSA-jj7h-c3hg-m23x"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:24.901350+00:00",
+      "name": "GHSA-jj7h-c3hg-m23x-repository.json",
+      "sha256": "683a4ac3a20a7e756a4c543f3b7d8207d1f9b4b025e1c72ee797e1d348ed37c9",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-jj7h-c3hg-m23x"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:25.292538+00:00",
+      "name": "GHSA-8m4g-j4wp-wgcg-database.json",
+      "sha256": "f6e53689d621bd8edd578b3e78bae95fc10173a854d73616e72b3175cb1c6884",
+      "url": "https://api.github.com/advisories/GHSA-8m4g-j4wp-wgcg"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:25.707260+00:00",
+      "name": "GHSA-8m4g-j4wp-wgcg-repository.json",
+      "sha256": "385a6f815cda522ef03b22f667d526f674b7c1465bcdd7dd0c121b8654986469",
+      "url": "https://api.github.com/repos/authlib/authlib/security-advisories/GHSA-8m4g-j4wp-wgcg"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:26.043340+00:00",
+      "name": "GHSA-45c3-73f7-pv4m-database.json",
+      "sha256": "8bcbaa571313939f8e829d733fe70384a80d72530ce6c35d7af82823165f31aa",
+      "url": "https://api.github.com/advisories/GHSA-45c3-73f7-pv4m"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:47:26.413451+00:00",
+      "name": "GHSA-45c3-73f7-pv4m-repository.json",
+      "sha256": "6d673e95bc611b214b317f541e11b8e8fa72d471174714c8de5f9fd0f2068425",
+      "url": "https://api.github.com/repos/rthalley/dnspython/security-advisories/GHSA-45c3-73f7-pv4m"
+    },
+    {
+      "file_written_utc": "2026-10-28T13:48:31.711617+00:00",
+      "name": "authlib-changelog.rst",
+      "sha256": "86a4107b5e7f8158bfd43219e2856989d28d5b1bb159d5bd4fa80649e153237a",
+      "url": "https://raw.githubusercontent.com/authlib/authlib/v1.9.1/docs/upgrades/changelog.rst"
+    }
+  ],
+  "wheels": [
+    {
+      "filename": "authlib-1.7.2-py2.py3-none-any.whl",
+      "name": "authlib",
+      "requires_dist": [
+        "cryptography",
+        "joserfc>=1.6.0"
+      ],
+      "requires_python": ">=3.10",
+      "sha256": "3e1faedc9d87e7d56a164eca3ccb6ace0d61b94abe83e92242f8dc8bba9b4a9f",
+      "url": "https://files.pythonhosted.org/packages/fb/95/adcb68e20c34162e9135f370d6e31737719c2b6f94bc953fe7ed1f10fe21/authlib-1.7.2-py2.py3-none-any.whl",
+      "version": "1.7.2"
+    },
+    {
+      "filename": "authlib-1.9.1-py2.py3-none-any.whl",
+      "name": "authlib",
+      "requires_dist": [
+        "cryptography>=45.0.1",
+        "joserfc>=1.6.8"
+      ],
+      "requires_python": ">=3.10",
+      "sha256": "8b9be8b1e5174dcbf5520e984f1a22dc2edae5b6e40a61d4cedbf86b97e9e69b",
+      "url": "https://files.pythonhosted.org/packages/39/44/a46089266de32a0d809023b6bf31b80a1f26a46954446a7ce695a565cbea/authlib-1.9.1-py2.py3-none-any.whl",
+      "version": "1.9.1"
+    },
+    {
+      "filename": "dnspython-2.8.0-py3-none-any.whl",
+      "name": "dnspython",
+      "requires_dist": [
+        "black>=25.1.0; extra == \"dev\"",
+        "coverage>=7.0; extra == \"dev\"",
+        "flake8>=7; extra == \"dev\"",
+        "hypercorn>=0.17.0; extra == \"dev\"",
+        "mypy>=1.17; extra == \"dev\"",
+        "pylint>=3; extra == \"dev\"",
+        "pytest-cov>=6.2.0; extra == \"dev\"",
+        "pytest>=8.4; extra == \"dev\"",
+        "quart-trio>=0.12.0; extra == \"dev\"",
+        "sphinx-rtd-theme>=3.0.0; extra == \"dev\"",
+        "sphinx>=8.2.0; extra == \"dev\"",
+        "twine>=6.1.0; extra == \"dev\"",
+        "wheel>=0.45.0; extra == \"dev\"",
+        "cryptography>=45; extra == \"dnssec\"",
+        "h2>=4.2.0; extra == \"doh\"",
+        "httpcore>=1.0.0; extra == \"doh\"",
+        "httpx>=0.28.0; extra == \"doh\"",
+        "aioquic>=1.2.0; extra == \"doq\"",
+        "idna>=3.10; extra == \"idna\"",
+        "trio>=0.30; extra == \"trio\"",
+        "wmi>=1.5.1; platform_system == \"Windows\" and extra == \"wmi\""
+      ],
+      "requires_python": ">=3.10",
+      "sha256": "01d9bbc4a2d76bf0db7c1f729812ded6d912bd318d3b1cf81d30c0f845dbf3af",
+      "url": "https://files.pythonhosted.org/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl",
+      "version": "2.8.0"
+    },
+    {
+      "filename": "dnspython-2.9.0-py3-none-any.whl",
+      "name": "dnspython",
+      "requires_dist": [
+        "black>=26.5; extra == \"dev\"",
+        "coverage>=7.15; extra == \"dev\"",
+        "hypercorn>=0.18.0; extra == \"dev\"",
+        "pyright>=1.1.411; extra == \"dev\"",
+        "pytest>=9.1; extra == \"dev\"",
+        "pytest-cov>=7.1; extra == \"dev\"",
+        "quart-trio>=0.12.0; extra == \"dev\"",
+        "ruff>=0.16.0; extra == \"dev\"",
+        "sphinx>=9.1.0; python_full_version >= \"3.12\" and extra == \"dev\"",
+        "sphinx-rtd-theme>=3.1.0; python_full_version >= \"3.12\" and extra == \"dev\"",
+        "trustme>=1.2.1; extra == \"dev\"",
+        "ty>=0.0.85; extra == \"dev\"",
+        "cryptography>=50; extra == \"dnssec\"",
+        "httpcore2>=2.13; extra == \"doh\"",
+        "httpx2>=2.13; extra == \"doh\"",
+        "h2>=4.4; extra == \"doh\"",
+        "aioquic>=1.3.0; extra == \"doq\"",
+        "idna>=3.20; extra == \"idna\"",
+        "trio>=0.34; extra == \"trio\"",
+        "wmi>=1.5.1; sys_platform == \"win32\" and extra == \"wmi\""
+      ],
+      "requires_python": ">=3.11",
+      "sha256": "9a4aedb833c3c1b49214d04d44d3032ab7a9135f7c1d29a549b4ff78fd82fda9",
+      "url": "https://files.pythonhosted.org/packages/10/02/cdcc9b7c051786a103c3b09e1003a82fa0c66bcb91ffbdabcfbf7b4163b9/dnspython-2.9.0-py3-none-any.whl",
+      "version": "2.9.0"
+    }
+  ]
+}

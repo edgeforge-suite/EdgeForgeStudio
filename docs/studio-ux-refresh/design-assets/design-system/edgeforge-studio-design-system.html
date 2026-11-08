@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>EdgeForge Studio — Design System Reference (locked §1.5)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* ===== BASE OF RECORD — shipped studio.css :root (unchanged by the refresh) ===== */
+  --bg:#dce8f5;--surface:#ffffff;--surface-muted:#edf3fa;--border:#b8ccde;--border-strong:#8eaac6;
+  --primary:#2563eb;--primary-dark:#1a3465;--text:#10233f;--muted:#5e718f;
+  --success:#16814a;--success-soft:#ecfdf3;--warn:#b7791f;--warn-soft:#fff7e8;--danger:#c0392b;--danger-soft:#fff1ef;
+  --radius:8px;--radius-lg:14px;
+  /* ===== LOCKED — implementation-design.md §1.5 (D1 final) — land in PR-02, inert until applied ===== */
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+  --fam-rest:#0d9488;--fam-fixed:#15803d;--fam-csv:#4f46e5;--fam-xml:#b45309;--fam-soap:#1e3a5f;--fam-staging:#475569;
+  /* mockup-side supporting hues referenced by components (provenance/KA) */
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--ka:#0d7490;--kabg:#e3f3f7;
+  /* doc chrome (this page only — not tokens) */
+  --doc-bg:#f4f6f9;--doc-line:#dde3ec;--doc-ink:#1c2733;--doc-mut:#68788c;
+}
+body{font:13px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--doc-bg);color:var(--doc-ink);-webkit-font-smoothing:antialiased;padding:0 0 40px}
+.hero{background:linear-gradient(135deg,#12233c,#1e3a5f 60%,#24466f);color:#fff;padding:30px 40px 26px}
+.hero .kick{font-size:10.5px;font-weight:800;letter-spacing:2.2px;color:#9db8d8;margin-bottom:8px}
+.hero h1{font-size:24px;font-weight:800;letter-spacing:-.4px}
+.hero .sub{color:#cfe0f2;margin-top:8px;font-size:13px;max-width:880px}
+.hero .chips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hero .chip{font-size:10.5px;font-weight:700;padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#dce8f6}
+.hero .chip.hot{background:#fff7e0;border-color:#d59b22;color:#6f4100}
+.wrap{max-width:1400px;margin:0 auto;padding:0 40px}
+.contract{background:#fff;border:1.5px solid var(--primary);border-radius:12px;padding:14px 18px;margin:22px 0;display:flex;gap:12px;align-items:flex-start}
+.contract svg{width:18px;height:18px;color:var(--primary);flex-shrink:0;margin-top:2px}
+.contract b{color:var(--primary-dark)}
+.contract .ct{font-size:12.5px;color:#33465e}
+h2{font-size:12px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--doc-mut);margin:30px 0 12px;display:flex;align-items:center;gap:10px}
+h2:after{content:"";flex:1;height:1px;background:var(--doc-line)}
+h2 .lock{font-size:9.5px;font-weight:800;background:#e7f5ec;color:#0b6e3f;padding:2px 8px;border-radius:5px;letter-spacing:.4px}
+h2 .base{font-size:9.5px;font-weight:800;background:#eef1f6;color:#5a6b7e;padding:2px 8px;border-radius:5px;letter-spacing:.4px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--doc-line);border-radius:10px;overflow:hidden;margin-bottom:8px}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--doc-mut);font-weight:700;padding:8px 12px;border-bottom:1px solid var(--doc-line);background:#fbfcfe}
+td{padding:8px 12px;border-bottom:1px solid #f0f3f8;font-size:12px;vertical-align:middle}
+td.tok{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;white-space:nowrap}
+td.hex{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--doc-mut);white-space:nowrap}
+.swb{display:inline-block;width:38px;height:22px;border-radius:5px;border:1px solid rgba(16,35,63,.15);vertical-align:middle}
+.cr{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.cr.pass{color:#0b6e3f;font-weight:700}.cr.edge{color:#96450a;font-weight:700}.cr.note{color:#b03a2e;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.note{font-size:11.5px;color:var(--doc-mut);margin:2px 0 10px}
+/* ===== specimen styles (the components themselves) ===== */
+.spec{background:#fff;border:1px solid var(--doc-line);border-radius:12px;padding:16px;margin-bottom:16px}
+.spec .sl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:800;color:var(--doc-mut);margin-bottom:10px}
+.statelbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:#8a97a8;margin:8px 0 4px}
+.mono{width:46px;height:34px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;letter-spacing:.3px}
+.monorow{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.monoitem{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.row{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #e8edf4;border-radius:9px;position:relative;background:#fff;margin-bottom:6px}
+.row.hover{background:#eef2f8}
+.row.sel{background:#eef4fe;border-color:#cdd9ee}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);border-radius:3px 0 0 3px}
+.row.attn{background:var(--zone-attn);border-color:var(--zone-attn-line)}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:700;font-size:13px;color:var(--doc-ink)}
+.rmeta{font-size:11px;color:var(--doc-mut);font-family:ui-monospace,Menlo,monospace;margin-top:1px}
+.rtags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;align-items:center}
+.tag{font-size:10.5px;padding:2px 7px;border-radius:5px;background:#eef1f6;color:#5a6b7e;font-weight:600}
+.tag.ent{background:#e9eefb;color:#3b4da6}
+.blocker{font-size:11.5px;color:#b91c1c;font-weight:600;margin-top:4px}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;display:inline-block}
+.pill.ok{background:#e7f5ec;color:#15803d}.pill.warnp{background:#fbf1e3;color:#b45309}
+.pill.blk{background:#fdecec;color:#b91c1c}.pill.draft{background:#eef1f6;color:#68788c}.pill.warnonly{background:#fdf7e8;color:#8a6a1a}
+.pillrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.cap{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#8a97a8}
+.pc{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;display:inline-block}
+.pc.spec{background:#e7f5ec;color:#0b6e3f}.pc.man{background:#eef1f6;color:#5a6b7e}
+.pc.derv{background:var(--derivedbg);color:var(--derived)}.pc.ka{background:var(--kabg);color:var(--ka)}
+.seedbox{border:1px solid var(--zone-derived-line);border-radius:9px;overflow:hidden;background:var(--zone-derived)}
+.seedhd{background:#f3edfb;padding:7px 11px;border-bottom:1px solid var(--zone-derived-line);font-size:11.5px;font-weight:700}
+.seedrow{display:grid;grid-template-columns:15px 1fr 1fr auto;gap:9px;align-items:center;padding:6px 11px;border-top:1px solid var(--zone-derived-line);font-size:12px}
+.seedrow input{width:14px;height:14px;accent-color:var(--primary)}
+.seedrow .s{font-family:ui-monospace,Menlo,monospace}.seedrow .t{font-family:ui-monospace,Menlo,monospace;color:var(--doc-mut)}
+.seedrow .b{font-size:10px;color:var(--derived);font-weight:700;text-align:right}
+/* editor shell specimen */
+.eshell{border:1px solid var(--doc-line);border-radius:12px;overflow:hidden;background:var(--zone-editor);box-shadow:0 4px 16px rgba(16,35,63,.08)}
+.ehd{padding:11px 14px;border-bottom:1px solid var(--doc-line)}
+.etype{font-size:10px;font-weight:800;color:#fff;background:var(--fam-soap);padding:3px 8px;border-radius:5px;letter-spacing:.4px}
+.ename{font-weight:800;font-size:14px;color:var(--fam-soap);margin-left:7px}
+.banner{display:flex;gap:8px;align-items:center;margin:10px 14px;padding:8px 11px;background:var(--zone-attn);border:1px solid var(--zone-attn-line);border-radius:8px;font-size:11.5px;color:#7a531a}
+.tabs{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--doc-line)}
+.tab{font-size:11.5px;padding:7px 10px;color:var(--doc-mut);border-bottom:2px solid transparent;font-weight:600}
+.tab.on{color:var(--fam-soap);border-bottom-color:var(--fam-soap)}
+.tab .b{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;background:#b91c1c;color:#fff;border-radius:8px;font-size:9.5px;margin-left:4px;padding:0 4px;font-weight:800}
+.tab .bw{background:#b45309}
+.tab .ck{color:#15803d;margin-left:4px}
+.efoot{padding:9px 14px;border-top:1px solid var(--doc-line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.gnote{font-size:10.5px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:6px 9px;flex:1}
+.btn{font-size:12px;font-weight:600;padding:6px 13px;border-radius:7px;border:1px solid var(--doc-line);background:#fff;display:inline-block}
+.btn.pri{background:var(--primary-dark);color:#fff;border-color:var(--primary-dark)}
+/* stats + rail */
+.stats{display:flex;gap:10px}
+.stat{background:var(--zone-ready);border:1px solid var(--doc-line);border-radius:10px;padding:9px 13px;flex:1}
+.stat .n{font-size:19px;font-weight:800;color:var(--primary-dark);line-height:1}
+.stat .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--doc-mut);margin-top:4px;font-weight:600}
+.stat.attn{background:var(--zone-attn);border-color:var(--zone-attn-line)}.stat.attn .n{color:#b45309}
+.rail-demo{width:220px;background:#fff;border:1px solid var(--doc-line);border-radius:10px;overflow:hidden}
+.rail-demo a{display:block;padding:8px 16px;color:var(--doc-mut);text-decoration:none;font-size:12px;border-left:3px solid transparent}
+.rail-demo a.on{background:#eef4fe;color:var(--primary-dark);font-weight:700;border-left-color:var(--primary)}
+.rail-demo a .cnt{float:right;font-size:10.5px;color:#8a97a8}.rail-demo a .cnt b{color:#b45309}
+.rail-demo a.na{color:#c1cad6;font-style:italic}
+/* zones demo */
+.zones{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.zcard{border:1px solid var(--doc-line);border-radius:10px;padding:12px;min-height:86px}
+.zcard .zn{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.zcard .zh{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--doc-mut)}
+.zcard .zr{font-size:10.5px;color:var(--doc-mut);margin-top:6px}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--doc-line);font-size:11.5px;color:var(--doc-mut)}
+</style></head>
+<body>
+
+<header class="hero">
+  <div class="kick">EDGEFORGE STUDIO · UX REFRESH · DESIGN SYSTEM REFERENCE</div>
+  <h1>The locked visual system, rendered</h1>
+  <div class="sub">One reference page for the Action-5 build (all non-retired PRs through PR-23, then PR-24a → PR-24): every token and component the 26-PR contract implements against. <b>Nothing here is a proposal</b> — values are copied verbatim from <span style="font-family:ui-monospace,Menlo,monospace">implementation-design.md §1.5</span> (D1 final) on the shipped <span style="font-family:ui-monospace,Menlo,monospace">studio.css</span> base, with components as validated in <span style="font-family:ui-monospace,Menlo,monospace">final-mockups/</span>.</div>
+  <div class="chips">
+    <span class="chip">Renders the LOCKED contract · §1.5</span>
+    <span class="chip">Contrast values measured (WCAG)</span>
+    <span class="chip">Maps 1:1 to studio.css + Jinja partials</span>
+    <span class="chip">Tokens land in PR-02 · skins apply in PR-06+</span>
+    <span class="chip hot">Reference doc — not a Studio screen</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="contract">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+    <div class="ct"><b>The accessibility contract (binding on every surface — §1.5).</b> Text contrast ≥ 4.5:1 on every zone · every family / state / provenance signal carries a text label or <span style="font-family:ui-monospace,Menlo,monospace">aria-label</span> (monograms, dots and chips are never the only encoding) · error is never red-only · visible focus states · keyboard path through board rows (arrow / enter to open) · SR announcement on save success / failure · <b>selection &gt; zone &gt; default</b> — the blue selection treatment always wins over any zone tint. Family colours are <b>element accents only</b> (monogram tile · 3px left border · ribbon · legend); zones are <b>container backgrounds only</b> — the two axes never colour the same thing.</div>
+  </div>
+
+  <!-- ================= TOKENS ================= -->
+  <h2>1 · Base of record — shipped studio.css :root <span class="base">UNCHANGED BY THE REFRESH</span></h2>
+  <p class="note">The refresh is additive: §1.5 tokens land beside these. The final mockups drifted on neutrals (illustration-only); <b>the shipped values below remain the base of record</b> — see the reconciliation table (§3).</p>
+  <table>
+    <tr><th></th><th>Token</th><th>Value</th><th>Role</th><th></th><th>Token</th><th>Value</th><th>Role</th></tr>
+    <tr>
+      <td><span class="swb" style="background:#dce8f5"></span></td><td class="tok">--bg</td><td class="hex">#dce8f5</td><td>App background</td>
+      <td><span class="swb" style="background:#2563eb"></span></td><td class="tok">--primary</td><td class="hex">#2563eb</td><td>Action · selection</td>
+    </tr>
+    <tr>
+      <td><span class="swb" style="background:#ffffff"></span></td><td class="tok">--surface</td><td class="hex">#ffffff</td><td>Cards / panels</td>
+      <td><span class="swb" style="background:#1a3465"></span></td><td class="tok">--primary-dark</td><td class="hex">#1a3465</td><td>Headings · primary buttons</td>
+    </tr>
+    <tr>
+      <td><span class="swb" style="background:#edf3fa"></span></td><td class="tok">--surface-muted</td><td class="hex">#edf3fa</td><td>Muted surface</td>
+      <td><span class="swb" style="background:#10233f"></span></td><td class="tok">--text</td><td class="hex">#10233f</td><td>Ink</td>
+    </tr>
+    <tr>
+      <td><span class="swb" style="background:#b8ccde"></span></td><td class="tok">--border</td><td class="hex">#b8ccde</td><td>Lines</td>
+      <td><span class="swb" style="background:#5e718f"></span></td><td class="tok">--muted</td><td class="hex">#5e718f</td><td>Secondary text <span class="cr edge">(see §3-a)</span></td>
+    </tr>
+    <tr>
+      <td><span class="swb" style="background:#16814a"></span></td><td class="tok">--success</td><td class="hex">#16814a</td><td>Success</td>
+      <td><span class="swb" style="background:#b7791f"></span></td><td class="tok">--warn</td><td class="hex">#b7791f</td><td>Warning</td>
+    </tr>
+    <tr>
+      <td><span class="swb" style="background:#c0392b"></span></td><td class="tok">--danger</td><td class="hex">#c0392b</td><td>Danger</td>
+      <td><td class="tok">--radius / --radius-lg</td><td class="hex">8px / 14px</td><td>Corner radii</td>
+    </tr>
+  </table>
+
+  <h2>2 · Locked refresh tokens — §1.5, D1 final <span class="lock">DECIDED — COPY VERBATIM</span></h2>
+  <div class="grid2">
+    <div>
+      <p class="note"><b>Functional-zone tints</b> — tint by ROLE, never by family. Container backgrounds only. Measured contrast for shipped ink <span class="cr">#10233f</span> on each zone:</p>
+      <table>
+        <tr><th></th><th>Token</th><th>Value</th><th>Role</th><th>Ink CR</th></tr>
+        <tr><td><span class="swb" style="background:#eaf0f8"></span></td><td class="tok">--zone-scan</td><td class="hex">#eaf0f8</td><td>Scan / board surfaces</td><td class="cr pass">13.7:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#ffffff"></span></td><td class="tok">--zone-editor</td><td class="hex">#ffffff</td><td>Focused editor — brightest, “act here”</td><td class="cr pass">15.7:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#f3ecfd"></span></td><td class="tok">--zone-derived</td><td class="hex">#f3ecfd <span style="color:#8a97a8">· line #ddd0f2</span></td><td>Derived / seed zones (provenance)</td><td class="cr pass">13.7:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#fdf0d8"></span></td><td class="tok">--zone-attn</td><td class="hex">#fdf0d8 <span style="color:#8a97a8">· line #eccf97</span></td><td>Needs-action zones</td><td class="cr pass">14.0:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#e8f2f2"></span></td><td class="tok">--zone-ready</td><td class="hex">#e8f2f2</td><td>Ambient readiness strips</td><td class="cr pass">13.8:1 ✓</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="note"><b>Contract-family accents</b> — element level ONLY (monogram tile · 3px left border · ribbon · legend). Never a panel fill. White-monogram contrast measured:</p>
+      <table>
+        <tr><th></th><th>Token</th><th>Value</th><th>Family</th><th>White CR</th></tr>
+        <tr><td><span class="swb" style="background:#0d9488"></span></td><td class="tok">--fam-rest</td><td class="hex">#0d9488</td><td>REST / OpenAPI</td><td class="cr edge">3.7:1 (§3-b)</td></tr>
+        <tr><td><span class="swb" style="background:#15803d"></span></td><td class="tok">--fam-fixed</td><td class="hex">#15803d</td><td>Fixed-width</td><td class="cr pass">5.0:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#4f46e5"></span></td><td class="tok">--fam-csv</td><td class="hex">#4f46e5</td><td>CSV / delimited</td><td class="cr pass">6.3:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#b45309"></span></td><td class="tok">--fam-xml</td><td class="hex">#b45309</td><td>XML / XSD</td><td class="cr pass">5.0:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#1e3a5f"></span></td><td class="tok">--fam-soap</td><td class="hex">#1e3a5f</td><td>SOAP / WSDL</td><td class="cr pass">11.5:1 ✓</td></tr>
+        <tr><td><span class="swb" style="background:#475569"></span></td><td class="tok">--fam-staging</td><td class="hex">#475569</td><td>Staging / handoff</td><td class="cr pass">7.6:1 ✓</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <p class="note"><b>State system (P6 vocabulary)</b> — every pill = pill + icon/prefix + text, never colour alone. Precedence: <span class="cr">blocks_export &gt; needs_action &gt; warning &gt; draft &gt; ready</span>.</p>
+      <table>
+        <tr><th>State</th><th>Specimen</th><th>Export policy</th></tr>
+        <tr><td class="tok">ready</td><td><span class="pill ok">Ready</span></td><td>Export allowed</td></tr>
+        <tr><td class="tok">warning</td><td><span class="pill warnonly">⚠ Warning</span></td><td>Export allowed</td></tr>
+        <tr><td class="tok">needs_action</td><td><span class="pill warnp">Needs action</span></td><td>Continue allowed; export may/may not</td></tr>
+        <tr><td class="tok">blocks_export</td><td><span class="pill blk">✕ Blocks export</span></td><td>Export disabled until fixed</td></tr>
+        <tr><td class="tok">draft</td><td><span class="pill draft">Draft</span></td><td>Intentionally incomplete; blocks only if in active package</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="note"><b>Provenance legend</b> — one legend, two colour families: deterministic lilac vs KA teal. Chips only — never a second review surface. Stays project-side, never in the Engine manifest.</p>
+      <table>
+        <tr><th>Chip</th><th>Meaning</th><th>Text CR</th></tr>
+        <tr><td><span class="pc spec">SPEC-DERIVED</span></td><td>Extracted from the ingested spec</td><td class="cr edge">4.5:1 (§3-c)</td></tr>
+        <tr><td><span class="pc man">MANUAL</span></td><td>Authored / imported by a human</td><td class="cr edge">4.0:1 (§3-c)</td></tr>
+        <tr><td><span class="pc derv">DERIVED</span></td><td>Deterministic transform of user input — reviewable, never silent</td><td class="cr pass">5.3:1 ✓</td></tr>
+        <tr><td><span class="pc ka">KA-APPLIED</span></td><td>Evidence-backed, human-accepted (KA opt-in, off by default)</td><td class="cr pass">4.7:1 ✓</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= RECONCILIATION ================= -->
+  <h2>3 · Measured findings &amp; reconciliation — shipped fixes + PR-24a a11y gate <span class="base">DOCUMENTED, NOT RE-DECIDED</span></h2>
+  <table>
+    <tr><th>#</th><th>Finding (measured)</th><th>Recommendation for the build (Action-4 owns the call)</th></tr>
+    <tr><td class="tok">a</td><td><b>--muted #5e718f on tinted zones = 4.30–4.40:1</b> (just under AA 4.5; passes 4.96 on white).</td><td>On tinted zones use muted only for ≥14pt-bold-equivalent labels, or add a one-step-darker <span class="tok">--muted-on-tint</span> in PR-02. Cheap, contained.</td></tr>
+    <tr><td class="tok">b</td><td><b>White monogram text on --fam-rest = 3.74:1</b> (other five families pass ≥5:1).</td><td>Safe today because monograms are redundant encoding with an adjacent label (the contract requires it). For strict AA, darken the REST tile fill ~10% for tile use only — accent uses (border/ribbon) are unaffected.</td></tr>
+    <tr><td class="tok">c</td><td><b>Chip text borderline:</b> ready-on-soft 4.46 · warn-on-soft 4.49 · draft-muted 3.99.</td><td>Nudge chip text one step darker on soft fills when PR-06 lands the shared chip partial (e.g. ready → #0f6a32, warn → #96450a, draft → #4f6075). Micro-change, no hue shift.</td></tr>
+    <tr><td class="tok">d</td><td><b>Mockup neutrals ≠ shipped neutrals.</b> Mockups drew line #dde3ec / bg #eef1f6 / ink #1c2733 / muted #68788c / ok #15803d / warn #b45309 / danger #b91c1c; shipped studio.css has --border #b8ccde / --bg #dce8f5 / --text #10233f / --muted #5e718f / --success #16814a / --warn #b7791f / --danger #c0392b.</td><td><b>Shipped studio.css stays the base of record</b> — mockup neutrals are illustration-only. §1.5 locks only zones + family hues. PR-06 skins bind components to the shipped neutrals; do not import mockup neutrals as new tokens.</td></tr>
+  </table>
+  <p class="note"><b>Finding (d) supersession — post-refresh measured polish pass:</b> Superseded by the post-refresh measured polish pass. Shipped neutrals remained authoritative through Action-5; replacement values were later selected through live contrast and differentiation measurements, not imported from mockups. Locked zone, family, status, and KA tokens remain unchanged.</p>
+  <p class="note"><b>Acceptance routing (crisp):</b> <span class="tok">(a)</span> <span class="tok">--muted-on-tint</span> shipped through PR-02 / PR-06 · <span class="tok">(b)</span> the REST tile-only fill fix shipped in PR-06 · <span class="tok">(c)</span> the darker soft-chip text shipped in PR-11 and is enforced by <span class="tok">tests/test_rail_step2_chips.py</span>. <b>PR-24a re-verifies all three as final <i>contrast</i> acceptance checks without reopening their implementation ownership.</b> "Final" here is scoped to these three contrast findings only — PR-24a is <b>not</b> the final a11y verification for the initiative: the vocalization half of &sect;1.5 item 7 is <b>A11y-01</b>, a mandatory pre-release gate (&sect;7.2). (d) is not an a11y finding — it binds components to the shipped base neutrals.</p>
+
+  <!-- ================= COMPONENTS ================= -->
+  <h2>4 · Component gallery — as validated in final-mockups/ <span class="lock">BUILD TARGETS</span></h2>
+
+  <div class="grid2">
+    <div class="spec">
+      <div class="sl">4.1 · Family monograms — all six (tile + label, always together)</div>
+      <div class="monorow">
+        <span class="monoitem"><span class="mono" style="background:var(--fam-rest)">REST</span>REST / OpenAPI</span>
+        <span class="monoitem"><span class="mono" style="background:var(--fam-fixed)">FIXED</span>Fixed-width</span>
+        <span class="monoitem"><span class="mono" style="background:var(--fam-csv)">CSV</span>CSV</span>
+      </div>
+      <div class="monorow" style="margin-top:10px">
+        <span class="monoitem"><span class="mono" style="background:var(--fam-xml)">XML</span>XML / XSD</span>
+        <span class="monoitem"><span class="mono" style="background:var(--fam-soap)">SOAP</span>SOAP / WSDL</span>
+        <span class="monoitem"><span class="mono" style="background:var(--fam-staging)">STG</span>Staging / handoff</span>
+      </div>
+      <div class="statelbl" style="margin-top:12px">capability icon — pain-5 made legible (icon + text, legend on page)</div>
+      <div class="pillrow"><span class="cap">≣ MANIFEST REF</span><span class="cap" style="color:#0d9488">⚡ POPULATES ENTITIES</span><span class="cap">◌ METADATA ONLY</span></div>
+    </div>
+
+    <div class="spec">
+      <div class="sl">4.2 · Status pills &amp; provenance chips — full sets</div>
+      <div class="statelbl">state pills (P6)</div>
+      <div class="pillrow"><span class="pill ok">Ready</span><span class="pill warnonly">⚠ Warning</span><span class="pill warnp">Needs action</span><span class="pill blk">✕ Blocks export</span><span class="pill draft">Draft</span></div>
+      <div class="statelbl" style="margin-top:12px">provenance chips</div>
+      <div class="pillrow"><span class="pc spec">SPEC-DERIVED</span><span class="pc man">MANUAL</span><span class="pc derv">DERIVED</span><span class="pc ka">KA-APPLIED</span></div>
+      <div class="statelbl" style="margin-top:12px">rail count chip (in context)</div>
+      <div class="rail-demo">
+        <a href="#">4 · Data Handoffs <span class="cnt"><b>1</b> to fix</span></a>
+        <a href="#" class="on">5 · Downstream <span class="cnt"><b>1</b> to fix</span></a>
+        <a href="#" class="na">5 · Downstream — n/a <span style="float:right;font-size:9.5px">(other archetypes)</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <div class="sl">4.3 · Board row — all five states (selection &gt; zone &gt; default demonstrated)</div>
+    <div class="statelbl">default</div>
+    <div class="row"><span class="mono" style="background:var(--fam-csv)">CSV</span><div class="rmain"><div class="rname">Account CSV Reconciliation</div><div class="rmeta">delimiter | · header true</div><div class="rtags"><span class="tag ent">Account</span><span class="tag">8/8 mapped</span><span class="cap">≣ MANIFEST REF</span></div></div><span class="pill ok">Ready</span><span class="btn">Edit</span></div>
+    <div class="statelbl">hover</div>
+    <div class="row hover"><span class="mono" style="background:var(--fam-xml)">XML</span><div class="rmain"><div class="rname">Account XML Outbound</div><div class="rmeta">root AccountMessage · urn:edgeforge:account:v1</div><div class="rtags"><span class="tag ent">Account</span><span class="tag">6/6 paths</span></div></div><span class="pill ok">Ready</span><span class="btn">Edit</span></div>
+    <div class="statelbl">needs-action (zone-attn wash + inline exact blocker)</div>
+    <div class="row attn"><span class="mono" style="background:var(--fam-soap)">SOAP</span><div class="rmain"><div class="rname">Account Status Notify</div><div class="rmeta">downstream/account-status.wsdl · PARTNER_GATEWAY</div><div class="blocker">⚠ Choose the WSDL operation — 3 available</div></div><span class="pill warnp">Needs op</span><span class="btn">Edit</span></div>
+    <div class="statelbl">selected (blue wins over the zone tint — the precedence rule)</div>
+    <div class="row sel"><span class="mono" style="background:var(--fam-soap)">SOAP</span><div class="rmain"><div class="rname">Account Status Notify</div><div class="rmeta">downstream/account-status.wsdl · PARTNER_GATEWAY</div><div class="blocker">⚠ Choose the WSDL operation — 3 available</div></div><span class="pill warnp">Needs op</span><span class="btn pri">Editing</span></div>
+    <div class="statelbl">draft</div>
+    <div class="row"><span class="mono" style="background:var(--fam-fixed)">FIXED</span><div class="rmain"><div class="rname">EOD Archive (draft)</div><div class="rmeta">layout not started</div><div class="rtags"><span class="tag">draft — not in export</span></div></div><span class="pill draft">Draft</span><span class="btn">Edit</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="spec">
+      <div class="sl">4.4 · Focused editor shell — ribbon · severity tabs · banner · pinned footer</div>
+      <div class="eshell">
+        <div class="ehd"><span class="etype">SOAP / WSDL</span><span class="ename">Account Status Notify</span></div>
+        <div class="banner">⚠ <b style="margin:0 4px">One field blocks export:</b> select the WSDL operation.</div>
+        <div class="tabs">
+          <span class="tab">Identity<span class="ck">✓</span></span>
+          <span class="tab on">WSDL &amp; Operation<span class="b">1</span></span>
+          <span class="tab">Mapping<span class="b bw">6</span></span>
+          <span class="tab">Sample</span>
+        </div>
+        <div style="padding:12px 14px;font-size:11.5px;color:var(--doc-mut)">…form fields move verbatim (same names, same save payloads)…</div>
+        <div class="efoot"><span class="gnote">Edits the same fields Studio exports today — no manifest or Engine change.</span><span class="btn">Cancel</span><span class="btn pri">Save</span></div>
+      </div>
+      <p class="note" style="margin-top:8px">Tab badge semantics: <b>red = export blocker count</b> · <b>amber = warnings</b> · ✓ = section complete. A blocker can never hide on an inactive tab.</p>
+    </div>
+
+    <div class="spec">
+      <div class="sl">4.5 · Deterministic seed patch — the three row states</div>
+      <div class="seedbox">
+        <div class="seedhd">Deterministic seeds — exact transforms only · never overwrites non-empty · nothing applied until kept</div>
+        <div class="seedrow"><input type="checkbox" checked><span class="s">Account.accountId</span><span class="t">accountId</span><span class="b">exact match</span></div>
+        <div class="seedrow"><input type="checkbox" checked><span class="s">Account.status</span><span class="t">accountStatus</span><span class="b">snake↔camel</span></div>
+        <div class="seedrow"><input type="checkbox"><span class="s">Account.openedOn</span><span class="t">— no match / collision</span><span class="b" style="color:#8a97a8">left blank</span></div>
+      </div>
+      <p class="note" style="margin-top:8px">Collision rule (P5): exact raw-name wins · normalized match only when exactly one source + one target remain · multiple candidates → row left blank, collision shown, never pre-selected · every applied row shows its transform basis.</p>
+      <div class="statelbl" style="margin-top:10px">ambient readiness strip (zone-ready / zone-attn)</div>
+      <div class="stats">
+        <div class="stat"><div class="n">5</div><div class="l">Contracts</div></div>
+        <div class="stat"><div class="n">4</div><div class="l">Ready</div></div>
+        <div class="stat attn"><div class="n">1</div><div class="l">Needs action</div></div>
+        <div class="stat"><div class="n" style="color:#b91c1c">1</div><div class="l">Export blockers</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <div class="sl">4.6 · The five zones, side by side — container backgrounds only, each always labelled</div>
+    <div class="zones">
+      <div class="zcard" style="background:var(--zone-scan)"><div class="zn">scan / board</div><div class="zh">--zone-scan #eaf0f8</div><div class="zr">Registries, boards, queues — the “look around” surface.</div></div>
+      <div class="zcard" style="background:var(--zone-editor);box-shadow:0 4px 14px rgba(16,35,63,.08)"><div class="zn">focused editor</div><div class="zh">--zone-editor #ffffff</div><div class="zr">Brightest + elevated — “act here.”</div></div>
+      <div class="zcard" style="background:var(--zone-derived);border-color:var(--zone-derived-line)"><div class="zn">derived / seeds</div><div class="zh">--zone-derived #f3ecfd</div><div class="zr">Deterministic prefills — ties to DERIVED provenance.</div></div>
+      <div class="zcard" style="background:var(--zone-attn);border-color:var(--zone-attn-line)"><div class="zn">needs action</div><div class="zh">--zone-attn #fdf0d8</div><div class="zr">Blockers + attention bands. Never the only cue.</div></div>
+      <div class="zcard" style="background:var(--zone-ready)"><div class="zn">readiness strip</div><div class="zh">--zone-ready #e8f2f2</div><div class="zr">Ambient counts + status summaries.</div></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    EdgeForge Studio design-system reference · updated 2026-07-22 for the approved implementation-design §7.1 amendment · values verbatim from <b>implementation-design.md §1.5</b> (D1 final, maintainer-signed 2026-07-03) on the shipped <b>studio.css</b> base · components per <b>docs/studio-ux-refresh/final-mockups/</b> · contrast measured (WCAG 2.x relative luminance) · findings §3 shipped through PR-02 / PR-06 / PR-11 and are re-verified by the <b>PR-24a a11y gate</b>. Spec, not framework code — maps 1:1 to studio.css custom properties + Jinja partials.
+  </div>
+</div>
+</body></html>

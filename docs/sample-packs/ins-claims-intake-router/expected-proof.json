@@ -1,0 +1,25 @@
+{
+  "pack_id": "ins-claims-intake-router",
+  "archetype": "passthrough-router",
+  "target_profile": "springboot-legacy-compatible",
+  "expected_entities": [],
+  "expected_manifest_schema_version": "2.0",
+  "expected_export_warnings": [],
+  "expected_generation_warnings": [],
+  "expected_harness_warnings": [],
+  "harness_applies": false,
+  "min_studio_project_schema_version": "1.4",
+  "expected_export_dir": "claims-intake-router",
+  "expected_exported_artifacts": [
+    "app-definition.yaml",
+    "assessment-report.json",
+    "completeness-report.md",
+    "downstream/auto-claims-api-openapi.yaml",
+    "downstream/property-claims-api-openapi.yaml",
+    "downstream/specialty-claims-api-openapi.yaml",
+    "evidence-trail.json",
+    "rules/claims-intake-router-passthrough-routing.yaml",
+    "studio-project.json",
+    "upstream/claim-intake-api-spec.yaml"
+  ]
+}

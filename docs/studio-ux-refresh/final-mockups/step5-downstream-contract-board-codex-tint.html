@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeForge Studio Mockup - Codex Functional Tint</title>
+  <style>
+    :root {
+      --bg: #e4edf7;
+      --ink: #10233f;
+      --muted: #5e718f;
+      --line: #b8ccde;
+      --line-strong: #8eaac6;
+      --primary: #1a3465;
+      --scan-zone: #f2f6fb;
+      --editor-zone: #ffffff;
+      --seed-zone: #f5f1ff;
+      --seed-line: #c8b8f4;
+      --action-zone: #fff5df;
+      --action-line: #e4bd67;
+      --ready-zone: #edf5fb;
+      --ready-line: #aac4dc;
+      --surface: #ffffff;
+      --shadow: 0 18px 42px rgba(16, 35, 63, .13);
+      --soap: #1a3465;
+      --fixed: #16814a;
+      --csv: #0f766e;
+      --xml: #9a6a00;
+      --danger: #b73d2f;
+      --success: #16814a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, .14), transparent 25rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 16px;
+      background: #e4edf7;
+      border-right: 1px solid var(--line);
+    }
+    .brand {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid #d0deeb;
+      background: rgba(255, 255, 255, .76);
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+    nav a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 650;
+      margin-bottom: 4px;
+    }
+    nav a.on { background: #c7dcf5; color: var(--primary); }
+    main { padding: 30px; }
+    .page-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0 0 6px; font-size: 29px; letter-spacing: -.03em; }
+    h2, h3 { margin: 0; }
+    p { margin: 0; color: var(--muted); }
+    .tint-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      max-width: 640px;
+    }
+    .key {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .swatch { width: 14px; height: 14px; border-radius: 5px; border: 1px solid var(--line-strong); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--ready-zone);
+      border: 1px solid var(--ready-line);
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 3px 12px rgba(16, 35, 63, .06);
+    }
+    .stat.block { background: var(--action-zone); border-color: var(--action-line); }
+    .stat strong { display: block; font-size: 26px; line-height: 1; }
+    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(430px, .98fr);
+      gap: 18px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .scan { background: var(--scan-zone); }
+    .editor { background: var(--editor-zone); }
+    .panel-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, .72);
+    }
+    .caption { color: var(--muted); font-size: 13px; margin-top: 3px; }
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #fff;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .chip.warn { background: var(--action-zone); border-color: var(--action-line); color: #7a4e00; }
+    .group {
+      padding: 12px 16px 6px;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .row {
+      margin: 0 14px 10px;
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-left-width: 6px;
+      border-radius: 15px;
+      background: #fff;
+    }
+    .row.need { background: #fffaf0; border-color: var(--action-line); border-left-color: var(--soap); }
+    .row.fixed { border-left-color: var(--fixed); }
+    .row.csv { border-left-color: var(--csv); }
+    .row.xml { border-left-color: var(--xml); }
+    .mono {
+      display: grid;
+      place-items: center;
+      min-height: 42px;
+      border-radius: 13px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .04em;
+    }
+    .m-soap { background: var(--soap); }
+    .m-fixed { background: var(--fixed); }
+    .m-csv { background: var(--csv); }
+    .m-xml { background: var(--xml); }
+    .name { font-weight: 900; }
+    .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .blocker {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      margin-top: 7px;
+      color: #7a4e00;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .shape { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+    .shape span {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #f6f9fc;
+      border: 1px solid #d4e0ec;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .right {
+      display: grid;
+      gap: 7px;
+      justify-items: end;
+    }
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .pill.ok { color: var(--success); background: #ecfdf3; border-color: #b8e6c8; }
+    .pill.bad { color: #7a4e00; background: var(--action-zone); border-color: var(--action-line); }
+    .edit { color: var(--primary); font-size: 12px; font-weight: 900; }
+    .editor-head {
+      background: var(--editor-zone);
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .ribbon {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .type {
+      color: #fff;
+      background: var(--soap);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .06em;
+    }
+    .banner {
+      margin: 16px 20px 0;
+      padding: 13px 14px;
+      border: 1px solid var(--action-line);
+      border-radius: 14px;
+      background: var(--action-zone);
+      color: #6f4300;
+      font-weight: 750;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .tab.on { border-color: var(--primary); color: var(--primary); }
+    .tab .badge { background: var(--action-zone); border: 1px solid var(--action-line); border-radius: 999px; padding: 2px 6px; }
+    .editor-body { padding: 18px 20px 20px; display: grid; gap: 16px; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+    label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .input {
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 11px;
+      font-weight: 650;
+    }
+    .need-input { border-color: var(--action-line); background: #fffdf6; }
+    .seed {
+      border: 1px solid var(--seed-line);
+      background: var(--seed-zone);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .seed h3 { margin-bottom: 4px; }
+    .seed-row {
+      display: grid;
+      grid-template-columns: 24px 1fr 1fr 100px;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255, 255, 255, .7);
+      border: 1px solid #ddd4fa;
+      border-radius: 11px;
+      margin-top: 8px;
+      padding: 9px;
+      font-size: 13px;
+    }
+    .basis {
+      justify-self: start;
+      border-radius: 999px;
+      padding: 4px 7px;
+      background: #fff;
+      border: 1px solid var(--seed-line);
+      color: #4d358f;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding: 14px 20px;
+      background: #fbfdff;
+    }
+    .note { color: var(--muted); font-size: 12px; }
+    .btn {
+      display: inline-flex;
+      border-radius: 11px;
+      padding: 9px 12px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: #fff;
+      font-weight: 900;
+    }
+    .btn.primary { background: var(--primary); color: #fff; }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { display: none; }
+      .workspace, .stats { grid-template-columns: 1fr; }
+      .page-title { display: block; }
+      .tint-key { justify-content: flex-start; margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">EdgeForge Studio</div>
+      <nav>
+        <a href="#">1 Project Setup</a>
+        <a href="#">2 Upstream Contract</a>
+        <a href="#">3 Entity Model</a>
+        <a href="#">4 Data Handoffs</a>
+        <a href="#" class="on">5 Downstream</a>
+        <a href="#">6 Rules &amp; Mappings</a>
+        <a href="#">7 Review</a>
+        <a href="#">8 Export &amp; Build</a>
+      </nav>
+    </aside>
+    <main>
+      <div class="page-title">
+        <div>
+          <h1>Step 5: Functional-Zone Tinting</h1>
+          <p>Role tinting separates scan, act, seed, warning, and readiness zones. Family remains an accent only.</p>
+        </div>
+        <div class="tint-key" aria-label="Functional zone tint legend">
+          <span class="key"><span class="swatch" style="background:var(--scan-zone)"></span>Scan zone</span>
+          <span class="key"><span class="swatch" style="background:var(--editor-zone)"></span>Editor brightest</span>
+          <span class="key"><span class="swatch" style="background:var(--seed-zone)"></span>Derived seed</span>
+          <span class="key"><span class="swatch" style="background:var(--action-zone)"></span>Needs action</span>
+          <span class="key"><span class="swatch" style="background:var(--ready-zone)"></span>Readiness</span>
+        </div>
+      </div>
+
+      <div class="stats" aria-label="Readiness summary">
+        <div class="stat"><strong>5</strong><span>Contracts</span></div>
+        <div class="stat"><strong>4</strong><span>Ready</span></div>
+        <div class="stat block"><strong>1</strong><span>Export blocker</span></div>
+        <div class="stat"><strong>3</strong><span>Mapped entities</span></div>
+      </div>
+
+      <div class="workspace">
+        <section class="panel scan">
+          <div class="panel-head">
+            <div>
+              <h2>Loaded downstream interfaces</h2>
+              <div class="caption">Cool neutral scan zone. Rows still use family accents only.</div>
+            </div>
+          </div>
+          <div class="filters">
+            <span class="chip active">All</span>
+            <span class="chip warn">Needs action 1</span>
+            <span class="chip">Ready 4</span>
+            <span class="chip">File</span>
+            <span class="chip">XML/XSD</span>
+            <span class="chip">SOAP</span>
+          </div>
+          <div class="group">Needs action</div>
+          <article class="row need">
+            <div class="mono m-soap">SOAP</div>
+            <div>
+              <div class="name">Account Status Notify</div>
+              <div class="meta">downstream/account-status.wsdl · PARTNER_GATEWAY</div>
+              <div class="blocker">Choose the WSDL operation; 3 candidates are available.</div>
+            </div>
+            <div class="right"><span class="pill bad">Blocks export</span><span class="edit">Editing</span></div>
+          </article>
+          <div class="group">Ready</div>
+          <article class="row fixed">
+            <div class="mono m-fixed">FIXED</div>
+            <div>
+              <div class="name">Account Fixed-Width Archive</div>
+              <div class="meta">downstream/account-eod.layout.yaml</div>
+              <div class="shape"><span>Account</span><span>142 cols</span><span>12/12 mapped</span></div>
+            </div>
+            <div class="right"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+          </article>
+          <article class="row csv">
+            <div class="mono m-csv">CSV</div>
+            <div>
+              <div class="name">Account CSV Reconciliation</div>
+              <div class="meta">delimiter | · header true</div>
+              <div class="shape"><span>Account</span><span>8/8 mapped</span><span>MANIFEST REF</span></div>
+            </div>
+            <div class="right"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+          </article>
+          <article class="row xml">
+            <div class="mono m-xml">XML</div>
+            <div>
+              <div class="name">Account XML Document Outbound</div>
+              <div class="meta">root AccountMessage · urn:edgeforge:account:v1</div>
+              <div class="shape"><span>Account</span><span>6/6 paths</span><span>MANIFEST REF</span></div>
+            </div>
+            <div class="right"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+          </article>
+        </section>
+
+        <section class="panel editor">
+          <div class="editor-head">
+            <div class="ribbon"><span class="type">SOAP/WSDL</span><strong>Account Status Notify</strong></div>
+            <p>Bright editor zone: the place where action happens.</p>
+          </div>
+          <div class="banner"><strong>One blocker:</strong> select the WSDL operation before export.</div>
+          <div class="tabs">
+            <span class="tab">Identity</span>
+            <span class="tab on">WSDL &amp; Operation <span class="badge">1 blocker</span></span>
+            <span class="tab">Mapping <span class="badge">6 warnings</span></span>
+            <span class="tab">Sample optional</span>
+          </div>
+          <div class="editor-body">
+            <div class="field-grid">
+              <div class="field"><label>Service</label><div class="input">AccountStatusService</div></div>
+              <div class="field"><label>Port</label><div class="input">AccountStatusSoap11Port</div></div>
+              <div class="field"><label>Binding</label><div class="input">AccountStatusSoap11Binding</div></div>
+              <div class="field"><label>Operation</label><div class="input need-input">Choose operation...</div></div>
+            </div>
+
+            <div class="seed">
+              <h3>Derived seed patch</h3>
+              <p>Faint lilac zone: exact transforms from the inspected artifact. Nothing overwrites existing values without review.</p>
+              <div class="seed-row"><input type="checkbox" checked aria-label="keep accountId seed"><code>Account.accountId</code><code>accountId</code><span class="basis">exact</span></div>
+              <div class="seed-row"><input type="checkbox" checked aria-label="keep status seed"><code>Account.status</code><code>accountStatus</code><span class="basis">snake/camel</span></div>
+              <div class="seed-row"><input type="checkbox" aria-label="blank openedOn seed"><code>Account.openedOn</code><code>left blank</code><span class="basis">no match</span></div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="note">This edits the same downstream-interface fields Studio exports today. No manifest or Engine behavior changes.</div>
+            <div><span class="btn">Cancel</span> <span class="btn primary">Save contract</span></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

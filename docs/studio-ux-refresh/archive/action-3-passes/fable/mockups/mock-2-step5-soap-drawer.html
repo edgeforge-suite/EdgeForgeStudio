@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mock 2 — SOAP Focused Editor (drawer)</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#fff; --line:#dde3ec; --ink:#1c2733; --mut:#68788c; --navy:#1e3a5f;
+  --t-soap:#7c3aed; --t-fw:#4f46e5; --t-csv:#16a34a; --t-xml:#d97706;
+  --ok:#0f9d6e; --warn:#c47f17; --derived:#7c5cd6;
+}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.mockbar{background:#101828;color:#cdd6e4;font-size:11px;padding:6px 16px;display:flex;justify-content:space-between}
+.mockbar b{color:#fff}
+/* dimmed backdrop registry (abbreviated) */
+.back{filter:blur(1px) grayscale(.2);opacity:.45;padding:16px;max-width:1560px;margin:0 auto}
+.bk-hdr{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin-bottom:12px;font-weight:700}
+.bk-row{background:#fff;border:1px solid var(--line);border-left:3px solid var(--t-soap);border-radius:9px;padding:12px;margin-top:6px;display:flex;gap:12px;align-items:center;font-size:12px}
+.bk-row.fw{border-left-color:var(--t-fw)} .bk-row.csv{border-left-color:var(--t-csv)} .bk-row.xml{border-left-color:var(--t-xml)}
+.scrim{position:fixed;inset:0;background:rgba(18,28,45,.34)}
+/* drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:800px;background:#fff;box-shadow:-8px 0 30px rgba(10,25,50,.28);display:flex;flex-direction:column}
+.d-hd{border-bottom:1px solid var(--line);padding:14px 20px 0;background:linear-gradient(#faf7ff,#fff)}
+.d-hd .top{display:flex;align-items:center;gap:10px}
+.tile{width:34px;height:34px;border-radius:9px;background:var(--t-soap);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.d-hd h3{font-size:15px}
+.d-hd .path{font:11px ui-monospace,Menlo,monospace;color:var(--mut)}
+.badge{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--t-soap);border-radius:9px;padding:2.5px 9px}
+.pill{font-size:10px;font-weight:700;border-radius:10px;padding:3px 9px}
+.pill.warn{color:#9a6511;background:#fdf3e2}
+.ready{margin:9px 0 0;font-size:11.5px;color:#8a5b0d;background:#fdf3e2;border:1px solid #f3e0b8;border-radius:8px;padding:6px 10px}
+.anchors{display:flex;gap:2px;margin-top:12px}
+.anchors a{padding:7px 13px;font-size:11.5px;font-weight:600;color:#54637a;text-decoration:none;border-bottom:2.5px solid transparent}
+.anchors a.on{color:var(--t-soap);border-color:var(--t-soap)}
+.d-bd{flex:1;overflow:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.sec{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sec h4{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#54637a;margin-bottom:10px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:11px;font-weight:600;color:#3c4c63;display:flex;align-items:center;gap:6px}
+.f input,.f select{border:1px solid #c9d3e0;border-radius:7px;padding:7px 9px;font-size:12.5px;background:#fff;color:var(--ink)}
+.f select.derived{border-color:#cdbcf3;background:#faf8fe}
+.dchip{font-size:8.5px;font-weight:800;letter-spacing:.05em;color:#6d28d9;background:#f1eafd;border:1px solid #ddd0f6;border-radius:7px;padding:1px 6px}
+.note{font-size:11px;color:var(--mut)}
+.parsehint{display:flex;gap:8px;align-items:center;background:#f5f1fe;border:1px solid #e2d8f8;border-radius:8px;padding:7px 10px;font-size:11.5px;color:#4c3a86}
+.parsehint b{color:#3b2a70}
+.entchips{display:flex;gap:6px}.entchips span{font-size:11px;border:1px solid #c9d3e0;border-radius:12px;padding:2px 10px;color:#33455e;background:#f6f9fd}
+.d-ft{border-top:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:10px;background:#fbfcfe}
+.vok{font-size:11.5px;color:#0b7c56}
+.d-ft .spacer{flex:1}
+.btn{border-radius:8px;padding:8px 16px;font-size:12.5px;border:1px solid #c9d3e0;background:#fff;color:#33455e;cursor:pointer}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+</style></head><body>
+<div class="mockbar"><span><b>STUDIO UX REFRESH — TARGET-STATE MOCK 2/5</b> · Focused editor (drawer) over the Step 5 registry — SOAP outbound with WSDL-derived dropdowns (Phase 2)</span><span>Forms move verbatim; Service/Port/Binding/Operation become parsed pickers</span></div>
+<div class="back">
+  <div class="bk-hdr">Step 5: Downstream Interfaces — 6 interfaces</div>
+  <div class="bk-row">SOAP · payment-notify-soap-out · PARTNER_GATEWAY · Ready to export</div>
+  <div class="bk-row" style="outline:2px solid var(--t-soap)">SOAP · account-status-soap-out · PARTNER_GATEWAY · Needs operation ← editing</div>
+  <div class="bk-row fw">FW · account-fixed-file · target · Needs mapping</div>
+  <div class="bk-row csv">CSV · transaction-csv · target · Ready to export</div>
+  <div class="bk-row xml">XML · account-xml · target · Ready to export</div>
+  <div class="bk-row xml">XML · audit-events-xml · AUDIT_VAULT · Draft</div>
+</div>
+<div class="scrim"></div>
+<aside class="drawer">
+  <div class="d-hd">
+    <div class="top">
+      <div class="tile">SOAP</div>
+      <div style="flex:1">
+        <h3>account-status-soap-out <span class="badge">SOAP / WSDL · OUTBOUND</span></h3>
+        <div class="path">downstream/account-status.wsdl</div>
+      </div>
+      <span class="pill warn">Needs operation</span>
+    </div>
+    <div class="ready">Readiness: select the operation to invoke — everything else is complete. Export unblocks when an operation is chosen.</div>
+    <nav class="anchors"><a class="on" href="#">Identity</a><a href="#">WSDL &amp; Operation</a><a href="#">Mapping</a><a href="#">Sample</a></nav>
+  </div>
+  <div class="d-bd">
+    <section class="sec">
+      <h4>Identity</h4>
+      <div class="frow">
+        <div class="f"><label>Interface Name *</label><input value="account-status-soap-out"></div>
+        <div class="f"><label>System</label><input value="PARTNER_GATEWAY"></div>
+        <div class="f"><label>Version</label><input value="v1"></div>
+        <div class="f"><label>Canonical entity link</label><div class="entchips"><span>Account ✓</span><span>+ link entity</span></div></div>
+      </div>
+    </section>
+    <section class="sec">
+      <h4>WSDL &amp; Operation</h4>
+      <div class="parsehint"><b>Parsed from account-status.wsdl:</b> 1 service · 1 port · 3 operations — pickers below are derived from the artifact, never guessed. Edit freely.</div>
+      <div class="frow" style="margin-top:10px">
+        <div class="f"><label>WSDL path *</label><input value="downstream/account-status.wsdl"></div>
+        <div class="f"><label>Service <span class="dchip">DERIVED</span></label><select class="derived"><option>AccountStatusService</option></select></div>
+        <div class="f"><label>Port <span class="dchip">DERIVED</span></label><select class="derived"><option>AccountStatusSoap11Port</option></select></div>
+        <div class="f"><label>Binding <span class="dchip">DERIVED</span></label><select class="derived"><option>AccountStatusSoap11Binding</option></select></div>
+        <div class="f"><label>Operation * <span class="dchip">DERIVED</span></label>
+          <select class="derived"><option>— choose from WSDL (3) —</option><option>GetAccountStatus</option><option>NotifyStatusChange</option><option>PingService</option></select></div>
+        <div class="f"><label>SOAP operation mode</label><select><option>Canonical invoke by ID</option></select></div>
+      </div>
+      <p class="note" style="margin-top:8px">Adapter-only keeps SOAP client scaffolding. Canonical invoke-by-ID sends one canonical row by ID.</p>
+    </section>
+    <section class="sec">
+      <h4>Mapping</h4>
+      <p class="note">Canonical-to-contract rows seed on exact name match when the operation is chosen (unmatched rows stay blank — never fuzzy-matched).</p>
+    </section>
+  </div>
+  <div class="d-ft"><span class="vok">✓ 11 of 12 fields valid</span><span class="spacer"></span><button class="btn">Cancel</button><button class="btn primary">Save interface</button></div>
+</aside>
+</body></html>

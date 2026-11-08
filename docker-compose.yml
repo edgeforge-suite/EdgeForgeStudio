@@ -1,0 +1,51 @@
+# Local development orchestration for a single operator on their own machine
+# -- not a shared/production deployment profile. The two are already split by
+# construction, not just convention: the Dockerfile's own CMD is the
+# unmodified image default (no --reload, non-root, loopback has to be chosen
+# by whoever runs the plain image); this file layers the dev inner loop on
+# top of it (bind-mounted source + --reload) and is where the local-mode
+# no-auth default gets a safe port binding. A shared deployment should build
+# the Dockerfile directly with its own orchestration, matching APP_UID/
+# APP_GID to its runtime user -- not extend this file with EDGEFORGE_STUDIO_
+# SHARED_MODE=true, which would keep the dev-only bind mounts and --reload.
+services:
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      additional_contexts:
+        edgeforge_engine: ${EDGEFORGE_ENGINE_REPO:-../EdgeForge}
+      args:
+        # Match your host user so writes to the bind-mounted paths below don't
+        # hit permission errors -- those mounts keep the host's ownership
+        # regardless of anything this image does at build time.
+        APP_UID: ${EDGEFORGE_STUDIO_APP_UID:-1000}
+        APP_GID: ${EDGEFORGE_STUDIO_APP_GID:-1000}
+    # This is a development-only runtime, not a deployment target: --reload
+    # is a file-watcher auto-restart, kept here (unlike the image's own CMD)
+    # because the source tree is bind-mounted below for the dev inner loop.
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8083 --reload
+    working_dir: /workspace/EdgeForgeStudio
+    ports:
+      # Loopback-only by default: local mode has no auth (by design -- see
+      # CLAUDE.md), so the bare "8083:8083" short syntax would otherwise expose
+      # an unauthenticated instance on every host interface, not just this
+      # machine. Override for a deliberately shared/trusted network.
+      - "${EDGEFORGE_STUDIO_BIND_HOST:-127.0.0.1}:8083:8083"
+    environment:
+      EDGEFORGE_STUDIO_KS_REPO: /workspace/EdgeForgeKnowledgeServer
+      EDGEFORGE_STUDIO_DEFAULT_ENGINE_REPO: ${EDGEFORGE_STUDIO_DEFAULT_ENGINE_REPO:-/workspace/EdgeForge}
+      EDGEFORGE_STUDIO_DEFAULT_OUTPUT_PATH: ${EDGEFORGE_STUDIO_DEFAULT_OUTPUT_PATH:-/workspace/data/GeneratedApps}
+      EDGEFORGE_STUDIO_DOCKER: "1"
+      EDGEFORGE_STUDIO_PUBLIC_BASE_URL: ${EDGEFORGE_STUDIO_PUBLIC_BASE_URL:-http://127.0.0.1:8083}
+      EDGEFORGE_STUDIO_ENGINE_VALIDATION_REPO: /opt/EdgeForgeRuntime
+      EDGEFORGE_STUDIO_ENGINE_MCP_COMMAND: python
+      EDGEFORGE_STUDIO_ENGINE_TRANSPORT: auto
+      EDGEFORGE_MCP_ALLOWED_ROOTS: /workspace/EdgeForge:/workspace/EdgeForgeStudio:/workspace/data
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/workspace/EdgeForgeStudio
+      - ${EDGEFORGE_ENGINE_REPO:-../EdgeForge}:/workspace/EdgeForge
+      - ${EDGEFORGE_KS_REPO:-../EdgeForgeKnowledgeServer}:/workspace/EdgeForgeKnowledgeServer
+      - ${EDGEFORGE_STUDIO_GENERATED_APPS_DIR:-${HOME}/Documents/EdgeForgeGeneratedApps}:/workspace/data/GeneratedApps

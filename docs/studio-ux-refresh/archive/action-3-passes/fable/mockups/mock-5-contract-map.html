@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mock 5 — Contract Map (Phase 3)</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#fff; --line:#dde3ec; --ink:#1c2733; --mut:#68788c; --navy:#1e3a5f;
+  --t-rest:#0d9488; --t-fw:#4f46e5; --t-csv:#16a34a; --t-xml:#d97706; --t-soap:#7c3aed; --t-tbl:#475569;
+  --ok:#0f9d6e; --warn:#c47f17; --hl:#0d9488;
+}
+*{box-sizing:border-box;margin:0}
+body{font:12.5px/1.4 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.mockbar{background:#101828;color:#cdd6e4;font-size:11px;padding:6px 16px;display:flex;justify-content:space-between}
+.mockbar b{color:#fff}
+.shell{display:grid;grid-template-columns:230px 1fr;gap:14px;padding:14px;max-width:1660px;margin:0 auto}
+/* readiness rail */
+.side{display:flex;flex-direction:column;gap:10px}
+.logo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.logo h1{font-size:15px}.logo h1 span{color:#4467c4}.logo p{font-size:10px;color:var(--mut)}
+.railt{font-size:9.5px;font-weight:800;letter-spacing:.09em;color:var(--mut);text-transform:uppercase;padding:2px 4px}
+.rl{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:11.5px}
+.rl .tick{width:16px;height:16px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;background:#20b184}
+.rl .tick.warn{background:#e0a636}.rl .tick.open{background:#c3cddb}
+.rl b{font-weight:700}.rl small{margin-left:auto;color:var(--mut);font-size:10px;white-space:nowrap}
+.classic{font-size:10.5px;color:#4467c4;padding:4px}
+/* main */
+.main{display:flex;flex-direction:column;gap:10px;min-width:0}
+.hdr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.hdr .crumb{font-size:9.5px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
+.hdr h2{font-size:16px}
+.kpi{display:flex;gap:8px;margin-left:auto;align-items:center}
+.k{border-radius:9px;padding:4px 12px;text-align:center}
+.k b{display:block;font-size:15px}.k span{font-size:9px;letter-spacing:.05em;text-transform:uppercase}
+.k.g{background:#e2f6ee;color:#0b7c56}.k.y{background:#fdf3e2;color:#9a6511}.k.r{background:#fbe9e9;color:#a33b3b}
+.export{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:12.5px;font-weight:700}
+/* map */
+.map{display:grid;grid-template-columns:1fr .82fr 1.18fr;gap:12px;align-items:start}
+.col{border:1px solid var(--line);border-radius:12px;padding:10px 10px 12px;min-height:560px}
+.col.up{background:linear-gradient(180deg,#f2f7fc,#f7fafd)}
+.col.core{background:#fff}
+.col.down{background:linear-gradient(180deg,#fdf8f2,#fdfaf6)}
+.col-h{display:flex;align-items:center;gap:8px;padding:2px 6px 9px}
+.col-h b{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#3c4c63}
+.col-h span{font-size:10px;color:var(--mut)}
+.col-h .arrow{margin-left:auto;color:#9db1c9;font-size:14px}
+.lane{margin-top:8px}
+.lane-h{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:7px}
+.lane-h .n{opacity:.7}
+.card{background:#fff;border:1px solid var(--line);border-left:3px solid #888;border-radius:9px;padding:7px 9px;margin-top:6px;position:relative}
+.card .t{display:flex;gap:7px;align-items:center}
+.mono{width:24px;height:24px;border-radius:6px;color:#fff;font-size:7.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.card b{font-size:11.5px}
+.card .meta{font-size:10px;color:var(--mut);margin-top:1px}
+.chips{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.echip{font-size:9px;font-weight:700;border:1px solid #bfd8d2;color:#0b6b60;background:#effaf7;border-radius:8px;padding:1px 7px}
+.echip.dim2{border-color:#d8e0eb;color:#8494a9;background:#f4f7fb}
+.st{position:absolute;top:7px;right:8px;font-size:8.5px;font-weight:800;border-radius:8px;padding:1.5px 7px}
+.st.ok{color:#0b7c56;background:#e2f6ee}.st.warn{color:#9a6511;background:#fdf3e2}.st.draft{color:#5b6b80;background:#edf1f6}
+.cap{font-size:8px;font-weight:800;letter-spacing:.04em;color:#0b6b60;background:#dff3f0;border-radius:7px;padding:1px 6px}
+.cap.ref{color:#5b6b80;background:#eef2f7}
+/* connection highlight demo */
+.hl{outline:2px solid var(--hl);box-shadow:0 2px 10px rgba(13,148,136,.18)}
+.dim{opacity:.38}
+/* lanes coloring */
+.l-rest .lane-h{background:#e2f4f1;color:#0b6b60}.l-rest .card{border-left-color:var(--t-rest)}.l-rest .mono{background:var(--t-rest)}
+.l-fw .lane-h{background:#e9ebfc;color:#3730a3}.c-fw{border-left-color:var(--t-fw)!important}.c-fw .mono{background:var(--t-fw)}
+.c-csv{border-left-color:var(--t-csv)!important}.c-csv .mono{background:var(--t-csv)}
+.l-xml .lane-h{background:#fdf3e2;color:#92510a}.l-xml .card{border-left-color:var(--t-xml)}.l-xml .mono{background:var(--t-xml)}
+.l-soap .lane-h{background:#f3edfd;color:#5b21b6}.l-soap .card{border-left-color:var(--t-soap)}.l-soap .mono{background:var(--t-soap)}
+.l-tbl .lane-h{background:#e8ecf2;color:#334155}.l-tbl .card{border-left-color:var(--t-tbl)}.l-tbl .mono{background:var(--t-tbl)}
+/* core entity cards */
+.ent{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:8px;background:#fff;position:relative}
+.ent b{font-size:12.5px}
+.ent .key{font-size:9.5px;font-weight:700;color:#0b6b60;background:#e2f6ee;border-radius:8px;padding:1.5px 8px;margin-left:6px}
+.ent .key.none{color:#a33b3b;background:#fbe9e9}
+.ent .meta{font-size:10px;color:var(--mut);margin-top:3px}
+.ghost{border:1.5px dashed #b9c6d9;border-radius:9px;color:#7788a0;font-size:10.5px;text-align:center;padding:7px;margin-top:6px;background:transparent}
+.selbar{margin-top:2px;background:#e2f4f1;border:1px solid #b5ddd6;color:#0b6b60;border-radius:9px;padding:6px 12px;font-size:11px;display:flex;gap:8px;align-items:center}
+</style></head><body>
+<div class="mockbar"><span><b>STUDIO UX REFRESH — TARGET-STATE MOCK 5/5</b> · “Contract Map” — read-only overview home (Phase 3, additive route; wizard remains)</span><span>Demo state: Account selected → its 9 connected contracts highlighted, rest dimmed</span></div>
+<div class="shell">
+  <aside class="side">
+    <div class="logo"><h1><span>EdgeForge</span> Studio</h1><p>Governed App Modernization Workflow</p></div>
+    <div class="railt">Readiness</div>
+    <div class="rl"><span class="tick">✓</span><b>1 Project Setup</b><small>done</small></div>
+    <div class="rl"><span class="tick">✓</span><b>2 Upstream</b><small>5 contracts</small></div>
+    <div class="rl"><span class="tick warn">!</span><b>3 Entities</b><small>1 no key</small></div>
+    <div class="rl"><span class="tick">✓</span><b>4 Handoffs</b><small>4 tables</small></div>
+    <div class="rl"><span class="tick warn">!</span><b>5 Downstream</b><small>6 · 2 attn</small></div>
+    <div class="rl"><span class="tick">✓</span><b>6 Rules</b><small>10 rules</small></div>
+    <div class="rl"><span class="tick open"> </span><b>7 Review</b><small>pending</small></div>
+    <div class="rl"><span class="tick open"> </span><b>8 Export</b><small>gated</small></div>
+    <div class="classic">⇄ Switch to classic step view</div>
+  </aside>
+  <main class="main">
+    <div class="hdr">
+      <div><div class="crumb">Contract Map · Account Service</div><h2>Account Service <span style="font-size:11px;color:var(--mut);font-weight:400">accounts · CRUD · springboot-standard-enterprise</span></h2></div>
+      <div class="kpi">
+        <div class="k g"><b>25</b><span>Ready</span></div>
+        <div class="k y"><b>3</b><span>Warnings</span></div>
+        <div class="k r"><b>0</b><span>Follow-up</span></div>
+        <button class="export">Export &amp; Build →</button>
+      </div>
+    </div>
+    <div class="selbar">◉ <b>Account</b> selected — 9 connected contracts highlighted; click any card to open its focused editor · Esc to clear</div>
+    <div class="map">
+      <section class="col up">
+        <div class="col-h"><b>Upstream</b><span>flows in · 5</span><span class="arrow">→</span></div>
+        <div class="lane l-rest">
+          <div class="lane-h">REST / OpenAPI <span class="n">(1)</span></div>
+          <div class="card hl"><span class="st ok">READY</span><div class="t"><span class="mono">API</span><div><b>account-transaction-api</b><div class="meta">7 endpoints · classified ✓</div></div></div>
+            <div class="chips"><span class="cap">POPULATES ENTITIES</span><span class="echip">→ Account</span><span class="echip dim2">→ Transaction</span></div></div>
+        </div>
+        <div class="lane l-fw">
+          <div class="lane-h">Files <span class="n">(2)</span></div>
+          <div class="card c-fw hl"><span class="st ok">READY</span><div class="t"><span class="mono">FW</span><div><b>account-status-feed</b><div class="meta">LEGACY_CORE · 12 fields</div></div></div>
+            <div class="chips"><span class="cap ref">REFERENCE</span><span class="echip">→ Account</span></div></div>
+          <div class="card c-csv dim"><span class="st ok">READY</span><div class="t"><span class="mono">CSV</span><div><b>transaction-batch-in</b><div class="meta">LEGACY_CORE · pipe · header</div></div></div>
+            <div class="chips"><span class="cap ref">REFERENCE</span><span class="echip dim2">→ Transaction</span></div></div>
+        </div>
+        <div class="lane l-xml">
+          <div class="lane-h">XML / XSD <span class="n">(1)</span></div>
+          <div class="card hl"><span class="st warn">ATTN</span><div class="t"><span class="mono">XML</span><div><b>account-audit-xml</b><div class="meta">urn:edgeforge:account:v1</div></div></div>
+            <div class="chips"><span class="cap ref">REFERENCE</span><span class="echip">→ Account</span></div></div>
+        </div>
+        <div class="lane l-soap">
+          <div class="lane-h">SOAP / WSDL <span class="n">(1)</span></div>
+          <div class="card hl"><span class="st ok">READY</span><div class="t"><span class="mono">SOAP</span><div><b>account-lookup-soap</b><div class="meta">read-by-id · GetAccount</div></div></div>
+            <div class="chips"><span class="cap ref">REFERENCE</span><span class="echip">→ Account</span></div></div>
+        </div>
+        <div class="ghost">＋ Add upstream contract</div>
+      </section>
+
+      <section class="col core">
+        <div class="col-h"><b>Canonical Core</b><span>3 entities</span></div>
+        <div class="ent hl" style="outline:2px solid var(--hl)"><b>Account</b><span class="key">🔑 accountId</span><div class="meta">6 fields · 7 rules · 9 connected contracts</div></div>
+        <div class="ent dim"><b>Transaction</b><span class="key">🔑 transactionId</span><div class="meta">6 fields · 3 rules · 4 connected contracts</div></div>
+        <div class="ent dim"><b>AuditEvent</b><span class="key none">⚠ no key</span><div class="meta">4 fields · 0 rules · 1 connected contract</div></div>
+        <div class="ghost">Entities populate from REST classification (Step 2) — file/XML/SOAP link by reference</div>
+      </section>
+
+      <section class="col down">
+        <div class="col-h"><b>Downstream</b><span>flows out · 4 handoffs + 6 interfaces</span><span class="arrow">→</span></div>
+        <div class="lane l-tbl">
+          <div class="lane-h">Staging Handoffs <span class="n">(4)</span></div>
+          <div class="card hl"><span class="st ok">READY</span><div class="t"><span class="mono">TBL</span><div><b>account-staging</b><div class="meta">account_staging · 5 cols · 5/5</div></div></div>
+            <div class="chips"><span class="echip">Account →</span></div></div>
+          <div class="card dim"><span class="st warn">ATTN</span><div class="t"><span class="mono">TBL</span><div><b>payment-staging</b><div class="meta">payment_staging · 1 unmapped</div></div></div>
+            <div class="chips"><span class="echip dim2">Transaction →</span></div></div>
+          <div class="card dim"><span class="st ok">READY</span><div class="t"><span class="mono">TBL</span><div><b>transaction-staging</b><div class="meta">transaction_staging · 6/6</div></div></div>
+            <div class="chips"><span class="echip dim2">Transaction →</span></div></div>
+          <div class="card hl"><span class="st draft">DRAFT</span><div class="t"><span class="mono">TBL</span><div><b>audit-staging</b><div class="meta">no columns yet</div></div></div>
+            <div class="chips"><span class="echip">Account →</span></div></div>
+        </div>
+        <div class="lane l-soap">
+          <div class="lane-h">SOAP / WSDL <span class="n">(2)</span></div>
+          <div class="card dim"><span class="st ok">READY</span><div class="t"><span class="mono">SOAP</span><div><b>payment-notify-soap-out</b><div class="meta">invoke-by-id · PaymentNotify</div></div></div>
+            <div class="chips"><span class="echip dim2">Transaction →</span></div></div>
+          <div class="card hl"><span class="st warn">ATTN</span><div class="t"><span class="mono">SOAP</span><div><b>account-status-soap-out</b><div class="meta">no operation selected</div></div></div>
+            <div class="chips"><span class="echip">Account →</span></div></div>
+        </div>
+        <div class="lane l-fw">
+          <div class="lane-h">Files <span class="n">(2)</span></div>
+          <div class="card c-fw hl"><span class="st warn">ATTN</span><div class="t"><span class="mono">FW</span><div><b>account-fixed-file</b><div class="meta">12/14 mapped</div></div></div>
+            <div class="chips"><span class="echip">Account →</span></div></div>
+          <div class="card c-csv dim"><span class="st ok">READY</span><div class="t"><span class="mono">CSV</span><div><b>transaction-csv</b><div class="meta">pipe · 8/8 mapped</div></div></div>
+            <div class="chips"><span class="echip dim2">Transaction →</span></div></div>
+        </div>
+        <div class="lane l-xml">
+          <div class="lane-h">XML / XSD <span class="n">(2)</span></div>
+          <div class="card hl"><span class="st ok">READY</span><div class="t"><span class="mono">XML</span><div><b>account-xml</b><div class="meta">6/6 mapped</div></div></div>
+            <div class="chips"><span class="echip">Account →</span></div></div>
+          <div class="card dim"><span class="st draft">DRAFT</span><div class="t"><span class="mono">XML</span><div><b>audit-events-xml</b><div class="meta">0 mappings</div></div></div>
+            <div class="chips"><span class="echip dim2">AuditEvent →</span></div></div>
+        </div>
+        <div class="ghost">＋ Add handoff or interface</div>
+      </section>
+    </div>
+  </main>
+</div>
+</body></html>

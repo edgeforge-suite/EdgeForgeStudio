@@ -1,0 +1,472 @@
+{
+  "advisory_cutoff_utc": "2026-10-01T16:30:29Z",
+  "candidate": "EF-V5-M2-STUDIO-CONSOLIDATED-S1",
+  "databases": {
+    "grype": {
+      "import": {
+        "client_version": "v6.1.9",
+        "digest": "xxh64:1f3e4828d0678873",
+        "source": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.9_2026-10-01T00:39:44Z_1790836428.tar.zst?checksum=sha256%3Ac0d0263192d91df04b242e9a91e34cb289118fb08f1ed56eb0239eb57d7a517f"
+      },
+      "scan_report_status": {
+        "built": "2026-10-01T06:33:48Z",
+        "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.9_2026-10-01T00:39:44Z_1790836428.tar.zst?checksum=sha256%3Ac0d0263192d91df04b242e9a91e34cb289118fb08f1ed56eb0239eb57d7a517f",
+        "schemaVersion": "v6.1.9",
+        "valid": true
+      },
+      "sha256": "e0bbe84250b3af90795b2587b97e86bac56e06f50ddc46ca946a9d1e32193537"
+    },
+    "trivy": {
+      "metadata": {
+        "DownloadedAt": "2026-10-01T16:14:07.372128Z",
+        "NextUpdate": "2026-10-02T13:01:27.395440584Z",
+        "UpdatedAt": "2026-10-01T13:01:27.395440834Z",
+        "Version": 2
+      },
+      "sha256": "c39ee6b7f92119e7fadd7bc626d15ca8de69a56522529eeab027f6c9c433a27a"
+    },
+    "trivy_java": {
+      "metadata": {
+        "DownloadedAt": "2026-10-01T16:15:47.204621Z",
+        "NextUpdate": "2026-10-04T00:59:54.094024949Z",
+        "UpdatedAt": "2026-10-01T00:59:54.094025329Z",
+        "Version": 1
+      },
+      "sha256": "37418de6e936d802e94712d3d3e6e41f189bdfffd0fa23ea88b383dab4543137"
+    }
+  },
+  "date": "2026-10-02",
+  "engine_archive_sha256": "c2799e6c1f121c199af1b41acf147ebaf2fb124a92597d44cbbedb125ed189fd",
+  "frozen_image_engine_sha": "584e4bf635ac12821496a52d20c3a03a6e73a92c",
+  "historical_maven_proof": {
+    "followup_runs": [
+      {
+        "health_http_status": 200,
+        "health_status": "UP",
+        "jobless": false,
+        "maven_tests": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 1
+        },
+        "profile": "springboot-legacy-compatible",
+        "result": "pass",
+        "result_sha256": "e511b147d104f521acfa78953dad893ec6a5d04b41f5e8b74c54fe57027916c2",
+        "verify_log_sha256": "65f07f0bd1aeef208f24abcf38960e37d0809d13b7b952d811d275688d1f40d0"
+      },
+      {
+        "health_http_status": 200,
+        "health_status": "UP",
+        "jobless": true,
+        "maven_tests": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 1
+        },
+        "profile": "springboot-legacy-compatible-boot41-preview",
+        "result": "pass",
+        "result_sha256": "57b850ca2cc066bd2f1e7964e3d73196654c8720e3f9d8e0a8a1c4f8a01e5ee1",
+        "verify_log_sha256": "5fa420764dc878a1535213e7e62c4d84f74e96a5269a63b1895433a3f7ce43e2"
+      }
+    ],
+    "proof_engine_sha": "127439a54bb9e1fc787cf981490e6c33e8a45da2",
+    "record": "studio-maven-image-identities.json",
+    "reuse_limit": "Historical Java 17/21 and representative Build & Run compatibility only; not a run against ff97 or the future handoff Engine.",
+    "runtime_layers_shared": true,
+    "same_recipe_tooling_native_base": true
+  },
+  "image": {
+    "config_digest": "sha256:1ffb911e7ac6a280378d2e1cebb3f6beea6df63c56fbb32fc693e7180675d32b",
+    "docker_local_id_and_oci_index": "sha256:ff97fb0ee901e2e759d2143fee83538ac1ffeb17248c745a8f3287e9ca264c89",
+    "identity_note": "The supplied ff97... value is the local Docker ID/OCI index, not the config digest. Its verified linux/amd64 OCI descriptor selects abd107... and config 1ffb... . Syft/Grype's cf2a... is a separately serialized Docker-schema-2 representation, not the OCI platform manifest. Scanner layer IDs are uncompressed filesystem diff IDs, not manifest layer blob digests. None is evidence of registry publication.",
+    "local_tag": "edgeforge-studio-pyjwt-s1:candidate",
+    "oci_descriptor_chain_verification": {
+      "all_manifest_layer_blob_hashes_and_sizes_verified": true,
+      "config_descriptor": {
+        "digest": "sha256:1ffb911e7ac6a280378d2e1cebb3f6beea6df63c56fbb32fc693e7180675d32b",
+        "mediaType": "application/vnd.oci.image.config.v1+json",
+        "size": 10328
+      },
+      "index_blob_hash_verified": true,
+      "index_digest": "sha256:ff97fb0ee901e2e759d2143fee83538ac1ffeb17248c745a8f3287e9ca264c89",
+      "index_media_type": "application/vnd.oci.image.index.v1+json",
+      "index_size_bytes": 856,
+      "manifest_layer_media_type": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "method": "Stream local docker image save; hash every blob against its archive name; follow exactly one linux/amd64 OCI index descriptor; verify platform/config hashes and descriptor sizes, then all 16 compressed layer blob hashes/sizes. Reconcile config rootfs.diff_ids with scanner layer IDs. No image tar retained, rebuild or rescan.",
+      "ordered_manifest_layer_sizes_bytes": [
+        28238443,
+        3533387,
+        16023549,
+        249,
+        158117491,
+        9359407,
+        118256004,
+        3310,
+        128,
+        1398,
+        983,
+        65738464,
+        1671256,
+        172,
+        1041209,
+        2715230
+      ],
+      "platform_and_config_blob_hashes_verified": true,
+      "platform_descriptor": {
+        "digest": "sha256:abd1074c5ddc67a25ca3c41f365358d80805108d9ee2b20e443fd7a3be3019d5",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 3347
+      },
+      "retained_proof_file": "oci-identity-proof.json",
+      "verified_at_utc": "2026-10-01T20:08:24.143804+00:00"
+    },
+    "ordered_docker_save_layer_blobs": [
+      "blobs/sha256/774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+      "blobs/sha256/246ac8b7cadc4ee7c220a2d4e02a37a296797f40648480115ae41e083aa60b6e",
+      "blobs/sha256/dc22b8c341d91e21b901b9eb1e414c18b487f4de1a165c539ecb32bb590acbd4",
+      "blobs/sha256/f57cecf87087697ab89776daeb60b1b2b2149c876d4aa69ae6765ae7ad66a470",
+      "blobs/sha256/51e246817c49a2a46fcc15e5611750aa93062f74bdbd4902e32967c66102a8b7",
+      "blobs/sha256/26b1613d03755041971acc2dfc2c5e638d44c893cdea483ae78ab00279ee14bb",
+      "blobs/sha256/a5c9bb7d7353d902f44d00be9d3922dc648eda35a2af0bdba7330d0e7bdc795d",
+      "blobs/sha256/1f3aeb848ec5b29803cd10952317f8ac2212723885e41903d6535d0ead4c7bde",
+      "blobs/sha256/403cdba491b8ef7870e5feb6883a6bc358d63098a843ac8ee82f94bc2f4455d0",
+      "blobs/sha256/2905174d59478402adc013bc0b404d66d53ebb5a21a1d15c46da6c2efc3054e5",
+      "blobs/sha256/d16a85f878f0e4242e29f1164a0681244d7ec6c0d244dbee9ead7642760ab172",
+      "blobs/sha256/23a20ccec420be4e51ee00111156abef68ef684f201a9cec39bd77b3ed6d973c",
+      "blobs/sha256/97a5bbf24341d07dd38aaad8c852d1670d591149af203fa6fd3f0bc2b34ee60a",
+      "blobs/sha256/b69cc226aa8ed0e15a151df62bf1569ea189bcb566d2de5974e328febad25353",
+      "blobs/sha256/8ea61c6ed23b1f56f749b1a5bb05fe5d4ffe6c5a3dcfae0a5b074a739b4484f8",
+      "blobs/sha256/b6d007a3235b45e8fa01ee294584f014442e57c26053fe94e62dd0e971b6bd19"
+    ],
+    "ordered_oci_manifest_layer_blob_digests": [
+      "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+      "sha256:246ac8b7cadc4ee7c220a2d4e02a37a296797f40648480115ae41e083aa60b6e",
+      "sha256:dc22b8c341d91e21b901b9eb1e414c18b487f4de1a165c539ecb32bb590acbd4",
+      "sha256:f57cecf87087697ab89776daeb60b1b2b2149c876d4aa69ae6765ae7ad66a470",
+      "sha256:51e246817c49a2a46fcc15e5611750aa93062f74bdbd4902e32967c66102a8b7",
+      "sha256:26b1613d03755041971acc2dfc2c5e638d44c893cdea483ae78ab00279ee14bb",
+      "sha256:a5c9bb7d7353d902f44d00be9d3922dc648eda35a2af0bdba7330d0e7bdc795d",
+      "sha256:1f3aeb848ec5b29803cd10952317f8ac2212723885e41903d6535d0ead4c7bde",
+      "sha256:403cdba491b8ef7870e5feb6883a6bc358d63098a843ac8ee82f94bc2f4455d0",
+      "sha256:2905174d59478402adc013bc0b404d66d53ebb5a21a1d15c46da6c2efc3054e5",
+      "sha256:d16a85f878f0e4242e29f1164a0681244d7ec6c0d244dbee9ead7642760ab172",
+      "sha256:23a20ccec420be4e51ee00111156abef68ef684f201a9cec39bd77b3ed6d973c",
+      "sha256:97a5bbf24341d07dd38aaad8c852d1670d591149af203fa6fd3f0bc2b34ee60a",
+      "sha256:b69cc226aa8ed0e15a151df62bf1569ea189bcb566d2de5974e328febad25353",
+      "sha256:8ea61c6ed23b1f56f749b1a5bb05fe5d4ffe6c5a3dcfae0a5b074a739b4484f8",
+      "sha256:b6d007a3235b45e8fa01ee294584f014442e57c26053fe94e62dd0e971b6bd19"
+    ],
+    "ordered_uncompressed_filesystem_diff_ids": [
+      "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+      "sha256:b3445de4503d21b3ebc42db2f284bc6c8ad96184ea91ce55fb57f5e87910e1f2",
+      "sha256:546c86e4df2dc808fcf1953c346bfeef32f4c953933634d57c1d38730b750e9c",
+      "sha256:6b6ff8eb9da6c277f4b33452c77d59f8b5ff04e0bcca1a3054570b9db343da79",
+      "sha256:fc50c23a53b5c87d6ca0d3b454aacd6ad6a2c85afd07c454df9602394bd3a223",
+      "sha256:8a81592646f39041d22a2deedcabe6d06a6f2667b30ef70775ae2308667e240a",
+      "sha256:f74b1cdaa85695b74ace0ef730a10b1c8f1f006969a927aaecb835fa2d33897e",
+      "sha256:0af9e09aa200f9f82dc68943847e070079f99c26b3ad2465d58e74ef4fffc428",
+      "sha256:5ea4f73773fbe8608291d438906dae1925a8e404a71f1e16eba19f907dfe66d2",
+      "sha256:0f050ff974ebe2d9a8ef199dacfd35b6bb16d4fc24c3cddf6076384d14ace75a",
+      "sha256:6ac86c97d5ed160ffbb86842be2658fb49ac0146e67ceb6905f7427b359ce5c5",
+      "sha256:0c5cf099eacf314379c715ed5c8fa95d9d2fabf2f7e2dee00e30af46a7b3c353",
+      "sha256:b94455b5c0a77fd921c3a725ec917f7ee2391454a743e4f3818f02441306f743",
+      "sha256:0300aa15dffb948f6b14facd14c1bde598d1691ffd3439ff24c8d0d76dbb9396",
+      "sha256:d758ab07cdf0c25ac56d04c2adfcf9221084846df93c7244f74209fbe6bc6a54",
+      "sha256:ba8a262a57afc51ac57935bc9c993caac1924e4eae36d4d7cd8d3947bdf3e193"
+    ],
+    "platform": "linux/amd64",
+    "platform_manifest_digest": "sha256:abd1074c5ddc67a25ca3c41f365358d80805108d9ee2b20e443fd7a3be3019d5",
+    "platform_manifest_media_type": "application/vnd.oci.image.manifest.v1+json",
+    "scanner_serialized_manifest_digest": "sha256:cf2a71fd08268fc993963cfd2dff2bb6c1ecd90ab857a2534989ff5117f4e5db",
+    "scanner_serialized_manifest_media_type": "application/vnd.docker.distribution.manifest.v2+json",
+    "user": "appuser"
+  },
+  "image_tested_studio_sha": "f22f941d0981135e4f3fa24313266449418e59db",
+  "limits": [
+    "Final AMD64 filesystem only; build stages and other platforms unassessed.",
+    "Frozen Oct 1 snapshot, not Oct 2 advisory currency.",
+    "All open/ignored/inventory-unresolved observations retained; no risk acceptance or M2 clearance.",
+    "Historical image Engine 584e4bf is distinct from Phase 2 Engine 5793cb and KS d5cf; no handoff proof credited.",
+    "Recipe base tags and live package resolution still float; final selected pair needs a new artifact assessment."
+  ],
+  "local_validation": {
+    "ci_and_independent_review": "Subsequent exact-head handoff gates; no self-approval.",
+    "focused": {
+      "command": "python -m pytest tests/test_image_consolidated_disposition.py tests/test_image_assessment_report.py -q",
+      "log_sha256": "3aed9a6a5eedd4d6e0e1bc80f2b0227d255c1583b3e7066b7826799d66d9f761",
+      "passed": 66
+    },
+    "image_smoke": {
+      "command": "EDGEFORGE_STUDIO_IMAGE_PREBUILT=<recorded image ID> python -m pytest tests/smoke/test_docker_image_launch_smoke.py -q -m smoke",
+      "log_sha256": "3038b9ac93145f5c69368839ed1daf80d51d1ece74b0c07855773c64722599d4",
+      "passed": 1
+    },
+    "l2": {
+      "command": "python -m pytest tests/smoke/test_l2_two_session_smoke.py -q -m 'smoke and l2'",
+      "log_sha256": "41c3b06b1f0237013bf2a2d9555cfc394501d11435eed1ea4fe0a018aef42c2e",
+      "passed": 1
+    },
+    "lint_and_diff": "ruff check on changed Python files and git diff --check passed",
+    "non_smoke": {
+      "command": "python -m pytest tests -q -m 'not smoke'",
+      "deselected": 29,
+      "limits": "Environment-dependent skips are not executed proof.",
+      "log_sha256": "977d1144d56bb8b3f3db1765221664582c725b18c7c6d237c67959adfc53d13f",
+      "passed": 2234,
+      "skipped": 18
+    },
+    "strict_audit": {
+      "command": "pip-audit -r constraints.txt --no-deps --disable-pip --progress-spinner off --strict",
+      "exit_code": 0,
+      "log_sha256": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+      "recovery": "Retained audit executable lacked pip_audit module; task-owned isolated tool environment succeeded.",
+      "result": "No known vulnerabilities found",
+      "tool_version": "2.9.0"
+    }
+  },
+  "new_local_receipts": {
+    "inspect_runtime.py": {
+      "bytes": 1645,
+      "sha256": "8b9d17bd6cf0539b5a8bc005bfed91bcbbe77f6e5f86517e8254e4eb9cb62a05"
+    },
+    "oci-identity-recheck.json": {
+      "bytes": 24818,
+      "sha256": "8c258574f87ddd85cac2c0ae4d0fcf28b94b9c2397c6f4c493a03eb89cdfbf4e"
+    },
+    "replayed-full-ledger.json": {
+      "bytes": 1993474,
+      "sha256": "62755ff540789fb9c37dce1d87efe0dd230078ee621319e77a6b72b3aafe18d8"
+    },
+    "replayed-summary.json": {
+      "bytes": 134709,
+      "sha256": "23722919d9e49ba4a21e0601c2e8e822097ee6a004b255ee8093cdf745672b3c"
+    },
+    "runtime-inspection.json": {
+      "bytes": 97726,
+      "sha256": "b9206767c838037739ba4864de95f5e558c3f0001f967e10c8b01b251d72e549"
+    }
+  },
+  "original_build": {
+    "build_args": {
+      "APP_GID": "1000",
+      "APP_UID": "1000"
+    },
+    "materials": [
+      {
+        "digest": {
+          "sha256": "4d06038800655fe1211760cd561de70ef2ed7a47f5d69255e9834414602b7026"
+        },
+        "uri": "pkg:docker/eclipse-temurin@21-jdk?platform=linux%2Famd64"
+      },
+      {
+        "digest": {
+          "sha256": "a36c24f9cbdf4fd0f52d67f0823eeac19c2028c637cecc392d97f980d4fec56b"
+        },
+        "uri": "pkg:docker/python@3.11-slim-bookworm?platform=linux%2Famd64"
+      }
+    ],
+    "named_context": "edgeforge_engine: read-only archive of frozen Engine",
+    "receipt_sha256": "b9e11796f49c7884ac5a3f35f397837437f295d8bdefe8aadb3026c52d345f46",
+    "recipe_input_sha256": {
+      "Dockerfile": "2e2824c878e79be554a169c131b8303ac570fabfe371ebf2a61e18a2448542ec",
+      "constraints.txt": "a5d788695ef6d67a6013607d6c6ff892ced6dfc5d7743c92140a27195d99667e",
+      "requirements.txt": "d2c9b40eff8805e62be925149a87f7f4d2b35f15941c80aa3542521b3a34d3e1",
+      "scripts/image_assessment_report.py": "83c26694470fcacf4459af5b75727bb484d9ee6ef2b005ed71141be0697ac7ff",
+      "scripts/image_findings_ledger.py": "0cdb01764f4f2513d896928095126b64b7563713a52e5ae7465181d1904a3392"
+    }
+  },
+  "report_times": {
+    "grype": "2026-10-01T11:17:13.586783-05:00",
+    "syft": "No creation timestamp in native JSON; file completion time is retained below, not asserted as scanner creation time.",
+    "trivy": "2026-10-01T11:17:17.251615-05:00"
+  },
+  "retained_raw_files": {
+    "CVE-2024-2379.html": {
+      "bytes": 9045,
+      "file_completed_at_utc": "2026-10-01T16:23:43.881227+00:00",
+      "sha256": "fdeee68cba50b7641eebc08909b30c299ccfea2cb5488744b84c2db9cd4f4440"
+    },
+    "CVE-2025-0725.html": {
+      "bytes": 10194,
+      "file_completed_at_utc": "2026-10-01T16:23:44.071130+00:00",
+      "sha256": "176e731de18609128741f3fc3e3b77add7d2bf248fb09fee86101187d0d42008"
+    },
+    "CVE-2025-10966.html": {
+      "bytes": 10269,
+      "file_completed_at_utc": "2026-10-01T16:23:44.252284+00:00",
+      "sha256": "533fe1cecb6634d4deaf0ac82368f26fddc8cc8146bc429c405ce5fbc9acef44"
+    },
+    "CVE-2025-15079.html": {
+      "bytes": 9689,
+      "file_completed_at_utc": "2026-10-01T16:23:44.436772+00:00",
+      "sha256": "d54bf62a3cdb539d990ca8d777478585d6a327704aae7ec573a0e26b79d67e6a"
+    },
+    "CVE-2025-15224.html": {
+      "bytes": 9516,
+      "file_completed_at_utc": "2026-10-01T16:23:44.632324+00:00",
+      "sha256": "e8fa6e3d463d413927c1ee8583b181b3c4e5edde1c1d34ad9630f7f569449363"
+    },
+    "CVE-2026-12064.html": {
+      "bytes": 9823,
+      "file_completed_at_utc": "2026-10-01T16:23:44.817699+00:00",
+      "sha256": "8213a778526e9a3de78c48ed3427158080a6054e8ffabe4072f22071a6454c07"
+    },
+    "CVE-2026-80230.html": {
+      "bytes": 9670,
+      "file_completed_at_utc": "2026-10-01T16:23:45.014833+00:00",
+      "sha256": "d0a7ee01058d6e1409dc52d08b06cce122232b94afbb81b10c9adc357c3ce102"
+    },
+    "CVE-2026-8924.html": {
+      "bytes": 9589,
+      "file_completed_at_utc": "2026-10-01T16:23:45.193742+00:00",
+      "sha256": "46bd687ba93123d30637ef4f53865391aaff3df1ca27a5677c1f4d0537c1dbb1"
+    },
+    "bookworm-package-policy.txt": {
+      "bytes": 1014,
+      "file_completed_at_utc": "2026-10-01T16:17:48.423828+00:00",
+      "sha256": "52ecb9e5a3ddfbaf08a5f2f7846e766668f6b52d73ee99ce101c42bf1b993cbf"
+    },
+    "curl-feature-proof.json": {
+      "bytes": 3705,
+      "file_completed_at_utc": "2026-10-01T16:21:15.592503+00:00",
+      "sha256": "16b01c7dc660055d28dd3b255d9e981f1b1d96218b7b2375739ae06589f7e0e0"
+    },
+    "curl-upstream-vuln.json": {
+      "bytes": 591687,
+      "file_completed_at_utc": "2026-10-01T16:16:36.475439+00:00",
+      "sha256": "62edc02f049271227a928f6416d339f85dac5c250a93eefc05b635f0f5932037"
+    },
+    "debian-tracker.json": {
+      "bytes": 79339598,
+      "file_completed_at_utc": "2026-10-01T16:16:05.977679+00:00",
+      "sha256": "c20723d3653c040dd6469440b654053b975e711a44653ce2a16347f7d406ddeb"
+    },
+    "docker-save-manifest.json": {
+      "bytes": 1434,
+      "file_completed_at_utc": "2026-10-01T16:24:23.779519+00:00",
+      "sha256": "d23677b45fced26d247278ce2acf60e2ee4e387bc78bf0b991a4a49ef3d60f97"
+    },
+    "full-ledger.json": {
+      "bytes": 1993474,
+      "file_completed_at_utc": "2026-10-01T16:18:30.191828+00:00",
+      "sha256": "62755ff540789fb9c37dce1d87efe0dd230078ee621319e77a6b72b3aafe18d8"
+    },
+    "grype.json": {
+      "bytes": 18114813,
+      "file_completed_at_utc": "2026-10-01T16:17:14.730641+00:00",
+      "sha256": "83611976a6773f95523e87a993e37402685dc6fc3092f794c2e890cda95504c2"
+    },
+    "inspect_curl.py": {
+      "bytes": 2125,
+      "file_completed_at_utc": "2026-10-01T16:21:11.186000+00:00",
+      "sha256": "9f49867965510a42016406da6e9ad61e932b9c9cbc4baf3398952fabdbee190f"
+    },
+    "installed-packages-and-features.txt": {
+      "bytes": 13248,
+      "file_completed_at_utc": "2026-10-01T16:15:10.369140+00:00",
+      "sha256": "977460f2a8b496a10691944035d97151e4a28813f39e45c21916ab44f91e12d1"
+    },
+    "oci-identity-proof.json": {
+      "bytes": 24818,
+      "file_completed_at_utc": "2026-10-01T20:08:24.145205+00:00",
+      "sha256": "c3985d0b45d4357d568d88262436911d2e9f77715b881414983706a1c474efe5"
+    },
+    "sbom.cdx.json": {
+      "bytes": 3263930,
+      "file_completed_at_utc": "2026-10-01T16:17:40.255582+00:00",
+      "sha256": "e3b984f13549c87a757d7060e8b9464962d45230e4eabc9a614afd5a1295aa9c"
+    },
+    "summary.json": {
+      "bytes": 134709,
+      "file_completed_at_utc": "2026-10-01T16:18:13.196760+00:00",
+      "sha256": "23722919d9e49ba4a21e0601c2e8e822097ee6a004b255ee8093cdf745672b3c"
+    },
+    "syft.json": {
+      "bytes": 9322396,
+      "file_completed_at_utc": "2026-10-01T16:16:06.872505+00:00",
+      "sha256": "5e03ef99877ab9863784c39ea784a58dcb278d07c1e4f22be8122a180a7afcae"
+    },
+    "trivy.json": {
+      "bytes": 13580554,
+      "file_completed_at_utc": "2026-10-01T16:17:17.338977+00:00",
+      "sha256": "131aea18a54f2870b51a25f7c998ae1a8cafb403ba622d8cac90d3dbb8c0d0a5"
+    },
+    "verify_oci_archive.py": {
+      "bytes": 3155,
+      "file_completed_at_utc": "2026-10-01T20:08:10.855216+00:00",
+      "sha256": "3c1d28d58d773e063e5b25e1c4b4fbe4c75a3c9b09dffe8d5ee8ce8e26c50ca2"
+    }
+  },
+  "retention": {
+    "availability": "Local temporary evidence only; no upload/public URL/retention SLA. Preserve before cleanup.",
+    "frozen_basename": "edgeforge-studio-curl-s1-proof",
+    "new_proof_basename": "edgeforge-studio-consolidated-image-proof"
+  },
+  "revision": 1,
+  "scanners": {
+    "grype": {
+      "archive": "grype_0.119.0_darwin_arm64.tar.gz",
+      "archive_sha256": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+      "checksums_sha256": "9cb7f68e8fa2b039e67f33d1fda29e7224946167f3b8abb43c51a6fff0c0de78",
+      "executable_sha256": "f8486425f232aea78fc932249ca0923672d88be36c9661e25e82ea1fa8cd0cae",
+      "host_platform": "darwin/arm64",
+      "official_release": "https://github.com/anchore/grype/releases/tag/v0.119.0",
+      "verification": "Downloaded official archive matched its entry in the official release checksum list before extraction/use; this is checksum integrity, not an independent publisher signature attestation.",
+      "version": "0.119.0"
+    },
+    "syft": {
+      "archive": "syft_1.52.0_darwin_arm64.tar.gz",
+      "archive_sha256": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+      "checksums_sha256": "21d9ee36c7c6fb43d6493718a387ecca021321791d1815c716e56c99b9c8d6b9",
+      "executable_sha256": "17e4215af72264e186a843269d0b797697d643f53841d9598f73614bbcbe9022",
+      "host_platform": "darwin/arm64",
+      "official_release": "https://github.com/anchore/syft/releases/tag/v1.52.0",
+      "verification": "Downloaded official archive matched its entry in the official release checksum list before extraction/use; this is checksum integrity, not an independent publisher signature attestation.",
+      "version": "1.52.0"
+    },
+    "trivy": {
+      "archive": "trivy_0.74.0_macOS-ARM64.tar.gz",
+      "archive_sha256": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11",
+      "checksums_sha256": "bc701c3c3ee8b9acbea2c23257e41381e3854888f51281616a6ba5dc96963821",
+      "executable_sha256": "0ed07c205ca9ecc1065dc57b9f9f77adc79393bb469d9d1de9ec90c8c94ffc2f",
+      "host_platform": "darwin/arm64",
+      "official_release": "https://github.com/aquasecurity/trivy/releases/tag/v0.74.0",
+      "verification": "Downloaded official archive matched its entry in the official release checksum list before extraction/use; this is checksum integrity, not an independent publisher signature attestation.",
+      "version": "0.74.0"
+    }
+  },
+  "task_base_studio_sha": "14a379fffaeeb8b3334b5f6c937714f3aa90e159",
+  "unchanged_image_inputs": {
+    "app_git_tree": "f0f733753fa34da9838e5d2ab32cbae805a597ab",
+    "file_sha256": {
+      ".dockerignore": "befa86785357e7960823f02c8f4df4cd08259b0c38de76581fa08ef62b0812c6",
+      "Dockerfile": "2e2824c878e79be554a169c131b8303ac570fabfe371ebf2a61e18a2448542ec",
+      "constraints.txt": "a5d788695ef6d67a6013607d6c6ff892ced6dfc5d7743c92140a27195d99667e",
+      "requirements.txt": "d2c9b40eff8805e62be925149a87f7f4d2b35f15941c80aa3542521b3a34d3e1",
+      "scripts/install_apache_maven.py": "8fba8bc732681c191551369bad797df829fd730e6bdfcff52c5e9bc0bc5dd3b3",
+      "scripts/verify-packaging-toolchain.py": "42954666f6b33ae5562241437ddea9b6ede1bb2566e4ce690eef3902a512dadd"
+    },
+    "paths": [
+      "Dockerfile",
+      ".dockerignore",
+      "requirements.txt",
+      "constraints.txt",
+      "app",
+      "scripts/install_apache_maven.py",
+      "scripts/verify-packaging-toolchain.py"
+    ],
+    "tested_to_base_diff": "empty"
+  },
+  "verification": {
+    "actual_oci_archive_stream": "all 16 compressed blobs rehashed; descriptor bytes identical",
+    "image_rebuilt_or_rescanned": false,
+    "raw_replay": "summary/full-ledger byte-identical",
+    "retained_reports_tools_databases": "all hashes matched via verify_retained"
+  }
+}

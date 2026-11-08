@@ -1,0 +1,1835 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 6: Rules & Legacy{% endblock %}
+
+{% block content %}
+{# PR-24 removed the frozen legacy CRUD editor; Kafka/passthrough retain their
+   existing rule save path in the refreshed surface below. #}
+{% set uxr_rule_items = rule_set_readiness_items %}
+{% set uxr_rule_attention = uxr_rule_items | selectattr('state', 'equalto', 'needs_action') | list %}
+{% set uxr_rule_review = uxr_rule_items | selectattr('state', 'equalto', 'warning') | list %}
+{% set uxr_rule_ready = uxr_rule_items | selectattr('state', 'equalto', 'ready') | list %}
+{% set uxr_rule_total = uxr_rule_items | length %}
+{% set uxr_split_focus = true if focus_name else false %}
+{% set uxr_show_board = true if uxr_rule_total else false %}
+
+{% macro uxr_rule_row(item) %}
+{% set meta = rule_set_board_metadata.get(item.display_name, {}) %}
+<div class="uxr-board-row{{ ' is-editing' if (uxr_split_focus and item.display_name == focus_name) else '' }}" data-uxr-row-name="{{ item.display_name }}" data-uxr-row-state="{{ item.state }}" data-uxr-row-kind="rule_set">
+  <span class="uxr-fam-tile uxr-fam-rest" aria-hidden="true">{{ item.display_name[:2] | upper }}</span>
+  <div class="uxr-board-row-main">
+    <div class="uxr-board-row-name">{{ item.display_name }}</div>
+    <div class="uxr-board-row-meta" data-uxr-rule-facts>{{ meta.get('rule_count', 0) }} rule{{ 's' if meta.get('rule_count', 0) != 1 }}{% if meta.get('file_path') %} &middot; <code>{{ meta.get('file_path') }}</code>{% endif %}</div>
+    <div class="uxr-board-row-tags" data-uxr-rule-tags>
+      <span class="uxr-board-tag">{{ meta.get('fields_complete', 0) }}/{{ meta.get('fields_total', 0) }} fields</span>
+      {% if meta.get('spec_derived') %}<span class="uxr-board-tag">SPEC-DERIVED &middot; {{ meta.get('spec_derived') }}</span>{% endif %}
+      {% if meta.get('manual') %}<span class="uxr-board-tag">MANUAL &middot; {{ meta.get('manual') }}</span>{% endif %}
+      {% if meta.get('ka_applied') %}<span class="uxr-board-tag">KA-APPLIED &middot; {{ meta.get('ka_applied') }}</span>{% endif %}
+      {% if meta.get('advisory_count') %}<span class="uxr-board-tag">{{ meta.get('advisory_count') }} advisor{{ 'ies' if meta.get('advisory_count') != 1 else 'y' }}</span>{% endif %}
+      <span class="uxr-board-cap">MANIFEST REF</span>
+    </div>
+    {% if item.blockers %}<div class="uxr-board-row-blocker">{{ item.blockers[0].label }}</div>{% elif item.warnings %}<div class="uxr-board-row-warning">{{ item.warnings[0].label }}</div>{% endif %}
+  </div>
+  <div class="uxr-board-row-right">
+    <span class="badge badge-{{ 'ready' if item.state == 'ready' else 'warning' }}">{{ 'Ready' if item.state == 'ready' else ('Needs action' if item.state == 'needs_action' else 'Review') }}</span>
+    <a href="/rules?focus={{ item.display_name | urlencode }}" class="uxr-board-edit-btn" data-uxr-edit-target="{{ item.display_name }}">Edit</a>
+  </div>
+</div>
+{% endmacro %}
+
+<div class="card step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 6: Rules</h2>
+      <p class="subtitle">{% if is_kafka_rules %}Kafka integration keeps this step for shared notes and future review-state work. Entity-scoped CRUD rules are not required for Kafka routes in this phase.{% elif is_passthrough_rules %}Capture shared business rules and legacy context for the passthrough flow. Any advisory conflict signals stay non-blocking in this phase.{% else %}Triage entity rule-sets, then edit one saved rule-set at a time.{% endif %}</p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Authoring Focus</span>
+      <div class="step-surface-kicker-title">Exceptions before volume</div>
+      <div class="text-muted text-sm">Cross-entity prerequisites need action; advisories remain non-blocking.</div>
+    </div>
+  </div>
+  <div id="save-status" class="alert hidden" role="status" aria-live="polite"></div>
+
+  {% if is_kafka_rules %}
+  <div class="alert">No entity selection is required for Kafka integration. You can continue with legacy notes below, then move on to Review.</div>
+  {% elif is_passthrough_rules %}
+  <div class="alert">Passthrough Step 6 keeps shared notes and any advisory context together. Manual rules authoring and legacy notes remain available without CRUD entity selection.</div>
+  {% elif is_edge_contract_only_rules and not selected_entities %}
+  <div class="alert alert-info">No CRUD entities are loaded. This edge-contract-only project can use legacy notes below or skip to Review.</div>
+  {% elif not selected_entities and not is_kafka_rules and not is_passthrough_rules %}
+  <div class="alert alert-warn">No entities selected yet. <a href="/entities">Go back to Step 3</a>.</div>
+  {% endif %}
+
+  {% if rule_suggestion_badges %}
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading"><div><h3>Business Rules</h3><p class="text-muted text-sm">Review available Knowledge Assist suggestions without changing the manual save contract.</p></div></div>
+    {% for badge in rule_suggestion_badges %}<button type="button" class="ka-suggestion-badge" data-suggestion-drawer-open data-suggestion-drawer-url="/rules/ks/drawer?scope=rules&amp;entity={{ badge.entity|urlencode }}">{{ badge.entity }} · {{ badge.label }}</button>{% endfor %}
+  </section>
+  {% elif is_crud_rules %}<h3 class="sr-only">Business Rules</h3>{% endif %}
+
+  {% if conflict_advisories.has_items %}
+  <section class="step-section-card workflow-surface-card" style="border-style:dashed" data-uxr-advisory-strip>
+    <div class="step-section-heading"><div><h3>Issues &amp; Conflicts</h3><p class="text-muted text-sm">Read-only advisory signals from the existing Knowledge Assist conflict source.</p></div><span class="badge badge-warning">{{ conflict_advisories.item_count }} advisory</span></div>
+    {% for group in conflict_advisories.groups %}{% for issue in group.visible_items %}<p><strong>{{ issue.entity }} · {{ issue.field_name }}</strong>: {{ issue.conflict_hint }}</p>{% endfor %}{% endfor %}
+  </section>
+  {% endif %}
+
+  {% if uxr_split_focus %}<div class="uxr-focus-split" data-uxr-split="true"><div class="uxr-focus-split-board">{% endif %}
+  {% if uxr_show_board %}
+  <div class="uxr-stat-strip {{ 'uxr-zone-attn' if uxr_rule_attention else 'uxr-zone-ready' }}" data-uxr-stat-strip>
+    <span><strong data-uxr-stat="total">{{ uxr_rule_total }}</strong> rule-set{{ 's' if uxr_rule_total != 1 }}</span>
+    <span><strong data-uxr-stat="ready">{{ uxr_rule_ready | length }}</strong> ready</span>
+    <span><strong data-uxr-stat="attention">{{ uxr_rule_attention | length }}</strong> need action</span>
+    {% if uxr_rule_review %}<span><strong data-uxr-stat="review">{{ uxr_rule_review | length }}</strong> need review</span>{% endif %}
+  </div>
+  <div class="uxr-board uxr-zone-scan" data-uxr-board="rules" role="region" aria-label="Rules triage board">
+    <div class="uxr-board-filters" role="group" aria-label="Filter rule-sets">
+      <button type="button" class="uxr-chip is-on" aria-pressed="true" data-uxr-filter="state:all">All &middot; <span class="uxr-chip-count">{{ uxr_rule_total }}</span></button>
+      {% if uxr_rule_attention %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:attention">Needs action &middot; <span class="uxr-chip-count">{{ uxr_rule_attention | length }}</span></button>{% endif %}
+      {% if uxr_rule_review %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:review">Needs review &middot; <span class="uxr-chip-count">{{ uxr_rule_review | length }}</span></button>{% endif %}
+      {% if uxr_rule_ready %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:ready">Ready &middot; <span class="uxr-chip-count">{{ uxr_rule_ready | length }}</span></button>{% endif %}
+    </div>
+    {% if uxr_rule_attention %}<div class="uxr-board-group uxr-board-group-attn" data-uxr-group="attention">Needs action</div>{% for item in uxr_rule_attention %}{{ uxr_rule_row(item) }}{% endfor %}{% endif %}
+    {% if uxr_rule_review %}<div class="uxr-board-group" data-uxr-group="review">Needs review</div>{% for item in uxr_rule_review %}{{ uxr_rule_row(item) }}{% endfor %}{% endif %}
+    {% if uxr_rule_ready %}<div class="uxr-board-group" data-uxr-group="ready">Ready</div>{% for item in uxr_rule_ready %}{{ uxr_rule_row(item) }}{% endfor %}{% endif %}
+  </div>
+  {% elif not focus_name %}
+  <div class="alert alert-info">No entity rule-sets are available yet. Add rules through the current entity authoring flow first.</div>
+  {% endif %}
+  {% if uxr_split_focus %}</div><div class="uxr-focus-split-editor">{% endif %}
+
+  {% if focus_name %}
+  <section class="uxr-zone-scan" data-uxr-focus-editor="{{ focus_name }}" data-source-of-truth-version="{{ focus_source_of_truth_version }}" role="region" aria-labelledby="uxr-focus-title">
+    <div class="step-section-heading">
+      <div><p class="text-muted text-sm" style="margin:0 0 4px">Focused rule-set</p><h3 id="uxr-focus-title" data-uxr-focus-title>{{ focus_name }}</h3></div>
+      <a href="/rules" class="btn btn-secondary btn-sm" data-dirty-ignore>Close</a>
+    </div>
+    <div class="alert {{ 'alert-warn' if focus_item.state in ['needs_action', 'warning'] else 'alert-success' }}" data-uxr-editor-banner data-state="{{ focus_item.state }}">
+      <strong>{{ 'Needs action' if focus_item.state == 'needs_action' else ('Review' if focus_item.state == 'warning' else 'Ready') }}</strong>
+      <span data-uxr-editor-banner-copy>{% if focus_item.blockers %}{{ focus_item.blockers[0].label }}{% elif focus_item.warnings %}{{ focus_item.warnings[0].label }}{% else %}This rule-set is ready.{% endif %}</span>
+    </div>
+    <div class="uxr-stat-strip" data-uxr-stat-strip><span><strong data-uxr-stat="total">{{ uxr_rule_total }}</strong> rule-sets</span><span><strong data-uxr-stat="attention">{{ uxr_rule_attention | length }}</strong> need action</span></div>
+    <div class="text-sm" data-uxr-tab-badges aria-live="polite">
+      {% for ref in focus_item.blockers %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+      {% for ref in focus_item.warnings %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+    </div>
+    <div class="alert alert-warn hidden" data-uxr-conflict-review role="alert" aria-live="assertive">
+      <strong>Saved state changed</strong><p data-uxr-conflict-message></p>
+      <details><summary>Review current saved values</summary><pre class="review-drawer-code" data-uxr-conflict-server-state></pre></details>
+      <p class="text-sm hidden" data-uxr-conflict-current-list></p>
+      <div class="step-actions"><button type="button" class="btn btn-primary btn-sm" data-uxr-conflict-reload data-dirty-ignore>Reload saved version</button><button type="button" class="btn btn-secondary btn-sm" data-uxr-conflict-board data-dirty-ignore>Return to current board</button></div>
+    </div>
+
+    <section id="cross-entity" class="entity-rules-card workflow-surface-detail" data-entity="{{ focus_name }}">
+      {% for group in focus_rule_groups %}
+      <article class="fcard step-section-card workflow-surface-card" data-rule-field="{{ group.field }}" style="margin-bottom:12px">
+        <div class="step-section-heading"><div><h4>{{ group.field }}</h4><p class="text-muted text-sm">{{ group.field_type }}</p></div><span class="uxr-board-tag">{{ group.rules | length }} rule{{ 's' if group.rules | length != 1 }}</span></div>
+        {% if group.has_cross_entity_rule %}
+        <div class="alert {{ 'alert-success' if group.prerequisite_satisfied else 'alert-warn' }}" data-uxr-prerequisite-state="{{ 'satisfied' if group.prerequisite_satisfied else 'missing' }}">
+          {% if group.prerequisite_satisfied %}via {{ group.field }} &#10003;{% else %}add cross-entity-exists first <button type="button" class="btn btn-secondary btn-sm" data-uxr-add-prerequisite data-field="{{ group.field }}" data-target="{{ group.prerequisite_target or '' }}">+ Add prerequisite rule</button>{% endif %}
+        </div>
+        {% endif %}
+        <div class="rules-list-container"></div>
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-add-field-rule data-field="{{ group.field }}">+ Add rule for {{ group.field }}</button>
+      </article>
+      {% endfor %}
+    </section>
+
+    {% if conflict_advisories.has_items %}
+    <section id="advisories" class="step-section-card workflow-surface-card" style="border-style:dashed">
+      <h4>Advisory conflicts</h4>
+      {% for group in conflict_advisories.groups if group.entity == focus_name %}{% for issue in group["items"] %}<p class="uxr-board-row-warning"><strong>{{ issue.field_name }}</strong>: {{ issue.conflict_hint }}</p>{% endfor %}{% endfor %}
+    </section>
+    {% endif %}
+
+    <details class="step-section-card workflow-surface-detail" data-uxr-legacy-notes data-source-of-truth-version="{{ focus_source_of_truth_version }}"><summary>Legacy Notes</summary><div class="field"><label>Notes Slug</label><input type="text" id="legacy-slug" value="{{ session.legacy_slug or session.bounded_context }}"></div><div class="field"><label>Notes</label><textarea id="legacy-notes" rows="5">{{ session.legacy_notes or '' }}</textarea></div><p class="text-muted text-sm">Legacy notes save independently from the focused rule-set.</p><button type="button" class="btn btn-secondary btn-sm" data-uxr-save-legacy-notes>Save legacy notes</button><div class="alert alert-warn hidden" data-uxr-legacy-notes-conflict role="alert" aria-live="assertive"><strong>Saved legacy notes changed</strong><p data-uxr-legacy-notes-conflict-message></p><pre class="review-drawer-code" data-uxr-legacy-notes-conflict-server-state></pre><div class="step-actions"><button type="button" class="btn btn-primary btn-sm" data-uxr-legacy-notes-use-server>Use current saved notes</button><button type="button" class="btn btn-secondary btn-sm" data-uxr-legacy-notes-keep-draft>Keep my draft and allow retry</button></div></div></details>
+  </section>
+  <div class="step-actions" data-uxr-editor-actions><button type="button" class="btn btn-primary" data-uxr-save-one>Save rule-set</button><button type="button" class="btn btn-secondary" data-uxr-cancel-focus data-dirty-ignore>Cancel</button></div>
+  <div class="step-actions"><a href="/review" class="btn btn-primary" data-dirty-navigation>Continue &rarr;</a><a href="/downstream" class="btn btn-secondary" data-dirty-navigation>Previous</a></div>
+  {% else %}
+  <details class="step-section-card workflow-surface-detail"{% if is_crud_rules %} data-uxr-legacy-notes data-source-of-truth-version="{{ focus_source_of_truth_version }}"{% endif %}><summary>Legacy Notes</summary><div class="field"><label>Notes Slug</label><input type="text" id="legacy-slug" value="{{ session.legacy_slug or session.bounded_context }}"></div><div class="field"><label>Notes</label><textarea id="legacy-notes" rows="5">{{ session.legacy_notes or '' }}</textarea></div>{% if is_crud_rules %}<p class="text-muted text-sm">Legacy notes save independently from entity rule-sets.</p><button type="button" class="btn btn-secondary btn-sm" data-uxr-save-legacy-notes>Save legacy notes</button><div class="alert alert-warn hidden" data-uxr-legacy-notes-conflict role="alert" aria-live="assertive"><strong>Saved legacy notes changed</strong><p data-uxr-legacy-notes-conflict-message></p><pre class="review-drawer-code" data-uxr-legacy-notes-conflict-server-state></pre><div class="step-actions"><button type="button" class="btn btn-primary btn-sm" data-uxr-legacy-notes-use-server>Use current saved notes</button><button type="button" class="btn btn-secondary btn-sm" data-uxr-legacy-notes-keep-draft>Keep my draft and allow retry</button></div></div>{% endif %}</details>
+  <div class="step-actions">{% if is_kafka_rules or is_passthrough_rules %}<button class="btn btn-primary" onclick="saveAll()">Save &amp; Continue &rarr;</button>{% else %}<a href="/review" class="btn btn-primary">Continue &rarr;</a>{% endif %}<a href="{{ back_route }}" class="btn btn-secondary">Previous</a></div>
+  {% endif %}
+  {% if uxr_split_focus %}</div></div>{% endif %}
+</div>
+{% endblock %}
+
+{% block rail_header %}
+<div>
+  <h3>Step 6 Issues &amp; Conflicts</h3>
+  <p>Advisory-only signals stay visible here while the main pane remains focused on rules and legacy notes.</p>
+</div>
+{% endblock %}
+
+{% block rail_panels %}
+<div id="rail-suggestions-panel" data-rail-panel="suggestions" hidden></div>
+<div id="rail-evidence-panel" data-rail-panel="evidence" hidden></div>
+
+<section class="shell-scaffold-panel shell-rail-panel shell-rail-panel-active" id="rail-conflicts-panel" data-rail-panel="conflicts">
+  <div class="shell-rail-panel-title-row">
+    <div>
+      <h4>Conflicts Summary</h4>
+      <p class="text-muted text-sm">
+        {% if conflict_advisories.enabled %}
+        Current CRUD advisory signals are limited to conflict hints for fields in the current CRUD model. Full conflict-resolution suggestions live in Step 7.
+        {% else %}
+        No active advisory conflict surface is enabled for this step.
+        {% endif %}
+      </p>
+    </div>
+    {% if conflict_advisories.enabled and conflict_advisories.has_items %}
+    <span class="badge badge-warning">{{ conflict_advisories.item_count }} advisory</span>
+    {% endif %}
+  </div>
+
+  {% if conflict_advisories.enabled and conflict_advisories.has_items %}
+  <div class="conflicts-rail-summary">
+    <div class="issues-summary-strip issues-summary-strip-compact">
+      <div class="issues-summary-pill">
+        <span class="issues-summary-value">{{ conflict_advisories.item_count }}</span>
+        <span class="issues-summary-label">Signals</span>
+      </div>
+      <div class="issues-summary-pill">
+        <span class="issues-summary-value">{{ conflict_advisories.entity_count }}</span>
+        <span class="issues-summary-label">Entities</span>
+      </div>
+    </div>
+
+    <div class="shell-rail-stack">
+      {% for group in conflict_advisories.groups %}
+      <div class="issue-rail-group">
+        <div class="issue-rail-group-title">{{ group["entity"] }}</div>
+        {% for issue in group["visible_items"] %}
+        <a href="#{{ issue["anchor_id"] }}" class="issue-rail-link">
+          <span><code>{{ issue["field_name"] }}</code></span>
+          <span class="badge badge-warning">Advisory</span>
+        </a>
+        {% endfor %}
+        {% if group["hidden_count"] %}
+        <div class="text-muted text-sm">+ {{ group["hidden_count"] }} more in the main pane</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% elif conflict_advisories.enabled and conflict_advisories.show_empty_state %}
+  <p class="text-muted" style="margin-top:12px">No current advisory issues. Step 6 advisories appear when Knowledge Assist finds conflict hints for fields in the current CRUD model. Full conflict-resolution suggestions live in Step 7.</p>
+  {% else %}
+  <p class="text-muted" style="margin-top:12px">Manual rules authoring remains available without live advisory conflict data.</p>
+  {% endif %}
+</section>
+
+<div id="rail-chat-panel" data-rail-panel="chat" hidden></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const existingRules = {{ entity_rules_data | tojson }};
+const canonicalEntityNames = {{ canonical_entity_names | tojson }};
+
+// { "Customer": [{name:"customerId",type:"string"}, …], "Account": […], … }
+// Populated from Step 3 classification — used to drive field dropdowns below.
+const entityFieldsMap = {{ entity_fields_map | tojson }};
+
+// Heuristic: fields that appear to be server-generated IDs (absent from create
+// request body samples). These are advisory warnings only — they do not block
+// saving or exporting.
+const likelyGeneratedIdFields = {{ likely_generated_id_fields | tojson }};
+const generatedIdWarnings = {{ generated_id_warnings | tojson }};
+const uxrSessionCrossEntityTargets = {{ cross_entity_prerequisite_targets | tojson }};
+
+const RULE_TYPES = [
+  { value: 'allowed-values', label: 'Allowed Values' },
+  { value: 'max-length',     label: 'Max Length' },
+  { value: 'min-length',     label: 'Min Length' },
+  { value: 'pattern',        label: 'Pattern' },
+  { value: 'range',          label: 'Range' },
+  { value: 'default',        label: 'Default' },
+  { value: 'not-null',       label: 'Not Null' },
+  { value: 'iso-4217',       label: 'ISO-4217 Currency' },
+  { value: 'cross-entity-exists', label: 'Cross-Entity Exists (FK check)' },
+  { value: 'field-comparison', label: 'Field Comparison' },
+  { value: 'cross-entity-field-check', label: 'Cross-Entity Field Check' },
+  { value: 'cross-entity-field-compare', label: 'Cross-Entity Field Compare' },
+  { value: 'cross-entity-field-in', label: 'Cross-Entity Field In List' },
+];
+const FIELD_COMPARISON_OPERATORS = ['<=', '<', '>=', '>', '=='];
+const CROSS_ENTITY_FIELD_CHECK_OPERATORS = [
+  { value: 'lt', label: '<' },
+  { value: 'lte', label: '<=' },
+  { value: 'gt', label: '>' },
+  { value: 'gte', label: '>=' },
+  { value: 'eq', label: '==' },
+  { value: 'neq', label: '!=' },
+];
+const CROSS_ENTITY_FIELD_COMPARE_OPERATORS = [
+  { value: 'lt', label: '<' },
+  { value: 'lte', label: '<=' },
+  { value: 'gt', label: '>' },
+  { value: 'gte', label: '>=' },
+  { value: 'eq', label: '==' },
+  { value: 'neq', label: '!=' },
+];
+const NUMERIC_FIELD_TYPES = new Set(['integer', 'decimal', 'number', 'float', 'double', 'long', 'int', 'short', 'bigdecimal', 'bigint', 'int32', 'int64']);
+const STRING_LIKE_FIELD_TYPES = new Set(['string']);
+const BOOLEAN_FIELD_TYPES = new Set(['boolean', 'bool']);
+const DATE_FIELD_TYPES = new Set(['date']);
+const DATETIME_FIELD_TYPES = new Set(['datetime']);
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderGeneratedIdWarnings();
+
+  existingRules.forEach(er => {
+    const card = Array.from(document.querySelectorAll('.entity-rules-card'))
+      .find(candidate => candidate.dataset.entity === er.entity_name);
+    if (!card) return;
+    const container = card.querySelector('.rules-list-container');
+    er.rules.forEach(rule => addRuleRowEl(container, rule));
+  });
+
+  document.querySelectorAll('.entity-rules-card').forEach(card => refreshCrossEntityRuleRows(card));
+});
+
+function renderGeneratedIdWarnings() {
+  const container = document.getElementById('generated-id-warnings-banner');
+  if (!container) return;
+  if (!generatedIdWarnings.length) { container.classList.add('hidden'); return; }
+  const items = generatedIdWarnings.map(w => `<li>${escapeHtml(w.message)}</li>`).join('');
+  container.innerHTML = `<strong>&#x26A0;&#xFE0F; Generated-ID rule warnings</strong><ul style="margin:6px 0 0 18px">${items}</ul>`;
+  container.classList.remove('hidden');
+}
+
+// Check if the current rule row targets a likely-generated ID field and the
+// rule type is one that would have no effect on a server-assigned value.
+function checkGeneratedIdWarning(row) {
+  const entitySel = row.querySelector('.rule-entity');
+  const fieldSel = row.querySelector('.rule-field');
+  const typeSel = row.querySelector('.rule-type');
+  if (!fieldSel || !typeSel) return;
+
+  // Entity name is on the parent card rather than a select inside the row.
+  const entityName = row.closest('.entity-rules-card')?.dataset?.entity || '';
+  const entityField = `${entityName}.${fieldSel.value || ''}`;
+  const ruleType = typeSel.value;
+  const riskyTypes = ['max-length', 'min-length', 'pattern', 'default', 'allowed-values', 'range'];
+
+  let warningEl = row.querySelector('.generated-id-inline-warn');
+  if (!warningEl) {
+    warningEl = document.createElement('div');
+    warningEl.className = 'generated-id-inline-warn text-muted text-sm';
+    warningEl.style.cssText = 'color:#92400e;margin-top:4px';
+    row.appendChild(warningEl);
+  }
+
+  if (likelyGeneratedIdFields.includes(entityField) && riskyTypes.includes(ruleType)) {
+    warningEl.textContent = `\u26A0\uFE0F ${entityField} looks server-generated \u2014 ${ruleType} rules may be ignored.`;
+  } else {
+    warningEl.textContent = '';
+  }
+}
+
+// Check if the cross-entity-exists target entity has a likely-generated ID.
+function checkCrossEntityWarning(row) {
+  const targetSel = row.querySelector('.rule-target-entity');
+  if (!targetSel) return;
+  const targetEntity = targetSel.value;
+  if (!targetEntity) return;
+
+  // Narrow to the target entity's primary key only (e.g. Customer → customerId).
+  // A FK-style *Id field on the target entity absent from its create body should
+  // not cause false-positive warnings on other entities using it as a FK target.
+  const targetPkField = targetEntity.charAt(0).toLowerCase() + targetEntity.slice(1) + 'Id';
+  const targetHasGenId = likelyGeneratedIdFields.includes(`${targetEntity}.${targetPkField}`);
+  let warningEl = row.querySelector('.cross-entity-inline-warn');
+  if (!warningEl) {
+    warningEl = document.createElement('div');
+    warningEl.className = 'cross-entity-inline-warn text-muted text-sm';
+    warningEl.style.cssText = 'color:#92400e;margin-top:4px';
+    row.querySelector('.rule-extras')?.appendChild(warningEl);
+  }
+  if (targetHasGenId) {
+    warningEl.textContent = `\u26A0\uFE0F ${targetEntity}'s ID looks server-generated. FK shape constraints may not propagate as expected.`;
+  } else {
+    warningEl.textContent = '';
+  }
+}
+
+function getEntityFields(entityName) {
+  return entityFieldsMap[entityName] || [];
+}
+
+function getFieldMeta(entityName, fieldName) {
+  return getEntityFields(entityName).find(field => field.name === fieldName) || null;
+}
+
+function isNumericField(fieldMeta) {
+  return !!fieldMeta && NUMERIC_FIELD_TYPES.has(String(fieldMeta.type || '').toLowerCase());
+}
+
+function isStringLikeField(fieldMeta) {
+  if (!fieldMeta) return false;
+  const fieldType = String(fieldMeta.type || '').toLowerCase();
+  return STRING_LIKE_FIELD_TYPES.has(fieldType) || ((fieldMeta.enum_values || []).length > 0);
+}
+
+function supportsFieldCheckTarget(fieldMeta) {
+  if (!fieldMeta) return false;
+  const fieldType = String(fieldMeta.type || '').toLowerCase();
+  return (
+    isStringLikeField(fieldMeta)
+    || NUMERIC_FIELD_TYPES.has(fieldType)
+    || BOOLEAN_FIELD_TYPES.has(fieldType)
+    || DATE_FIELD_TYPES.has(fieldType)
+    || DATETIME_FIELD_TYPES.has(fieldType)
+  );
+}
+
+function expectedValueHint(fieldMeta) {
+  if (!fieldMeta) {
+    return {
+      placeholder: 'Enter expected value',
+      help: 'Select a target field to see the expected value format.',
+    };
+  }
+
+  const fieldType = String(fieldMeta.type || '').toLowerCase();
+  if (NUMERIC_FIELD_TYPES.has(fieldType)) {
+    return {
+      placeholder: fieldType === 'integer' || fieldType === 'int' || fieldType === 'long' ? '1000' : '1000.50',
+      help: 'Expected value must be numeric for this target field.',
+    };
+  }
+  if (BOOLEAN_FIELD_TYPES.has(fieldType)) {
+    return {
+      placeholder: 'true',
+      help: 'Expected value must be true or false.',
+    };
+  }
+  if (DATE_FIELD_TYPES.has(fieldType)) {
+    return {
+      placeholder: '2026-04-22',
+      help: 'Expected value must use ISO date format (YYYY-MM-DD).',
+    };
+  }
+  if (DATETIME_FIELD_TYPES.has(fieldType)) {
+    return {
+      placeholder: '2026-04-22T15:30:00Z',
+      help: 'Expected value must use ISO datetime format.',
+    };
+  }
+  return {
+    placeholder: ((fieldMeta.enum_values || [])[0]) || 'ACTIVE',
+    help: 'Expected value is compared as a string or enum-like literal.',
+  };
+}
+
+function isCrossEntityDerivedType(type) {
+  return [
+    'cross-entity-field-check',
+    'cross-entity-field-compare',
+    'cross-entity-field-in',
+  ].includes(type);
+}
+
+function fieldLabel(fieldMeta) {
+  if (!fieldMeta) return 'saved field';
+  return `${fieldMeta.name} (${fieldMeta.type})`;
+}
+
+function ruleTypeLabel(type) {
+  return RULE_TYPES.find(ruleType => ruleType.value === type)?.label || type;
+}
+
+function ruleProvenanceBadge(data = {}) {
+  if (data.generated_by_ka) {
+    const normalizedStatus = String(data.ka_review_status || 'accepted').toLowerCase();
+    const label = {
+      accepted: 'KA-applied',
+      applied: 'KA-applied',
+      rejected: 'KA-applied, rejected',
+      edited: 'KA-applied, edited',
+    }[normalizedStatus] || `KA-${normalizedStatus.toUpperCase()}`;
+    const titleParts = [
+      'Applies generated change: this rule can affect generated validation or rule behavior.',
+      `Suggestion type: ${data.suggestion_type || 'validation'}`,
+      data.suggestion_id ? `Suggestion ID: ${data.suggestion_id}` : '',
+      normalizedStatus === 'edited' ? 'KA-applied then edited in Step 6' : '',
+      normalizedStatus === 'rejected' ? 'Reject recorded; rule remains until removed' : '',
+    ].filter(Boolean);
+    return `<span class="ka-card-category ka-category-generated ka-taxonomy-change" title="${escapeHtml(titleParts.join(' · '))}">${escapeHtml(label)}</span>`;
+  }
+  if (data.applied_by === 'openapi-spec') {
+    return '<span class="ka-card-category ka-category-satisfied ka-taxonomy-satisfied">Spec-derived</span>';
+  }
+  return '<span class="ka-card-category ka-category-satisfied ka-taxonomy-satisfied">Manual / imported</span>';
+}
+
+function setSelectOptions(selectEl, options, placeholder, selectedValue = '', { preserveMissing = false, missingLabel = null } = {}) {
+  if (!selectEl) return;
+
+  const normalizedValue = selectedValue || '';
+  const seen = new Set();
+  const markup = [`<option value="">${escapeHtml(placeholder)}</option>`];
+
+  options.forEach(option => {
+    if (!option?.value || seen.has(option.value)) return;
+    seen.add(option.value);
+    markup.push(
+      `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label || option.value)}</option>`
+    );
+  });
+
+  if (normalizedValue && preserveMissing && !seen.has(normalizedValue)) {
+    markup.push(
+      `<option value="${escapeHtml(normalizedValue)}">${escapeHtml(missingLabel || `${normalizedValue} (saved)`)}</option>`
+    );
+  }
+
+  selectEl.innerHTML = markup.join('');
+  selectEl.value = normalizedValue;
+}
+
+function getCrossEntityExistsMap(card, excludeRow = null, preferredTargets = {}) {
+  const targets = {};
+  if (!card) return targets;
+
+  Object.entries(uxrSessionCrossEntityTargets || {}).forEach(([field, available]) => {
+    if (!Array.isArray(available) || !available.length) return;
+    const preferred = preferredTargets[field];
+    if (preferred && available.includes(preferred)) targets[field] = preferred;
+    else if (available.length === 1) targets[field] = available[0];
+  });
+
+  card.querySelectorAll('.rule-row').forEach(row => {
+    if (excludeRow && row === excludeRow) return;
+    if (row.querySelector('.rule-type')?.value !== 'cross-entity-exists') return;
+
+    const field = row.querySelector('.rule-field')?.value?.trim();
+    const targetEntity = row.querySelector('.rule-target-entity')?.value?.trim();
+    if (field && targetEntity) {
+      targets[field] = targetEntity;
+    }
+  });
+
+  return targets;
+}
+
+function snapshotRuleRow(row) {
+  const valuesRaw = row.querySelector('.rule-values')?.value || '';
+  return {
+    field: row.querySelector('.rule-field')?.value?.trim() || '',
+    type: row.querySelector('.rule-type')?.value || '',
+    target_entity:
+      row.querySelector('.rule-derived-target-entity')?.value?.trim()
+      || row.querySelector('.rule-target-entity')?.value?.trim()
+      || row.dataset.savedTargetEntity
+      || '',
+    target_field: row.querySelector('.rule-target-field')?.value?.trim() || '',
+    source_field: row.querySelector('.rule-source-field')?.value?.trim() || '',
+    operator: row.querySelector('.rule-operator')?.value?.trim() || '',
+    compare_to_field: row.querySelector('.rule-compare-field')?.value?.trim() || '',
+    value:
+      row.querySelector('.rule-single-value')?.value?.trim()
+      || row.querySelector('.rule-range-min')?.value?.trim()
+      || '',
+    values: valuesRaw
+      ? valuesRaw.split(',').map(v => v.trim()).filter(Boolean)
+      : [],
+    expected_value: row.querySelector('.rule-expected-value')?.value?.trim() || '',
+    error_message: row.querySelector('.rule-error-message')?.value?.trim() || '',
+  };
+}
+
+function refreshCrossEntityRuleRows(card) {
+  if (!card) return;
+  card.querySelectorAll('.rule-row').forEach(row => {
+    if (isCrossEntityDerivedType(row.querySelector('.rule-type')?.value)) {
+      refreshCrossEntityRuleRow(row, snapshotRuleRow(row));
+    }
+  });
+}
+
+function refreshCrossEntityRuleRow(row, state = null, { preserveMissing = false } = {}) {
+  const type = row.querySelector('.rule-type')?.value;
+  if (!isCrossEntityDerivedType(type)) return;
+
+  const current = state || snapshotRuleRow(row);
+  const card = row.closest('.entity-rules-card');
+  const entityName = card?.dataset?.entity || '';
+  const prerequisiteMap = getCrossEntityExistsMap(
+    card,
+    row,
+    current.field ? { [current.field]: current.target_entity } : {},
+  );
+  const prerequisiteFields = Object.keys(prerequisiteMap);
+  const fieldSelect = row.querySelector('.rule-field');
+  const fkOptions = prerequisiteFields.map(fieldName => ({
+    value: fieldName,
+    label: fieldLabel(getFieldMeta(entityName, fieldName)),
+  }));
+
+  setSelectOptions(
+    fieldSelect,
+    fkOptions,
+    prerequisiteFields.length ? '— select FK field —' : '— add prerequisite first —',
+    current.field,
+    {
+      preserveMissing,
+      missingLabel: current.field ? `${current.field} (saved)` : null,
+    }
+  );
+  fieldSelect.disabled = prerequisiteFields.length === 0;
+
+  const derivedTargetEntity = prerequisiteMap[fieldSelect.value] || current.target_entity || '';
+  const targetEntityDisplay = row.querySelector('.rule-target-entity-display');
+  const targetEntityHidden = row.querySelector('.rule-derived-target-entity');
+  if (targetEntityDisplay) {
+    targetEntityDisplay.textContent = derivedTargetEntity || 'Derived from FK reference';
+  }
+  if (targetEntityHidden) {
+    targetEntityHidden.value = derivedTargetEntity;
+  }
+
+  const inlineHint = row.querySelector('.rule-cross-entity-hint');
+  if (inlineHint) {
+    inlineHint.textContent = prerequisiteFields.length
+      ? ''
+      : 'Add a cross-entity-exists rule for this field first.';
+  }
+
+  const targetFields = getEntityFields(derivedTargetEntity).filter(fieldMeta => {
+    if (type === 'cross-entity-field-compare') return isNumericField(fieldMeta);
+    if (type === 'cross-entity-field-check') return supportsFieldCheckTarget(fieldMeta);
+    return isStringLikeField(fieldMeta);
+  });
+  const targetFieldSelect = row.querySelector('.rule-target-field');
+  setSelectOptions(
+    targetFieldSelect,
+    targetFields.map(fieldMeta => ({ value: fieldMeta.name, label: fieldLabel(fieldMeta) })),
+    derivedTargetEntity ? '— select target field —' : '— target entity unavailable —',
+    current.target_field,
+    {
+      preserveMissing,
+      missingLabel: current.target_field ? `${current.target_field} (saved)` : null,
+    }
+  );
+  if (targetFieldSelect) {
+    targetFieldSelect.disabled = !derivedTargetEntity || targetFields.length === 0;
+  }
+  const selectedTargetFieldMeta = getFieldMeta(derivedTargetEntity, targetFieldSelect?.value || current.target_field);
+
+  const targetFieldHelp = row.querySelector('.rule-target-field-help');
+  if (targetFieldHelp) {
+    if (!derivedTargetEntity) {
+      targetFieldHelp.textContent = 'Select an FK field to derive the target entity first.';
+    } else if (!targetFields.length && type === 'cross-entity-field-compare') {
+      targetFieldHelp.textContent = `No numeric fields are available on ${derivedTargetEntity}.`;
+    } else if (!targetFields.length && type === 'cross-entity-field-in') {
+      targetFieldHelp.textContent = `No string or enum-like fields are available on ${derivedTargetEntity}.`;
+    } else if (!targetFields.length) {
+      targetFieldHelp.textContent = `No compatible target fields are available on ${derivedTargetEntity}.`;
+    } else {
+      targetFieldHelp.textContent = '';
+    }
+  }
+
+  const operatorSelect = row.querySelector('.rule-operator');
+  if (operatorSelect) {
+    const operators = type === 'cross-entity-field-check'
+      ? CROSS_ENTITY_FIELD_CHECK_OPERATORS
+      : CROSS_ENTITY_FIELD_COMPARE_OPERATORS;
+    setSelectOptions(
+      operatorSelect,
+      operators,
+      '— operator —',
+      current.operator,
+      { preserveMissing }
+    );
+  }
+
+  const sourceFieldSelect = row.querySelector('.rule-source-field');
+  if (sourceFieldSelect) {
+    const sourceFieldOptions = getEntityFields(entityName)
+      .filter(fieldMeta => isNumericField(fieldMeta))
+      .map(fieldMeta => ({ value: fieldMeta.name, label: fieldLabel(fieldMeta) }));
+    setSelectOptions(
+      sourceFieldSelect,
+      sourceFieldOptions,
+      '— select source field —',
+      current.source_field,
+      {
+        preserveMissing,
+        missingLabel: current.source_field ? `${current.source_field} (saved)` : null,
+      }
+    );
+    sourceFieldSelect.disabled = sourceFieldOptions.length === 0;
+  }
+
+  const sourceFieldHelp = row.querySelector('.rule-source-field-help');
+  if (sourceFieldHelp) {
+    const sourceFieldOptions = getEntityFields(entityName).filter(fieldMeta => isNumericField(fieldMeta));
+    sourceFieldHelp.textContent = sourceFieldOptions.length
+      ? ''
+      : 'No numeric source fields are available on the current entity.';
+  }
+
+  const expectedValueInput = row.querySelector('.rule-expected-value');
+  if (expectedValueInput) {
+    expectedValueInput.value = current.expected_value || '';
+    const hint = expectedValueHint(selectedTargetFieldMeta);
+    expectedValueInput.placeholder = hint.placeholder;
+    const expectedValueHelp = row.querySelector('.rule-expected-value-help');
+    if (expectedValueHelp) {
+      expectedValueHelp.textContent = hint.help;
+    }
+  }
+
+  const valuesInput = row.querySelector('.rule-values');
+  if (valuesInput) {
+    valuesInput.value = (current.values || []).join(', ');
+  }
+
+  const errorMessageInput = row.querySelector('.rule-error-message');
+  if (errorMessageInput) {
+    errorMessageInput.value = current.error_message || '';
+  }
+}
+
+function handleRuleTypeChange(selectEl) {
+  updateExtras(selectEl);
+  refreshCrossEntityRuleRows(selectEl.closest('.entity-rules-card'));
+}
+
+function handleRuleFieldChange(fieldEl) {
+  const row = fieldEl.closest('.rule-row');
+  checkGeneratedIdWarning(row);
+  if (row.querySelector('.rule-type')?.value === 'cross-entity-exists') {
+    checkCrossEntityWarning(row);
+  }
+  refreshCrossEntityRuleRows(row.closest('.entity-rules-card'));
+}
+
+function handleTargetEntityChange(selectEl) {
+  const row = selectEl.closest('.rule-row');
+  checkCrossEntityWarning(row);
+  refreshCrossEntityRuleRows(row.closest('.entity-rules-card'));
+}
+
+function removeRuleRow(buttonEl) {
+  const row = buttonEl.closest('.rule-row');
+  const card = row?.closest('.entity-rules-card');
+  row?.remove();
+  refreshCrossEntityRuleRows(card);
+}
+
+function updateKaRuleControls(row) {
+  const removeBtn = row?.querySelector('.ka-remove-rule-btn');
+  if (!removeBtn) return;
+  const status = String(row.dataset.kaReviewStatus || '').toLowerCase();
+  const canRemove = (
+    row.dataset.generatedByKa === 'true'
+    && row.dataset.suggestionId
+    && (row.dataset.suggestionType || 'validation') === 'validation'
+    && status !== 'edited'
+  );
+  removeBtn.style.display = canRemove ? '' : 'none';
+}
+
+async function removeKaAppliedRule(buttonEl) {
+  const row = buttonEl.closest('.rule-row');
+  const card = row?.closest('.entity-rules-card');
+  if (!row || !card) return;
+  const payload = {
+    suggestion_id: row.dataset.suggestionId || '',
+    entity: card.dataset.entity || '',
+    field: row.querySelector('.rule-field')?.value?.trim() || '',
+    type: row.querySelector('.rule-type')?.value?.trim() || '',
+  };
+  const data = await postJSON('/rules/ka/remove-validation-rule', payload);
+  if (data.ok) {
+    row.remove();
+    refreshCrossEntityRuleRows(card);
+    showStatus('save-status', data.message || 'Removed KA-applied validation rule.', 'success');
+    return;
+  }
+  if (data.errors?.length) {
+    row.dataset.kaReviewStatus = 'edited';
+    const provenanceBadge = row.querySelector('.rule-provenance-badge');
+    if (provenanceBadge) {
+      provenanceBadge.innerHTML = ruleProvenanceBadge({
+        generated_by_ka: true,
+        suggestion_id: row.dataset.suggestionId,
+        suggestion_type: row.dataset.suggestionType || 'validation',
+        ka_review_status: 'edited',
+      });
+    }
+    updateKaRuleControls(row);
+    showStatus('save-status', data.errors.join(' '), 'error');
+  }
+}
+
+function addRuleRowEl(container, data) {
+  // Derive which entity this container belongs to so we can load the right fields.
+  const entityName = container.closest('.entity-rules-card').dataset.entity;
+  const fields = getEntityFields(entityName);
+
+  const row = document.createElement('div');
+  row.className = 'rule-row';
+  row.style = 'display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,320px) minmax(0,2fr) auto;gap:8px;margin-bottom:8px;align-items:start';
+
+  const typeOptions = RULE_TYPES.map(t =>
+    `<option value="${t.value}">${t.label}</option>`
+  ).join('');
+
+  // Use a dropdown when we know the entity's fields; fall back to free-text otherwise.
+  let fieldInput;
+  if (fields.length > 0) {
+    const fieldOptions = [
+      '<option value="">— select field —</option>',
+      ...fields.map(field => (
+        `<option value="${escapeHtml(field.name)}">${escapeHtml(field.name)} (${escapeHtml(field.type)})</option>`
+      ))
+    ].join('');
+    fieldInput = `<select class="rule-field" onchange="handleRuleFieldChange(this)">${fieldOptions}</select>`;
+  } else {
+    fieldInput = `<input type="text" placeholder="fieldName" class="rule-field" oninput="handleRuleFieldChange(this)">`;
+  }
+
+  row.innerHTML = `
+    ${fieldInput}
+    <select class="rule-type" onchange="handleRuleTypeChange(this)" title="Select the business rule type">${typeOptions}</select>
+    <div class="rule-extras"></div>
+    <div style="display:flex;gap:6px;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap">
+      <span class="rule-provenance-badge"></span>
+      <button type="button" class="btn btn-secondary btn-sm ka-remove-rule-btn" onclick="removeKaAppliedRule(this)" style="display:none">Remove applied rule</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="removeRuleRow(this)">✕</button>
+    </div>
+  `;
+  container.appendChild(row);
+
+  if (data) {
+    row.dataset.suggestionId = data.suggestion_id || '';
+    row.dataset.suggestionType = data.suggestion_type || '';
+    row.dataset.appliedBy = data.applied_by || '';
+    row.dataset.appliedAt = data.applied_at || '';
+    row.dataset.generatedByKa = data.generated_by_ka ? 'true' : 'false';
+    row.dataset.kaReviewStatus = data.ka_review_status || '';
+    const provenanceBadge = row.querySelector('.rule-provenance-badge');
+    if (provenanceBadge) provenanceBadge.innerHTML = ruleProvenanceBadge(data);
+    updateKaRuleControls(row);
+    row.dataset.savedTargetEntity = data.target_entity || '';
+    const fieldEl = row.querySelector('.rule-field');
+    if (fieldEl.tagName === 'SELECT') {
+      // If the saved field name isn't among the options (e.g. old session or custom field),
+      // add it dynamically so the row still renders correctly rather than showing blank.
+      const knownValues = Array.from(fieldEl.options).map(o => o.value);
+      if (data.field && !knownValues.includes(data.field)) {
+        const opt = document.createElement('option');
+        opt.value = data.field;
+        opt.textContent = `${data.field} (custom)`;
+        fieldEl.appendChild(opt);
+      }
+      fieldEl.value = data.field || '';
+    } else {
+      fieldEl.value = data.field || '';
+    }
+
+    const sel = row.querySelector('.rule-type');
+    // Gracefully handle unknown types (don't crash)
+    const known = RULE_TYPES.map(t => t.value);
+    sel.value = known.includes(data.type) ? data.type : 'allowed-values';
+    updateExtras(sel, data);
+
+    // Restore saved values
+    if (data.type === 'allowed-values' && data.values?.length) {
+      row.querySelector('.rule-values').value = data.values.join(', ');
+    } else if (['default', 'max-length', 'min-length', 'pattern'].includes(data.type) && data.value) {
+      row.querySelector('.rule-single-value').value = data.value;
+    } else if (data.type === 'range') {
+      if (data.value) row.querySelector('.rule-range-min').value = data.value;
+      if (data.values?.length) row.querySelector('.rule-range-max').value = data.values[0];
+    } else if (data.type === 'cross-entity-exists' && data.target_entity) {
+      const targetEl = row.querySelector('.rule-target-entity');
+      if (targetEl) {
+        const knownTargets = Array.from(targetEl.options).map(o => o.value);
+        if (!knownTargets.includes(data.target_entity)) {
+          const opt = document.createElement('option');
+          opt.value = data.target_entity;
+          opt.textContent = `${data.target_entity} (saved)`;
+          targetEl.appendChild(opt);
+        }
+        targetEl.value = data.target_entity;
+        checkCrossEntityWarning(row);
+      }
+    } else if (data.type === 'field-comparison') {
+      const operatorEl = row.querySelector('.rule-operator');
+      const compareEl = row.querySelector('.rule-compare-field');
+      if (operatorEl) operatorEl.value = data.operator || '';
+      if (compareEl) {
+        if (compareEl.tagName === 'SELECT') {
+          const knownValues = Array.from(compareEl.options).map(o => o.value);
+          if (data.compare_to_field && !knownValues.includes(data.compare_to_field)) {
+            const opt = document.createElement('option');
+            opt.value = data.compare_to_field;
+            opt.textContent = `${data.compare_to_field} (custom)`;
+            compareEl.appendChild(opt);
+          }
+        }
+        compareEl.value = data.compare_to_field || '';
+      }
+    }
+  } else {
+    const provenanceBadge = row.querySelector('.rule-provenance-badge');
+    if (provenanceBadge) provenanceBadge.innerHTML = ruleProvenanceBadge({ applied_by: 'manual' });
+    updateExtras(row.querySelector('.rule-type'));
+  }
+
+  refreshCrossEntityRuleRows(container.closest('.entity-rules-card'));
+}
+
+function updateExtras(selectEl, data = null) {
+  const row = selectEl.closest('.rule-row');
+  const extrasDiv = row.querySelector('.rule-extras');
+  const type = selectEl.value;
+  const current = data || snapshotRuleRow(row);
+
+  if (type === 'allowed-values') {
+    extrasDiv.innerHTML = `<input type="text" placeholder="CHQ, SAV, CUR" class="rule-values" title="Comma-separated values">`;
+    uxrRenderAllowedValuesPaste(extrasDiv);
+  } else if (['default', 'max-length', 'min-length', 'pattern'].includes(type)) {
+    const ph = type === 'pattern' ? '^[0-9]{10}$' : type === 'default' ? 'ACTIVE' : '10';
+    extrasDiv.innerHTML = `<input type="text" placeholder="${ph}" class="rule-single-value">`;
+  } else if (type === 'range') {
+    extrasDiv.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <input type="text" placeholder="min (e.g. 0.01)" class="rule-range-min">
+        <input type="text" placeholder="max (e.g. 999999.99)" class="rule-range-max">
+      </div>`;
+  } else if (type === 'cross-entity-exists') {
+    const options = [
+      '<option value="">— select target entity —</option>',
+      ...canonicalEntityNames.map(name => (
+        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
+      ))
+    ].join('');
+    extrasDiv.innerHTML = `
+      <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Entity</label>
+      <select class="rule-target-entity" onchange="handleTargetEntityChange(this)">${options}</select>
+    `;
+  } else if (type === 'field-comparison') {
+    const entityName = row.closest('.entity-rules-card')?.dataset?.entity || '';
+    const fields = getEntityFields(entityName);
+    const compareOptions = fields.length > 0
+      ? [
+          '<option value="">— compare to field —</option>',
+          ...fields.map(field => (
+            `<option value="${escapeHtml(field.name)}">${escapeHtml(field.name)} (${escapeHtml(field.type)})</option>`
+          ))
+        ].join('')
+      : '';
+    const compareFieldInput = fields.length > 0
+      ? `<select class="rule-compare-field">${compareOptions}</select>`
+      : `<input type="text" placeholder="otherFieldName" class="rule-compare-field">`;
+    const operatorOptions = [
+      '<option value="">— operator —</option>',
+      ...FIELD_COMPARISON_OPERATORS.map(op => `<option value="${op}">${op}</option>`)
+    ].join('');
+    extrasDiv.innerHTML = `
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:4px">
+        <select class="rule-operator">${operatorOptions}</select>
+        ${compareFieldInput}
+      </div>`;
+  } else if (type === 'cross-entity-field-check') {
+    extrasDiv.innerHTML = `
+      <div style="display:grid;gap:8px">
+        <div class="text-muted text-sm rule-cross-entity-hint"></div>
+        <div style="display:grid;grid-template-columns:1fr 180px 1fr;gap:6px">
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Entity</label>
+            <div class="rule-target-entity-display shell-scaffold-panel" style="padding:10px 12px">Derived from FK reference</div>
+            <input type="hidden" class="rule-derived-target-entity">
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Operator</label>
+            <select class="rule-operator"></select>
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Field</label>
+            <select class="rule-target-field"></select>
+            <div class="text-muted text-sm rule-target-field-help" style="margin-top:4px"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Expected Value</label>
+            <input type="text" class="rule-expected-value" placeholder="ACTIVE">
+            <div class="text-muted text-sm rule-expected-value-help" style="margin-top:4px">Select a target field to see the expected value format.</div>
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Error Message</label>
+            <input type="text" class="rule-error-message" placeholder="Customer must be ACTIVE before update">
+          </div>
+        </div>
+      </div>`;
+    refreshCrossEntityRuleRow(row, current, { preserveMissing: !!data });
+  } else if (type === 'cross-entity-field-compare') {
+    extrasDiv.innerHTML = `
+      <div style="display:grid;gap:8px">
+        <div class="text-muted text-sm rule-cross-entity-hint"></div>
+        <div class="text-muted text-sm">Compare the current entity source field to the referenced entity target field.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 140px 1fr;gap:6px">
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Entity</label>
+            <div class="rule-target-entity-display shell-scaffold-panel" style="padding:10px 12px">Derived from FK reference</div>
+            <input type="hidden" class="rule-derived-target-entity">
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Source Field</label>
+            <select class="rule-source-field"></select>
+            <div class="text-muted text-sm rule-source-field-help" style="margin-top:4px"></div>
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Operator</label>
+            <select class="rule-operator"></select>
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Field</label>
+            <select class="rule-target-field"></select>
+            <div class="text-muted text-sm rule-target-field-help" style="margin-top:4px"></div>
+          </div>
+        </div>
+        <div>
+          <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Error Message</label>
+          <input type="text" class="rule-error-message" placeholder="Requested amount exceeds customer approved limit">
+        </div>
+      </div>`;
+    refreshCrossEntityRuleRow(row, current, { preserveMissing: !!data });
+  } else if (type === 'cross-entity-field-in') {
+    extrasDiv.innerHTML = `
+      <div style="display:grid;gap:8px">
+        <div class="text-muted text-sm rule-cross-entity-hint"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Entity</label>
+            <div class="rule-target-entity-display shell-scaffold-panel" style="padding:10px 12px">Derived from FK reference</div>
+            <input type="hidden" class="rule-derived-target-entity">
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Target Field</label>
+            <select class="rule-target-field"></select>
+            <div class="text-muted text-sm rule-target-field-help" style="margin-top:4px"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Allowed Values</label>
+            <input type="text" class="rule-values" placeholder="ACTIVE, FROZEN, REVIEW" title="Comma-separated values">
+          </div>
+          <div>
+            <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Error Message</label>
+            <input type="text" class="rule-error-message" placeholder="Customer status is not eligible for this action">
+          </div>
+        </div>
+      </div>`;
+    refreshCrossEntityRuleRow(row, current, { preserveMissing: !!data });
+  } else {
+    // iso-4217, not-null — no extra fields
+    extrasDiv.innerHTML = `<span class="text-muted text-sm" style="padding:8px 0;display:block">No extra fields needed</span>`;
+  }
+
+  // Advisory inline warning: flag risky rule types on likely-generated ID fields.
+  checkGeneratedIdWarning(row);
+
+  if (type === 'cross-entity-exists') {
+    const targetEl = row.querySelector('.rule-target-entity');
+    if (targetEl && data?.target_entity) {
+      const knownTargets = Array.from(targetEl.options).map(o => o.value);
+      if (!knownTargets.includes(data.target_entity)) {
+        const opt = document.createElement('option');
+        opt.value = data.target_entity;
+        opt.textContent = `${data.target_entity} (saved)`;
+        targetEl.appendChild(opt);
+      }
+      targetEl.value = data.target_entity;
+    }
+    checkCrossEntityWarning(row);
+  }
+  updateKaRuleControls(row);
+}
+
+function getCardRules(card) {
+  const entity_name = card.dataset.entity;
+  const rules = [];
+  card.querySelectorAll('.rule-row').forEach(row => {
+    const field = row.querySelector('.rule-field')?.value?.trim();
+    const type = row.querySelector('.rule-type')?.value;
+    if (!type) return;
+    const entry = { field, type, values: [], value: null };
+
+    if (type === 'allowed-values') {
+      const raw = row.querySelector('.rule-values')?.value || '';
+      entry.values = raw.split(',').map(v => v.trim()).filter(Boolean);
+    } else if (['default', 'max-length', 'min-length', 'pattern'].includes(type)) {
+      entry.value = row.querySelector('.rule-single-value')?.value?.trim() || null;
+    } else if (type === 'range') {
+      entry.value  = row.querySelector('.rule-range-min')?.value?.trim() || null;  // min stored in value
+      const maxVal = row.querySelector('.rule-range-max')?.value?.trim();
+      entry.values = maxVal ? [maxVal] : [];  // max stored in values[0]
+    } else if (type === 'cross-entity-exists') {
+      entry.target_entity = row.querySelector('.rule-target-entity')?.value?.trim() || null;
+    } else if (type === 'field-comparison') {
+      entry.operator = row.querySelector('.rule-operator')?.value?.trim() || null;
+      entry.compare_to_field = row.querySelector('.rule-compare-field')?.value?.trim() || null;
+    } else if (type === 'cross-entity-field-check') {
+      entry.target_entity = row.querySelector('.rule-derived-target-entity')?.value?.trim() || null;
+      entry.target_field = row.querySelector('.rule-target-field')?.value?.trim() || null;
+      entry.operator = row.querySelector('.rule-operator')?.value?.trim() || null;
+      entry.expected_value = row.querySelector('.rule-expected-value')?.value?.trim() || null;
+      entry.error_message = row.querySelector('.rule-error-message')?.value?.trim() || null;
+    } else if (type === 'cross-entity-field-compare') {
+      entry.target_entity = row.querySelector('.rule-derived-target-entity')?.value?.trim() || null;
+      entry.target_field = row.querySelector('.rule-target-field')?.value?.trim() || null;
+      entry.source_field = row.querySelector('.rule-source-field')?.value?.trim() || null;
+      entry.operator = row.querySelector('.rule-operator')?.value?.trim() || null;
+      entry.error_message = row.querySelector('.rule-error-message')?.value?.trim() || null;
+    } else if (type === 'cross-entity-field-in') {
+      entry.target_entity = row.querySelector('.rule-derived-target-entity')?.value?.trim() || null;
+      entry.target_field = row.querySelector('.rule-target-field')?.value?.trim() || null;
+      const raw = row.querySelector('.rule-values')?.value || '';
+      entry.values = raw.split(',').map(v => v.trim()).filter(Boolean);
+      entry.error_message = row.querySelector('.rule-error-message')?.value?.trim() || null;
+    }
+    if (row.dataset.suggestionId) entry.suggestion_id = row.dataset.suggestionId;
+    if (row.dataset.suggestionType) entry.suggestion_type = row.dataset.suggestionType;
+    if (row.dataset.appliedBy) entry.applied_by = row.dataset.appliedBy;
+    if (row.dataset.appliedAt) entry.applied_at = row.dataset.appliedAt;
+    if (row.dataset.generatedByKa === 'true') entry.generated_by_ka = true;
+    if (row.dataset.kaReviewStatus) entry.ka_review_status = row.dataset.kaReviewStatus;
+    rules.push(entry);
+  });
+  return { entity_name, rules };
+}
+
+async function saveAll() {
+  const cards = document.querySelectorAll('.entity-rules-card');
+  const entity_rules = Array.from(cards).map(getCardRules);
+  const legacy_notes = document.getElementById('legacy-notes')?.value?.trim() || null;
+  const legacy_slug = document.getElementById('legacy-slug')?.value?.trim() || '';
+
+  const data = await postJSON('/rules/save', { entity_rules, legacy_notes, legacy_slug });
+  if (data.ok) {
+    showStatus('save-status', 'Rules saved.', 'success');
+    setTimeout(() => location.href = '/review', 600);
+  } else {
+    const errors = Array.isArray(data.errors) ? data.errors : [];
+    const msg = errors.length ? errors.join(' ') : 'Error saving rules.';
+    showStatus('save-status', msg, 'error');
+  }
+}
+
+let uxrSavedRuleSet = {{ focus_rule_set | tojson }};
+const uxrRuleFocusOriginalName = {{ focus_name | tojson }};
+let uxrRuleCleanSnapshot = null;
+let uxrSavedLegacyNotes = null;
+let uxrLegacyNotesConflict = null;
+let uxrRulePageDirtyTracker = null;
+
+function uxrLegacyNotesSnapshot() {
+  return {
+    legacy_notes: document.getElementById('legacy-notes')?.value || '',
+    legacy_slug: document.getElementById('legacy-slug')?.value || '',
+  };
+}
+
+function uxrRulePageDirtyState(card) {
+  return {
+    rule_set: !!card && JSON.stringify(getCardRules(card)) !== JSON.stringify(uxrRuleCleanSnapshot),
+    legacy_notes: !!uxrSavedLegacyNotes && JSON.stringify(uxrLegacyNotesSnapshot()) !== JSON.stringify(uxrSavedLegacyNotes),
+  };
+}
+
+function uxrUpdateRuleSourceVersion(version) {
+  if (!version) return;
+  const editor = document.querySelector('[data-uxr-focus-editor]');
+  const notes = document.querySelector('[data-uxr-legacy-notes]');
+  if (editor) editor.dataset.sourceOfTruthVersion = version;
+  if (notes && !uxrLegacyNotesConflict) notes.dataset.sourceOfTruthVersion = version;
+}
+
+function uxrShowLegacyNotesConflict(data) {
+  const notes = document.querySelector('[data-uxr-legacy-notes]');
+  const panel = notes?.querySelector('[data-uxr-legacy-notes-conflict]');
+  if (!notes || !panel) return;
+  uxrLegacyNotesConflict = data;
+  panel.classList.remove('hidden');
+  panel.querySelector('[data-uxr-legacy-notes-conflict-message]').textContent = data.error || 'Saved legacy notes changed.';
+  panel.querySelector('[data-uxr-legacy-notes-conflict-server-state]').textContent = JSON.stringify({
+    legacy_slug: data.legacy_slug || '',
+    legacy_notes: data.legacy_notes || '',
+  }, null, 2);
+}
+
+function uxrResolveLegacyNotesConflict(useServer) {
+  const data = uxrLegacyNotesConflict;
+  const notes = document.querySelector('[data-uxr-legacy-notes]');
+  if (!data || !notes) return;
+  if (useServer) {
+    const slug = document.getElementById('legacy-slug');
+    const text = document.getElementById('legacy-notes');
+    if (slug) slug.value = data.legacy_slug || '';
+    if (text) text.value = data.legacy_notes || '';
+    uxrSavedLegacyNotes = uxrLegacyNotesSnapshot();
+  } else {
+    uxrSavedLegacyNotes = {
+      legacy_notes: data.legacy_notes || '',
+      legacy_slug: data.legacy_slug || '',
+    };
+  }
+  notes.dataset.sourceOfTruthVersion = data.source_of_truth_version;
+  notes.querySelector('[data-uxr-legacy-notes-conflict]')?.classList.add('hidden');
+  uxrLegacyNotesConflict = null;
+  const saveButton = notes.querySelector('[data-uxr-save-legacy-notes]');
+  if (saveButton) saveButton.disabled = false;
+  showStatus(
+    'save-status',
+    useServer
+      ? 'Current saved legacy notes loaded.'
+      : 'Draft retained. Review it before saving against the current version.',
+    useServer ? 'success' : 'warn',
+  );
+}
+
+function uxrRuleGroupForState(state) {
+  if (state === 'needs_action' || state === 'blocks_export') return 'attention';
+  if (state === 'warning') return 'review';
+  return 'ready';
+}
+
+function uxrRuleGroupContainer(card, fieldName) {
+  return Array.from(card.querySelectorAll('[data-rule-field]'))
+    .find(group => group.dataset.ruleField === fieldName)
+    ?.querySelector('.rules-list-container') || null;
+}
+
+function uxrMoveRulesIntoFieldGroups(card) {
+  Array.from(card.querySelectorAll('.rule-row')).forEach(row => {
+    const fieldName = row.querySelector('.rule-field')?.value?.trim() || '';
+    const target = uxrRuleGroupContainer(card, fieldName);
+    if (target && row.parentElement !== target) target.appendChild(row);
+  });
+}
+
+function uxrRenderSavedRuleSet(ruleSet) {
+  const card = document.querySelector('.entity-rules-card[data-entity]');
+  if (!card || !ruleSet) return;
+  card.querySelectorAll('.rule-row').forEach(row => row.remove());
+  const fallback = card.querySelector('.rules-list-container');
+  (ruleSet.rules || []).forEach(rule => {
+    const container = uxrRuleGroupContainer(card, rule.field) || fallback;
+    if (container) addRuleRowEl(container, rule);
+  });
+  uxrMoveRulesIntoFieldGroups(card);
+  refreshCrossEntityRuleRows(card);
+}
+
+function uxrRuleStateLabel(state) {
+  if (state === 'needs_action' || state === 'blocks_export') return 'Needs action';
+  if (state === 'warning') return 'Review';
+  return 'Ready';
+}
+
+function uxrRenderRuleReadiness(readiness) {
+  const banner = document.querySelector('[data-uxr-editor-banner]');
+  if (!banner || !readiness) return;
+  banner.dataset.state = readiness.state;
+  banner.className = `alert ${readiness.state === 'ready' ? 'alert-success' : 'alert-warn'}`;
+  const label = banner.querySelector('strong');
+  if (label) label.textContent = uxrRuleStateLabel(readiness.state);
+  const copy = banner.querySelector('[data-uxr-editor-banner-copy]');
+  const ref = readiness.blockers?.[0] || readiness.warnings?.[0];
+  if (copy) copy.textContent = ref?.label || 'This rule-set is ready.';
+  uxrRenderRuleBadges([...(readiness.blockers || []), ...(readiness.warnings || [])]);
+}
+
+function uxrFocusRuleRef(ref) {
+  const section = ref?.section_ref
+    ? document.getElementById(ref.section_ref)
+    : document.querySelector('[data-uxr-focus-editor]');
+  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!ref?.field_ref) return;
+  const group = Array.from(document.querySelectorAll('[data-rule-field]'))
+    .find(candidate => candidate.dataset.ruleField === ref.field_ref);
+  const target = group?.querySelector('.rule-field, .rule-type, input, select, button');
+  target?.focus({ preventScroll: true });
+}
+
+function uxrRenderRuleBadges(refs) {
+  const container = document.querySelector('[data-uxr-tab-badges]');
+  if (!container) return;
+  container.replaceChildren();
+  refs.forEach(ref => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'badge badge-warning';
+    button.dataset.sectionRef = ref.section_ref || 'rules';
+    button.dataset.fieldRef = ref.field_ref || '';
+    button.textContent = ref.label || 'Review rule';
+    button.addEventListener('click', () => uxrFocusRuleRef(ref));
+    container.appendChild(button);
+  });
+}
+
+function uxrRenderRuleSaveBlockers(blockers) {
+  const refs = Array.isArray(blockers) ? blockers : [];
+  uxrRenderRuleBadges(refs);
+  if (refs[0]) uxrFocusRuleRef(refs[0]);
+}
+
+function uxrEnsureRuleBoardGroup(board, key) {
+  const existing = board.querySelector(`.uxr-board-group[data-uxr-group="${key}"]`);
+  if (existing) return existing;
+  const heading = document.createElement('div');
+  heading.className = key === 'attention'
+    ? 'uxr-board-group uxr-board-group-attn'
+    : 'uxr-board-group';
+  heading.dataset.uxrGroup = key;
+  heading.textContent = key === 'attention' ? 'Needs action' : key === 'review' ? 'Needs review' : 'Ready';
+  const order = ['attention', 'review', 'ready'];
+  const before = order.slice(order.indexOf(key) + 1)
+    .map(group => board.querySelector(`.uxr-board-group[data-uxr-group="${group}"]`))
+    .find(Boolean);
+  board.insertBefore(heading, before || null);
+  return heading;
+}
+
+function uxrRegroupRuleBoardRow(row) {
+  const board = row.closest('[data-uxr-board="rules"]');
+  if (!board) return;
+  const target = uxrRuleGroupForState(row.dataset.uxrRowState || '');
+  let anchor = uxrEnsureRuleBoardGroup(board, target);
+  while (anchor.nextElementSibling?.classList.contains('uxr-board-row')) {
+    anchor = anchor.nextElementSibling;
+  }
+  anchor.after(row);
+}
+
+function uxrRuleCounts() {
+  const rows = Array.from(document.querySelectorAll('[data-uxr-board="rules"] .uxr-board-row'));
+  return {
+    total: rows.length,
+    ready: rows.filter(row => row.dataset.uxrRowState === 'ready').length,
+    attention: rows.filter(row => ['needs_action', 'blocks_export'].includes(row.dataset.uxrRowState)).length,
+    review: rows.filter(row => row.dataset.uxrRowState === 'warning').length,
+  };
+}
+
+function uxrSyncRuleStatsAndChips() {
+  const counts = uxrRuleCounts();
+  Object.entries(counts).forEach(([key, value]) => {
+    document.querySelectorAll(`[data-uxr-stat="${key}"]`).forEach(el => { el.textContent = String(value); });
+  });
+  const filters = document.querySelector('[data-uxr-board="rules"] .uxr-board-filters');
+  if (!filters) return;
+  const specs = [
+    { key: 'attention', label: 'Needs action' },
+    { key: 'review', label: 'Needs review' },
+    { key: 'ready', label: 'Ready' },
+  ];
+  let previous = filters.querySelector('[data-uxr-filter="state:all"]');
+  specs.forEach(spec => {
+    let chip = filters.querySelector(`[data-uxr-filter="state:${spec.key}"]`);
+    const value = counts[spec.key];
+    if (!value) {
+      if (chip) {
+        const active = chip.classList.contains('is-on');
+        chip.remove();
+        if (active) {
+          const all = filters.querySelector('[data-uxr-filter="state:all"]');
+          all?.classList.add('is-on');
+          all?.setAttribute('aria-pressed', 'true');
+        }
+      }
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'uxr-chip';
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.uxrFilter = `state:${spec.key}`;
+      chip.append(`${spec.label} · `);
+      const count = document.createElement('span');
+      count.className = 'uxr-chip-count';
+      chip.appendChild(count);
+      previous?.after(chip);
+    }
+    chip.querySelector('.uxr-chip-count').textContent = String(value);
+    previous = chip;
+  });
+}
+
+function uxrApplyRuleBoardFilter(filter = 'state:all') {
+  document.querySelectorAll('[data-uxr-board="rules"] .uxr-board-row').forEach(row => {
+    const state = row.dataset.uxrRowState || '';
+    const visible = filter === 'state:all'
+      || (filter === 'state:attention' && ['needs_action', 'blocks_export'].includes(state))
+      || (filter === 'state:review' && state === 'warning')
+      || (filter === 'state:ready' && state === 'ready');
+    row.classList.toggle('hidden', !visible);
+  });
+  document.querySelectorAll('[data-uxr-board="rules"] .uxr-board-group').forEach(heading => {
+    let next = heading.nextElementSibling;
+    let hasVisible = false;
+    while (next?.classList.contains('uxr-board-row')) {
+      hasVisible ||= !next.classList.contains('hidden');
+      next = next.nextElementSibling;
+    }
+    heading.classList.toggle('hidden', !hasVisible);
+  });
+}
+
+function uxrUpdateRuleBoardRow(readiness, boardMetadata, previousName) {
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(previousName)}"]`);
+  if (!row) return;
+  row.dataset.uxrRowName = readiness.display_name;
+  row.dataset.uxrRowState = readiness.state;
+  row.querySelector('.uxr-board-row-name').textContent = readiness.display_name;
+  const badge = row.querySelector('.uxr-board-row-right .badge');
+  if (badge) {
+    badge.className = `badge badge-${readiness.state === 'ready' ? 'ready' : 'warning'}`;
+    badge.textContent = uxrRuleStateLabel(readiness.state);
+  }
+  const edit = row.querySelector('[data-uxr-edit-target]');
+  if (edit) {
+    edit.dataset.uxrEditTarget = readiness.display_name;
+    edit.href = `/rules?focus=${encodeURIComponent(readiness.display_name)}`;
+  }
+  const facts = row.querySelector('[data-uxr-rule-facts]');
+  if (facts) {
+    facts.replaceChildren(document.createTextNode(`${boardMetadata.rule_count} rule${boardMetadata.rule_count === 1 ? '' : 's'}`));
+    if (boardMetadata.file_path) {
+      facts.append(document.createTextNode(' · '));
+      const code = document.createElement('code');
+      code.textContent = boardMetadata.file_path;
+      facts.appendChild(code);
+    }
+  }
+  const tags = row.querySelector('[data-uxr-rule-tags]');
+  if (tags) {
+    tags.replaceChildren();
+    const values = [
+      [`${boardMetadata.fields_complete}/${boardMetadata.fields_total} fields`, true],
+      [`SPEC-DERIVED · ${boardMetadata.spec_derived}`, boardMetadata.spec_derived],
+      [`MANUAL · ${boardMetadata.manual}`, boardMetadata.manual],
+      [`KA-APPLIED · ${boardMetadata.ka_applied}`, boardMetadata.ka_applied],
+      [`${boardMetadata.advisory_count} ${boardMetadata.advisory_count === 1 ? 'advisory' : 'advisories'}`, boardMetadata.advisory_count],
+    ];
+    values.filter(([, visible]) => visible).forEach(([text]) => {
+      const tag = document.createElement('span');
+      tag.className = 'uxr-board-tag';
+      tag.textContent = text;
+      tags.appendChild(tag);
+    });
+    const cap = document.createElement('span');
+    cap.className = 'uxr-board-cap';
+    cap.textContent = 'MANIFEST REF';
+    tags.appendChild(cap);
+  }
+  row.querySelectorAll('.uxr-board-row-blocker, .uxr-board-row-warning').forEach(el => el.remove());
+  const ref = readiness.blockers?.[0] || readiness.warnings?.[0];
+  if (ref) {
+    const detail = document.createElement('div');
+    detail.className = readiness.state === 'warning' ? 'uxr-board-row-warning' : 'uxr-board-row-blocker';
+    detail.textContent = ref.label;
+    row.querySelector('.uxr-board-row-main')?.appendChild(detail);
+  }
+  uxrRegroupRuleBoardRow(row);
+  uxrSyncRuleStatsAndChips();
+  const active = document.querySelector('[data-uxr-board="rules"] [data-uxr-filter].is-on')?.dataset.uxrFilter || 'state:all';
+  uxrApplyRuleBoardFilter(active);
+}
+
+function uxrUpdateRuleAmbientAndRail(data) {
+  const stepSix = data.step_counts?.['6'] || data.step_counts?.[6];
+  if (stepSix) {
+    document.querySelectorAll('[data-uxr-stat="total"]').forEach(el => { el.textContent = String(stepSix.count); });
+    document.querySelectorAll('[data-uxr-stat="attention"]').forEach(el => { el.textContent = String(stepSix.attention); });
+  }
+  (data.rail || []).forEach(entry => {
+    const link = Array.from(document.querySelectorAll('.wizard-nav-link')).find(candidate => (
+      candidate.querySelector('.wizard-nav-marker')?.textContent?.trim() === String(entry.step)
+    ));
+    if (!link) return;
+    let chip = link.querySelector('.uxr-rail-chip');
+    if (!entry.count) {
+      chip?.remove();
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('span');
+      chip.className = 'badge uxr-rail-chip';
+      link.querySelector('.wizard-nav-copy')?.appendChild(chip);
+    }
+    chip.textContent = entry.attention ? `${entry.count} · ${entry.attention} need action` : `${entry.count} items`;
+  });
+}
+
+function uxrShowRuleConflict(data) {
+  const panel = document.querySelector('[data-uxr-conflict-review]');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  panel.querySelector('[data-uxr-conflict-message]').textContent = data.error || 'Saved state changed.';
+  panel.querySelector('[data-uxr-conflict-server-state]').textContent = JSON.stringify(data.item, null, 2);
+  const list = panel.querySelector('[data-uxr-conflict-current-list]');
+  if (list && data.current_items?.length) {
+    list.textContent = `Current rule-sets: ${data.current_items.map(item => item.name).join(', ')}`;
+    list.classList.remove('hidden');
+  }
+  uxrUpdateRuleSourceVersion(data.source_of_truth_version);
+}
+
+async function uxrSaveFocusedRuleSet() {
+  const editor = document.querySelector('[data-uxr-focus-editor]');
+  const card = editor?.querySelector('.entity-rules-card');
+  const button = document.querySelector('[data-uxr-save-one]');
+  if (!editor || !card || !button) return;
+  button.disabled = true;
+  const originalLabel = button.textContent;
+  button.textContent = 'Saving…';
+  try {
+    const data = await postJSON('/rules/save-one', {
+      item: getCardRules(card),
+      original_name: uxrRuleFocusOriginalName,
+      source_of_truth_version: editor.dataset.sourceOfTruthVersion,
+    });
+    if (!data.ok) {
+      if (data.source_of_truth_version) uxrShowRuleConflict(data);
+      else uxrRenderRuleSaveBlockers(data.blockers || []);
+      showStatus('save-status', data.error || data.blockers?.[0]?.label || 'Rule-set was not saved.', 'error');
+      return;
+    }
+    uxrSavedRuleSet = JSON.parse(JSON.stringify(data.item));
+    uxrRuleCleanSnapshot = getCardRules(card);
+    uxrUpdateRuleSourceVersion(data.source_of_truth_version);
+    uxrRenderRuleReadiness(data.readiness);
+    uxrUpdateRuleBoardRow(data.readiness, data.board_metadata, uxrRuleFocusOriginalName);
+    (data.affected_readiness || []).forEach(readiness => {
+      uxrUpdateRuleBoardRow(
+        readiness,
+        data.affected_board_metadata?.[readiness.display_name] || {},
+        readiness.display_name,
+      );
+    });
+    uxrUpdateRuleAmbientAndRail(data);
+    showStatus('save-status', 'Rule-set saved.', 'success');
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
+}
+
+async function uxrSaveLegacyNotes() {
+  const notes = document.querySelector('[data-uxr-legacy-notes]');
+  const button = notes?.querySelector('[data-uxr-save-legacy-notes]');
+  if (!notes || !button) return;
+  button.disabled = true;
+  const originalLabel = button.textContent;
+  button.textContent = 'Saving…';
+  try {
+    const snapshot = uxrLegacyNotesSnapshot();
+    const data = await postJSON('/rules/legacy-notes/save', {
+      ...snapshot,
+      source_of_truth_version: notes.dataset.sourceOfTruthVersion,
+    });
+    if (!data.ok) {
+      if (data.source_of_truth_version && 'legacy_notes' in data) {
+        uxrShowLegacyNotesConflict(data);
+      }
+      showStatus('save-status', data.error || 'Legacy notes were not saved.', 'error');
+      return;
+    }
+    const slug = document.getElementById('legacy-slug');
+    const text = document.getElementById('legacy-notes');
+    if (slug) slug.value = data.legacy_slug || '';
+    if (text) text.value = data.legacy_notes || '';
+    uxrSavedLegacyNotes = uxrLegacyNotesSnapshot();
+    uxrLegacyNotesConflict = null;
+    notes.querySelector('[data-uxr-legacy-notes-conflict]')?.classList.add('hidden');
+    uxrUpdateRuleSourceVersion(data.source_of_truth_version);
+    showStatus('save-status', 'Legacy notes saved.', 'success');
+  } finally {
+    button.disabled = Boolean(uxrLegacyNotesConflict);
+    button.textContent = originalLabel;
+  }
+}
+
+function uxrInitRulesBoard() {
+  const board = document.querySelector('[data-uxr-board="rules"]');
+  if (!board) return;
+  document.querySelectorAll('[data-uxr-edit-target]').forEach(button => {
+    button.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      event.preventDefault();
+      const buttons = Array.from(document.querySelectorAll(
+        '.uxr-board-row:not(.hidden) [data-uxr-edit-target]',
+      ));
+      const offset = event.key === 'ArrowDown' ? 1 : -1;
+      buttons[(buttons.indexOf(button) + offset + buttons.length) % buttons.length]?.focus();
+    });
+  });
+  board.addEventListener('click', event => {
+    const chip = event.target.closest('[data-uxr-filter]');
+    if (!chip) return;
+    board.querySelectorAll('[data-uxr-filter]').forEach(candidate => {
+      const active = candidate === chip;
+      candidate.classList.toggle('is-on', active);
+      candidate.setAttribute('aria-pressed', String(active));
+    });
+    uxrApplyRuleBoardFilter(chip.dataset.uxrFilter);
+  });
+}
+
+// PR-20: allowed-values paste (preview + apply + undo-last). Purely
+// client-side -- Apply writes the comma-joined union into the same
+// `.rule-values` input the unchanged save path already reads (see
+// snapshotRuleRow/getCardRules above), so a pasted-then-applied value is
+// indistinguishable, server-side, from one that was hand-typed.
+function uxrAllowedValuesFromInput(input) {
+  return (input?.value || '').split(',').map(value => value.trim()).filter(Boolean);
+}
+
+function uxrSetRuleValuesAndNotify(input, value) {
+  input.value = value;
+  // Flag this dispatch as synthetic so the hand-edit-clears-undo listener
+  // below doesn't treat our own Apply/Undo write as a manual edit.
+  input.dataset.uxrAvSynthetic = 'true';
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  delete input.dataset.uxrAvSynthetic;
+}
+
+function uxrRenderAllowedValuesPaste(extrasDiv) {
+  extrasDiv.insertAdjacentHTML('beforeend', `
+    <div class="uxr-av-paste">
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-av-paste-toggle aria-expanded="false">Paste values</button>
+        <button type="button" class="btn btn-secondary btn-sm hidden" data-uxr-av-undo>Undo paste</button>
+      </div>
+      <div class="uxr-seedbox uxr-zone-derived hidden" data-uxr-av-panel>
+        <div class="uxr-seedhd"><strong>Paste allowed values</strong><p>Split on commas, new lines, semicolons, or tabs. The preview merges with the current values &mdash; nothing is written until Apply.</p></div>
+        <div style="padding:9px 12px">
+          <label class="text-muted text-sm" style="display:block;margin-bottom:4px">Values to add</label>
+          <textarea data-uxr-av-textarea rows="3" placeholder="e.g. CHQ, SAV, CUR" aria-label="Values to add"></textarea>
+          <p class="text-sm" data-uxr-av-summary style="margin:8px 0 4px"></p>
+          <div data-uxr-av-preview style="display:flex;flex-wrap:wrap;gap:4px"></div>
+        </div>
+        <div class="uxr-seed-actions" style="display:flex;gap:8px">
+          <button type="button" class="btn btn-primary btn-sm" data-uxr-av-apply disabled>Apply</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-uxr-av-cancel>Cancel</button>
+        </div>
+      </div>
+    </div>`);
+}
+
+// Resolves every control for the row a paste-affordance click/input came
+// from. Rows (and their `.rule-extras`) are rebuilt/moved by addRuleRowEl,
+// updateExtras, and uxrMoveRulesIntoFieldGroups, so nothing here may be
+// cached across calls -- always re-queried from the event target up.
+function uxrAllowedValuesPasteRefs(node) {
+  const wrap = node.closest('.uxr-av-paste');
+  const row = wrap?.closest('.rule-row');
+  if (!wrap || !row) return null;
+  return {
+    wrap,
+    row,
+    valuesInput: row.querySelector('.rule-values'),
+    toggle: wrap.querySelector('[data-uxr-av-paste-toggle]'),
+    undoBtn: wrap.querySelector('[data-uxr-av-undo]'),
+    panel: wrap.querySelector('[data-uxr-av-panel]'),
+    textarea: wrap.querySelector('[data-uxr-av-textarea]'),
+    summary: wrap.querySelector('[data-uxr-av-summary]'),
+    preview: wrap.querySelector('[data-uxr-av-preview]'),
+    applyBtn: wrap.querySelector('[data-uxr-av-apply]'),
+  };
+}
+
+function uxrAllowedValuesPasteUnion(refs) {
+  const current = uxrAllowedValuesFromInput(refs.valuesInput);
+  const pasted = parseAllowedValuesPaste(refs.textarea.value);
+  return { current, pasted, ...unionAllowedValuesPaste(current, pasted) };
+}
+
+function uxrOpenAllowedValuesPastePanel(refs) {
+  refs.panel.classList.remove('hidden');
+  refs.toggle.setAttribute('aria-expanded', 'true');
+  refs.textarea.value = '';
+  uxrRenderAllowedValuesPreview(refs);
+  refs.textarea.focus();
+}
+
+function uxrCloseAllowedValuesPastePanel(refs) {
+  refs.panel.classList.add('hidden');
+  refs.toggle.setAttribute('aria-expanded', 'false');
+  refs.toggle.focus();
+}
+
+// Preview is always a union: existing values are never dropped, only ever
+// added to. "new" is written as text on the chip itself (never colour-only)
+// so the distinction survives without relying on the tag's tint.
+function uxrRenderAllowedValuesPreview(refs) {
+  const { union, added, alreadyPresent, pasted } = uxrAllowedValuesPasteUnion(refs);
+
+  refs.summary.textContent = pasted.length
+    ? `${added.length} to add · ${alreadyPresent} already present · ${union.length} total`
+    : 'Paste values above to preview the merged result.';
+
+  refs.preview.replaceChildren();
+  union.forEach(value => {
+    const chip = document.createElement('span');
+    chip.className = 'uxr-board-tag';
+    chip.textContent = added.includes(value) ? `${value} · new` : value;
+    refs.preview.appendChild(chip);
+  });
+
+  refs.applyBtn.disabled = added.length === 0;
+}
+
+function uxrApplyAllowedValuesPaste(refs) {
+  const { union, added } = uxrAllowedValuesPasteUnion(refs);
+  if (!added.length) return;
+  const previous = refs.valuesInput.value;
+  uxrSetRuleValuesAndNotify(refs.valuesInput, union.join(', '));
+  refs.row.dataset.uxrAvUndoValue = previous;
+  refs.undoBtn.classList.remove('hidden');
+  uxrCloseAllowedValuesPastePanel(refs);
+}
+
+function uxrUndoAllowedValuesPaste(refs) {
+  if (refs.row.dataset.uxrAvUndoValue === undefined) return;
+  uxrSetRuleValuesAndNotify(refs.valuesInput, refs.row.dataset.uxrAvUndoValue);
+  delete refs.row.dataset.uxrAvUndoValue;
+  refs.undoBtn.classList.add('hidden');
+}
+
+function uxrInitFocusedRuleSet() {
+  const editor = document.querySelector('[data-uxr-focus-editor]');
+  const card = editor?.querySelector('.entity-rules-card');
+  if (!editor || !card || !uxrSavedRuleSet) return;
+  uxrMoveRulesIntoFieldGroups(card);
+  uxrRuleCleanSnapshot = getCardRules(card);
+  document.querySelector('[data-uxr-save-one]')?.addEventListener('click', uxrSaveFocusedRuleSet);
+  document.querySelector('[data-uxr-cancel-focus]')?.addEventListener('click', () => {
+    uxrRenderSavedRuleSet(uxrSavedRuleSet);
+    uxrRuleCleanSnapshot = getCardRules(card);
+    showStatus('save-status', 'Unsaved rule-set changes were discarded.', 'success');
+  });
+  editor.addEventListener('click', event => {
+    const addRule = event.target.closest('[data-uxr-add-field-rule]');
+    if (addRule) {
+      const container = uxrRuleGroupContainer(card, addRule.dataset.field);
+      if (container) addRuleRowEl(container, { field: addRule.dataset.field, type: 'allowed-values', applied_by: 'manual' });
+      return;
+    }
+    const addPrerequisite = event.target.closest('[data-uxr-add-prerequisite]');
+    if (addPrerequisite) {
+      const container = uxrRuleGroupContainer(card, addPrerequisite.dataset.field);
+      if (container) addRuleRowEl(container, {
+        field: addPrerequisite.dataset.field,
+        type: 'cross-entity-exists',
+        target_entity: addPrerequisite.dataset.target || null,
+        applied_by: 'manual',
+      });
+      return;
+    }
+    const pasteToggle = event.target.closest('[data-uxr-av-paste-toggle]');
+    if (pasteToggle) {
+      const refs = uxrAllowedValuesPasteRefs(pasteToggle);
+      if (refs) {
+        if (refs.panel.classList.contains('hidden')) uxrOpenAllowedValuesPastePanel(refs);
+        else uxrCloseAllowedValuesPastePanel(refs);
+      }
+      return;
+    }
+    const pasteCancel = event.target.closest('[data-uxr-av-cancel]');
+    if (pasteCancel) {
+      const refs = uxrAllowedValuesPasteRefs(pasteCancel);
+      if (refs) uxrCloseAllowedValuesPastePanel(refs);
+      return;
+    }
+    const pasteApply = event.target.closest('[data-uxr-av-apply]');
+    if (pasteApply) {
+      if (!pasteApply.disabled) {
+        const refs = uxrAllowedValuesPasteRefs(pasteApply);
+        if (refs) uxrApplyAllowedValuesPaste(refs);
+      }
+      return;
+    }
+    const pasteUndo = event.target.closest('[data-uxr-av-undo]');
+    if (pasteUndo) {
+      const refs = uxrAllowedValuesPasteRefs(pasteUndo);
+      if (refs) uxrUndoAllowedValuesPaste(refs);
+    }
+  });
+  editor.addEventListener('input', event => {
+    const textarea = event.target.closest('[data-uxr-av-textarea]');
+    if (textarea) {
+      const refs = uxrAllowedValuesPasteRefs(textarea);
+      if (refs) uxrRenderAllowedValuesPreview(refs);
+      return;
+    }
+    // A hand edit to the values input (typing, native paste, etc.) retires
+    // any pending undo for this row -- undo must never restore over a value
+    // the author has since deliberately changed themselves.
+    const valuesInput = event.target.closest('.rule-values');
+    if (valuesInput && !valuesInput.dataset.uxrAvSynthetic) {
+      const row = valuesInput.closest('.rule-row');
+      if (row && row.dataset.uxrAvUndoValue !== undefined) {
+        delete row.dataset.uxrAvUndoValue;
+        row.querySelector('[data-uxr-av-undo]')?.classList.add('hidden');
+      }
+      // The preview is a union against the *current* values, and Apply
+      // recomputes that union live at click time. So a hand edit while the
+      // panel is open must refresh the preview -- otherwise it keeps promising
+      // a merge (counts + chips + Apply-enabled state) that no longer matches
+      // what Apply would commit.
+      const pasteWrap = row?.querySelector('.uxr-av-paste');
+      if (pasteWrap) {
+        const refs = uxrAllowedValuesPasteRefs(pasteWrap);
+        if (refs && !refs.panel.classList.contains('hidden')) {
+          uxrRenderAllowedValuesPreview(refs);
+        }
+      }
+    }
+  });
+  editor.querySelector('[data-uxr-tab-badges]')?.addEventListener('click', event => {
+    const badge = event.target.closest('[data-field-ref], [data-section-ref]');
+    if (badge) uxrFocusRuleRef({ field_ref: badge.dataset.fieldRef, section_ref: badge.dataset.sectionRef });
+  });
+  document.querySelector('[data-uxr-conflict-reload]')?.addEventListener('click', () => window.location.reload());
+  document.querySelector('[data-uxr-conflict-board]')?.addEventListener('click', () => { window.location.href = '/rules'; });
+}
+
+function uxrInitLegacyNotes() {
+  const notes = document.querySelector('[data-uxr-legacy-notes]');
+  if (!notes) return;
+  uxrSavedLegacyNotes = uxrLegacyNotesSnapshot();
+  notes.querySelector('[data-uxr-save-legacy-notes]')?.addEventListener('click', uxrSaveLegacyNotes);
+  notes.querySelector('[data-uxr-legacy-notes-use-server]')?.addEventListener('click', () => uxrResolveLegacyNotesConflict(true));
+  notes.querySelector('[data-uxr-legacy-notes-keep-draft]')?.addEventListener('click', () => uxrResolveLegacyNotesConflict(false));
+}
+
+function uxrInitRulePageDirtyState() {
+  const card = document.querySelector('[data-uxr-focus-editor] .entity-rules-card');
+  if (!card && !uxrSavedLegacyNotes) return;
+  uxrRulePageDirtyTracker = window.createDirtyTracker({
+    snapshot: () => uxrRulePageDirtyState(card),
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  uxrInitRulesBoard();
+  uxrInitFocusedRuleSet();
+  uxrInitLegacyNotes();
+  uxrInitRulePageDirtyState();
+});
+</script>
+{% endblock %}

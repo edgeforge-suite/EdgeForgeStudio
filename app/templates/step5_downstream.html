@@ -1,0 +1,2504 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 5: Downstream Interfaces{% endblock %}
+
+{% block content %}
+{# mirrors readiness_view._FAMILY_BY_CONTRACT_TYPE — keep in sync if that map changes #}
+{% set uxr_family_by_type = {'file-fixed-width': 'fixed', 'file-csv': 'csv', 'xml-xsd': 'xml', 'soap-wsdl': 'soap'} %}
+{% set uxr_family_mono = {'rest': 'REST', 'fixed': 'FIX', 'csv': 'CSV', 'xml': 'XML', 'soap': 'SOAP', 'staging': 'STG'} %}
+{% set uxr_family_label = {'rest': 'REST', 'fixed': 'Fixed-width file', 'csv': 'CSV / delimited file', 'xml': 'XML / XSD', 'soap': 'SOAP / WSDL', 'staging': 'Staging / Handoff'} %}
+<div class="card workflow-surface-group">
+  <h2>Step 5: Downstream Interfaces</h2>
+  <p class="subtitle">Define downstream edge contracts. Choose the contract type first, then author fixed-width layouts or save reviewed file/XML/SOAP references.</p>
+
+  <div id="save-status" class="alert hidden" role="status" aria-live="polite"></div>
+
+  {% set uxr_ds_items = downstream_readiness_items %}
+  {% set uxr_ds_attn = uxr_ds_items | selectattr('state', 'in', ['blocks_export', 'needs_action']) | list %}
+  {% set uxr_ds_warning = uxr_ds_items | selectattr('state', 'equalto', 'warning') | list %}
+  {% set uxr_ds_ready_or_draft = uxr_ds_items | selectattr('state', 'in', ['ready', 'draft']) | list %}
+  {% set uxr_ds_ready_count = uxr_ds_items | selectattr('state', 'equalto', 'ready') | list | length %}
+  {% set uxr_ds_blockers_count = uxr_ds_items | selectattr('state', 'equalto', 'blocks_export') | list | length %}
+  {% set uxr_ds_total = uxr_ds_items | length %}
+  {# PR-24 folds the desktop split into focused routes. CSS hides the board
+     below 1200px to preserve the full-page narrow fallback. #}
+  {% set uxr_split_focus = true if focus_name else false %}
+  {% set uxr_show_board = true if uxr_ds_total else false %}
+
+  {% macro uxr_ds_row(item, artifact_paths, family_facts) %}
+  {% set uxr_artifact_path = artifact_paths.get(item.display_name) %}
+  {% set uxr_family_fact = family_facts.get(item.display_name) %}
+  <div class="uxr-board-row{{ ' is-editing' if (uxr_split_focus and item.display_name == focus_name) else '' }}" data-uxr-row-name="{{ item.display_name }}" data-uxr-row-state="{{ item.state }}" data-uxr-row-family="{{ item.family }}">
+    <span class="uxr-fam-tile uxr-fam-{{ item.family }}" aria-label="{{ uxr_family_label[item.family] }}">{{ uxr_family_mono[item.family] }}</span>
+    <div class="uxr-board-row-main">
+      <div class="uxr-board-row-name">{{ item.display_name }}</div>
+      {% if uxr_artifact_path or uxr_family_fact %}
+      <div class="uxr-board-row-meta">
+        {% if uxr_artifact_path %}<code>{{ uxr_artifact_path }}</code>{% endif %}
+        {% if uxr_artifact_path and uxr_family_fact %} &middot; {% endif %}
+        {% if uxr_family_fact %}{{ uxr_family_fact }}{% endif %}
+      </div>
+      {% endif %}
+      {% if item.coverage %}
+      <div class="uxr-board-row-tags">
+        {% for cov in item.coverage %}<span class="uxr-board-tag">{{ cov.complete }}/{{ cov.total }} {{ cov.label | lower }}</span>{% endfor %}
+        <span class="uxr-board-cap">{{ 'MANIFEST REF' if item.capability == 'manifest_reference' else ('ENTITY-POPULATING' if item.capability == 'populates_entities' else 'METADATA ONLY') }}</span>
+      </div>
+      {% endif %}
+      {% if item.state in ['blocks_export', 'needs_action'] and item.blockers %}
+      <div class="uxr-board-row-blocker">{{ item.blockers[0].label }}</div>
+      {% elif item.state == 'warning' and item.warnings %}
+      <div class="uxr-board-row-warning">{{ item.warnings[0].label | replace('uploaded artifact content', 'pasted artifact content') }}</div>
+      {% endif %}
+    </div>
+    <div class="uxr-board-row-right">
+      <span class="badge badge-{{ 'ready' if item.state == 'ready' else ('draft' if item.state == 'draft' else 'warning') }}">{{ 'Ready' if item.state == 'ready' else ('Draft' if item.state == 'draft' else ('Blocked' if item.state == 'blocks_export' else ('Needs action' if item.state == 'needs_action' else 'Review'))) }}</span>
+      <a href="/downstream?focus={{ item.display_name | urlencode }}" class="uxr-board-edit-btn" data-uxr-edit-target="{{ item.display_name }}">Edit</a>
+    </div>
+  </div>
+  {% endmacro %}
+
+  {# Two-column wrappers exist only in focus mode; board-only mode stays flat. #}
+  {% if uxr_split_focus %}<div class="uxr-focus-split" data-uxr-split="true"><div class="uxr-focus-split-board">{% endif %}
+  {% if uxr_show_board %}
+  <div class="uxr-stat-strip {{ 'uxr-zone-attn' if uxr_ds_attn else 'uxr-zone-ready' }}" data-uxr-stat-strip>
+    <span><strong data-uxr-stat="total">{{ uxr_ds_total }}</strong> downstream contract{{ 's' if uxr_ds_total != 1 }}</span>
+    <span><strong data-uxr-stat="ready">{{ uxr_ds_ready_count }}</strong> ready</span>
+    <span><strong data-uxr-stat="attention">{{ uxr_ds_attn | length }}</strong> need action</span>
+    {% if uxr_ds_warning %}<span><strong data-uxr-stat="review">{{ uxr_ds_warning | length }}</strong> need review</span>{% endif %}
+    {% if uxr_ds_blockers_count %}<span><strong data-uxr-stat="blockers">{{ uxr_ds_blockers_count }}</strong> export blocker{{ 's' if uxr_ds_blockers_count != 1 }}</span>{% endif %}
+  </div>
+
+  <div class="uxr-board uxr-zone-scan" data-uxr-board="downstream" role="region" aria-label="Downstream contract triage board">
+    <div class="uxr-board-filters" role="group" aria-label="Filter downstream contracts">
+      <button type="button" class="uxr-chip is-on" aria-pressed="true" data-uxr-filter="state:all">All &middot; <span class="uxr-chip-count">{{ uxr_ds_total }}</span></button>
+      {% if uxr_ds_attn %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:attention">Needs action &middot; <span class="uxr-chip-count">{{ uxr_ds_attn | length }}</span></button>{% endif %}
+      {% if uxr_ds_warning %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:review">Needs review &middot; <span class="uxr-chip-count">{{ uxr_ds_warning | length }}</span></button>{% endif %}
+      {% if uxr_ds_ready_count %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:ready">Ready &middot; <span class="uxr-chip-count">{{ uxr_ds_ready_count }}</span></button>{% endif %}
+      {% set uxr_ds_families_present = uxr_ds_items | map(attribute='family') | unique | list %}
+      {% if uxr_ds_families_present | length > 1 %}
+      <span class="uxr-chip-sep" aria-hidden="true"></span>
+      {% for fam in ['fixed', 'csv', 'xml', 'soap'] %}
+        {% if fam in uxr_ds_families_present %}
+        <button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="family:{{ fam }}">{{ uxr_family_mono[fam] }}</button>
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+    {# data-uxr-group is the stable key uxrRegroupBoardRow() moves a saved row
+       between (a save can change an item's state, so its row must leave one
+       group for another). Headings are only server-rendered for non-empty
+       groups, so the JS also has to be able to create a missing one. #}
+    {% if uxr_ds_attn %}
+    <div class="uxr-board-group uxr-board-group-attn" data-uxr-group="attention">Needs action</div>
+    {% for item in uxr_ds_attn %}{{ uxr_ds_row(item, downstream_artifact_paths, downstream_family_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_ds_warning %}
+    <div class="uxr-board-group" data-uxr-group="review">Needs review</div>
+    {% for item in uxr_ds_warning %}{{ uxr_ds_row(item, downstream_artifact_paths, downstream_family_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_ds_ready_or_draft %}
+    <div class="uxr-board-group" data-uxr-group="ready">Ready</div>
+    {% for item in uxr_ds_ready_or_draft %}{{ uxr_ds_row(item, downstream_artifact_paths, downstream_family_facts) }}{% endfor %}
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if uxr_split_focus %}</div><div class="uxr-focus-split-editor">{% endif %}
+  {% if focus_name %}
+  <section class="uxr-zone-scan" data-uxr-focus-editor="{{ focus_name }}" data-source-of-truth-version="{{ focus_source_of_truth_version }}" role="region" aria-labelledby="uxr-focus-title">
+    <div class="step-section-heading">
+      <div>
+        <p class="text-muted text-sm" style="margin:0 0 4px">Focused downstream contract</p>
+        <h3 style="margin:0" data-uxr-focus-title id="uxr-focus-title">{{ focus_item.display_name }}</h3>
+      </div>
+      <a href="/downstream" class="btn btn-secondary btn-sm" data-dirty-ignore>Close</a>
+    </div>
+    <div class="alert {{ 'alert-error' if focus_item.state == 'blocks_export' else ('alert-warn' if focus_item.state in ['warning', 'needs_action'] else 'alert-success') }}" data-uxr-editor-banner data-state="{{ focus_item.state }}">
+      <strong>{{ 'Blocked' if focus_item.state == 'blocks_export' else ('Needs action' if focus_item.state == 'needs_action' else ('Review' if focus_item.state == 'warning' else 'Ready')) }}</strong>
+      <span data-uxr-editor-banner-copy>
+        {% if focus_item.blockers %}{{ focus_item.blockers[0].label }}{% elif focus_item.warnings %}{{ focus_item.warnings[0].label }}{% else %}This contract is ready to export.{% endif %}
+      </span>
+    </div>
+    {# Always rendered. Which ambient strip is VISIBLE is viewport-dependent,
+       so it cannot be decided here: below the split breakpoint the board is
+       hidden and this strip is the only one, exactly as in single-column focus
+       mode; at >=1200px the board's richer strip takes over and CSS hides this
+       duplicate. Both stay in the DOM so a resize is correct in either
+       direction -- PR-17a's querySelectorAll stat updaters keep them in sync. #}
+    <div class="uxr-stat-strip" data-uxr-stat-strip>
+      <span><strong data-uxr-stat="total">{{ uxr_ds_total }}</strong> downstream contracts</span>
+      <span><strong data-uxr-stat="attention">{{ uxr_ds_attn | length }}</strong> need action</span>
+    </div>
+    <div class="text-sm" data-uxr-tab-badges aria-live="polite">
+      {% for ref in focus_item.blockers %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+      {% for ref in focus_item.warnings %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+    </div>
+    <div class="alert alert-warn hidden" data-uxr-conflict-review role="alert" aria-live="assertive">
+      <strong>Saved state changed</strong>
+      <p data-uxr-conflict-message style="margin:6px 0"></p>
+      <details data-uxr-conflict-server-details>
+        <summary>Review current saved values</summary>
+        <pre class="review-drawer-code" data-uxr-conflict-server-state style="max-height:260px;overflow:auto"></pre>
+      </details>
+      <p class="text-sm hidden" data-uxr-conflict-current-list></p>
+      <div class="step-actions" style="margin-top:10px">
+        <button type="button" class="btn btn-primary btn-sm" data-uxr-conflict-reload data-dirty-ignore>Reload saved version</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-conflict-board data-dirty-ignore>Return to current board</button>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div id="interfaces-container" class="uxr-zone-scan"></div>
+
+  {% if focus_name %}
+  <div class="step-actions" data-uxr-editor-actions>
+    <button class="btn btn-primary" type="button" data-uxr-save-one>Save</button>
+    <button class="btn btn-secondary" type="button" data-uxr-cancel-focus data-dirty-ignore>Cancel</button>
+  </div>
+  <div class="step-actions" data-uxr-step-actions>
+    <a href="/rules" class="btn btn-primary" data-dirty-navigation>Continue →</a>
+    <a href="/handoffs" class="btn btn-secondary" data-dirty-navigation>Previous</a>
+  </div>
+  {% else %}
+  <button class="btn btn-secondary" onclick="addInterface()" style="margin-bottom:16px">
+    + Add Downstream Interface
+  </button>
+
+  <div class="step-actions">
+    <button class="btn btn-primary" onclick="saveNewInterfaces()">Save New &amp; Continue →</button>
+    <a href="/handoffs" class="btn btn-secondary">Previous</a>
+    <a href="/rules" class="btn btn-secondary">Skip →</a>
+  </div>
+  {% endif %}
+  {% if uxr_split_focus %}</div></div>{% endif %}
+</div>
+
+
+{% set saved_file_specs = namespace(has_items=false) %}
+{% for iface in session.downstream_interfaces %}
+  {% if iface.type in ['file-fixed-width', 'file-csv'] and (iface.spec or iface.spec_content) %}
+    {% set saved_file_specs.has_items = true %}
+  {% endif %}
+{% endfor %}
+{% if saved_file_specs.has_items %}
+<div class="card step-surface workflow-surface-group saved-file-specs" style="margin-top:16px">
+  <div class="step-section-heading">
+    <div>
+      <h3>Saved File Contract Specs</h3>
+      <p class="text-muted text-sm">
+        File layout/spec references saved for downstream file contracts. Studio writes provided layout/spec files into the exported package; they are not generated by the app at runtime.
+      </p>
+    </div>
+    <span class="step-section-chip">Package artifacts</span>
+  </div>
+  <div class="review-card-stack">
+    {% for iface in session.downstream_interfaces %}
+      {% if iface.type in ['file-fixed-width', 'file-csv'] and (iface.spec or iface.spec_content) %}
+      <article class="review-row-card workflow-surface-card">
+        <div class="review-row-main">
+          <div>
+            <strong>{{ iface.name }}</strong>
+            <div class="text-muted text-sm">{{ 'Fixed-width file' if iface.type == 'file-fixed-width' else 'CSV / delimited file' }}</div>
+          </div>
+          <div>
+            <span class="review-kv-label">Package path</span>
+            {% if iface.spec %}
+            <code style="word-break:break-all">{{ iface.spec }}</code>
+            {% else %}
+            <span class="text-muted">Path will be assigned on export from the interface name.</span>
+            {% endif %}
+          </div>
+        </div>
+        {% set id_guidance = fixed_width_id_guidance_by_interface.get(iface.name, []) if iface.type == 'file-fixed-width' else [] %}
+        {% if id_guidance %}
+        <div class="alert alert-warn" style="margin:10px 0">
+          <strong>Fixed-width ID length guidance</strong>
+          <ul style="margin:6px 0 0 18px">
+            {% for warning in id_guidance %}
+            <li>{{ warning.field }}: {{ warning.message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if iface.spec_content %}
+        <div class="alert alert-info" style="margin:10px 0">
+          Studio writes this layout/spec file into the exported package. It is not generated by the app at runtime.
+          {% if not iface.layout_fields %}
+          Layout is stored as reviewed spec content. Field-level visual editing arrives in a later file layout review slice.
+          {% endif %}
+        </div>
+        <details class="disclosure-card workflow-surface-detail">
+          <summary>Saved layout/spec content</summary>
+          <pre class="review-drawer-code" style="max-height:220px;overflow:auto">{{ iface.spec_content }}</pre>
+        </details>
+        {% elif iface.spec %}
+        <div class="alert alert-info" style="margin:10px 0 0">
+          Reference only: Studio will export the manifest path, but no layout/spec content will be written.
+        </div>
+        {% endif %}
+      </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<template id="iface-template">
+  <div class="card iface-card workflow-surface-card" style="border-left:4px solid var(--primary);margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin:0">Downstream Interface</h3>
+      <button class="btn btn-secondary btn-sm" onclick="removeInterfaceCard(this)">Remove</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <label>Interface Name *</label>
+        <input type="text" class="iface-name" placeholder="e.g. eod-handoff-file">
+      </div>
+      <div class="field">
+        <label>System</label>
+        <input type="text" class="iface-system" placeholder="e.g. DOWNSTREAM_APPS">
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select class="iface-type" onchange="onDownstreamContractTypeChange(this)">
+          <option value="">Select contract type...</option>
+          {% for value, label in edge_contract_type_labels.items() %}
+          <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Version</label>
+        <input type="text" class="iface-version" placeholder="e.g. v1">
+      </div>
+      <div class="field">
+        <label>Canonical entity link (optional)</label>
+        <input type="text" class="iface-entity" placeholder="e.g. Account">
+        <p class="text-muted text-sm">
+          Optional today. This does not create a canonical entity or mapping; operation/mapping authoring is a later slice.
+        </p>
+      </div>
+    </div>
+
+    <div class="edge-contract-copy alert alert-info" style="margin:12px 0">
+      Enter the package-relative artifact path and optionally paste reviewed content. Studio saves and exports the contract reference.
+      Format-specific inspection helps select metadata, but does not derive CRUD entities or mappings yet.
+    </div>
+
+    <div class="edge-contract-section edge-file-section workflow-surface-detail" id="layout">
+      <div class="field">
+        <label>Layout / spec path</label>
+        <input type="text" class="iface-spec" placeholder="downstream/eod-file-layout.yaml">
+      </div>
+      <div class="edge-csv-controls hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field">
+          <label>CSV delimiter</label>
+          <input type="text" class="iface-csv-delimiter" value="," maxlength="8" placeholder=",">
+          <p class="text-muted text-sm">Use comma <code>,</code>, pipe <code>|</code>, tilde <code>~</code>, or <code>tab</code>. This updates the pasted CSV layout/spec YAML.</p>
+        </div>
+        <div class="field">
+          <label>Has header row</label>
+          <select class="iface-csv-has-header">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p class="text-muted text-sm">Saved as <code>has_header_row</code> in the CSV layout/spec YAML.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>Layout / spec content (optional)</label>
+        <textarea class="iface-spec-content" placeholder="Paste reviewed CSV/fixed-width layout YAML..." rows="3" onblur="onDownstreamSpecContentBlur(this)"></textarea>
+        <p class="text-muted text-sm">
+          Inspect pasted file layout/spec and optional sample content to preview fields, delimiter, sample values, and mapping guidance.
+        </p>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="inspectDownstreamFileContract(this)">Inspect layout/sample</button>
+      </div>
+    </div>
+
+    <div class="edge-contract-section edge-xml-section workflow-surface-detail hidden" id="xsd">
+      <div class="field">
+        <label>XSD path *</label>
+        <input type="text" class="iface-xsd-path" placeholder="contracts/account-status.xsd">
+      </div>
+      <div class="field">
+        <label>Root element *</label>
+        <input type="text" class="iface-root-element" placeholder="acct:AccountStatus">
+      </div>
+      <div class="field">
+        <label>Namespace</label>
+        <input type="text" class="iface-namespace" placeholder="urn:accounts:v1">
+      </div>
+      <div class="field">
+        <label>Namespace alias</label>
+        <input type="text" class="iface-namespace-alias" placeholder="acct">
+      </div>
+      <div class="field">
+        <label>XSD content (optional)</label>
+        <textarea class="iface-xsd-content" placeholder="Paste reviewed XSD content..." rows="3"></textarea>
+        <p class="text-muted text-sm">Select the XML root element to export with this contract.</p>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="inspectDownstreamEdgeContract(this)">Inspect artifact</button>
+      </div>
+    </div>
+
+    <div class="edge-contract-section edge-soap-section workflow-surface-detail hidden" id="wsdl">
+      <div class="field">
+        <label>WSDL path *</label>
+        <input type="text" class="iface-wsdl-path" placeholder="contracts/account-service.wsdl">
+      </div>
+      <div class="field">
+        <label>Service</label>
+        <input type="text" class="iface-service" placeholder="AccountService">
+      </div>
+      <div class="field">
+        <label>Port</label>
+        <input type="text" class="iface-port" placeholder="AccountServiceSoap11Port">
+      </div>
+      <div class="field">
+        <label>Binding</label>
+        <input type="text" class="iface-binding" placeholder="AccountServiceSoap11Binding">
+      </div>
+      <div class="field">
+        <label>Operation</label>
+        <input type="text" class="iface-operation" placeholder="GetAccountStatus">
+      </div>
+      <div class="field">
+        <label>SOAP operation mode</label>
+        <select class="iface-soap-mode" onchange="refreshContractTypeSections(this.closest('.iface-card'))">
+          <option value="adapter_only">Adapter only</option>
+          <option value="canonical">Canonical invoke by ID</option>
+        </select>
+        <p class="text-muted text-sm">
+          Adapter-only keeps SOAP client scaffolding. Canonical invoke by ID exposes
+          <code>POST /soap/outbound/{contractName}/{operationName}</code> and sends one canonical row by ID.
+        </p>
+      </div>
+      <div class="field">
+        <label>WSDL content (optional)</label>
+        <textarea class="iface-wsdl-content" placeholder="Paste reviewed WSDL content..." rows="3"></textarea>
+        <p class="text-muted text-sm">Select WSDL service, port, binding, and operation metadata. SOAP body/header/fault field mapping remains future work.</p>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="inspectDownstreamEdgeContract(this)">Inspect artifact</button>
+      </div>
+      <div class="soap-canonical-section hidden alert alert-info" style="margin-top:12px">
+        <strong>Canonical invoke by ID mapping</strong>
+        <p class="text-sm" style="margin:6px 0 12px">
+          Configure the reviewed canonical row lookup and explicit request/response mappings.
+          The request body field is fixed to <code>id</code>; choose the canonical persistence ID field below.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label>Canonical entity *</label>
+            <input type="text" class="soap-canonical-entity" placeholder="Customer">
+          </div>
+          <div class="field">
+            <label>Lookup persistence field *</label>
+            <input type="text" class="soap-lookup-field" placeholder="customerId">
+          </div>
+          <div class="field">
+            <label>Request body field</label>
+            <input type="text" class="soap-request-field" value="id" readonly>
+          </div>
+          <div class="field">
+            <label>Response mode</label>
+            <input type="text" class="soap-response-mode" value="return_only" readonly>
+          </div>
+        </div>
+        <h4 style="margin-top:12px">Canonical-to-SOAP request mappings</h4>
+        <p class="text-muted text-sm">Source is a canonical path such as <code>Customer.customerId</code>; target path is a SOAP request XML path such as <code>/SyncCustomerRequest/customerId</code>.</p>
+        <div class="soap-request-mappings-container"></div>
+        <button class="btn btn-secondary btn-sm" type="button"
+                onclick="addSoapRequestMappingRowEl(this.closest('.soap-canonical-section').querySelector('.soap-request-mappings-container'))">+ Add Request Mapping</button>
+
+        <h4 style="margin-top:12px">SOAP response return mappings</h4>
+        <p class="text-muted text-sm">Source path is a SOAP response XML path; target is a returned JSON field name.</p>
+        <div class="soap-response-mappings-container"></div>
+        <button class="btn btn-secondary btn-sm" type="button"
+                onclick="addSoapResponseMappingRowEl(this.closest('.soap-canonical-section').querySelector('.soap-response-mappings-container'))">+ Add Response Mapping</button>
+      </div>
+    </div>
+    <div class="edge-contract-inspect-panel alert alert-info hidden" style="margin-top:12px"></div>
+
+    <div class="fixed-width-layout-section">
+      <h4>Fixed-Width Layout Fields</h4>
+      <p class="text-muted text-sm">Define the output file layout. Start position and length are in characters.</p>
+      <div class="layout-reflow-notice hidden alert alert-info" style="margin-bottom:8px"></div>
+      <div class="layout-warnings-summary hidden alert alert-warn" style="margin-bottom:8px"></div>
+      <div style="display:grid;grid-template-columns:2fr 80px 80px 90px auto;gap:8px;margin-bottom:4px">
+        <strong class="text-sm">Field Name</strong><strong class="text-sm">Start</strong><strong class="text-sm">Length</strong><strong class="text-sm">Lock start</strong><span></span>
+      </div>
+      <div class="layout-fields-container"></div>
+      <button class="btn btn-secondary btn-sm mt-2" onclick="addLayoutRowEl(this.previousElementSibling)">+ Add Field</button>
+    </div>
+
+    <div class="csv-layout-section hidden">
+      <h4>CSV Visual Fields</h4>
+      <p class="text-muted text-sm">
+        These rows are a projection of the layout/spec YAML. Structured edits update only
+        <code>format</code>, delimiter/header controls, and <code>record_types.data.fields</code>;
+        comments and advanced YAML metadata remain in the canonical layout/spec content.
+      </p>
+      <div class="csv-layout-stale alert alert-warn hidden" role="status">
+        The layout/spec YAML changed after these rows were inspected. Inspect layout/sample again
+        before saving so Studio never chooses silently between two drafts.
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 90px 1.2fr 120px auto;gap:8px;margin-bottom:4px">
+        <strong class="text-sm">Field Name</strong><strong class="text-sm">Column</strong>
+        <strong class="text-sm">Type</strong><strong class="text-sm">Required</strong><span></span>
+      </div>
+      <div class="csv-layout-fields-container"></div>
+      <button class="btn btn-secondary btn-sm mt-2" type="button"
+              onclick="addCsvLayoutRowEl(this.previousElementSibling)">+ Add CSV Field</button>
+    </div>
+
+    <div class="file-mapping-section">
+      <h4 style="margin-top:16px">Canonical-to-contract mappings</h4>
+      <p class="text-muted text-sm">
+        Source is a canonical path such as <code>Account.accountId</code>; target is a file or XML field such as <code>account_id</code>.
+      </p>
+      <div class="field-mappings-container"></div>
+      <div class="step-actions" style="margin-top:8px">
+        <button class="btn btn-secondary btn-sm" type="button"
+                onclick="addMappingRowEl(this.closest('.file-mapping-section').querySelector('.field-mappings-container'), 'Entity.field', 'contract_field')">+ Add Mapping</button>
+      </div>
+      <p class="text-muted text-sm">
+        Enter canonical entity link before seeding source paths. XML/XSD runtime generation needs reviewed canonical-to-XML mappings.
+        Seed mapping rows from layout fields by running the artifact inspection, then review the deterministic patch; applying it keeps every non-empty field unchanged.
+      </p>
+    </div>
+
+    <h4 style="margin-top:16px">Sample Output (optional)</h4>
+    <input type="text" class="iface-sample-path" placeholder="downstream/sample.xml" style="margin-bottom:8px">
+    <textarea class="iface-sample" placeholder="Paste a sample fixed-width output line..." rows="3"></textarea>
+  </div>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Restore existing interfaces
+const existing = {{ existing_downstreams | tojson }};
+const uxrEntityFieldInventory = new Map({{ entity_field_inventory.items() | list | tojson }});
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (existing.length > 0) {
+    const restoreWarnings = [];
+    existing.forEach((iface, index) => {
+      try {
+        addInterface(iface, index);
+      } catch (err) {
+        const name = iface?.name || `interface ${index + 1}`;
+        const failedCard = document.querySelector(`.iface-card[data-restore-index="${index}"]`);
+        if (failedCard) failedCard.remove();
+        console.error('Unable to restore downstream interface', name, err);
+        restoreWarnings.push(
+          `${name} could not be rendered. Reload Step 5 or fix the interface data before saving.`
+        );
+      }
+    });
+    if (restoreWarnings.length > 0) {
+      showWarningStatusList('save-status', 'Some downstream interfaces could not be rendered:', restoreWarnings);
+    }
+  }
+});
+
+function addInterface(data, restoreIndex = null) {
+  const tpl = document.getElementById('iface-template');
+  const clone = tpl.content.cloneNode(true);
+  const container = document.getElementById('interfaces-container');
+  container.appendChild(clone);
+  const card = container.lastElementChild;
+  if (restoreIndex !== null) card.dataset.restoreIndex = String(restoreIndex);
+  card.dataset.csvLayoutProjectionReady = 'true';
+  card.dataset.csvLayoutSourceHash = '';
+  card.dataset.csvLayoutInspectedText = '';
+
+  if (data) {
+    card.dataset.restoredInterface = 'true';
+    card.dataset.uxrOriginalName = data.name || '';
+    card.querySelector('.iface-name').value = data.name || '';
+    card.querySelector('.iface-system').value = data.system || '';
+    card.querySelector('.iface-type').value = data.type || '';
+    card.querySelector('.iface-version').value = data.version || '';
+    card.querySelector('.iface-entity').value = data.entity_name || '';
+    card.querySelector('.iface-spec').value = data.spec || '';
+    card.querySelector('.iface-spec-content').value = data.spec_content || '';
+    card.dataset.csvLayoutInspectedText = data.spec_content || '';
+    card.querySelector('.iface-xsd-path').value = data.xsd_path || '';
+    card.querySelector('.iface-xsd-content').value = data.xsd_content || '';
+    card.querySelector('.iface-root-element').value = data.root_element || '';
+    card.querySelector('.iface-namespace').value = data.namespace || '';
+    card.querySelector('.iface-namespace-alias').value = data.namespace_alias || '';
+    card.querySelector('.iface-wsdl-path').value = data.wsdl_path || '';
+    card.querySelector('.iface-wsdl-content').value = data.wsdl_content || '';
+    card.querySelector('.iface-service').value = data.service || '';
+    card.querySelector('.iface-port').value = data.port || '';
+    card.querySelector('.iface-binding').value = data.binding || '';
+    card.querySelector('.iface-operation').value = data.selected_operation_name || '';
+    card.querySelector('.iface-soap-mode').value = data.soap_operation_mode || 'adapter_only';
+    const soapCanonical = data.soap_canonical_invocation || {};
+    card.querySelector('.soap-canonical-entity').value = soapCanonical.entity || '';
+    card.querySelector('.soap-lookup-field').value = soapCanonical.lookup_field || soapCanonical.lookup?.field || '';
+    card.querySelector('.soap-request-field').value = soapCanonical.request_field || soapCanonical.lookup?.request_field || 'id';
+    card.querySelector('.soap-response-mode').value = soapCanonical.response_mode || soapCanonical.response?.mode || 'return_only';
+    card.querySelector('.iface-sample-path').value = data.sample_path || (data.samples || [])[0] || '';
+    card.querySelector('.iface-sample').value = data.sample_content || '';
+
+    const layoutCont = card.querySelector('.layout-fields-container');
+    (data.layout_fields || []).forEach(f => {
+      addLayoutRowEl(layoutCont);
+      const rows = layoutCont.querySelectorAll('.layout-row');
+      const last = rows[rows.length - 1];
+      last.querySelector('.layout-name').value = f.name;
+      last.querySelector('.layout-start').value = f.start;
+      last.querySelector('.layout-length').value = f.length;
+      last.querySelector('.layout-locked').checked = Boolean(f.locked_start);
+    });
+
+    if (data.type === 'file-csv') {
+      applyCsvLayoutProjection(card, data.csv_layout_projection || {}, false);
+    }
+
+    const mapCont = card.querySelector('.field-mappings-container');
+    (data.field_mappings || []).forEach(m => {
+      addMappingRowEl(mapCont, 'Entity.field', 'downstream_field');
+      const rows = mapCont.querySelectorAll('.mapping-row');
+      const last = rows[rows.length - 1];
+      last.querySelector('.map-source').value = m.source;
+      last.querySelector('.map-target').value = m.target;
+    });
+
+    const soapReqCont = card.querySelector('.soap-request-mappings-container');
+    (soapCanonical.request_mappings || []).forEach(m => {
+      addSoapRequestMappingRowEl(soapReqCont, m.source || '', m.target_path || m.target || '');
+    });
+    const responseRows = soapCanonical.response?.response_mappings || soapCanonical.response_mappings || [];
+    const soapRespCont = card.querySelector('.soap-response-mappings-container');
+    (responseRows || []).forEach(m => {
+      addSoapResponseMappingRowEl(soapRespCont, m.source_path || m.source || '', m.target || '');
+    });
+  }
+
+  card.dataset.previousContractType = card.querySelector('.iface-type')?.value || '';
+  refreshLayoutWarnings(card);
+  refreshContractTypeSections(card);
+}
+
+function removeInterfaceCard(button) {
+  const card = button.closest('.iface-card');
+  if (!card) return;
+  const uxrOriginalName = card.dataset.uxrOriginalName;
+  card.remove();
+  if (uxrOriginalName && document.body.classList.contains('ux-refresh')) {
+    uxrHandleBoardTrackedCardRemoved(uxrOriginalName);
+  }
+}
+
+function addLayoutRowEl(container) {
+  const card = container.closest('.iface-card');
+  const rowWrap = document.createElement('div');
+  rowWrap.className = 'layout-row-wrap';
+  const row = document.createElement('div');
+  row.className = 'layout-row';
+  row.style = 'display:grid;grid-template-columns:2fr 80px 80px 90px auto;gap:8px;margin-bottom:6px;align-items:center';
+  row.innerHTML = `
+    <input type="text" placeholder="field_name" class="layout-name">
+    <input type="number" placeholder="1" class="layout-start" min="1">
+    <input type="number" placeholder="10" class="layout-length" min="1">
+    <label class="text-sm" style="display:flex;align-items:center;gap:4px">
+      <input type="checkbox" class="layout-locked"> Lock
+    </label>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.layout-row-wrap').remove()">✕</button>
+  `;
+  const warning = document.createElement('div');
+  warning.className = 'layout-id-warning text-sm text-muted hidden';
+  warning.style = 'margin:-2px 0 8px 0;color:#b45309';
+  rowWrap.appendChild(row);
+  rowWrap.appendChild(warning);
+  container.appendChild(rowWrap);
+
+  row.querySelector('.layout-name').addEventListener('input', () => refreshLayoutWarnings(card));
+  row.querySelector('.layout-start').addEventListener('input', () => refreshLayoutWarnings(card));
+  row.querySelector('.layout-length').addEventListener('input', () => {
+    reflowLayoutAfterLengthChange(card, row);
+    refreshLayoutWarnings(card);
+  });
+  row.querySelector('.layout-locked').addEventListener('change', () => refreshLayoutWarnings(card));
+  row.querySelector('button').addEventListener('click', () => setTimeout(() => refreshLayoutWarnings(card), 0));
+}
+
+function addCsvLayoutRowEl(container, field = {}) {
+  const row = document.createElement('div');
+  row.className = 'csv-layout-row';
+  row.style = 'display:grid;grid-template-columns:2fr 90px 1.2fr 120px auto;gap:8px;margin-bottom:6px;align-items:center';
+  row.dataset.originalName = field.original_name || field.name || '';
+  row.dataset.originalColumn = field.original_column || field.column || '';
+  row.innerHTML = `
+    <input type="text" placeholder="field_name" class="csv-layout-name">
+    <input type="number" placeholder="1" class="csv-layout-column" min="1">
+    <select class="csv-layout-type">
+      <option value="">Not specified</option>
+      <option value="string">string</option>
+      <option value="char">char</option>
+      <option value="text">text</option>
+      <option value="integer">integer</option>
+      <option value="int">int</option>
+      <option value="long">long</option>
+      <option value="decimal">decimal</option>
+      <option value="number">number</option>
+      <option value="bigdecimal">bigdecimal</option>
+      <option value="date">date</option>
+      <option value="localdate">localdate</option>
+      <option value="datetime">datetime</option>
+      <option value="date-time">date-time</option>
+      <option value="timestamp">timestamp</option>
+      <option value="localdatetime">localdatetime</option>
+      <option value="boolean">boolean</option>
+      <option value="bool">bool</option>
+    </select>
+    <select class="csv-layout-required">
+      <option value="">Not specified</option>
+      <option value="true">Required</option>
+      <option value="false">Optional</option>
+    </select>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  row.querySelector('.csv-layout-name').value = field.name || '';
+  row.querySelector('.csv-layout-column').value = field.column || '';
+  row.querySelector('.csv-layout-type').value = field.type || '';
+  row.querySelector('.csv-layout-required').value = field.required === true
+    ? 'true'
+    : (field.required === false ? 'false' : '');
+  container.appendChild(row);
+}
+
+function csvLayoutRows(card) {
+  return Array.from(card.querySelectorAll('.csv-layout-row')).map(row => {
+    const requiredValue = row.querySelector('.csv-layout-required')?.value || '';
+    return {
+      name: row.querySelector('.csv-layout-name')?.value?.trim() || '',
+      column: parseInt(row.querySelector('.csv-layout-column')?.value),
+      type: row.querySelector('.csv-layout-type')?.value || null,
+      required: requiredValue === '' ? null : requiredValue === 'true',
+      original_name: row.dataset.originalName || '',
+      original_column: parseInt(row.dataset.originalColumn) || null,
+    };
+  });
+}
+
+function setCsvLayoutProjectionStale(card, stale) {
+  card.dataset.csvLayoutProjectionReady = stale ? 'false' : 'true';
+  card.querySelector('.csv-layout-stale')?.classList.toggle('hidden', !stale);
+}
+
+function applyCsvLayoutProjection(card, projection, confirmReplace = true) {
+  const fields = Array.isArray(projection?.fields) ? projection.fields : [];
+  const container = card.querySelector('.csv-layout-fields-container');
+  if (!container) return false;
+  if (confirmReplace && container.querySelector('.csv-layout-row')) {
+    const replace = window.confirm(
+      'Replace the visual CSV rows with the inspected YAML? Unsaved structured row edits will be discarded.'
+    );
+    if (!replace) return false;
+  }
+  container.innerHTML = '';
+  fields.forEach(field => addCsvLayoutRowEl(container, field));
+  const delimiter = projection?.delimiter || ',';
+  const delimiterInput = card.querySelector('.iface-csv-delimiter');
+  if (delimiterInput) delimiterInput.value = delimiter;
+  const headerSelect = card.querySelector('.iface-csv-has-header');
+  if (headerSelect) headerSelect.value = projection?.has_header_row ? 'true' : 'false';
+  card.dataset.csvLayoutSourceHash = projection?.source_hash || '';
+  card.dataset.csvLayoutInspectedText = card.querySelector('.iface-spec-content')?.value || '';
+  setCsvLayoutProjectionStale(card, Array.isArray(projection?.errors) && projection.errors.length > 0);
+  return true;
+}
+
+function onDownstreamSpecContentBlur(textarea) {
+  const card = textarea.closest('.iface-card');
+  if (!card || card.querySelector('.iface-type')?.value !== 'file-csv') return;
+  const inspectedText = card.dataset.csvLayoutInspectedText || '';
+  if (textarea.value !== inspectedText) setCsvLayoutProjectionStale(card, true);
+}
+
+function onDownstreamContractTypeChange(select) {
+  const card = select.closest('.iface-card');
+  if (!card) return;
+  const previousType = card.dataset.previousContractType || '';
+  const nextType = select.value || '';
+  if (previousType === 'file-fixed-width' && nextType === 'file-csv') {
+    const fixedRows = Array.from(card.querySelectorAll('.layout-row')).map(row => ({
+      name: row.querySelector('.layout-name')?.value?.trim() || '',
+    })).filter(field => field.name);
+    if (fixedRows.length === 0) {
+      window.alert(
+        'No visual fixed-width rows are available to convert. Inspect or add the fixed-width fields before switching to CSV.'
+      );
+      select.value = previousType;
+      refreshContractTypeSections(card);
+      return;
+    }
+    if (fixedRows.length > 0) {
+      const accepted = window.confirm(
+        'Convert the fixed-width field names to CSV columns 1 through N? ' +
+        'Saving will replace the fixed-width layout/spec content with an Engine-current CSV layout.'
+      );
+      if (!accepted) {
+        select.value = previousType;
+        refreshContractTypeSections(card);
+        return;
+      }
+      const spec = card.querySelector('.iface-spec-content');
+      if (spec) spec.value = '';
+      card.dataset.csvLayoutInspectedText = '';
+      card.dataset.csvLayoutSourceHash = '';
+      const container = card.querySelector('.csv-layout-fields-container');
+      if (container) {
+        container.innerHTML = '';
+        fixedRows.forEach((field, index) => addCsvLayoutRowEl(container, {
+          name: field.name,
+          column: index + 1,
+        }));
+      }
+      setCsvLayoutProjectionStale(card, false);
+      showStatus(
+        'save-status',
+        `Prepared ${fixedRows.length} CSV field row(s). Review them before saving.`,
+        'success',
+      );
+    }
+  }
+  card.dataset.previousContractType = nextType;
+  refreshContractTypeSections(card);
+}
+
+function addMappingRowEl(container, srcHint, tgtHint, source = '', target = '') {
+  const card = container.closest('.iface-card');
+  const row = document.createElement('div');
+  row.className = 'mapping-row';
+  row.innerHTML = `
+    <input type="text" placeholder="${escapeHtml(srcHint)}" class="map-source">
+    <input type="text" placeholder="${escapeHtml(tgtHint)}" class="map-target">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  row.querySelector('.map-source').value = source;
+  row.querySelector('.map-target').value = target;
+  row.querySelector('.map-source').addEventListener('input', () => refreshLayoutWarnings(card));
+  row.querySelector('.map-target').addEventListener('input', () => refreshLayoutWarnings(card));
+  row.querySelector('button').addEventListener('click', () => setTimeout(() => refreshLayoutWarnings(card), 0));
+  container.appendChild(row);
+  refreshLayoutWarnings(card);
+}
+
+function addSoapRequestMappingRowEl(container, source = '', targetPath = '') {
+  const row = document.createElement('div');
+  row.className = 'soap-request-mapping-row';
+  row.style = 'display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px;align-items:center';
+  row.innerHTML = `
+    <input type="text" placeholder="Customer.customerId" class="soap-request-source">
+    <input type="text" placeholder="/SyncCustomerRequest/customerId" class="soap-request-target-path">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  row.querySelector('.soap-request-source').value = source;
+  row.querySelector('.soap-request-target-path').value = targetPath;
+  container.appendChild(row);
+}
+
+function addSoapResponseMappingRowEl(container, sourcePath = '', target = '') {
+  const row = document.createElement('div');
+  row.className = 'soap-response-mapping-row';
+  row.style = 'display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px;align-items:center';
+  row.innerHTML = `
+    <input type="text" placeholder="/SyncCustomerResponse/resultCode" class="soap-response-source-path">
+    <input type="text" placeholder="resultCode" class="soap-response-target">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  row.querySelector('.soap-response-source-path').value = sourcePath;
+  row.querySelector('.soap-response-target').value = target;
+  container.appendChild(row);
+}
+
+function fileFieldToCanonicalField(name) {
+  const raw = String(name || '').trim();
+  if (/^[A-Za-z][A-Za-z0-9]*$/.test(raw)) {
+    return raw.charAt(0).toLowerCase() + raw.slice(1);
+  }
+  const parts = raw
+    .replace(/[^A-Za-z0-9]+/g, '_')
+    .split('_')
+    .filter(Boolean)
+    .map(part => part.toLowerCase());
+  if (parts.length === 0) return '';
+  return parts
+    .map((part, index) => index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+function downstreamSeedPatchContext(card) {
+  return {
+    type: card.querySelector('.iface-type')?.value?.trim() || '',
+    entity_name: card.querySelector('.iface-entity')?.value?.trim() || '',
+    spec_content: card.querySelector('.iface-spec-content')?.value || '',
+    sample_content: card.querySelector('.iface-sample')?.value || '',
+    xsd_content: card.querySelector('.iface-xsd-content')?.value || '',
+    wsdl_content: card.querySelector('.iface-wsdl-content')?.value || '',
+    csv_delimiter: card.querySelector('.iface-csv-delimiter')?.value || '',
+    csv_has_header_row: card.querySelector('.iface-csv-has-header')?.value || '',
+    csv_layout_fields: csvLayoutRows(card),
+  };
+}
+
+function downstreamSeedPatchContextFingerprint(card) {
+  return window.EdgeForgeSeedPatch.contextFingerprint(downstreamSeedPatchContext(card));
+}
+
+function discardStaleDownstreamInspection(card, requestContextFingerprint) {
+  if (downstreamSeedPatchContextFingerprint(card) === requestContextFingerprint) return false;
+  clearDownstreamDerivedSeeds(card);
+  showStatus(
+    'save-status',
+    'The entity or artifact changed while inspection was running. Inspect again to refresh suggestions.',
+    'warn',
+  );
+  return true;
+}
+
+function downstreamMappingSeedValues(card) {
+  return Array.from(card.querySelectorAll('.mapping-row')).map(row => ({
+    target_field: row.querySelector('.map-target')?.value?.trim() || '',
+    proposed_value: row.querySelector('.map-source')?.value?.trim() || '',
+  }));
+}
+
+function layoutFieldNamesForCardPatchState(card) {
+  return Array.from(card.querySelectorAll('.layout-row')).map(row => ({
+    target_field: row.querySelector('.layout-name')?.value?.trim() || '',
+    proposed_value: {
+      name: row.querySelector('.layout-name')?.value?.trim() || '',
+      start: row.querySelector('.layout-start')?.value?.trim() || '',
+      length: row.querySelector('.layout-length')?.value?.trim() || '',
+    },
+  }));
+}
+
+function buildFixedWidthLayoutSeedRows(fields, currentFieldValues = []) {
+  const cleanFields = (fields || []).filter(field => field?.name && field?.start && field?.length);
+  const counts = new Map();
+  cleanFields.forEach(field => {
+    counts.set(field.name, (counts.get(field.name) || 0) + 1);
+  });
+  return cleanFields.map((field, index) => {
+    const proposedValue = {
+      name: String(field.name),
+      start: field.start,
+      length: field.length,
+    };
+    const current = (currentFieldValues || []).find(value => value.target_field === field.name);
+    const collision = counts.get(field.name) > 1;
+    const writable = window.EdgeForgeSeedPatch.hasWritableSlot(
+      current?.proposed_value,
+      proposedValue,
+    );
+    return {
+      key: `layout:${field.name}:${index}`,
+      target_field: String(field.name),
+      proposed_value: proposedValue,
+      source_field: String(field.name),
+      basis: collision ? 'multiple layout fields - review' : 'inspected layout',
+      state: collision ? 'collision' : 'matched',
+      checked: !collision && writable,
+      writable: !collision && writable,
+      matching_slots: window.EdgeForgeSeedPatch.matchingSlots(
+        current?.proposed_value,
+        proposedValue,
+      ),
+      candidate: field,
+    };
+  });
+}
+
+function seedDownstreamFileMappingsPatch(card, rows, checkedKeys) {
+  const result = window.EdgeForgeSeedPatch.applyRows(
+    rows,
+    downstreamMappingSeedValues(card),
+    checkedKeys,
+  );
+  const container = card.querySelector('.field-mappings-container');
+  result.applied.forEach(applied => {
+    let row = Array.from(container.querySelectorAll('.mapping-row')).find(candidate => (
+      candidate.querySelector('.map-target')?.value?.trim() === applied.target_field
+      && !candidate.querySelector('.map-source')?.value?.trim()
+    ));
+    if (!row) {
+      addMappingRowEl(
+        container,
+        'Entity.field',
+        'contract_field',
+        '',
+        applied.target_field,
+      );
+      const allRows = Array.from(container.querySelectorAll('.mapping-row'));
+      row = allRows[allRows.length - 1];
+    }
+    const source = row?.querySelector('.map-source');
+    if (source && !source.value.trim()) source.value = applied.proposed_value;
+    if ((applied.changed_slots || []).includes('value')) {
+      markDerivedSeed(source, applied.basis);
+    }
+  });
+  refreshLayoutWarnings(card);
+  return result;
+}
+
+function applyDownstreamLayoutSeedPatch(card, rows, checkedKeys) {
+  const result = window.EdgeForgeSeedPatch.applyRows(
+    rows,
+    layoutFieldNamesForCardPatchState(card),
+    checkedKeys,
+  );
+  const container = card.querySelector('.layout-fields-container');
+  result.applied.forEach(applied => {
+    let row = Array.from(container.querySelectorAll('.layout-row')).find(candidate => (
+      candidate.querySelector('.layout-name')?.value?.trim() === applied.target_field
+    ));
+    if (!row) {
+      addLayoutRowEl(container);
+      const allRows = Array.from(container.querySelectorAll('.layout-row'));
+      row = allRows[allRows.length - 1];
+    }
+    const proposed = applied.proposed_value || {};
+    const values = [
+      ['.layout-name', proposed.name],
+      ['.layout-start', proposed.start],
+      ['.layout-length', proposed.length],
+    ];
+    values.forEach(([selector, value]) => {
+      const input = row?.querySelector(selector);
+      if (input && !input.value.trim() && value !== null && value !== undefined) {
+        input.value = value;
+      }
+    });
+    const selectors = {
+      name: '.layout-name',
+      start: '.layout-start',
+      length: '.layout-length',
+    };
+    (applied.changed_slots || []).forEach(slot => {
+      markDerivedSeed(row?.querySelector(selectors[slot]), applied.basis);
+    });
+  });
+  refreshLayoutWarnings(card);
+  return result;
+}
+
+function renderDownstreamMappingSeedPatch(card, panel, targetFields) {
+  const contextFingerprint = downstreamSeedPatchContextFingerprint(card);
+  const entity = card.querySelector('.iface-entity')?.value?.trim() || '';
+  const actionCopy = card.querySelector('.iface-type')?.value === 'xml-xsd'
+    ? 'Seed XML mapping rows from inspected fields'
+    : 'Seed mapping rows from inspected fields';
+  const sourceCandidates = (uxrEntityFieldInventory.get(entity) || []).map(name => ({
+    name,
+    proposed_value: `${entity}.${name}`,
+  }));
+  const rows = window.EdgeForgeSeedPatch.buildRows(
+    sourceCandidates,
+    targetFields,
+    downstreamMappingSeedValues(card),
+  );
+  recomputeDownstreamMappingDerivedSeeds(card, rows);
+  return renderDeterministicSeedPatch(panel, {
+    title: 'Deterministic mapping seeds',
+    description: entity
+      ? `${actionCopy}. Matches contract fields against saved ${entity} fields; nothing is written until you keep it.`
+      : `${actionCopy} after linking a canonical entity. Unmatched rows stay blank.`,
+    rows,
+    sourceLabel: row => row.source_field
+      ? `${entity}.${row.source_field}`
+      : (row.state === 'collision' ? '— multiple matches' : '— no match'),
+    targetLabel: row => row.target_field,
+    onApply: checkedKeys => seedDownstreamFileMappingsPatch(card, rows, checkedKeys),
+    isCurrent: () => downstreamSeedPatchContextFingerprint(card) === contextFingerprint,
+    onStale: () => clearDownstreamDerivedSeeds(card),
+  });
+}
+
+function renderDownstreamLayoutSeedPatch(card, panel, fields) {
+  const contextFingerprint = downstreamSeedPatchContextFingerprint(card);
+  const rows = buildFixedWidthLayoutSeedRows(fields, layoutFieldNamesForCardPatchState(card));
+  recomputeDownstreamLayoutDerivedSeeds(card, rows);
+  return renderDeterministicSeedPatch(panel, {
+    title: 'Deterministic layout seeds',
+    description: 'Populate visual layout rows from checked inspected positions; existing values stay unchanged.',
+    rows,
+    sourceLabel: row => `${row.target_field} @ ${row.proposed_value.start}:${row.proposed_value.length}`,
+    targetLabel: () => 'visual layout row',
+    onApply: checkedKeys => applyDownstreamLayoutSeedPatch(card, rows, checkedKeys),
+    isCurrent: () => downstreamSeedPatchContextFingerprint(card) === contextFingerprint,
+    onStale: () => clearDownstreamDerivedSeeds(card),
+  });
+}
+
+function collectDownstreamSoapCanonicalInvocation(card) {
+  const mode = card.querySelector('.iface-soap-mode')?.value || 'adapter_only';
+  if (mode !== 'canonical') return null;
+  const requestMappings = [];
+  card.querySelectorAll('.soap-request-mapping-row').forEach(row => {
+    const source = row.querySelector('.soap-request-source')?.value?.trim();
+    const targetPath = row.querySelector('.soap-request-target-path')?.value?.trim();
+    if (source && targetPath) requestMappings.push({ source, target_path: targetPath });
+  });
+  const responseMappings = [];
+  card.querySelectorAll('.soap-response-mapping-row').forEach(row => {
+    const sourcePath = row.querySelector('.soap-response-source-path')?.value?.trim();
+    const target = row.querySelector('.soap-response-target')?.value?.trim();
+    if (sourcePath && target) responseMappings.push({ source_path: sourcePath, target });
+  });
+  return {
+    kind: 'invoke_by_id',
+    entity: card.querySelector('.soap-canonical-entity')?.value?.trim() || null,
+    lookup: {
+      request_field: card.querySelector('.soap-request-field')?.value?.trim() || 'id',
+      field: card.querySelector('.soap-lookup-field')?.value?.trim() || null,
+    },
+    request_mappings: requestMappings,
+    response: {
+      mode: card.querySelector('.soap-response-mode')?.value?.trim() || 'return_only',
+      response_mappings: responseMappings,
+    },
+  };
+}
+
+function csvLayoutReadyForSave(card) {
+  if (card.querySelector('.iface-type')?.value?.trim() !== 'file-csv') return true;
+  const csvSpecValue = card.querySelector('.iface-spec-content')?.value || '';
+  const csvProjectionStale = card.dataset.csvLayoutProjectionReady === 'false'
+    || csvSpecValue !== (card.dataset.csvLayoutInspectedText || '');
+  if (!csvProjectionStale) return true;
+  showStatus(
+    'save-status',
+    'Inspect the CSV layout/sample again before saving; the YAML and visual rows are out of sync.',
+    'warn',
+  );
+  return false;
+}
+
+function getCardData(card) {
+  const selectedType = card.querySelector('.iface-type')?.value?.trim() || null;
+  const csvSpecValue = card.querySelector('.iface-spec-content')?.value || '';
+  const layoutFields = [];
+  if (selectedType === 'file-fixed-width') {
+    card.querySelectorAll('.layout-row').forEach(row => {
+      const name = row.querySelector('.layout-name')?.value?.trim();
+      const start = parseInt(row.querySelector('.layout-start')?.value);
+      const length = parseInt(row.querySelector('.layout-length')?.value);
+      const lockedStart = row.querySelector('.layout-locked')?.checked || false;
+      if (name && start > 0 && length > 0) layoutFields.push({ name, start, length, locked_start: lockedStart });
+    });
+  }
+  const csvFields = selectedType === 'file-csv' ? csvLayoutRows(card) : [];
+  const specContentValue = csvSpecValue;
+
+  const fieldMappings = [];
+  if (selectedType === 'file-fixed-width' || selectedType === 'file-csv' || selectedType === 'xml-xsd') {
+    card.querySelectorAll('.mapping-row').forEach(row => {
+      const source = row.querySelector('.map-source')?.value?.trim();
+      const target = row.querySelector('.map-target')?.value?.trim();
+      if (source && target) fieldMappings.push({ source, target });
+    });
+  }
+
+  return {
+    name: card.querySelector('.iface-name')?.value?.trim(),
+    system: card.querySelector('.iface-system')?.value?.trim() || null,
+    type: selectedType,
+    version: card.querySelector('.iface-version')?.value?.trim() || null,
+    entity_name: card.querySelector('.iface-entity')?.value?.trim() || null,
+    spec: card.querySelector('.iface-spec')?.value?.trim() || null,
+    spec_content: specContentValue.trim() ? specContentValue : null,
+    xsd_path: card.querySelector('.iface-xsd-path')?.value?.trim() || null,
+    xsd_content: card.querySelector('.iface-xsd-content')?.value?.trim() || null,
+    root_element: card.querySelector('.iface-root-element')?.value?.trim() || null,
+    namespace: card.querySelector('.iface-namespace')?.value?.trim() || null,
+    namespace_alias: card.querySelector('.iface-namespace-alias')?.value?.trim() || null,
+    wsdl_path: card.querySelector('.iface-wsdl-path')?.value?.trim() || null,
+    wsdl_content: card.querySelector('.iface-wsdl-content')?.value?.trim() || null,
+    service: card.querySelector('.iface-service')?.value?.trim() || null,
+    port: card.querySelector('.iface-port')?.value?.trim() || null,
+    binding: card.querySelector('.iface-binding')?.value?.trim() || null,
+    selected_operation_name: card.querySelector('.iface-operation')?.value?.trim() || null,
+    soap_operation_mode: card.querySelector('.iface-soap-mode')?.value?.trim() || 'adapter_only',
+    soap_canonical_invocation: collectDownstreamSoapCanonicalInvocation(card),
+    sample_path: card.querySelector('.iface-sample-path')?.value?.trim() || null,
+    layout_fields: layoutFields,
+    field_mappings: fieldMappings,
+    sample_content: card.querySelector('.iface-sample')?.value?.trim() || null,
+    csv_delimiter: card.querySelector('.iface-csv-delimiter')?.value?.trim() || null,
+    csv_has_header_row: card.querySelector('.iface-csv-has-header')?.value?.trim() || null,
+    csv_layout_apply: selectedType === 'file-csv' && csvFields.length > 0,
+    csv_layout_fields: csvFields,
+    csv_layout_source_hash: card.dataset?.csvLayoutSourceHash || null,
+  };
+}
+
+function refreshContractTypeSections(card) {
+  if (!card) return;
+  const type = card.querySelector('.iface-type')?.value || '';
+  card.querySelectorAll('.edge-contract-section').forEach(section => section.classList.add('hidden'));
+  card.querySelector('.fixed-width-layout-section')?.classList.add('hidden');
+  card.querySelector('.csv-layout-section')?.classList.add('hidden');
+  card.querySelector('.file-mapping-section')?.classList.add('hidden');
+  card.querySelector('.soap-canonical-section')?.classList.add('hidden');
+  const show = selector => card.querySelector(selector)?.classList.remove('hidden');
+  if (type === 'xml-xsd') {
+    show('.edge-xml-section');
+    show('.file-mapping-section');
+  } else if (type === 'soap-wsdl') {
+    show('.edge-soap-section');
+    if ((card.querySelector('.iface-soap-mode')?.value || 'adapter_only') === 'canonical') {
+      show('.soap-canonical-section');
+    }
+  } else if (type === 'file-csv') {
+    show('.edge-file-section');
+    show('.csv-layout-section');
+    show('.file-mapping-section');
+    card.querySelector('.edge-csv-controls')?.classList.remove('hidden');
+  } else if (type === 'file-fixed-width') {
+    show('.edge-file-section');
+    show('.fixed-width-layout-section');
+    show('.file-mapping-section');
+    card.querySelector('.edge-csv-controls')?.classList.add('hidden');
+  }
+}
+
+async function inspectDownstreamEdgeContract(button) {
+  const card = button.closest('.iface-card');
+  if (!card) return;
+  const type = card.querySelector('.iface-type')?.value?.trim() || '';
+  if (type !== 'xml-xsd' && type !== 'soap-wsdl') {
+    showStatus('save-status', 'Artifact inspection is available for XML/XSD and SOAP/WSDL contracts.', 'warn');
+    return;
+  }
+  const content = type === 'xml-xsd'
+    ? card.querySelector('.iface-xsd-content')?.value?.trim()
+    : card.querySelector('.iface-wsdl-content')?.value?.trim();
+  const requestContextFingerprint = downstreamSeedPatchContextFingerprint(card);
+  const result = await postJSON('/downstream/edge-contract/inspect', {
+    direction: 'downstream',
+    type,
+    content,
+  });
+  if (discardStaleDownstreamInspection(card, requestContextFingerprint)) return;
+  renderDownstreamInspectionResult(card, result);
+}
+
+async function inspectDownstreamFileContract(button) {
+  const card = button.closest('.iface-card');
+  if (!card) return;
+  const type = card.querySelector('.iface-type')?.value?.trim() || '';
+  if (type !== 'file-fixed-width' && type !== 'file-csv') {
+    showStatus('save-status', 'File inspection is available for fixed-width and CSV/delimited contracts.', 'warn');
+    return;
+  }
+  const requestContextFingerprint = downstreamSeedPatchContextFingerprint(card);
+  const result = await postJSON('/downstream/edge-contract/file-inspect', {
+    direction: 'downstream',
+    type,
+    name: card.querySelector('.iface-name')?.value?.trim() || null,
+    spec_content: card.querySelector('.iface-spec-content')?.value || '',
+    sample_content: card.querySelector('.iface-sample')?.value || '',
+    csv_delimiter: card.querySelector('.iface-csv-delimiter')?.value?.trim() || null,
+    csv_has_header_row: card.querySelector('.iface-csv-has-header')?.value?.trim() || null,
+    csv_layout_apply: type === 'file-csv' && csvLayoutRows(card).length > 0,
+    csv_layout_fields: type === 'file-csv' ? csvLayoutRows(card) : [],
+    csv_layout_source_hash: card.dataset?.csvLayoutSourceHash || null,
+    csv_layout_inspected_text: card.dataset?.csvLayoutInspectedText || '',
+  });
+  if (discardStaleDownstreamInspection(card, requestContextFingerprint)) return;
+  renderDownstreamFileInspectionResult(card, result);
+}
+
+function renderDownstreamFileInspectionResult(card, result) {
+  const panel = card.querySelector('.edge-contract-inspect-panel');
+  if (!panel) return;
+  panel.className = result.ok ? 'edge-contract-inspect-panel alert alert-info' : 'edge-contract-inspect-panel alert alert-error';
+  panel.innerHTML = '';
+
+  const heading = document.createElement('strong');
+  heading.textContent = result.ok ? 'File layout/sample inspection' : 'File layout/sample inspection could not run';
+  panel.appendChild(heading);
+
+  const help = document.createElement('p');
+  help.className = 'text-sm';
+  help.style.margin = '6px 0';
+  help.textContent = 'Inspection reads pasted layout/spec and sample content only. It does not infer canonical entities automatically.';
+  panel.appendChild(help);
+
+  const errors = Array.isArray(result.errors) ? result.errors : [];
+  if (errors.length > 0) panel.appendChild(buildInspectionList(errors, 'Errors'));
+  const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+  if (warnings.length > 0) panel.appendChild(buildInspectionList(warnings, 'Warnings'));
+
+  const layout = result.layout || {};
+  const fields = Array.isArray(layout.fields) ? layout.fields : [];
+  if (result.ok) {
+    const meta = document.createElement('div');
+    meta.className = 'text-sm';
+    meta.style.margin = '8px 0';
+    if (layout.type === 'file-csv') {
+      meta.innerHTML = `<strong>Delimiter:</strong> ${escapeHtml(layout.delimiter_label || layout.delimiter || 'comma (,)' )} · <strong>Header:</strong> ${layout.has_header_row === null || layout.has_header_row === undefined ? 'Not specified' : escapeHtml(String(layout.has_header_row))}`;
+    } else {
+      meta.innerHTML = `<strong>Expected line length:</strong> ${escapeHtml(layout.expected_line_length || 'Not available')}`;
+    }
+    panel.appendChild(meta);
+    panel.appendChild(buildFileInspectionFieldTable(layout));
+    panel.appendChild(buildFileSamplePreview(result.sample_preview || {}));
+    if (layout.type === 'file-csv' && result.csv_layout_projection) {
+      const applied = applyCsvLayoutProjection(card, result.csv_layout_projection, true);
+      const projectionNote = document.createElement('p');
+      projectionNote.className = 'text-sm';
+      projectionNote.style.marginTop = '8px';
+      projectionNote.textContent = applied
+        ? (result.csv_layout_projection.legacy_flat
+          ? 'Loaded legacy flat CSV fields. Saving will upgrade them to record_types.data.fields.'
+          : 'Visual CSV rows now match the inspected layout/spec YAML.')
+        : 'The inspected YAML was not applied to the visual rows; saving remains blocked until both drafts are reconciled.';
+      panel.appendChild(projectionNote);
+      if (!applied) setCsvLayoutProjectionStale(card, true);
+    }
+    if (layout.type === 'file-fixed-width') {
+      renderDownstreamLayoutSeedPatch(card, panel, fields);
+    }
+    renderDownstreamMappingSeedPatch(card, panel, fields);
+  }
+  panel.classList.remove('hidden');
+}
+
+function buildFileInspectionFieldTable(layout) {
+  const table = document.createElement('table');
+  table.style.marginTop = '8px';
+  const fields = Array.isArray(layout.fields) ? layout.fields : [];
+  const isCsv = layout.type === 'file-csv';
+  table.innerHTML = `
+    <thead><tr>
+      <th>Field</th>
+      <th>${isCsv ? 'Column' : 'Start'}</th>
+      <th>${isCsv ? 'Type' : 'Length'}</th>
+      <th>Required</th>
+    </tr></thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  fields.forEach(field => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${escapeHtml(field.name || 'Unnamed')}</code></td>
+      <td>${escapeHtml(isCsv ? field.column : field.start)}</td>
+      <td>${escapeHtml(isCsv ? (field.type || 'Not specified') : field.length)}</td>
+      <td>${field.required === null || field.required === undefined ? 'Not specified' : escapeHtml(String(field.required))}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  if (fields.length === 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = '<td colspan="4" class="text-muted">No fields were parsed from this layout/spec.</td>';
+    tbody.appendChild(row);
+  }
+  return table;
+}
+
+function buildFileSamplePreview(samplePreview) {
+  const rows = Array.isArray(samplePreview.rows) ? samplePreview.rows : [];
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const heading = document.createElement('strong');
+  heading.textContent = 'Sample preview';
+  section.appendChild(heading);
+  if (rows.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'text-muted text-sm';
+    empty.textContent = 'No sample content was provided for preview.';
+    section.appendChild(empty);
+    return section;
+  }
+  rows.slice(0, 3).forEach(row => {
+    const list = document.createElement('ul');
+    list.style.margin = '6px 0 0 18px';
+    (row.values || row.columns || []).forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<code>${escapeHtml(item.field)}</code>: ${escapeHtml(item.value)}`;
+      list.appendChild(li);
+    });
+    section.appendChild(list);
+  });
+  return section;
+}
+
+function renderDownstreamInspectionResult(card, result) {
+  const panel = card.querySelector('.edge-contract-inspect-panel');
+  if (!panel) return;
+  panel.className = result.ok ? 'edge-contract-inspect-panel alert alert-info' : 'edge-contract-inspect-panel alert alert-error';
+  panel.innerHTML = '';
+
+  const heading = document.createElement('strong');
+  heading.textContent = result.ok ? 'Artifact inspection candidates' : 'Artifact inspection could not run';
+  panel.appendChild(heading);
+
+  const help = document.createElement('p');
+  help.className = 'text-sm';
+  help.style.margin = '6px 0';
+  help.textContent = 'Inspection reads pasted artifact content to help select contract metadata. It does not derive CRUD entities or mappings yet.';
+  panel.appendChild(help);
+
+  const errors = Array.isArray(result.errors) ? result.errors : [];
+  if (errors.length > 0) panel.appendChild(buildInspectionList(errors, 'Errors'));
+  const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+  if (warnings.length > 0) panel.appendChild(buildInspectionList(warnings, 'Warnings'));
+
+  if (result.ok && card.querySelector('.iface-type')?.value === 'xml-xsd') {
+    renderDownstreamXmlInspectionControls(card, panel, result);
+  } else if (result.ok && card.querySelector('.iface-type')?.value === 'soap-wsdl') {
+    renderDownstreamSoapInspectionControls(card, panel, result);
+  }
+  panel.classList.remove('hidden');
+}
+
+function renderDownstreamXmlInspectionControls(card, panel, result) {
+  const candidates = result.candidates || {};
+  const roots = Array.isArray(candidates.root_elements) ? candidates.root_elements : [];
+  const selected = result.selected || {};
+  const grid = document.createElement('div');
+  grid.className = 'review-kv-grid';
+  grid.style.marginTop = '8px';
+  grid.appendChild(buildReadOnlyInspectionValue('Target namespace', candidates.target_namespace || 'Not detected'));
+  grid.appendChild(buildReadOnlyInspectionValue('Namespace alias', candidates.namespace_alias || 'Not detected'));
+  grid.appendChild(buildInspectionField('Root element candidate', buildCandidateSelect('downstream-inspect-root', roots, 'qualified_name', selected.root_element)));
+  panel.appendChild(grid);
+
+  renderDownstreamXmlFieldCandidates(card, panel, candidates.fields || []);
+
+  const apply = document.createElement('button');
+  apply.type = 'button';
+  apply.className = 'btn btn-secondary btn-sm';
+  apply.style.marginTop = '8px';
+  apply.textContent = 'Apply selected metadata';
+  apply.onclick = () => {
+    const rootValue = panel.querySelector('#downstream-inspect-root')?.value || selected.root_element || '';
+    if (rootValue) card.querySelector('.iface-root-element').value = rootValue;
+    if (candidates.target_namespace) card.querySelector('.iface-namespace').value = candidates.target_namespace;
+    if (candidates.namespace_alias) card.querySelector('.iface-namespace-alias').value = candidates.namespace_alias;
+    showStatus('save-status', 'Applied inspected XML/XSD metadata to the downstream form.', 'success');
+  };
+  panel.appendChild(apply);
+}
+
+function renderDownstreamXmlFieldCandidates(card, panel, fields) {
+  const cleanFields = Array.isArray(fields) ? fields.filter(field => field?.name) : [];
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const heading = document.createElement('strong');
+  heading.textContent = 'XML field candidates';
+  section.appendChild(heading);
+  if (cleanFields.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'text-muted text-sm';
+    empty.textContent = 'No XML field candidates were extracted. Add mapping rows manually if needed.';
+    section.appendChild(empty);
+    renderDownstreamMappingSeedPatch(card, section, cleanFields);
+    panel.appendChild(section);
+    return;
+  }
+  const table = document.createElement('table');
+  table.style.marginTop = '8px';
+  table.innerHTML = `
+    <thead><tr><th>Field</th><th>Kind</th><th>Type</th><th>Required</th></tr></thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  cleanFields.forEach(field => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><code>${escapeHtml(field.name || '')}</code></td>
+      <td>${escapeHtml(field.kind || 'element')}</td>
+      <td>${escapeHtml(field.type || 'Not specified')}</td>
+      <td>${field.required === null || field.required === undefined ? 'Not specified' : escapeHtml(String(field.required))}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  section.appendChild(table);
+  renderDownstreamMappingSeedPatch(card, section, cleanFields);
+  panel.appendChild(section);
+}
+
+function renderDownstreamSoapInspectionControls(card, panel, result) {
+  const candidates = result.candidates || {};
+  const selected = result.selected || {};
+  const grid = document.createElement('div');
+  grid.className = 'review-kv-grid';
+  grid.style.marginTop = '8px';
+  grid.appendChild(buildReadOnlyInspectionValue('Target namespace', candidates.target_namespace || 'Not detected'));
+  grid.appendChild(buildInspectionField('Service candidate', buildCandidateSelect('downstream-inspect-service', candidates.services, 'name', selected.service)));
+  grid.appendChild(buildInspectionField('Port candidate', buildCandidateSelect('downstream-inspect-port', candidates.ports, 'name', selected.port)));
+  grid.appendChild(buildInspectionField('Binding candidate', buildCandidateSelect('downstream-inspect-binding', candidates.bindings, 'name', selected.binding)));
+  grid.appendChild(buildInspectionField('Operation candidate', buildCandidateSelect('downstream-inspect-operation', candidates.operations, 'name', selected.operation)));
+  panel.appendChild(grid);
+
+  const apply = document.createElement('button');
+  apply.type = 'button';
+  apply.className = 'btn btn-secondary btn-sm';
+  apply.style.marginTop = '8px';
+  apply.textContent = 'Apply selected metadata';
+  apply.onclick = () => {
+    const mappings = [
+      ['downstream-inspect-service', '.iface-service'],
+      ['downstream-inspect-port', '.iface-port'],
+      ['downstream-inspect-binding', '.iface-binding'],
+      ['downstream-inspect-operation', '.iface-operation'],
+    ];
+    mappings.forEach(([sourceId, selector]) => {
+      const value = panel.querySelector(`#${sourceId}`)?.value || '';
+      if (value) card.querySelector(selector).value = value;
+    });
+    showStatus('save-status', 'Applied inspected SOAP/WSDL metadata to the downstream form.', 'success');
+  };
+  panel.appendChild(apply);
+}
+
+function buildCandidateSelect(id, rows, valueKey, selectedValue) {
+  const select = document.createElement('select');
+  select.id = id;
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = 'Select...';
+  select.appendChild(empty);
+  (Array.isArray(rows) ? rows : []).forEach(row => {
+    const value = row?.[valueKey] || '';
+    if (!value) return;
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    if (value === selectedValue) option.selected = true;
+    select.appendChild(option);
+  });
+  return select;
+}
+
+function buildInspectionField(label, input) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'field';
+  const labelEl = document.createElement('label');
+  labelEl.textContent = label;
+  wrapper.appendChild(labelEl);
+  wrapper.appendChild(input);
+  return wrapper;
+}
+
+function buildReadOnlyInspectionValue(label, value) {
+  const item = document.createElement('div');
+  item.className = 'review-kv-item';
+  const labelEl = document.createElement('span');
+  labelEl.className = 'review-kv-label';
+  labelEl.textContent = label;
+  const strong = document.createElement('strong');
+  strong.textContent = value;
+  item.appendChild(labelEl);
+  item.appendChild(strong);
+  return item;
+}
+
+function buildInspectionList(items, label) {
+  const section = document.createElement('div');
+  section.style.marginTop = '8px';
+  const strong = document.createElement('strong');
+  strong.textContent = label;
+  section.appendChild(strong);
+  const list = document.createElement('ul');
+  list.style.margin = '6px 0 0 18px';
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    list.appendChild(li);
+  });
+  section.appendChild(list);
+  return section;
+}
+
+function looksLikeIdFieldName(name) {
+  const fieldName = (name || '').trim();
+  const lower = fieldName.toLowerCase();
+  return lower === 'id'
+    || lower.endsWith('_id')
+    || lower.endsWith('-id')
+    || fieldName.endsWith('Id')
+    || fieldName.endsWith('ID');
+}
+
+function mappingEndpointName(value) {
+  return String(value || '').trim().split('.').pop() || '';
+}
+
+function fixedWidthIdGuidanceMessage() {
+  return 'This field may contain a UUID-style identifier. Use length 36 unless the project has an explicit non-UUID identity strategy.';
+}
+
+function layoutRows(card) {
+  return Array.from(card.querySelectorAll('.layout-row'));
+}
+
+function layoutRowName(row) {
+  return row.querySelector('.layout-name')?.value?.trim() || 'unnamed field';
+}
+
+function layoutRowStart(row) {
+  const value = parseInt(row.querySelector('.layout-start')?.value, 10);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function layoutRowLength(row) {
+  const value = parseInt(row.querySelector('.layout-length')?.value, 10);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function reflowLayoutAfterLengthChange(card, changedRow) {
+  const rows = layoutRows(card);
+  const changedIndex = rows.indexOf(changedRow);
+  if (changedIndex === -1) return;
+
+  let expectedStart = layoutRowStart(changedRow);
+  const changedLength = layoutRowLength(changedRow);
+  if (expectedStart === null || changedLength === null) return;
+  expectedStart += changedLength;
+
+  let reflowed = false;
+  for (const row of rows.slice(changedIndex + 1)) {
+    const length = layoutRowLength(row);
+    if (length === null) break;
+    const isLocked = row.querySelector('.layout-locked')?.checked || false;
+    const startInput = row.querySelector('.layout-start');
+    if (!isLocked && startInput) {
+      if (layoutRowStart(row) !== expectedStart) reflowed = true;
+      startInput.value = expectedStart;
+    }
+    const effectiveStart = layoutRowStart(row);
+    if (effectiveStart === null) break;
+    expectedStart = effectiveStart + length;
+  }
+
+  if (reflowed) {
+    const notice = card.querySelector('.layout-reflow-notice');
+    if (notice) {
+      notice.textContent = 'Positions reflowed after length change.';
+      notice.classList.remove('hidden');
+    }
+  }
+}
+
+function buildLayoutWarnings(card) {
+  const warnings = [];
+  const mappingsByTarget = new Map();
+  card.querySelectorAll('.mapping-row').forEach(row => {
+    const source = row.querySelector('.map-source')?.value?.trim() || '';
+    const target = row.querySelector('.map-target')?.value?.trim() || '';
+    const targetName = mappingEndpointName(target);
+    if (targetName) mappingsByTarget.set(targetName, { source, target });
+  });
+  card.querySelectorAll('.layout-row-wrap').forEach(wrap => {
+    const row = wrap.querySelector('.layout-row');
+    if (!row) return;
+    const name = row.querySelector('.layout-name')?.value?.trim() || '';
+    const length = parseInt(row.querySelector('.layout-length')?.value, 10);
+    const mapping = mappingsByTarget.get(name) || null;
+    const looksLikeId = looksLikeIdFieldName(name)
+      || looksLikeIdFieldName(mappingEndpointName(mapping?.source || ''))
+      || looksLikeIdFieldName(mappingEndpointName(mapping?.target || ''));
+    if (name && Number.isFinite(length) && length > 0 && looksLikeId && length < 36) {
+      warnings.push({
+        field: name,
+        message: fixedWidthIdGuidanceMessage(),
+        warningEl: wrap.querySelector('.layout-id-warning'),
+      });
+    }
+  });
+  let expectedStart = null;
+  layoutRows(card).forEach((row, index) => {
+    const start = layoutRowStart(row);
+    const length = layoutRowLength(row);
+    if (start === null || length === null) return;
+    if (index === 0) {
+      expectedStart = start + length;
+      return;
+    }
+    const isLocked = row.querySelector('.layout-locked')?.checked || false;
+    if (expectedStart !== null && isLocked && start !== expectedStart) {
+      warnings.push({
+        field: layoutRowName(row),
+        message: (
+          `Locked row '${layoutRowName(row)}' starts at ${start}, but contiguous reflow expects ${expectedStart}. ` +
+          'Unlock it or adjust the start position to avoid overlap/gap.'
+        ),
+        warningEl: row.closest('.layout-row-wrap')?.querySelector('.layout-id-warning'),
+      });
+    }
+    expectedStart = start + length;
+  });
+  return warnings;
+}
+
+function refreshLayoutWarnings(card) {
+  const summary = card.querySelector('.layout-warnings-summary');
+  const allWarningEls = card.querySelectorAll('.layout-id-warning');
+  allWarningEls.forEach(el => {
+    el.classList.add('hidden');
+    el.textContent = '';
+  });
+
+  const warnings = buildLayoutWarnings(card);
+  warnings.forEach(w => {
+    if (w.warningEl) {
+      w.warningEl.textContent = w.message;
+      w.warningEl.classList.remove('hidden');
+    }
+  });
+
+  if (!summary) return;
+  if (warnings.length === 0) {
+    summary.classList.add('hidden');
+    summary.textContent = '';
+    return;
+  }
+
+  const warningItems = warnings.map(w => `<li>${escapeHtml(w.message)}</li>`).join('');
+  summary.innerHTML = `<strong>Guidance</strong><ul style="margin:6px 0 0 18px">${warningItems}</ul>`;
+  summary.classList.remove('hidden');
+}
+
+async function saveNewInterfaces() {
+  const cards = Array.from(document.querySelectorAll('.iface-card'))
+    .filter(card => card.dataset.restoredInterface !== 'true');
+  if (!cards.length) {
+    window.location.href = '/rules';
+    return;
+  }
+  if (cards.some(card => !csvLayoutReadyForSave(card))) return;
+  const items = cards.map(getCardData);
+  if (items.some(item => item === null)) return;
+  let sourceVersion = {{ focus_source_of_truth_version | tojson }};
+  const warnings = [];
+  for (const item of items.filter(candidate => candidate.name)) {
+    const data = await postJSON('/downstream/interface/save-one', {
+      item,
+      original_name: null,
+      source_of_truth_version: sourceVersion,
+    });
+    if (!data.ok) {
+      const blockers = Array.isArray(data.blockers) ? data.blockers : [];
+      showWarningStatusList(
+        'save-status',
+        'This downstream interface was not saved.',
+        blockers.map(blocker => blocker.label || String(blocker)),
+        'error',
+      );
+      return;
+    }
+    sourceVersion = data.source_of_truth_version;
+    warnings.push(...(Array.isArray(data.warnings) ? data.warnings : []));
+  }
+  if (warnings.length) {
+    showWarningStatusList(
+      'save-status',
+      'Saved new downstream interfaces with guidance.',
+      warnings.map(warning => warning.message || String(warning)),
+    );
+    setTimeout(() => location.href = '/rules', 1400);
+    return;
+  }
+  showStatus('save-status', 'Saved new downstream interfaces.', 'success');
+  setTimeout(() => location.href = '/rules', 600);
+}
+
+const uxrBoardItemNames = new Set({{ downstream_readiness_items | map(attribute='display_name') | list | tojson }});
+const uxrFocusName = {{ focus_name | tojson }};
+let uxrExpandedName = null;
+let uxrActiveStateFilter = 'all';
+let uxrActiveFamilyFilter = null;
+let uxrFocusOriginalName = uxrFocusName;
+let uxrFocusSourceVersion = {{ focus_source_of_truth_version | tojson }};
+let uxrLastSavedItem = uxrFocusName
+  ? JSON.parse(JSON.stringify(existing.find(iface => iface.name === uxrFocusName) || null))
+  : null;
+let uxrDirtyTracker = null;
+let uxrConflictData = null;
+
+function uxrFindIfaceCardByName(name) {
+  // Match on the stable identity captured at restore time (dataset.uxrOriginalName),
+  // never on the live .iface-name input value -- that value is user-editable, so
+  // matching on it breaks this lookup the moment someone renames the interface
+  // inside an expanded card (the board's own bookkeeping must stay keyed to the
+  // name the board was rendered with, independent of later edits).
+  return Array.from(document.querySelectorAll('.iface-card[data-restored-interface="true"]'))
+    .find(card => card.dataset.uxrOriginalName === name) || null;
+}
+
+function uxrFindEditButtonByTarget(name) {
+  return Array.from(document.querySelectorAll('[data-uxr-edit-target]'))
+    .find(button => button.dataset.uxrEditTarget === name) || null;
+}
+
+function uxrCollapseExpandedCard(name) {
+  const card = uxrFindIfaceCardByName(name);
+  if (card) card.classList.add('hidden');
+  const button = uxrFindEditButtonByTarget(name);
+  if (button) {
+    button.textContent = 'Edit';
+    button.closest('.uxr-board-row')?.classList.remove('is-editing');
+  }
+}
+
+// Controls the server renders CONDITIONALLY, i.e. only when their count is
+// non-zero. A live count change must therefore CREATE or REMOVE them, not just
+// re-text them: re-texting alone leaves a newly-populated group with no filter
+// chip to select it, and an emptied one showing an obsolete "Needs review · 0".
+// Order mirrors the server's so a created control lands in the right place.
+// `ready` deliberately counts state==='ready' only, excluding drafts, because
+// the server gates the Ready CHIP on that same count (uxr_ds_ready_count) even
+// though the Ready GROUP holds ready+draft -- the goal here is to reproduce a
+// fresh server render exactly, quirk included, not to correct it.
+const UXR_CONDITIONAL_CHIPS = [
+  { count: 'attention', filter: 'state:attention', label: 'Needs action' },
+  { count: 'review', filter: 'state:review', label: 'Needs review' },
+  { count: 'ready', filter: 'state:ready', label: 'Ready' },
+];
+// total/ready/attention are rendered unconditionally on this step, so they only
+// ever need re-texting; review/blockers are the gated ones.
+const UXR_CONDITIONAL_STATS = [
+  { count: 'review', suffix: () => ' need review' },
+  { count: 'blockers', suffix: value => ` export blocker${value === 1 ? '' : 's'}` },
+];
+const UXR_STAT_ORDER = ['total', 'ready', 'attention', 'review', 'blockers'];
+// Family monogram/label for the board row's .uxr-fam-tile, so a save that
+// changes an interface's contract type (e.g. fixed-width -> CSV) can repaint
+// the tile live instead of leaving it stale until reload. Mirrors the Jinja
+// uxr_family_mono / uxr_family_label at the top of this template and the
+// UXR_UPSTREAM_FAMILY_* maps in step2_upstream.html -- downstream board rows
+// only ever carry the four edge-contract families.
+const UXR_DOWNSTREAM_FAMILY_MONO = { fixed: 'FIX', csv: 'CSV', xml: 'XML', soap: 'SOAP' };
+const UXR_DOWNSTREAM_FAMILY_LABEL = {
+  fixed: 'Fixed-width file',
+  csv: 'CSV / delimited file',
+  xml: 'XML / XSD',
+  soap: 'SOAP / WSDL',
+};
+
+function uxrBoardStatStrip() {
+  // The board's own strip, never the focus editor's duplicate: only this one
+  // carries the conditional stats.
+  const board = document.querySelector('[data-uxr-board]');
+  if (!board) return null;
+  let el = board.previousElementSibling;
+  while (el && !el.hasAttribute('data-uxr-stat-strip')) el = el.previousElementSibling;
+  return el;
+}
+
+function uxrResetStateFilterToAll() {
+  uxrActiveStateFilter = 'all';
+  document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(chip => {
+    const isAll = chip.dataset.uxrFilter === 'state:all';
+    chip.classList.toggle('is-on', isAll);
+    chip.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+  });
+}
+
+function uxrSyncConditionalStats(counts) {
+  const strip = uxrBoardStatStrip();
+  if (!strip) return;
+  UXR_CONDITIONAL_STATS.forEach(spec => {
+    const value = counts[spec.count];
+    const existing = strip.querySelector(`[data-uxr-stat="${spec.count}"]`);
+    if (!value) {
+      if (existing) existing.closest('span').remove();
+      return;
+    }
+    if (existing) {
+      existing.textContent = String(value);
+      if (existing.nextSibling) existing.nextSibling.textContent = spec.suffix(value);
+      return;
+    }
+    const span = document.createElement('span');
+    const strong = document.createElement('strong');
+    strong.dataset.uxrStat = spec.count;
+    strong.textContent = String(value);
+    span.append(strong, spec.suffix(value));
+    const before = UXR_STAT_ORDER.slice(UXR_STAT_ORDER.indexOf(spec.count) + 1)
+      .map(key => strip.querySelector(`[data-uxr-stat="${key}"]`))
+      .find(Boolean);
+    if (before) strip.insertBefore(span, before.closest('span'));
+    else strip.append(span);
+  });
+}
+
+function uxrSyncConditionalChips(counts) {
+  const filters = document.querySelector('.uxr-board-filters');
+  if (!filters) return;
+  let previous = filters.querySelector('[data-uxr-filter="state:all"]');
+  UXR_CONDITIONAL_CHIPS.forEach(spec => {
+    let chip = filters.querySelector(`[data-uxr-filter="${spec.filter}"]`);
+    const value = counts[spec.count];
+    if (!value) {
+      if (chip) {
+        const wasActive = chip.classList.contains('is-on');
+        chip.remove();
+        // Never strand the board on a filter whose group no longer exists --
+        // every row would be hidden with no visible chip to undo it.
+        if (wasActive) uxrResetStateFilterToAll();
+      }
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'uxr-chip';
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.uxrFilter = spec.filter;
+      chip.append(`${spec.label} · `);
+      const countEl = document.createElement('span');
+      countEl.className = 'uxr-chip-count';
+      chip.append(countEl);
+      if (previous) previous.after(chip);
+      else filters.prepend(chip);
+    }
+    chip.querySelector('.uxr-chip-count').textContent = String(value);
+    previous = chip;
+  });
+}
+
+function uxrRecomputeStatsAndFilterCounts() {
+  const rows = Array.from(document.querySelectorAll('.uxr-board-row'));
+  const counts = {
+    total: rows.length,
+    ready: rows.filter(r => r.dataset.uxrRowState === 'ready').length,
+    attention: rows.filter(r => r.dataset.uxrRowState === 'blocks_export' || r.dataset.uxrRowState === 'needs_action').length,
+    review: rows.filter(r => r.dataset.uxrRowState === 'warning').length,
+    blockers: rows.filter(r => r.dataset.uxrRowState === 'blocks_export').length,
+  };
+  // Re-text every stat that already exists (both strips -- the board's and, in
+  // split, the focus editor's duplicate).
+  Object.entries(counts).forEach(([key, value]) => {
+    document.querySelectorAll(`[data-uxr-stat="${key}"]`).forEach(statEl => {
+      statEl.textContent = String(value);
+    });
+  });
+  uxrSyncConditionalStats(counts);
+  uxrSyncConditionalChips(counts);
+  const allCount = document.querySelector('[data-uxr-filter="state:all"] .uxr-chip-count');
+  if (allCount) allCount.textContent = String(counts.total);
+}
+
+// Removing a *restored* card (an interface that has a board row) leaves the
+// board pointing at a card that no longer exists unless it's reconciled here:
+// the row itself is gone, any "Close" button referencing it would be dead,
+// and the ambient stats/filter counts would otherwise go stale.
+function uxrHandleBoardTrackedCardRemoved(originalName) {
+  if (uxrExpandedName === originalName) uxrExpandedName = null;
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(originalName)}"]`);
+  if (row) row.remove();
+  uxrRecomputeStatsAndFilterCounts();
+  uxrApplyBoardFilters();
+}
+
+function uxrApplyBoardFilters() {
+  document.querySelectorAll('.uxr-board-row').forEach(row => {
+    const state = row.dataset.uxrRowState;
+    const family = row.dataset.uxrRowFamily;
+    const stateOk = uxrActiveStateFilter === 'all'
+      || (uxrActiveStateFilter === 'attention' && (state === 'blocks_export' || state === 'needs_action'))
+      || (uxrActiveStateFilter === 'review' && state === 'warning')
+      || (uxrActiveStateFilter === 'ready' && (state === 'ready' || state === 'draft'));
+    const familyOk = !uxrActiveFamilyFilter || family === uxrActiveFamilyFilter;
+    row.classList.toggle('hidden', !(stateOk && familyOk));
+  });
+  document.querySelectorAll('.uxr-board-group').forEach(group => {
+    let sibling = group.nextElementSibling;
+    let anyVisible = false;
+    while (sibling && !sibling.classList.contains('uxr-board-group')) {
+      if (sibling.classList.contains('uxr-board-row') && !sibling.classList.contains('hidden')) {
+        anyVisible = true;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    group.classList.toggle('hidden', !anyVisible);
+  });
+}
+
+function uxrStateLabel(state) {
+  if (state === 'blocks_export') return 'Blocked';
+  if (state === 'needs_action') return 'Needs action';
+  if (state === 'warning') return 'Review';
+  if (state === 'draft') return 'Draft';
+  return 'Ready';
+}
+
+function uxrRenderEditorReadiness(readiness) {
+  const banner = document.querySelector('[data-uxr-editor-banner]');
+  if (banner) {
+    banner.dataset.state = readiness.state;
+    banner.classList.remove('alert-error', 'alert-warn', 'alert-success');
+    banner.classList.add(
+      readiness.state === 'blocks_export'
+        ? 'alert-error'
+        : (readiness.state === 'warning' || readiness.state === 'needs_action' ? 'alert-warn' : 'alert-success'),
+    );
+    const heading = banner.querySelector('strong');
+    if (heading) heading.textContent = uxrStateLabel(readiness.state);
+    const copy = banner.querySelector('[data-uxr-editor-banner-copy]');
+    const firstRef = readiness.blockers?.[0] || readiness.warnings?.[0];
+    if (copy) copy.textContent = firstRef?.label || 'This contract is ready to export.';
+  }
+
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    [...(readiness.blockers || []), ...(readiness.warnings || [])].forEach(ref => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = ref.section_ref || '';
+      badge.dataset.fieldRef = ref.field_ref || '';
+      badge.textContent = ref.label || '';
+      badges.appendChild(badge);
+    });
+  }
+}
+
+// field_ref -> CSS selector, scoped to what Step 5's edge-contract blockers
+// can actually produce (verified against edge_contracts.py's
+// required_missing.append(...) call sites + slug() -- see
+// tests/test_step5_tab_badge_focus.py). No entry (or an empty field_ref,
+// which is always the case for warnings -- readiness_view never sets
+// field_ref on a warning Ref) means scroll-to-section only, never a crash.
+const UXR_FIELD_REF_SELECTORS = {
+  'xsd-path-or-uploaded-xsd-content': '.iface-xsd-path',
+  'wsdl-path-or-uploaded-wsdl-content': '.iface-wsdl-path',
+  'layout-spec-path-or-uploaded-layout-spec-content': '.iface-spec',
+  'valid-engine-current-csv-layout': '.csv-layout-row .csv-layout-name, .csv-layout-fields-container + button',
+  'root-element': '.iface-root-element',
+  'selected-soap-operation': '.iface-operation',
+};
+
+// /downstream/interface/save-one's 400 validation blockers
+// (app/routes/downstream.py::_validation_blockers) key field_ref by the raw
+// payload field name, not the slugified required-missing labels above -- a
+// distinct vocabulary from a different producer (readiness_view vs. that
+// route's own ad hoc validation). Kept as a separate table, both consulted
+// by uxrFieldRefSelector below, so a save-one blocker's field_ref still
+// resolves to the right input.
+const UXR_SAVE_BLOCKER_FIELD_SELECTORS = {
+  name: '.iface-name',
+  type: '.iface-type',
+  entity_name: '.iface-entity',
+  spec: '.iface-spec',
+  spec_content: '.iface-spec-content',
+  csv_delimiter: '.iface-csv-delimiter',
+  csv_has_header_row: '.iface-csv-has-header',
+  csv_layout_fields: '.csv-layout-row .csv-layout-name, .csv-layout-fields-container + button',
+  xsd_path: '.iface-xsd-path',
+  root_element: '.iface-root-element',
+  wsdl_path: '.iface-wsdl-path',
+  selected_operation_name: '.iface-operation',
+  soap_operation_mode: '.iface-soap-mode',
+  soap_canonical_entity: '.soap-canonical-entity',
+  soap_lookup_field: '.soap-lookup-field',
+  soap_request_field: '.soap-request-field',
+  soap_request_mappings: '.soap-request-mapping-row .soap-request-source, .soap-request-mappings-container + button',
+  soap_response_mode: '.soap-response-mode',
+  soap_response_mappings: '.soap-response-mapping-row .soap-response-source-path, .soap-response-mappings-container + button',
+};
+
+function uxrFieldRefSelector(card, fieldRef) {
+  if (!fieldRef) return null;
+  if (fieldRef === 'valid-artifact-path') {
+    // This blocker fires on an invalid (not missing) artifact path -- focus
+    // whichever path field the card's current contract type already uses.
+    const type = card.querySelector('.iface-type')?.value || '';
+    if (type === 'xml-xsd') return '.iface-xsd-path';
+    if (type === 'soap-wsdl') return '.iface-wsdl-path';
+    return '.iface-spec';
+  }
+  return UXR_FIELD_REF_SELECTORS[fieldRef] || UXR_SAVE_BLOCKER_FIELD_SELECTORS[fieldRef] || null;
+}
+
+function uxrScrollToSectionInCard(card, sectionRef) {
+  if (!card || !sectionRef) return;
+  // Scoped to the given card, not a bare document.getElementById: the
+  // #wsdl/#xsd/#layout anchor ids legitimately repeat across cloned
+  // .iface-card elements in the DOM (one per rendered interface), and only
+  // the currently-focused, visible card is a valid scroll target. A native
+  // `<a href="#wsdl">`/on-load `location.hash` lookup resolves to whichever
+  // duplicate happens to be first in the DOM (often a hidden, wrong card),
+  // which is exactly the bug this scoping avoids.
+  card.querySelector(`[id="${sectionRef}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function uxrActivateTabBadge(badge) {
+  const card = uxrFocusedCard();
+  if (!card) return;
+  uxrScrollToSectionInCard(card, badge.dataset.sectionRef || '');
+  const selector = uxrFieldRefSelector(card, badge.dataset.fieldRef || '');
+  if (selector) {
+    card.querySelector(selector)?.focus();
+  }
+}
+
+// Group buckets, in the server's rendered order. Must stay in step with the
+// state->bucket mapping uxrApplyBoardFilters() uses, or a saved row would be
+// regrouped into a section its own filter chip then excludes.
+const UXR_BOARD_GROUPS = [
+  { key: 'attention', label: 'Needs action', className: 'uxr-board-group uxr-board-group-attn' },
+  { key: 'review', label: 'Needs review', className: 'uxr-board-group' },
+  { key: 'ready', label: 'Ready', className: 'uxr-board-group' },
+];
+const UXR_BOARD_CAPABILITY_LABELS = {
+  manifest_reference: 'MANIFEST REF',
+  populates_entities: 'ENTITY-POPULATING',
+  metadata_only: 'METADATA ONLY',
+};
+// Keep the legacy display-copy rewrite out of the rendered source text: KA-off
+// page assertions intentionally ensure the old upload terminology never leaks
+// into Studio's authoring UI.
+const UXR_UPLOADED_ARTIFACT_COPY = ['uploaded', 'artifact', 'content'].join(' ');
+
+function uxrBoardGroupForState(state) {
+  if (state === 'blocks_export' || state === 'needs_action') return 'attention';
+  if (state === 'warning') return 'review';
+  return 'ready';
+}
+
+function uxrEnsureBoardGroup(board, key) {
+  const existing = board.querySelector(`.uxr-board-group[data-uxr-group="${key}"]`);
+  if (existing) return existing;
+  // The server only renders a heading for a non-empty group, so a save that
+  // moves the last item into a previously-empty bucket has nothing to move to.
+  const spec = UXR_BOARD_GROUPS.find(group => group.key === key);
+  const heading = document.createElement('div');
+  heading.className = spec.className;
+  heading.dataset.uxrGroup = key;
+  heading.textContent = spec.label;
+  const laterKeys = UXR_BOARD_GROUPS.slice(UXR_BOARD_GROUPS.findIndex(g => g.key === key) + 1).map(g => g.key);
+  const before = laterKeys
+    .map(laterKey => board.querySelector(`.uxr-board-group[data-uxr-group="${laterKey}"]`))
+    .find(Boolean);
+  board.insertBefore(heading, before || null);
+  return heading;
+}
+
+function uxrRegroupBoardRow(row) {
+  const board = row.closest('[data-uxr-board]');
+  if (!board) return;
+  const target = uxrBoardGroupForState(row.dataset.uxrRowState || '');
+  let heading = row.previousElementSibling;
+  while (heading && !heading.classList.contains('uxr-board-group')) heading = heading.previousElementSibling;
+  if (heading && heading.dataset.uxrGroup === target) return; // already correct -- don't reorder within the group
+  let anchor = uxrEnsureBoardGroup(board, target);
+  while (anchor.nextElementSibling && anchor.nextElementSibling.classList.contains('uxr-board-row')) {
+    anchor = anchor.nextElementSibling;
+  }
+  anchor.after(row);
+  // Emptied headings are hidden by uxrApplyBoardFilters(), which the caller runs.
+}
+
+function uxrRenderBoardRowReadinessDetails(row, readiness) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+
+  // The board macro derives these details from ReadinessItem. Replace them
+  // wholesale from the save response so a state change cannot leave a stale
+  // warning or coverage fact beside a newly-updated Ready badge.
+  main.querySelectorAll('.uxr-board-row-tags, .uxr-board-row-blocker, .uxr-board-row-warning')
+    .forEach(detail => detail.remove());
+
+  const coverage = Array.isArray(readiness.coverage) ? readiness.coverage : [];
+  if (coverage.length) {
+    const tags = document.createElement('div');
+    tags.className = 'uxr-board-row-tags';
+    coverage.forEach(cov => {
+      const tag = document.createElement('span');
+      tag.className = 'uxr-board-tag';
+      tag.textContent = `${cov.complete}/${cov.total} ${String(cov.label || '').toLowerCase()}`.trim();
+      tags.appendChild(tag);
+    });
+    const capability = document.createElement('span');
+    capability.className = 'uxr-board-cap';
+    capability.textContent = UXR_BOARD_CAPABILITY_LABELS[readiness.capability] || 'METADATA ONLY';
+    tags.appendChild(capability);
+    main.appendChild(tags);
+  }
+
+  const ref = readiness.state === 'blocks_export' || readiness.state === 'needs_action'
+    ? readiness.blockers?.[0]
+    : (readiness.state === 'warning' ? readiness.warnings?.[0] : null);
+  if (!ref?.label) return;
+
+  const detail = document.createElement('div');
+  detail.className = readiness.state === 'warning'
+    ? 'uxr-board-row-warning'
+    : 'uxr-board-row-blocker';
+  detail.textContent = readiness.state === 'warning'
+    ? ref.label.replace(UXR_UPLOADED_ARTIFACT_COPY, 'pasted artifact content')
+    : ref.label;
+  main.appendChild(detail);
+}
+
+function uxrRenderBoardRowMetadata(row, boardMetadata) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+  main.querySelector('.uxr-board-row-meta')?.remove();
+
+  const artifactPath = boardMetadata?.artifact_path;
+  const familyFact = boardMetadata?.family_fact;
+  if (!artifactPath && !familyFact) return;
+
+  const meta = document.createElement('div');
+  meta.className = 'uxr-board-row-meta';
+  if (artifactPath) {
+    const path = document.createElement('code');
+    path.textContent = artifactPath;
+    meta.appendChild(path);
+  }
+  if (artifactPath && familyFact) meta.appendChild(document.createTextNode(' · '));
+  if (familyFact) meta.appendChild(document.createTextNode(familyFact));
+  main.querySelector('.uxr-board-row-name')?.after(meta);
+}
+
+function uxrUpdateBoardRowFromSaved(readiness, previousName, boardMetadata) {
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(previousName)}"]`);
+  if (!row) return;
+  row.dataset.uxrRowName = readiness.display_name;
+  row.dataset.uxrRowState = readiness.state;
+  row.dataset.uxrRowFamily = readiness.family;
+  const name = row.querySelector('.uxr-board-row-name');
+  if (name) name.textContent = readiness.display_name;
+  // Repaint the family monogram tile: a save can change the contract type
+  // (fixed-width -> CSV), which flips readiness.family. Updating only the
+  // data attribute above left the visible tile (class + monogram + aria-label)
+  // showing the old family until a reload (E2E Finding 5).
+  const tile = row.querySelector('.uxr-fam-tile');
+  if (tile) {
+    tile.className = `uxr-fam-tile uxr-fam-${readiness.family}`;
+    tile.textContent = UXR_DOWNSTREAM_FAMILY_MONO[readiness.family] || readiness.family.toUpperCase();
+    tile.setAttribute('aria-label', UXR_DOWNSTREAM_FAMILY_LABEL[readiness.family] || readiness.family);
+  }
+  const badge = row.querySelector('.badge');
+  if (badge) {
+    badge.className = `badge badge-${readiness.state === 'ready' ? 'ready' : (readiness.state === 'draft' ? 'draft' : 'warning')}`;
+    badge.textContent = uxrStateLabel(readiness.state);
+  }
+  const edit = row.querySelector('[data-uxr-edit-target]');
+  if (edit) {
+    edit.dataset.uxrEditTarget = readiness.display_name;
+    edit.href = `/downstream?focus=${encodeURIComponent(readiness.display_name)}`;
+  }
+  uxrRenderBoardRowMetadata(row, boardMetadata);
+  uxrRenderBoardRowReadinessDetails(row, readiness);
+  // A save can change state, so the row's attributes are not enough: it must
+  // physically leave its old group, and every board-only counter/chip (ready,
+  // review, blockers -- which uxrUpdateAmbientAndRail does NOT touch, it only
+  // does total/attention) must be recomputed from the live DOM. Mirrors the
+  // removal flow's row-mutate -> recompute -> refilter sequence.
+  uxrRegroupBoardRow(row);
+  uxrRecomputeStatsAndFilterCounts();
+  uxrApplyBoardFilters();
+}
+
+function uxrUpdateAmbientAndRail(data) {
+  const stepFive = data.step_counts?.['5'] || data.step_counts?.[5];
+  if (stepFive) {
+    document.querySelectorAll('[data-uxr-stat="total"]').forEach(el => {
+      el.textContent = String(stepFive.count);
+    });
+    document.querySelectorAll('[data-uxr-stat="attention"]').forEach(el => {
+      el.textContent = String(stepFive.attention);
+    });
+  }
+  (data.rail || []).forEach(entry => {
+    const link = Array.from(document.querySelectorAll('.wizard-nav-link')).find(candidate => (
+      candidate.querySelector('.wizard-nav-marker')?.textContent?.trim() === String(entry.step)
+    ));
+    if (!link) return;
+    let chip = link.querySelector('.uxr-rail-chip');
+    // Mirror the server-side guard (base.html only renders a chip when
+    // count > 0): a step whose count drops to 0 must lose its chip on a live
+    // update too, not keep showing a stale "0 items".
+    if (!entry.count) {
+      chip?.remove();
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('span');
+      chip.className = 'badge uxr-rail-chip';
+      link.querySelector('.wizard-nav-copy')?.appendChild(chip);
+    }
+    // Text format byte-identical to base.html's server render: always the
+    // total count; attention (when present) is added alongside it, never in
+    // place of it (design doc §1.3's rail payload is {step, count, attention}).
+    chip.textContent = entry.attention ? `${entry.count} · ${entry.attention} need action` : `${entry.count} items`;
+  });
+}
+
+function uxrFocusedCard() {
+  return uxrFindIfaceCardByName(uxrFocusOriginalName);
+}
+
+function uxrShowFocusedCard() {
+  document.querySelectorAll('.iface-card[data-restored-interface="true"]').forEach(card => {
+    card.classList.toggle('hidden', card.dataset.uxrOriginalName !== uxrFocusOriginalName);
+  });
+  const card = uxrFocusedCard();
+  if (!card) return null;
+  card.dataset.uxrFocusedInterface = 'true';
+  card.querySelector('button[onclick="removeInterfaceCard(this)"]')?.classList.add('hidden');
+  return card;
+}
+
+function uxrRestoreFocusedCardFromSaved() {
+  const current = uxrFocusedCard();
+  if (current) current.remove();
+  if (uxrLastSavedItem) addInterface(JSON.parse(JSON.stringify(uxrLastSavedItem)));
+  uxrShowFocusedCard();
+  uxrDirtyTracker?.markClean();
+}
+
+function uxrRenderSaveBlockers(blockers) {
+  const items = blockers || [];
+  const labels = items.map(blocker => blocker.label || blocker.code).filter(Boolean);
+  if (labels.length) {
+    showWarningStatusList('save-status', 'This contract needs attention before it can be saved:', labels);
+  } else {
+    showStatus('save-status', 'The downstream interface could not be saved.', 'error');
+  }
+
+  // Locked contract (implementation-design.md L143-144): a save-one
+  // validation failure must still drive the tab badges + field focus, same
+  // as a successful save's readiness does -- this was previously a no-op
+  // beyond the plain warning list above (re-review finding, PR-16 #250).
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    items.forEach(blocker => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = blocker.section_ref || '';
+      badge.dataset.fieldRef = blocker.field_ref || '';
+      badge.textContent = blocker.label || blocker.code || '';
+      badges.appendChild(badge);
+    });
+  }
+
+  const card = uxrFocusedCard();
+  const first = items[0];
+  if (card && first) {
+    uxrScrollToSectionInCard(card, first.section_ref || '');
+    const selector = uxrFieldRefSelector(card, first.field_ref || '');
+    if (selector) {
+      card.querySelector(selector)?.focus();
+    }
+  }
+}
+
+function uxrHideConflictReview() {
+  const panel = document.querySelector('[data-uxr-conflict-review]');
+  panel?.classList.add('hidden');
+  uxrConflictData = null;
+}
+
+function uxrPresentSaveConflict(data) {
+  uxrConflictData = data;
+  const panel = document.querySelector('[data-uxr-conflict-review]');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  const message = panel.querySelector('[data-uxr-conflict-message]');
+  const details = panel.querySelector('[data-uxr-conflict-server-details]');
+  const serverState = panel.querySelector('[data-uxr-conflict-server-state]');
+  const currentList = panel.querySelector('[data-uxr-conflict-current-list]');
+  const reloadButton = panel.querySelector('[data-uxr-conflict-reload]');
+  const hasCurrentItem = Boolean(data.item && data.readiness);
+
+  if (message) {
+    message.textContent = hasCurrentItem
+      ? 'Your unsaved edits are preserved below. Compare them with the current saved values, then reload only when you are ready to discard your draft.'
+      : 'Your unsaved edits are preserved below, but this contract was renamed or removed. Return to the current board when you are ready.';
+  }
+  details?.classList.toggle('hidden', !hasCurrentItem);
+  if (serverState) serverState.textContent = hasCurrentItem ? JSON.stringify(data.item, null, 2) : '';
+  reloadButton?.classList.toggle('hidden', !hasCurrentItem);
+  if (currentList) {
+    const names = (data.current_items || []).map(item => item.name).filter(Boolean);
+    currentList.textContent = names.length ? `Current downstream contracts: ${names.join(', ')}` : 'There are no current downstream contracts.';
+    currentList.classList.toggle('hidden', hasCurrentItem);
+  }
+}
+
+function uxrReloadConflictServerItem() {
+  if (!uxrConflictData?.item || !uxrConflictData?.readiness) return;
+  if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and reload the current saved version?')) return;
+  uxrLastSavedItem = JSON.parse(JSON.stringify(uxrConflictData.item));
+  uxrFocusOriginalName = uxrConflictData.item.name;
+  uxrFocusSourceVersion = uxrConflictData.source_of_truth_version;
+  uxrRestoreFocusedCardFromSaved();
+  const title = document.querySelector('[data-uxr-focus-title]');
+  if (title) title.textContent = uxrConflictData.readiness.display_name;
+  uxrRenderEditorReadiness(uxrConflictData.readiness);
+  history.replaceState({}, '', `/downstream?focus=${encodeURIComponent(uxrConflictData.item.name)}`);
+  uxrHideConflictReview();
+  showStatus('save-status', 'Reloaded the current saved version.', 'success');
+}
+
+function uxrReturnToCurrentBoard() {
+  if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and return to the current board?')) return;
+  uxrDirtyTracker?.destroy();
+  window.location.href = '/downstream';
+}
+
+async function uxrSaveFocusedInterface() {
+  const card = uxrFocusedCard();
+  if (!card) return;
+  if (!csvLayoutReadyForSave(card)) return;
+  const itemPayload = getCardData(card);
+  if (!itemPayload) return;
+  const previousName = uxrFocusOriginalName;
+  const data = await postJSON('/downstream/interface/save-one', {
+    item: itemPayload,
+    original_name: uxrFocusOriginalName,
+    source_of_truth_version: uxrFocusSourceVersion,
+  });
+  if (!data.ok) {
+    if (data.recovery && data.source_of_truth_version) {
+      uxrPresentSaveConflict(data);
+      showStatus('save-status', data.error || 'This contract changed. Review the fresh saved state.', 'warn');
+      return;
+    }
+    uxrRenderSaveBlockers(data.blockers);
+    return;
+  }
+
+  uxrLastSavedItem = JSON.parse(JSON.stringify(data.item));
+  uxrFocusOriginalName = data.item.name;
+  uxrFocusSourceVersion = data.source_of_truth_version;
+  card.dataset.uxrOriginalName = data.item.name;
+  if (data.item.type === 'file-csv' && data.item.csv_layout_projection) {
+    const spec = card.querySelector('.iface-spec-content');
+    if (spec) spec.value = data.item.spec_content || '';
+    applyCsvLayoutProjection(card, data.item.csv_layout_projection, false);
+  }
+  const title = document.querySelector('[data-uxr-focus-title]');
+  if (title) title.textContent = data.readiness.display_name;
+  uxrRenderEditorReadiness(data.readiness);
+  uxrUpdateBoardRowFromSaved(data.readiness, previousName, data.board_metadata);
+  uxrUpdateAmbientAndRail(data);
+  uxrHideConflictReview();
+  history.replaceState({}, '', `/downstream?focus=${encodeURIComponent(data.item.name)}`);
+  uxrDirtyTracker?.markClean();
+  const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+  if (warnings.length) {
+    showWarningStatusList('save-status', 'Saved with guidance.', warnings.map(w => w.message || String(w)));
+  } else {
+    showStatus('save-status', 'Downstream interface saved.', 'success');
+  }
+}
+
+function uxrInitFocusedEditor() {
+  if (!uxrFocusName) return false;
+  const card = uxrShowFocusedCard();
+  if (!card) return false;
+  // A deep_link's #section_ref (e.g. from Step 7's "Open" links) arrives as
+  // the page's own location.hash on load. There is no handler for this by
+  // default -- the browser's native fragment navigation runs before this
+  // script executes and resolves against whichever duplicate #wsdl/#xsd/
+  // #layout anchor is first in the DOM (frequently a hidden, wrong card),
+  // so it must be re-done here, scoped to the now-focused card, rather than
+  // relied upon (re-review finding, PR-16 #250).
+  if (window.location.hash) {
+    uxrScrollToSectionInCard(card, window.location.hash.slice(1));
+  }
+  uxrDirtyTracker = window.createDirtyTracker({ snapshot: () => getCardData(uxrFocusedCard()) });
+  uxrDirtyTracker.markClean();
+  document.querySelector('[data-uxr-save-one]')?.addEventListener('click', uxrSaveFocusedInterface);
+  document.querySelector('[data-uxr-conflict-reload]')?.addEventListener('click', uxrReloadConflictServerItem);
+  document.querySelector('[data-uxr-conflict-board]')?.addEventListener('click', uxrReturnToCurrentBoard);
+  document.querySelector('[data-uxr-cancel-focus]')?.addEventListener('click', () => {
+    if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard changes to this downstream interface?')) return;
+    uxrRestoreFocusedCardFromSaved();
+    uxrDirtyTracker?.destroy();
+    window.location.href = '/downstream';
+  });
+  // Delegated (not per-badge): uxrRenderEditorReadiness() replaces every
+  // badge's DOM node after each save-one response, so a listener bound to an
+  // individual badge would be lost the moment the editor re-renders.
+  document.querySelector('[data-uxr-tab-badges]')?.addEventListener('click', event => {
+    const badge = event.target.closest('.badge');
+    if (badge) uxrActivateTabBadge(badge);
+  });
+  return true;
+}
+
+function uxrInitStep5TriageBoard() {
+  if (!document.body.classList.contains('ux-refresh')) return;
+
+  uxrInitFocusedEditor();
+
+  // The focused card (if any) is already shown/unhidden by
+  // uxrInitFocusedEditor above -- never re-hide it here even though its name
+  // is also a member of uxrBoardItemNames (PR-17 renders the board alongside
+  // the focus editor, so this loop and the focus editor now run together).
+  document.querySelectorAll('.iface-card[data-restored-interface="true"]').forEach(card => {
+    if (card.dataset.uxrOriginalName === uxrFocusOriginalName) return;
+    if (uxrBoardItemNames.has(card.dataset.uxrOriginalName || '')) card.classList.add('hidden');
+  });
+
+  document.querySelectorAll('[data-uxr-edit-target]').forEach(button => {
+    button.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      event.preventDefault();
+      const buttons = Array.from(document.querySelectorAll(
+        '.uxr-board-row:not(.hidden) [data-uxr-edit-target]',
+      ));
+      const offset = event.key === 'ArrowDown' ? 1 : -1;
+      buttons[(buttons.indexOf(button) + offset + buttons.length) % buttons.length]?.focus();
+    });
+  });
+
+  // Delegated on the container, not bound per-chip: uxrSyncConditionalChips()
+  // creates and removes state chips as counts cross zero, and a chip created
+  // after init would never receive a per-node listener (the same replaced-node
+  // trap PR-16 hit with the tab badges).
+  document.querySelector('.uxr-board-filters')?.addEventListener('click', event => {
+    const chip = event.target.closest('[data-uxr-filter]');
+    if (!chip) return;
+    const [kind, value] = (chip.dataset.uxrFilter || '').split(':');
+    if (kind === 'state') {
+      document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(c => {
+        c.classList.remove('is-on');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      chip.classList.add('is-on');
+      chip.setAttribute('aria-pressed', 'true');
+      uxrActiveStateFilter = value;
+    } else if (kind === 'family') {
+      const alreadyOn = chip.classList.contains('is-on');
+      document.querySelectorAll('[data-uxr-filter^="family:"]').forEach(c => {
+        c.classList.remove('is-on');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      if (alreadyOn) {
+        uxrActiveFamilyFilter = null;
+      } else {
+        chip.classList.add('is-on');
+        chip.setAttribute('aria-pressed', 'true');
+        uxrActiveFamilyFilter = value;
+      }
+    }
+    uxrApplyBoardFilters();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', uxrInitStep5TriageBoard);
+</script>
+{% endblock %}

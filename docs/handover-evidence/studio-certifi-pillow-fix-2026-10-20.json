@@ -1,0 +1,955 @@
+{
+  "advisories": [
+    {
+      "aliases": [
+        "CVE-2026-112899"
+      ],
+      "id": "GHSA-vx6w-vv9f-6gvg",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 2.3.0, <= 12.3.0"
+        }
+      ],
+      "response_sha256": "2f3008467cfc61df2476014601131a89e4e3e692511ebf433bb245eec39c6c4b",
+      "retrieved_utc": "2026-10-21T01:43:16.398937+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-vx6w-vv9f-6gvg"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112400"
+      ],
+      "id": "GHSA-65qm-jvmh-6pqg",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 9.2.0, < 13.0.0"
+        }
+      ],
+      "response_sha256": "ce43ee7c42438e6587878ac19733a1726e9de14eca5dbbe57f138585ca6092e7",
+      "retrieved_utc": "2026-10-21T01:43:16.597425+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-65qm-jvmh-6pqg"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112897"
+      ],
+      "id": "GHSA-q45j-58j2-45rg",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 5.3.0, < 13.0.0"
+        }
+      ],
+      "response_sha256": "9a423b2138434fafcacb7a9ae7486be782016b3114d3ad66be1c97c13aa0326a",
+      "retrieved_utc": "2026-10-21T01:43:16.970251+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-q45j-58j2-45rg"
+    },
+    {
+      "aliases": [],
+      "id": "GHSA-6q48-6c7w-9gw2",
+      "ranges": [
+        {
+          "first_patched_version": "2026.10.19",
+          "package": {
+            "ecosystem": "pip",
+            "name": "certifi"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 2019.03.09, < 2026.10.19"
+        }
+      ],
+      "response_sha256": "744e6f07692b60127a7de335386ad71a2b6e27a27f6879d969ec6fc81a9705b7",
+      "retrieved_utc": "2026-10-21T01:43:17.114903+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-6q48-6c7w-9gw2"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112395"
+      ],
+      "id": "GHSA-462x-pgg6-55fp",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 8.2.0, < 13.0.0"
+        }
+      ],
+      "response_sha256": "53ba413a55d0b49cbafe8e442724a61535e451e8a06a24c771dfb81afa64f5a4",
+      "retrieved_utc": "2026-10-21T01:43:17.397381+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-462x-pgg6-55fp"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112895"
+      ],
+      "id": "GHSA-p4wg-p73j-c528",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 5.1.0, < 13.0.0"
+        }
+      ],
+      "response_sha256": "b4466ac40b6384bbbbe02fd6fbbed3ce406ea110dc3bc96bc86480e3e3359b08",
+      "retrieved_utc": "2026-10-21T01:43:17.544978+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-p4wg-p73j-c528"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112896"
+      ],
+      "id": "GHSA-pchr-8j38-3x4p",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 12.3.0"
+        }
+      ],
+      "response_sha256": "dd38d5229f885c19ef7ea389774f90e7d27ee0c19147b9fd4c0d4396dd687671",
+      "retrieved_utc": "2026-10-21T01:43:17.749160+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-pchr-8j38-3x4p"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112404"
+      ],
+      "id": "GHSA-c6hw-5grf-ff96",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": ">= 8.1.0, < 13.0.0"
+        }
+      ],
+      "response_sha256": "59225c57957685a84262705c318f718bbd5ed8491fba38580803f0be22cb0372",
+      "retrieved_utc": "2026-10-21T01:43:18.127560+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-c6hw-5grf-ff96"
+    },
+    {
+      "aliases": [
+        "CVE-2026-112397"
+      ],
+      "id": "GHSA-58r4-6rv3-gfh8",
+      "ranges": [
+        {
+          "first_patched_version": "13.0.0",
+          "package": {
+            "ecosystem": "pip",
+            "name": "Pillow"
+          },
+          "vulnerable_functions": [],
+          "vulnerable_version_range": "<= 12.3.0"
+        }
+      ],
+      "response_sha256": "835cbfaf277bfb9af8a90bdc139aa0de2790cc8b4d8b9b29538710c38daf1114",
+      "retrieved_utc": "2026-10-21T01:43:18.419305+00:00",
+      "standalone_state": "CORRECTED in tested constrained host/image graph; no private/seed-copy clearance",
+      "url": "https://github.com/advisories/GHSA-58r4-6rv3-gfh8"
+    }
+  ],
+  "allowance_counters": {
+    "baseline_audit": 1,
+    "corrective_rebuild": 0,
+    "independent_review": 0,
+    "initial_image_build": 1,
+    "pre_review_repair_cycles": 2,
+    "selected_candidate": 1
+  },
+  "assessment": {
+    "disposition": "All new groups OPEN. Historical dispositions retain original identities/limits and are not transferred as blanket current-image clearance.",
+    "group_count": 3840,
+    "grype_active": 1050,
+    "grype_ignored": 2775,
+    "historical_silent": 1,
+    "inventory": {
+      "copied_jdk": {
+        "name": "openjdk",
+        "version": "21.0.12.1+1-LTS"
+      },
+      "debian_packages": 166,
+      "java_archives": 52,
+      "python_packages": 106,
+      "trivy_imported_python_sbom_records": 18
+    },
+    "new_groups": 313,
+    "new_groups_by_family": {
+      "ca-certificates": 1,
+      "certifi": 1,
+      "libtirpc-common": 2,
+      "libtirpc-dev": 2,
+      "libtirpc3": 2,
+      "linux-libc-dev": 305
+    },
+    "persisting": 3527,
+    "scope_analysis": {
+      "historical_silent_groups": [
+        [
+          "deb",
+          "linux-libc-dev",
+          "6.1.187-1",
+          "CVE-2026-89603"
+        ]
+      ],
+      "interpretation": "All 312 new OS groups are new database matches against the identical inherited versions, file manifests and original payload layers, not introduced/worsened artifact contents. They are outside the standalone Python strict-audit graph and do not require a dependency expansion to establish this bounded certifi/Pillow correction. They remain OPEN; no acceptance or patch applicability is inferred. ca-certificates is a separate OS trust-store finding (DLA-4845-1), not repaired by standalone certifi. New certifi group refers to the unchanged pip-private/seed bundle and remains OPEN by the explicit copy-boundary requirement. No newly introduced dependency, version drift, unavailable strict coverage or failing required audit was found. If broader image clearance is required, stop for separate authorization; this delivery does not provide it.",
+      "new_families": [
+        {
+          "name": "ca-certificates",
+          "new_groups": 1,
+          "package_file_manifest_sha256": "7b933ae821d814dc19aee6d7e563701b6a8b356c27584ce54634ae058cd34474",
+          "same_original_payload_layers": [
+            "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353",
+            "sha256:ba0f973ad05d82f20d8dd8dc79a9d1b71e9d90ab48380d8c0912fad39dda5ced"
+          ],
+          "version": "20250419~deb12u1"
+        },
+        {
+          "name": "libtirpc-common",
+          "new_groups": 2,
+          "package_file_manifest_sha256": "af71a0149908b3004f8d931ebcfd2d7709c67482f51518bd76f0c48cdadd5ebe",
+          "same_original_payload_layers": [
+            "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353"
+          ],
+          "version": "1.3.3+ds-1"
+        },
+        {
+          "name": "libtirpc-dev",
+          "new_groups": 2,
+          "package_file_manifest_sha256": "00e01c1c70c2a4d09a5c451eb194d96e7d7ebb1f53957a0dc2293501ffd05118",
+          "same_original_payload_layers": [
+            "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353"
+          ],
+          "version": "1.3.3+ds-1"
+        },
+        {
+          "name": "libtirpc3",
+          "new_groups": 2,
+          "package_file_manifest_sha256": "b72b5f94c7e57e3c4a8a5d54da3dd3160b139bce55a74995880da4dedd824c91",
+          "same_original_payload_layers": [
+            "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353"
+          ],
+          "version": "1.3.3+ds-1"
+        },
+        {
+          "name": "linux-libc-dev",
+          "new_groups": 305,
+          "package_file_manifest_sha256": "5738bd95dd1d938237b41170b5d7246e24746e9350c784d6392f9249eba59597",
+          "same_original_payload_layers": [
+            "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353"
+          ],
+          "version": "6.1.187-1"
+        }
+      ],
+      "same_oci_prefix_layers": [
+        {
+          "filesystem_diff_id": "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7",
+          "index": 0
+        },
+        {
+          "filesystem_diff_id": "sha256:ba0f973ad05d82f20d8dd8dc79a9d1b71e9d90ab48380d8c0912fad39dda5ced",
+          "index": 1
+        },
+        {
+          "filesystem_diff_id": "sha256:8664c9b18215e1141ccc8fa3cbc7483f4cd16fb5230b570fa7c744da58251da3",
+          "index": 2
+        },
+        {
+          "filesystem_diff_id": "sha256:c167899be569aee196241ae0905aeed34708881d5a8784be3de0ed9bf9db7200",
+          "index": 3
+        },
+        {
+          "filesystem_diff_id": "sha256:5df5cc4d5d5697fbb24d2a75cc106d4c39af2da067df146f318bd9798c9ec05f",
+          "index": 4
+        },
+        {
+          "filesystem_diff_id": "sha256:4aa83767ee96758669fd0efb3ccda27466f9aca5d551a450322459833896c31c",
+          "index": 5
+        },
+        {
+          "filesystem_diff_id": "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353",
+          "index": 6
+        },
+        {
+          "filesystem_diff_id": "sha256:92a5b105f7130ef9b335d7f8939a9bdc6cdd03f3b4312581db671b2ffff56b13",
+          "index": 7
+        },
+        {
+          "filesystem_diff_id": "sha256:78f1ae7681b8a677a2fab82eaf942ad31469d9a6bc6aba9af11827b1a48c35f8",
+          "index": 8
+        }
+      ]
+    },
+    "state": "complete-with-findings",
+    "trivy_categories": {
+      "debian": 3831,
+      "inventory_unresolved_python": 7
+    }
+  },
+  "base_descriptors": {
+    "jdk": {
+      "amd64": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+          "org.opencontainers.image.base.name": "ubuntu:26.04",
+          "org.opencontainers.image.created": "2026-10-02T01:18:30Z",
+          "org.opencontainers.image.revision": "511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07",
+          "org.opencontainers.image.source": "https://github.com/adoptium/containers.git#511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07:21/jdk/ubuntu/resolute",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/eclipse-temurin",
+          "org.opencontainers.image.version": "21.0.12.1_1-jdk-resolute"
+        },
+        "digest": "sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 2137
+      },
+      "index_response_sha256": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b"
+    },
+    "python": {
+      "amd64": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:a4672c0cb26fbdde88e38fa2dfb6c681942306680e41e4378b28770b6e79ee91",
+          "org.opencontainers.image.base.name": "debian:bookworm-slim",
+          "org.opencontainers.image.created": "2026-10-06T01:55:45Z",
+          "org.opencontainers.image.revision": "d2a898cb88e46203577eabc62cdcf6e92aaee176",
+          "org.opencontainers.image.source": "https://github.com/docker-library/python.git#d2a898cb88e46203577eabc62cdcf6e92aaee176:3.13/slim-bookworm",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+          "org.opencontainers.image.version": "3.13.16-slim-bookworm"
+        },
+        "digest": "sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 1752
+      },
+      "index_response_sha256": "a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+    }
+  },
+  "base_sha": "8f416a80a0ab30f0998b0abceec3accb152b94a7",
+  "build_policy": {
+    "engine_merged_sha": "ca53afb40ac9ba67d74f9d27c2d52e63b909970c",
+    "engine_ref": "origin/main (merged snapshot at entry)",
+    "jdk_base": "eclipse-temurin:21-jdk@sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+    "platform": "linux/amd64",
+    "python_base": "python:3.13.16-slim-bookworm@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+    "studio_code_sha": "529ec2d113fb619b2db94dacd0a541809c3818ce"
+  },
+  "candidate": "EF-V5-M2-STUDIO-CERTIFI-PILLOW-FIX-S1",
+  "checks": {
+    "clean_install_and_pip_check": "PASS",
+    "final_affected_selection": {
+      "passed": 76
+    },
+    "host_l2": {
+      "passed": 1
+    },
+    "host_non_smoke": {
+      "deselected": 32,
+      "passed": 2506,
+      "skipped": 45
+    },
+    "host_python": "3.11.15 macOS arm64",
+    "image_callers": {
+      "passed": 9
+    },
+    "image_launch": {
+      "passed": 1
+    },
+    "image_python": "3.13.16 Linux amd64 emulated",
+    "strict_audits": {
+      "baseline_findings": 9,
+      "corrected_findings": 0,
+      "image_packages": 94,
+      "reference_packages": 95,
+      "skipped": 0
+    }
+  },
+  "copy_boundary": {
+    "pip_private_and_seed_bundle_sha256": "bbc7e9c01d7551bb8a159b5dedd989b8ee3ce105aff522b68eb1b01bf854cab0",
+    "pip_private_certifi_version": "2026.06.17",
+    "seed": "/usr/local/lib/python3.13/ensurepip/_bundled/pip-26.2.1-py3-none-any.whl",
+    "standalone_certifi_bundle_sha256": "50f79f98dac192b20dbf73f35c56f0b0c557ab267ff5199d1117cc1180b70785",
+    "state": "OPEN: active pip-private certifi and independently embedded ensurepip copy. Unchanged private urllib3 remains OPEN. No vendor-tree, seed or pip pin edits."
+  },
+  "database": {
+    "grype": {
+      "built": "2026-10-20T06:29:49Z",
+      "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-20T00:32:16Z_1792477789.tar.zst?checksum=sha256%3Af75997cdf079db4a477dcb5b12d2aaa805a16619a61d60100c598739478b9172",
+      "path": "private task-owned cache",
+      "schemaVersion": "v6.1.10",
+      "valid": true
+    },
+    "trivy": {
+      "DownloadedAt": "2026-10-21T01:47:26.051421Z",
+      "NextUpdate": "2026-10-22T01:19:53.032404708Z",
+      "UpdatedAt": "2026-10-21T01:19:53.032404989Z",
+      "Version": 2
+    },
+    "trivy_java": {
+      "DownloadedAt": "2026-10-21T01:49:53.813585Z",
+      "NextUpdate": "2026-10-23T00:59:02.286522562Z",
+      "UpdatedAt": "2026-10-20T00:59:02.286523053Z",
+      "Version": 1
+    }
+  },
+  "date_local": "2026-10-20",
+  "engine_merged_sha": "ca53afb40ac9ba67d74f9d27c2d52e63b909970c",
+  "graph": {
+    "image_count": 94,
+    "image_inventory_equals_complete_audit": true,
+    "image_only": {
+      "jeepney": "0.9.0",
+      "secretstorage": "3.5.0"
+    },
+    "reference_all_maps_equal": true,
+    "reference_count": 95,
+    "reference_only": {
+      "backports-tarfile": "1.2.0",
+      "importlib-metadata": "9.0.0",
+      "zipp": "4.1.0"
+    },
+    "version_drift": {}
+  },
+  "image_tested_studio_code_sha": "529ec2d113fb619b2db94dacd0a541809c3818ce",
+  "limits": [
+    "Fresh Dockerfile dependency image built once; existing unmodified base/JDK/Maven/APT layers were reused from local build cache, not re-resolved. Shared prefix layers0-8 match prior actual image; current final image rescanned with current frozen DBs. No new whole-stage assessment or clearance.",
+    "No full M2, generated-app campaign, SuiteL5, exploit corpus, TLS live-server handshake, other-platform proof or release acceptance. Optional Tk absent; no OS fonts or native packages installed.",
+    "Normal suite skipped guarded smoke/Engine/KS availability cases; skips are not passes. CI and independent review exact-head outcomes are separate from this pre-review content record.",
+    "Clean clone reproduces setup, tests, graph generation/audit and image recipe. Exact past OCI digest and current database/report replay require retained private packet and scanners; live APT/advisory data can change.",
+    "Historical dated findings and silent CVE-2026-89603 remain visible; no risk accepted, no merge or publication authorized."
+  ],
+  "native_delta": {
+    "bundled_libraries": [
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libXau-154567c4.so.6.0.0",
+        "sha256": "8b5a93469805d3550471766696d4755f05bc6ca0587f22c03037ca7d12545c8b"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libavif-c6062d5f.so.16.4.2",
+        "sha256": "d12ec0b696860b292114b130ecac6082fc75c198c1b4fa57b26089e9b0a7eb6a"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libbrotlicommon-53534446.so.1.2.0",
+        "sha256": "72c1ab487e4bd44c906336747bf1926cbf5f164f9d05e0b4fd18b7d8d113b7fe"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libbrotlidec-7e5462ba.so.1.2.0",
+        "sha256": "1b497acc3d8d8e1fc286088f0c288be7c0c54bf5a8fa94b12b23e54de205d48c"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libfreetype-57f805ba.so.6.20.6",
+        "sha256": "5be086dea47fd1c3fadd431ee79fe0b5e5a0c6c38e78f1db55cf2dad17dea430"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libharfbuzz-fb49c9fc.so.0.61450.0",
+        "sha256": "4a30b9e3a12a72691b70b14945f3e8adaa8c2bc191bd8b706aae6ed0f0fa9fc0"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libjpeg-6dc8d115.so.62.4.0",
+        "sha256": "cc04bc42fd6296e81d24d13955fb95bd829624f6c74105eaf4a7fcf2ce42e048"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/liblcms2-88eaba2f.so.2.0.19",
+        "sha256": "4cf9f69016c7804bcb4fa56f5bbc55640cb1b7196ac7b93ba29ed9df9bd9ff4d"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/liblzma-de26b416.so.5.8.4",
+        "sha256": "ab4d2f260d6777088cc4bd96ce4997a5199d20b94e146a764b02c37d42477ce9"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libopenjp2-e530e1bf.so.2.5.4",
+        "sha256": "eea7a2058e0f2084d41ba88c561bddc866bd38e74f76b5ca4fccb965e2fb1c24"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libpng16-1d1ba958.so.16.58.0",
+        "sha256": "38d5a01026f61afba1bb94698846722840067fc87b2ee9003fe8dcccf1bc155f"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libsharpyuv-0066295b.so.0.1.2",
+        "sha256": "8abd5c39ee3b26330288b2e833d4d9b5d4b5ed4c881649057354df17326b6996"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libtiff-20b7e810.so.6.3.0",
+        "sha256": "729883f61144533eb3215d405e4daad528a68f89e9a1fccf51e9862819f30020"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libwebp-51b0b3f7.so.7.2.0",
+        "sha256": "6a97159a7c36acacb112618eb74720c97bbab4ecc499a8bfeb495dd726285259"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libwebpdemux-9fe2abcc.so.2.0.17",
+        "sha256": "5d728787db553c48c74dccd93d2763ec88234850a5f2f821df11483c8d28d2a7"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libwebpmux-8fb1c9f6.so.3.1.2",
+        "sha256": "6bdb41f738f088e7420374d67a4a6523cc4786f340d355d2bf4f124dcf3d5820"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libxcb-9065bb12.so.1.1.0",
+        "sha256": "f3707868b0b2e78dbdac0994d2977b0ec4303c9c6250f03576b1bd93c42cad63"
+      },
+      {
+        "path": "/usr/local/lib/python3.13/site-packages/pillow.libs/libzstd-40ad5e7e.so.1.5.7",
+        "sha256": "95a5af7845018639470635243c36b428f90af32b728804af6d951e7fcb08bbea"
+      }
+    ],
+    "feature_versions": {
+      "avif": {
+        "new": "1.4.2",
+        "old": "1.4.2"
+      },
+      "freetype2": {
+        "new": "2.14.3",
+        "old": "2.14.3"
+      },
+      "jpg": {
+        "new": "6.2",
+        "old": "6.2"
+      },
+      "jpg_2000": {
+        "new": "2.5.4",
+        "old": "2.5.4"
+      },
+      "libjpeg_turbo": {
+        "new": "3.2.0",
+        "old": "3.1.4.1"
+      },
+      "libtiff": {
+        "new": "4.7.2",
+        "old": "4.7.1"
+      },
+      "littlecms2": {
+        "new": "2.19",
+        "old": "2.19"
+      },
+      "pil": {
+        "new": "13.0.0",
+        "old": "12.3.0"
+      },
+      "webp": {
+        "new": "1.6.0",
+        "old": "1.6.0"
+      },
+      "xcb": {
+        "new": null,
+        "old": null
+      },
+      "zlib": {
+        "new": "1.2.13",
+        "old": "1.2.13"
+      },
+      "zlib_ng": {
+        "new": "2.3.3",
+        "old": "2.3.3"
+      }
+    },
+    "new_probe_sha256": "395c8900d6338bbbb67476f855feaa6e509da3788b8d17ddc8ec7d6ca21b89ea",
+    "old_probe_sha256": "8992f8b95a2b8a392552c97d5074cb1f84591721d531a5f74b5c98d5d52a236a",
+    "pillow_extensions": [
+      {
+        "changed": true,
+        "new_sha256": "f1426a708f1a8bb0d628699273aa6880f59ada4cce51c18402b172c1981b4c1c",
+        "old_sha256": "3155ad10215109cd3361d84882e922be7d6c397e7711229d799d03b66138286f",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_avif.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "aa20bb5fab466c4db237ad073a363318709a4b6f4bde820f64504b0af6ed0f7c",
+        "old_sha256": "b22c753cda12721dcecd4e43b329276d9d9a1dbb0a5aaf64cc6d08fdb514525a",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imaging.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "3d778f43bc8ee2b228b3873b9755a2b13a8bd0d51f43fb0d7ef8f61b6ce551bb",
+        "old_sha256": "c9a2f67d7f866d7b92dbfeb9a40687359af114b33c8356a52c36fcde89f76335",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imagingcms.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "ce658b476c3173b41ea8953830f55de41932dc5eaa1704c14e34a4f255788626",
+        "old_sha256": "1c7de6ed076e175b6d94b52aec1823f4432c13a91042bfdee8c5757bee8382dd",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imagingft.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "cf21beac4c82e19474e429889201d9febb8688bd4e88795134b3600d04dbe2e8",
+        "old_sha256": "37ab5a12b94f5f462f0ff2d0b94cf4d9cb2535961da562ea346031efc69032e7",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imagingmath.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "9d16da72ab9057ab22295f692d6a2c36bd67a7ab35b8225e1c9ed99bad9b9222",
+        "old_sha256": "625b7320d8c2493c20df6448c59ba3cb846b1db34321a2ba1559368a3b56f1f0",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imagingmorph.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "e008ad389b405e5be3815a4d141c3e4bc34a442ff09d47f48c0e094a49e25ffe",
+        "old_sha256": "29a2887813a753d89ab3f959261dbcd03c33cb7bc1f75e1eb9c7a2cb0c58b7c4",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_imagingtk.cpython-313-x86_64-linux-gnu.so"
+      },
+      {
+        "changed": true,
+        "new_sha256": "482648d1e6b1dd76dec2d605fd96b91af419a4d6d7059d96085294b2da0e9c61",
+        "old_sha256": "53399dd74c1b91b5799bc046fa8d3f4e0c2c20b32bfe0cf4622fcff178b7ee11",
+        "path": "/usr/local/lib/python3.13/site-packages/PIL/_webp.cpython-313-x86_64-linux-gnu.so"
+      }
+    ],
+    "qualification": "Prior native baseline is the identified October14 Python3.13 image probe. Feature-level version sameness does not establish byte identity or clearance. All present native members were checked against official Pillow13 wheel and linkage captured. TK absent both policy and current probe; no font/OS library installed."
+  },
+  "oci": {
+    "config_digest": "sha256:73d2cdd1cdf7b47cc9c27f4c4511e3c7fdbbc038fec776771a1e0232a4d0794b",
+    "config_user": "appuser",
+    "created": "2026-10-21T01:48:06.224830844Z",
+    "index_digest": "sha256:ade363aed9b85edc8e493bf1f62745fe501c95116ecb7569571a4c1a4022206c",
+    "layers": [
+      {
+        "compressed_bytes": 28249323,
+        "compressed_digest": "sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39",
+        "filesystem_diff_id": "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7"
+      },
+      {
+        "compressed_bytes": 3342349,
+        "compressed_digest": "sha256:29a6e787b2e07b2b8a2c88b600812f9f7588374cf74e6f17d696695c8984d900",
+        "filesystem_diff_id": "sha256:ba0f973ad05d82f20d8dd8dc79a9d1b71e9d90ab48380d8c0912fad39dda5ced"
+      },
+      {
+        "compressed_bytes": 14892797,
+        "compressed_digest": "sha256:aded561bdc17f79b65ec824282d38146fac0eb9d8951b9a7a4ca462bbea8c21d",
+        "filesystem_diff_id": "sha256:8664c9b18215e1141ccc8fa3cbc7483f4cd16fb5230b570fa7c744da58251da3"
+      },
+      {
+        "compressed_bytes": 250,
+        "compressed_digest": "sha256:29d8700fe216d98a8d918ecf891265355e2ca697f9c11e8290d00813caaed60d",
+        "filesystem_diff_id": "sha256:c167899be569aee196241ae0905aeed34708881d5a8784be3de0ed9bf9db7200"
+      },
+      {
+        "compressed_bytes": 158117473,
+        "compressed_digest": "sha256:8593c7b779cf2603690188987955ebf37959ca3a7eb5a9aa57fa7f09ff01ebb1",
+        "filesystem_diff_id": "sha256:5df5cc4d5d5697fbb24d2a75cc106d4c39af2da067df146f318bd9798c9ec05f"
+      },
+      {
+        "compressed_bytes": 9359432,
+        "compressed_digest": "sha256:56cc398a3af436025d27598f7b84636d740c9d42e4c60dafb328506b034bad46",
+        "filesystem_diff_id": "sha256:4aa83767ee96758669fd0efb3ccda27466f9aca5d551a450322459833896c31c"
+      },
+      {
+        "compressed_bytes": 115508120,
+        "compressed_digest": "sha256:34924a94db369ddfc7ee1ff1207dde6502c877d4d59da43322bd647f1db8da54",
+        "filesystem_diff_id": "sha256:742d6c4185cb678a535b01a27017296303e1ffc4a32f4fea62aacc349679f353"
+      },
+      {
+        "compressed_bytes": 3312,
+        "compressed_digest": "sha256:fc0d2d0e24b719c3d030a4183b0e6abf5f7f85ebd27dad119acec28a7a48a10c",
+        "filesystem_diff_id": "sha256:92a5b105f7130ef9b335d7f8939a9bdc6cdd03f3b4312581db671b2ffff56b13"
+      },
+      {
+        "compressed_bytes": 131,
+        "compressed_digest": "sha256:75a32fd51b9888e084b516d1e39c479f95cccbe94956d76daa06e4a6380d97a3",
+        "filesystem_diff_id": "sha256:78f1ae7681b8a677a2fab82eaf942ad31469d9a6bc6aba9af11827b1a48c35f8"
+      },
+      {
+        "compressed_bytes": 1394,
+        "compressed_digest": "sha256:20f0a1020302692b9e234800680b93a535f180e2f52921b836d286c99ca7e7b9",
+        "filesystem_diff_id": "sha256:522b4986eb144248c92deac3a3416af774f2d686b267b3c51a15b61314c259e8"
+      },
+      {
+        "compressed_bytes": 985,
+        "compressed_digest": "sha256:2d694fbdc79a5eeecc180199b5124f783f18c9d3d6497b5e14e04be7a9d3d1c2",
+        "filesystem_diff_id": "sha256:b3c90b83e0e4807e2962636b703359566be9159c31ce46d4ca2ceaeae2222865"
+      },
+      {
+        "compressed_bytes": 62146743,
+        "compressed_digest": "sha256:9b473f6ad3f359a43f4bd991c67858563161c72be708ec22db0745862a146e5a",
+        "filesystem_diff_id": "sha256:089d8cdfb4fd4fd30cd78bd377bfa7a0c8deec06751b0a78122aeae86b5e65d9"
+      },
+      {
+        "compressed_bytes": 1214554,
+        "compressed_digest": "sha256:c1447a3ba47066e7b747e4ecd1e8e08700513f411fe41eabd28978cf357b4930",
+        "filesystem_diff_id": "sha256:ab99f264e3076d8a55919c4276ac9122092138ff9e6d15768e6e5888f63d22b7"
+      },
+      {
+        "compressed_bytes": 171,
+        "compressed_digest": "sha256:d46c8437f440b29dc0242b5019bd5c7420558dfbd6d9ad57afccdcac244459a7",
+        "filesystem_diff_id": "sha256:e2531ee99c5b87b2df664940672074202503895700551391daee59f897715273"
+      },
+      {
+        "compressed_bytes": 327421,
+        "compressed_digest": "sha256:e1ac2d3abeb880393c82a364ca024657163d6ab525ba3190612166c0220aef12",
+        "filesystem_diff_id": "sha256:537d80653bd662944fe272e5c1ea92a88b6552cafa96fc30684fbb3bb9140a24"
+      },
+      {
+        "compressed_bytes": 1545381,
+        "compressed_digest": "sha256:89b6cf852027018f7ef95bfcb4725233ab49141dc370568a2e724d704d86d04f",
+        "filesystem_diff_id": "sha256:fca2edcf8b8559feee4ab41004a5135b1b52088143bc4a6b84507156d42e06ac"
+      }
+    ],
+    "platform": "linux/amd64",
+    "platform_manifest_digest": "sha256:29db810e476c3e0aac31b5fcf5583e59555f3cbbc0ed7142b670d624d34d2ca3",
+    "verified": true
+  },
+  "primary_receipts": [
+    {
+      "file": "upstream/GHSA-vx6w-vv9f-6gvg.json",
+      "retrieved_utc": "2026-10-21T01:43:16.398937+00:00",
+      "sha256": "2f3008467cfc61df2476014601131a89e4e3e692511ebf433bb245eec39c6c4b",
+      "url": "https://api.github.com/advisories/GHSA-vx6w-vv9f-6gvg"
+    },
+    {
+      "file": "upstream/GHSA-65qm-jvmh-6pqg.json",
+      "retrieved_utc": "2026-10-21T01:43:16.597425+00:00",
+      "sha256": "ce43ee7c42438e6587878ac19733a1726e9de14eca5dbbe57f138585ca6092e7",
+      "url": "https://api.github.com/advisories/GHSA-65qm-jvmh-6pqg"
+    },
+    {
+      "file": "upstream/GHSA-q45j-58j2-45rg.json",
+      "retrieved_utc": "2026-10-21T01:43:16.970251+00:00",
+      "sha256": "9a423b2138434fafcacb7a9ae7486be782016b3114d3ad66be1c97c13aa0326a",
+      "url": "https://api.github.com/advisories/GHSA-q45j-58j2-45rg"
+    },
+    {
+      "file": "upstream/GHSA-6q48-6c7w-9gw2.json",
+      "retrieved_utc": "2026-10-21T01:43:17.114903+00:00",
+      "sha256": "744e6f07692b60127a7de335386ad71a2b6e27a27f6879d969ec6fc81a9705b7",
+      "url": "https://api.github.com/advisories/GHSA-6q48-6c7w-9gw2"
+    },
+    {
+      "file": "upstream/GHSA-462x-pgg6-55fp.json",
+      "retrieved_utc": "2026-10-21T01:43:17.397381+00:00",
+      "sha256": "53ba413a55d0b49cbafe8e442724a61535e451e8a06a24c771dfb81afa64f5a4",
+      "url": "https://api.github.com/advisories/GHSA-462x-pgg6-55fp"
+    },
+    {
+      "file": "upstream/GHSA-p4wg-p73j-c528.json",
+      "retrieved_utc": "2026-10-21T01:43:17.544978+00:00",
+      "sha256": "b4466ac40b6384bbbbe02fd6fbbed3ce406ea110dc3bc96bc86480e3e3359b08",
+      "url": "https://api.github.com/advisories/GHSA-p4wg-p73j-c528"
+    },
+    {
+      "file": "upstream/GHSA-pchr-8j38-3x4p.json",
+      "retrieved_utc": "2026-10-21T01:43:17.749160+00:00",
+      "sha256": "dd38d5229f885c19ef7ea389774f90e7d27ee0c19147b9fd4c0d4396dd687671",
+      "url": "https://api.github.com/advisories/GHSA-pchr-8j38-3x4p"
+    },
+    {
+      "file": "upstream/GHSA-c6hw-5grf-ff96.json",
+      "retrieved_utc": "2026-10-21T01:43:18.127560+00:00",
+      "sha256": "59225c57957685a84262705c318f718bbd5ed8491fba38580803f0be22cb0372",
+      "url": "https://api.github.com/advisories/GHSA-c6hw-5grf-ff96"
+    },
+    {
+      "file": "upstream/GHSA-58r4-6rv3-gfh8.json",
+      "retrieved_utc": "2026-10-21T01:43:18.419305+00:00",
+      "sha256": "835cbfaf277bfb9af8a90bdc139aa0de2790cc8b4d8b9b29538710c38daf1114",
+      "url": "https://api.github.com/advisories/GHSA-58r4-6rv3-gfh8"
+    },
+    {
+      "file": "upstream/pillow.json",
+      "retrieved_utc": "2026-10-21T01:43:18.584697+00:00",
+      "sha256": "56cd02ba0c8d44417b3f5e6b5bff96861810d89a4f14ba2863a91f619f86a842",
+      "url": "https://pypi.org/pypi/pillow/json"
+    },
+    {
+      "file": "upstream/pillow-13.0.0.json",
+      "retrieved_utc": "2026-10-21T01:43:18.644613+00:00",
+      "sha256": "183d4151cbc909acf39d4d5d48469d6bc66d5516e7f506854241839d0611b69e",
+      "url": "https://pypi.org/pypi/pillow/13.0.0/json"
+    },
+    {
+      "file": "upstream/certifi-2026.10.19.json",
+      "retrieved_utc": "2026-10-21T01:43:18.704748+00:00",
+      "sha256": "5b6ba21c20c09f5e4ca52bf8251de25fafbdb56909c60e3ba44d4f2b6ef5d319",
+      "url": "https://pypi.org/pypi/certifi/2026.10.19/json"
+    },
+    {
+      "file": "upstream/pillow-release.html",
+      "retrieved_utc": "2026-10-21T01:43:18.864524+00:00",
+      "sha256": "bda268c8cb4d9210d14c7c50e74e8d2b8da7a9b998784d33f744b81710f0bee4",
+      "url": "https://raw.githubusercontent.com/python-pillow/Pillow/13.0.0/docs/releasenotes/13.0.0.rst"
+    },
+    {
+      "file": "upstream/pillow-python-support.html",
+      "retrieved_utc": "2026-10-21T01:43:19.075241+00:00",
+      "sha256": "1720a5d7328cf8d2d7bf2a4ad68a9309d1672ef676f37713af4c78289ebf690e",
+      "url": "https://raw.githubusercontent.com/python-pillow/Pillow/13.0.0/docs/installation/python-support.rst"
+    },
+    {
+      "file": "upstream/certifi-incident.json",
+      "retrieved_utc": "2026-10-21T01:43:19.617304+00:00",
+      "sha256": "0e24ae261e32b6d4290bf66debc3ee47c71d371f5b1818b21460385ae2ac8eca",
+      "url": "https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576.json"
+    },
+    {
+      "file": "upstream/certifi-releases.json",
+      "retrieved_utc": "2026-10-21T01:43:19.905192+00:00",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "url": "https://api.github.com/repos/certifi/python-certifi/releases?per_page=5"
+    }
+  ],
+  "private_packet": "Studio-Certifi-Pillow-Fix-2026-10-20",
+  "private_sha256": {
+    "build-entry.json": "933d1b17b34a098b06005a38e419b0bf24efc7f48c734f80e160fe1341b49ea7",
+    "build-metadata.json": "257a5efe106c750081461ba85734a9b85b48c96ad96f06d68a43e1cae1424161",
+    "consumer-graph.json": "008adc902ddcfd262b4701bb1e6320d12baa274083143b16ae036479148873ae",
+    "counters.json": "f6d5390085afd86bc430fce93c1a5524b9a538ce866bedd639bc7c820ea7084c",
+    "cp-affected-final.log": "fe48632bb3178e79755b37fc912b6574214a99591c45657e54b1b70724f59925",
+    "cp-baseline-audit.json": "a5ded3613c487461fb5958c32be7d3d910b90458f1dd12febd6489fa864512d9",
+    "cp-baseline-audit.log": "b8f0864657ea18cb6d3cf25886c10e1a86f368e8ce447214af8e42a137154d31",
+    "cp-corrected-audit.json": "0b6b53322954694a7188341c8f3b4794ebae7521045a686d2825668e06162ac8",
+    "cp-corrected-audit.log": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+    "cp-host-l2.log": "b336bfbb42d8a55315e2f7350d4a6528e0fd95453f81c1e21f96f9ae7c5d2932",
+    "cp-host-suite.log": "b139ccd54de9e4974af7f60e2f1200a951f07e95cc477610258a0f869ba7a568",
+    "cp-py311-freeze.txt": "64ffad06050f87416231a4a67aefe71a2ca68d2ac6608a1fac2240afe5406b46",
+    "cp-py311-install.log": "174b31da8609ad9565865568a5a844429691bced7d18062c6e6f348c96f02925",
+    "delta.json": "19e5740d1e0bf911a89c41aff8a2f8d12c62d9a402b21b67da453e17286fd2d4",
+    "failures-so-far.md": "efad880779422f598ce3b7ad8a95bac92cac25198ab835d6f9fe0794edc5572c",
+    "final-assessment.json": "5052620848fce25b21a946faea009d8169e384c0027432c9a287aaaf937bbe23",
+    "final-grype.json": "82b1ddab922cfcc0c079c6dfcc3e8d09d0729a0c5b2d07512ca90bac45fd2f0f",
+    "final-ledger.json": "249b7c7e256e0b2a802539d61867b1d092bf7bb9f2f5cfcc22fd84da96d1f4ab",
+    "final-syft.json": "5b260a7c3986081b8af3b56fd1d81f286dc54ce890d7a6dab21427b3e3cee8d3",
+    "final-trivy.json": "63ae96556f07783b8eaac3802ce69b7970cb5ab37a277679d3dcda6e2fd96a72",
+    "graph-joins.json": "f950c860a017202c67c8e39f109ca3cd027c06fc00daa6c2449a05b59e7435a5",
+    "grype-db-status.log": "846d06c63f95f60afb0acafcb69e2769c7e588f8fa96881124f6c28ee969153c",
+    "grype-db/6/vulnerability.db": "f823a38a76153d6c3f269e986c19137a3d34c0b8583b16c7a8a45afb5aa0c98e",
+    "image-installed-audit.json": "dc5eeffa97aaa7954d956c9f63d472be745f3365eca8786e2c65529ede1e6306",
+    "image-installed-strict-audit-correct-input.log": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+    "image-installed.txt": "610dfcbc0dcb5c9ac5594f5d5c1e200ecc097e33d90bf5adb654c46f972c54f3",
+    "image-launch.log": "57915b3e69482ab4587bb28d651436919f2f57da3170fd1745b43117847a5090",
+    "image-native.json": "395c8900d6338bbbb67476f855feaa6e509da3788b8d17ddc8ec7d6ca21b89ea",
+    "image-oci.log": "5215876a0c21af955719cf08b4f367e2859576692e1f91eac25547db078a8e9e",
+    "image-probe-final.log": "1aec5bb94eb1fbd67b4ad892f0d7a9cc03b4fcf487a8b5df8804fcd1f0fb0948",
+    "image-probe-final.py": "ab4bba715626503c7c085bf5cbe59e23551d0b074848ebf3211888ecd4764686",
+    "image.tar": "28d66877a34d86d16cb1d4860a3be62583d9bef846997c2d7b8b4bea3f1e8e6c",
+    "native-delta.json": "1f8aafc9d0e6437a468c5b91e30045ed1f1f37061a9dfd7ac2a1fb3800bb0f77",
+    "new-observations.json": "3dcba2ed4557ccb87e9280c9661811482c3bd12103adffad32b4c7e54a1f96e5",
+    "packaged-source.log": "f8cf41bfb3c350e034730c74d319189dc8b57b90df5912f5c115b220726ef626",
+    "receipts.json": "43cea80e148526edb16bab70bed75f9d998ab382d06ef54efb4b0fa103fe48a2",
+    "stop-condition-analysis.json": "2f89d36798d7b9dfd55d6bb8627b8b7af75c1a833dd026e2b7fe582b0e7246fd",
+    "tools/verified.json": "b8a4737fed26ebd5d7b936d0249b260b32f25428a694e01c2c6dee648aae2268",
+    "trivy-cache/db/metadata.json": "7be3da8771c6b0632a23431bb93cc4cc02eedafe3a91e7cee9bed9f0d4288a1c",
+    "trivy-cache/db/trivy.db": "50b0d49617d6efa3a1883b1f84b07c321c7f31bc1a4cda43575df3093fc6f897",
+    "trivy-cache/java-db/metadata.json": "b1b4debf3854aa1e2c3305b27da0b7222b7109f33ca29372329bdbf55c6b3060",
+    "trivy-cache/java-db/trivy-java.db": "cbde51ef6acaaa36039c3d824fb237b4765746d82eb7bb6e4ecf221acedeb8be",
+    "wheel-receipts.json": "4909c6f3c42eac1c7f371748e079ab2ec234e38999a9127ab972725b57369f55"
+  },
+  "revision": 1,
+  "scanners": [
+    {
+      "archive": "syft_1.52.0_darwin_arm64.tar.gz",
+      "archive_sha256": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+      "archive_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_checksums.txt",
+      "executable_sha256": "17e4215af72264e186a843269d0b797697d643f53841d9598f73614bbcbe9022",
+      "name": "syft",
+      "retrieved_utc": "2026-10-11T17:06:49.734025+00:00",
+      "version": "1.52.0"
+    },
+    {
+      "archive": "grype_0.119.0_darwin_arm64.tar.gz",
+      "archive_sha256": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+      "archive_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_checksums.txt",
+      "executable_sha256": "f8486425f232aea78fc932249ca0923672d88be36c9661e25e82ea1fa8cd0cae",
+      "name": "grype",
+      "retrieved_utc": "2026-10-11T17:06:51.456243+00:00",
+      "version": "0.119.0"
+    },
+    {
+      "archive": "trivy_0.74.0_macOS-ARM64.tar.gz",
+      "archive_sha256": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11",
+      "archive_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_macOS-ARM64.tar.gz",
+      "checksum_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_checksums.txt",
+      "executable_sha256": "0ed07c205ca9ecc1065dc57b9f9f77adc79393bb469d9d1de9ec90c8c94ffc2f",
+      "name": "trivy",
+      "retrieved_utc": "2026-10-11T17:06:53.968002+00:00",
+      "version": "0.74.0"
+    }
+  ],
+  "schema_version": 1,
+  "selection": {
+    "certifi": "2026.10.19",
+    "pillow": "13.0.0",
+    "pillow_requires_python": ">=3.11",
+    "published_12x": [
+      "12.0.0",
+      "12.1.0",
+      "12.1.1",
+      "12.2.0",
+      "12.3.0"
+    ],
+    "python_minimum": ">=3.11 unchanged",
+    "rationale": "No published 12.x security successor to12.3.0 at observation;13.0.0 is smallest published fixed lead and preserves3.11 with official wheels. Certifi10.18 removes all emSign roots;10.19 retains unaffected roots while excluding compromised G3."
+  },
+  "wheel_checks": [
+    {
+      "matching_members": {
+        "host": 7,
+        "image": 7
+      },
+      "sha256": "42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b",
+      "wheel": "certifi-2026.10.19-py3-none-any.whl"
+    },
+    {
+      "matching_members": {
+        "host": 132,
+        "image": 0
+      },
+      "sha256": "37290fbef0c73e2d51d594eb78fded7dc7170d1c3ad0a890269e6fd8c8c4e061",
+      "wheel": "pillow-13.0.0-cp311-cp311-macosx_11_0_arm64.whl"
+    },
+    {
+      "matching_members": {
+        "host": 0,
+        "image": 132
+      },
+      "sha256": "5f56499c1a74d2b862beb0c33b8016f99d095858455df9d21583bbbc1c15b582",
+      "wheel": "pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+    }
+  ]
+}

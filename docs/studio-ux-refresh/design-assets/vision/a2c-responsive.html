@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A2c — Responsive: the two-speed pattern across breakpoints</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--pd:#1a3465;--sel:#2563eb;--ink:#10233f;--mut:#5e718f;--line:#dde3ec;
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+  --fam-soap:#1e3a5f;--fam-csv:#4f46e5;--fam-fixed:#15803d;--ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:#f4f6f9;color:var(--ink);padding:26px 34px 34px}
+.badge{position:fixed;top:12px;right:14px;z-index:50;background:#e7f5ec;border:2px dashed #16814a;color:#0b4f2c;font-size:11px;font-weight:800;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin:4px 0 18px;font-size:12.5px;max-width:1050px}
+.frames{display:grid;grid-template-columns:1.5fr 1fr .72fr;gap:16px;align-items:start}
+.frame{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.fhd{padding:9px 13px;border-bottom:1px solid var(--line);background:#fbfcfe}
+.fhd .t{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mut)}
+.fhd .p{font-size:9.5px;color:#8a97a8;margin-top:1px}
+.fhd .pr{float:right;font-size:9px;font-weight:800;background:#e9eefb;color:#3b4da6;padding:2px 7px;border-radius:5px}
+.device{background:#dce8f5;padding:10px}
+.screen{background:#eef1f6;border:1px solid #b8ccde;border-radius:8px;overflow:hidden}
+/* mini components */
+.mstats{display:flex;gap:5px;padding:7px}
+.mstat{background:var(--zone-ready);border:1px solid var(--line);border-radius:6px;padding:4px 7px;flex:1}
+.mstat .n{font-size:11px;font-weight:800;color:var(--navy);line-height:1}
+.mstat .l{font-size:6.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--mut);margin-top:2px;font-weight:700}
+.mstat.attn{background:var(--zone-attn);border-color:var(--zone-attn-line)} .mstat.attn .n{color:var(--warn)}
+.msplit{display:grid;gap:6px;padding:0 7px 7px}
+.mpanel{border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+.mpanel.board{background:var(--zone-scan)}
+.mpanel.editor{background:var(--zone-editor);box-shadow:0 3px 10px rgba(16,35,63,.10)}
+.mphd{padding:5px 8px;border-bottom:1px solid var(--line);font-size:8px;font-weight:800;color:var(--navy)}
+.mrow{display:flex;align-items:center;gap:5px;padding:5px 8px;border-top:1px solid #e8edf4;position:relative}
+.mrow.sel{background:#eef4fe}
+.mrow.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--sel)}
+.mrow.attn{background:var(--zone-attn)}
+.mm{width:22px;height:15px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:5.5px;font-weight:800;color:#fff;flex-shrink:0}
+.mn{font-size:8px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp{font-size:6px;font-weight:800;padding:1px 5px;border-radius:8px;white-space:nowrap}
+.mp.ok{background:var(--okbg);color:var(--ok)}.mp.attn{background:var(--warnbg);color:var(--warn)}
+.mehd{padding:5px 8px;border-bottom:1px solid var(--line);font-size:7.5px;font-weight:800}
+.metype{font-size:5.5px;font-weight:800;color:#fff;background:var(--fam-soap);padding:1px 4px;border-radius:3px;margin-right:3px}
+.mbanner{margin:5px 7px;padding:4px 6px;background:var(--zone-attn);border:1px solid var(--zone-attn-line);border-radius:5px;font-size:6.5px;color:#7a531a;font-weight:600}
+.mtabs{display:flex;gap:2px;padding:0 7px;border-bottom:1px solid var(--line)}
+.mtab{font-size:6.5px;padding:3px 5px;color:var(--mut);font-weight:700;border-bottom:1.5px solid transparent}
+.mtab.on{color:var(--navy);border-bottom-color:var(--navy)}
+.mbody{padding:6px 8px;font-size:6.5px;color:var(--mut)}
+.mfoot{padding:4px 7px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:4px}
+.mbtn{font-size:6.5px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid var(--line)}
+.mbtn.pri{background:var(--pd);color:#fff;border-color:var(--pd)}
+.mback{font-size:7px;color:var(--sel);font-weight:700;padding:4px 8px}
+.murl{background:#fff;border-bottom:1px solid #b8ccde;padding:3px 8px;font-family:ui-monospace,Menlo,monospace;font-size:6.5px;color:var(--mut)}
+.murl b{color:var(--navy)}
+.stickysave{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:5px 7px;display:flex;gap:4px}
+.stickysave .mbtn{flex:1;text-align:center;padding:4px}
+.cap{padding:10px 13px;font-size:10.8px;color:#43566e;border-top:1px solid var(--line)}
+.cap b{color:var(--navy)}
+.g1{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:11.5px;color:#43566e}
+.g1 b{color:var(--navy)}
+</style></head>
+<body>
+<div class="badge">✓ VISUALIZES THE SUPPORTED RESPONSIVE CONTRACT — illustration, no new scope</div>
+<h1>A2c · Responsive — one focus route, two supported presentations</h1>
+<div class="sub">The same <code>?focus=&lt;id&gt;</code> route uses the full-page baseline (Phase 2a · PR-12) and enhances to the desktop split behind <code>EDGEFORGE_STUDIO_UX_SPLIT</code> (Phase 2b · PR-17). Below 1200px it stays on the single-column full-page route; the narrow modal is retired. Both presentations are route-addressable, browser-back-restorable, dirty-guarded, and verified by PR-24a &mdash; keyboard-only, screen-reader <i>navigation</i>, and the <i>structural</i> save-announcement contract. PR-24a is <b>not</b> the final a11y verification: observing announcements <b>spoken</b> is <b>A11y-01</b>, a mandatory pre-release gate (&sect;7.2).</div>
+
+<div class="frames">
+  <!-- DESKTOP -->
+  <div class="frame">
+    <div class="fhd"><span class="pr">Phase 2b · PR-17</span><div class="t">Desktop ≥ ~1200px — persistent split</div><div class="p">board stays visible left · editor right · flag-gated</div></div>
+    <div class="device">
+      <div class="screen">
+        <div class="murl">studio.local/downstream<b>?focus=account-status-notify</b></div>
+        <div class="mstats"><div class="mstat"><div class="n">5</div><div class="l">Contracts</div></div><div class="mstat"><div class="n">4</div><div class="l">Ready</div></div><div class="mstat attn"><div class="n">1</div><div class="l">Needs action</div></div><div class="mstat"><div class="n" style="color:#b91c1c">1</div><div class="l">Blockers</div></div></div>
+        <div class="msplit" style="grid-template-columns:1fr 1.1fr">
+          <div class="mpanel board">
+            <div class="mphd">Loaded downstream interfaces</div>
+            <div class="mrow sel"><span class="mm" style="background:var(--fam-soap)">SOAP</span><span class="mn">Account Status Notify</span><span class="mp attn">Needs op</span></div>
+            <div class="mrow"><span class="mm" style="background:var(--fam-fixed)">FIX</span><span class="mn">Fixed-Width Archive</span><span class="mp ok">Ready</span></div>
+            <div class="mrow"><span class="mm" style="background:var(--fam-csv)">CSV</span><span class="mn">CSV Reconciliation</span><span class="mp ok">Ready</span></div>
+          </div>
+          <div class="mpanel editor">
+            <div class="mehd"><span class="metype">SOAP</span>Account Status Notify</div>
+            <div class="mbanner">⚠ One field blocks export: select the WSDL operation</div>
+            <div class="mtabs"><span class="mtab">Identity ✓</span><span class="mtab on">WSDL ①</span><span class="mtab">Mapping</span></div>
+            <div class="mbody">…form fields verbatim…</div>
+            <div class="mfoot"><span class="mbtn">Cancel</span><span class="mbtn pri">Save</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><b>Split = same route, enhanced.</b> Selecting a row updates <code>?focus=</code> (history entry); the board is a read-only projection — only the editor holds form state. Save response refreshes row + stats + rail from <b>saved</b> state.</div>
+  </div>
+
+  <!-- TABLET / NARROW -->
+  <div class="frame">
+    <div class="fhd"><span class="pr">Phase 2a · PR-12</span><div class="t">Narrow / tablet — full-page focus route</div><div class="p">the baseline presentation · board and editor are separate pages</div></div>
+    <div class="device">
+      <div class="screen">
+        <div class="murl">studio.local/downstream<b>?focus=account-status-notify</b></div>
+        <div class="mback">← Back to board (3 more contracts)</div>
+        <div class="mpanel editor" style="margin:0 7px 7px;border-radius:7px">
+          <div class="mehd"><span class="metype">SOAP</span>Account Status Notify</div>
+          <div class="mbanner">⚠ One field blocks export: select the WSDL operation</div>
+          <div class="mtabs"><span class="mtab">Identity ✓</span><span class="mtab on">WSDL ①</span><span class="mtab">Mapping</span><span class="mtab">Sample</span></div>
+          <div class="mbody">…full-width form, same fields, same save…<br><br>…sections stack vertically; tab badges keep blockers visible…</div>
+          <div class="mfoot"><span class="mbtn">Cancel</span><span class="mbtn pri">Save contract</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><b>Accessible baseline first.</b> A plain page: no focus-trap, no scroll containment, deep-linkable from Step 7 (“Fix ↗”). Browser back returns to the board; if the editor is dirty, the guard prompts before leaving.</div>
+  </div>
+
+  <!-- MOBILE / NARROW FULL-PAGE FALLBACK -->
+  <div class="frame">
+    <div class="fhd"><span class="pr">PR-24a gate</span><div class="t">Mobile ~390px — full-page fallback</div><div class="p">supported narrow presentation · no modal or focus trap</div></div>
+    <div class="device">
+      <div class="screen" style="max-width:196px;margin:0 auto">
+        <div class="murl">…/downstream<b>?focus=…</b></div>
+        <div class="mback">← Back to board</div>
+        <div class="mpanel editor" style="margin:0 7px 7px;border-radius:7px">
+          <div class="mehd"><span class="metype">SOAP</span>Account Status Notify</div>
+          <div class="mbanner">⚠ Select the WSDL operation</div>
+          <div class="mtabs"><span class="mtab">Identity ✓</span><span class="mtab on">WSDL ①</span></div>
+          <div class="mbody">…normal page focus…<br><br>…single-column sections…<br><br>…visible focus + announced save status…</div>
+          <div class="mfoot"><span class="mbtn">Cancel</span><span class="mbtn pri">Save</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><b>The full page is the narrow contract.</b> Standard page semantics and native browser-back avoid a focus trap. PR-24a records keyboard-only + screen-reader <i>navigation</i> walkthroughs and verifies visible focus, route/back restoration, the dirty guard, and the <i>structural</i> save success/failure announcement contract (live-region attributes and writer&rarr;region binding, test-enforced). Observing announcements <b>spoken</b> is <b>A11y-01</b>, a mandatory pre-release gate &mdash; see &sect;7.2 of <code>implementation-design.md</code>.</div>
+  </div>
+</div>
+
+<div class="g1"><b>G1 rules — identical at every breakpoint:</b> one item per save request (single-item upsert) · Cancel restores only the selected item · dirty browser-back prompts · board rows re-render from the save response’s <code>ReadinessItem</code> (never an optimistic client summary) · validation errors deep-link to the exact tab + field. <b>Breakpoints are presentation-only</b> — no behavioural fork between split and full-page focus. <b>Orientation only</b> — a faithful visualization of Phases 2a–2b + the supported narrow fallback, <i>not</i> a substitute for <code>implementation-design.md</code>, which stays the source of truth.</div>
+</body></html>

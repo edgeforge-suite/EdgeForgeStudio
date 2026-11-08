@@ -1,0 +1,8 @@
+{
+  "accountId": "ACCT-0001",
+  "customerId": "CUST-0001",
+  "status": "OPEN",
+  "balance": 1250.0,
+  "currencyCode": "USD",
+  "openedAt": "2026-01-15"
+}

@@ -1,0 +1,177 @@
+{
+  "cpython_native_versions": {
+    "expat": "expat_2.8.3",
+    "openssl": "OpenSSL 3.0.22 25 Aug 2026",
+    "python": "Python 3.11.16",
+    "sqlite": "3.40.1",
+    "zlib_compile": "1.2.13",
+    "zlib_runtime": "1.2.13"
+  },
+  "decision_needed": "Bind each advisory to actual native/vendored code and alternate copies; verify compatible wheel/backport before correction.",
+  "disposition": "All embedded/native identities open unless covered by an existing advisory-specific record; no new exclusions.",
+  "image_index_digest": "sha256:ff97fb0ee901e2e759d2143fee83538ac1ffeb17248c745a8f3287e9ca264c89",
+  "ldd_image_paths": {
+    "_sqlite3": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib/x86_64-linux-gnu/libm.so.6",
+      "/lib/x86_64-linux-gnu/libsqlite3.so.0",
+      "/lib64/ld-linux-x86-64.so.2"
+    ],
+    "_ssl": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "/lib/x86_64-linux-gnu/libssl.so.3",
+      "/lib64/ld-linux-x86-64.so.2"
+    ],
+    "pyexpat": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib64/ld-linux-x86-64.so.2"
+    ],
+    "zlib": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib/x86_64-linux-gnu/libz.so.1",
+      "/lib64/ld-linux-x86-64.so.2"
+    ]
+  },
+  "limits": "Vendor declarations and 32 detected Python native extensions are not exhaustive hidden/static/native-code advisory coverage. pyexpat has no dynamic libexpat edge in ldd; do not conflate it with the Debian libexpat identity.",
+  "native_extension_sha256": {
+    "/usr/local/lib/python3.11/site-packages/81d243bd2c585b0f4821__mypyc.cpython-311-x86_64-linux-gnu.so": "829231f66ec9d2345b65dd0095e6de28dff55f073b0b951e362ec3a950fcbe03",
+    "/usr/local/lib/python3.11/site-packages/PIL/_avif.cpython-311-x86_64-linux-gnu.so": "4b44ccbaca9ab8172c9dc3d252d325c80bd367122a80e5d7bb6897570aee148b",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imaging.cpython-311-x86_64-linux-gnu.so": "b55dc49c50e6bad027caa57e6d0f7d7e793993e4693cd8d80cec38dc102790ff",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imagingcms.cpython-311-x86_64-linux-gnu.so": "c06d0f4e91a6d0f0b162a6798849c8692dae1a222bf4b4b67f546a4696af21ff",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imagingft.cpython-311-x86_64-linux-gnu.so": "8f7f03397dd21518ed13f4322b7461be44c867459f539e6f0759f8c282995cbb",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imagingmath.cpython-311-x86_64-linux-gnu.so": "e0d3cf5254e69defb13ac124a48e580aa8e746388a6a59b8f0cb78215ecba099",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imagingmorph.cpython-311-x86_64-linux-gnu.so": "f808e510293f01c166c18e29f795b0da7d8e196760afdde79bdc57f0d03355bc",
+    "/usr/local/lib/python3.11/site-packages/PIL/_imagingtk.cpython-311-x86_64-linux-gnu.so": "5f999c2c7e7f2bf29e36f5cd6a71d7a52f8e26b745c18514a1563d0d6b1a1368",
+    "/usr/local/lib/python3.11/site-packages/PIL/_webp.cpython-311-x86_64-linux-gnu.so": "aff629f5b1a9143958126b163c21854fc3ae76faea2793fe562a2a975f75cb16",
+    "/usr/local/lib/python3.11/site-packages/_cffi_backend.cpython-311-x86_64-linux-gnu.so": "812107bf4eef2162f6e8adffb62c367bfac9cd31acdf5356dbee772b42765f67",
+    "/usr/local/lib/python3.11/site-packages/caio/linux_aio.cpython-311-x86_64-linux-gnu.so": "cc33c58d3c7dc8b36e88757a9b4549264be4ebf2481e33be8e343cb5f45a024f",
+    "/usr/local/lib/python3.11/site-packages/caio/thread_aio.cpython-311-x86_64-linux-gnu.so": "32b29a630ef63bf5c2eed62074c50b0a90d8a6cfad2360e7fc7145beb9ba81bc",
+    "/usr/local/lib/python3.11/site-packages/charset_normalizer/cd.cpython-311-x86_64-linux-gnu.so": "abdb8e6cdb79bf6fb7251dc699b32c1d8edc248882cfd11ecf81e6becd084773",
+    "/usr/local/lib/python3.11/site-packages/charset_normalizer/md.cpython-311-x86_64-linux-gnu.so": "32f94e0034332be153b7640b1a8d72ee3a0f53fedebdd8f42ee9eb5a3eaecd7b",
+    "/usr/local/lib/python3.11/site-packages/cryptography/hazmat/bindings/_rust.abi3.so": "613ec570594be2691ce18fe8aa51aa4716584c0e586ec97dd790c4b9757b5a83",
+    "/usr/local/lib/python3.11/site-packages/httptools/parser/parser.cpython-311-x86_64-linux-gnu.so": "e543c89fe106c74743262e57ad5840cf986efc5eaa4a2f4ff495c5c71067310c",
+    "/usr/local/lib/python3.11/site-packages/httptools/parser/url_parser.cpython-311-x86_64-linux-gnu.so": "3dd3b02b3fa4dfd2893e5868431f4741d06904b6ec9f24c20a3828fb5637db79",
+    "/usr/local/lib/python3.11/site-packages/lxml/_elementpath.cpython-311-x86_64-linux-gnu.so": "d0c74938d800ba9e84b9597f2579300f80a578576b8ef8e06a3f67a18db6c353",
+    "/usr/local/lib/python3.11/site-packages/lxml/builder.cpython-311-x86_64-linux-gnu.so": "b21ddd0b42620db3fecd2e98bd8e4953d61d47d9ec72daf6fe6892bb6ba00474",
+    "/usr/local/lib/python3.11/site-packages/lxml/etree.cpython-311-x86_64-linux-gnu.so": "fe9dfcef540fdb89947576d081bc3830b36d6d076964ffccf03f0ccf12ef1792",
+    "/usr/local/lib/python3.11/site-packages/lxml/html/_difflib.cpython-311-x86_64-linux-gnu.so": "09d686b68d739c2feb714466bad5327cad31952f5901b6684c20c107654f7e44",
+    "/usr/local/lib/python3.11/site-packages/lxml/html/diff.cpython-311-x86_64-linux-gnu.so": "fad5dd48a069348f694b21e511733da923e07a8d1c6d0eb8c3185bad24aa09f1",
+    "/usr/local/lib/python3.11/site-packages/lxml/objectify.cpython-311-x86_64-linux-gnu.so": "360a8cfddb0fb91477a47cdbd872888d9dffce6c4995f63f8b34e7c4ad082ff3",
+    "/usr/local/lib/python3.11/site-packages/lxml/sax.cpython-311-x86_64-linux-gnu.so": "96384faf8fd9a429811de0ad287a24f5ca4b304e2c9fa4aa35dba9d934caefe7",
+    "/usr/local/lib/python3.11/site-packages/markupsafe/_speedups.cpython-311-x86_64-linux-gnu.so": "88c64ec75769f4606751eaa4aef59709e3033fd1f26e3f31f940d1a1325abeaf",
+    "/usr/local/lib/python3.11/site-packages/pydantic_core/_pydantic_core.cpython-311-x86_64-linux-gnu.so": "47c6e9f5519f00b789121fb70c2b5ad202d8e438d294c1cffb983536f8610f68",
+    "/usr/local/lib/python3.11/site-packages/pypdfium2_raw/libpdfium.so": "cb59522bf0c48a6408fd2adc8c87120a1418bacbda193f898e8cdccda7d5ca27",
+    "/usr/local/lib/python3.11/site-packages/rpds/rpds.cpython-311-x86_64-linux-gnu.so": "f8b5b03eefae736fcde4ff9c1a102184777405c029f53d21f3c1a6114c0f4152",
+    "/usr/local/lib/python3.11/site-packages/uvloop/loop.cpython-311-x86_64-linux-gnu.so": "ec5a09ee5d14455c3feeaec5281567684ed385303ecb51795707fc771b5c85c4",
+    "/usr/local/lib/python3.11/site-packages/watchfiles/_rust_notify.cpython-311-x86_64-linux-gnu.so": "2a43b47e4f59cfb9306f2e7b9ebc6e815cc29f1e70a64dae032235fb8742706f",
+    "/usr/local/lib/python3.11/site-packages/websockets/speedups.cpython-311-x86_64-linux-gnu.so": "091b3ac57377bbc4f9ba0253961413a0b43115cc5b945c6bd6b47dfc5eb13920",
+    "/usr/local/lib/python3.11/site-packages/yaml/_yaml.cpython-311-x86_64-linux-gnu.so": "b1906c02a3ece9533c6333a41e934bd2a2887d1d3334cf60b6d8f38e854f6a22"
+  },
+  "observed_at_utc": "2026-10-03T03:03:06.338129+00:00",
+  "owner": "Studio maintainer",
+  "pip_vendor_declarations": [
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "CacheControl",
+      "version": "0.14.4"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "distlib",
+      "version": "0.4.2"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "distro",
+      "version": "1.9.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "msgpack",
+      "version": "1.1.2"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "packaging",
+      "version": "26.2"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "platformdirs",
+      "version": "4.10.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "pyproject-hooks",
+      "version": "1.2.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "requests",
+      "version": "2.34.2"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "certifi",
+      "version": "2026.6.17"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "idna",
+      "version": "3.18"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "urllib3",
+      "version": "2.7.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "rich",
+      "version": "14.2.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "pygments",
+      "version": "2.20.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "resolvelib",
+      "version": "1.2.1"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "setuptools",
+      "version": "70.3.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "tomli",
+      "version": "2.4.1"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "tomli-w",
+      "version": "1.2.0"
+    },
+    {
+      "identity_status": "pip vendor.txt declaration; code applicability open",
+      "name": "truststore",
+      "version": "0.10.4"
+    }
+  ],
+  "review_trigger": "Native/vendor/base/dependency change, advisory correction, affected consumer, or final release pair",
+  "schema_version": 1,
+  "uid": 1000,
+  "vendor_tree_hash_receipt": {
+    "hashed_files": 541,
+    "raw_file": "runtime-inspection.json",
+    "sha256": "b9206767c838037739ba4864de95f5e558c3f0001f967e10c8b01b251d72e549"
+  },
+  "writable_caches": {
+    "/home/appuser/.m2": true,
+    "/workspace/data": true
+  }
+}

@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Kafka Integration Step 3: Route Model{% endblock %}
+
+{% block content %}
+<div class="card step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 3: Route Model</h2>
+      <p class="subtitle">Choose fire-and-forget, request-reply, or request-path router behavior for each Kafka route.</p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Kafka Route Design</span>
+      <div class="step-surface-kicker-title">Pattern first, focused details second</div>
+      <div class="text-muted text-sm">Router request-path configuration is supported here; detailed response transform row authoring remains future scope.</div>
+    </div>
+  </div>
+
+  <div id="route-model-cards" class="step-stack"></div>
+
+  <div id="kafka-routes-status" class="alert hidden" style="margin-top:16px"></div>
+
+  <div class="step-actions">
+    <button type="button" class="btn btn-primary" onclick="saveKafkaRoutes()">Save &amp; Continue →</button>
+    <a href="/kafka/topics" class="btn btn-secondary">Previous</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const routeNames = {{ route_names | tojson }};
+const topicPairs = {{ topic_pairs | tojson }};
+const kafkaConfig = {{ session.kafka_config.model_dump() | tojson }};
+const existingRouteModels = {{ existing_route_models | tojson }};
+const routeModelByName = Object.fromEntries(existingRouteModels.map(model => [model.route_name, model]));
+const topicPairByName = Object.fromEntries(topicPairs.map(pair => [pair.route_name, pair]));
+
+const esc = window.escapeHtml;
+
+function defaultRouterConfig(routeName) {
+  const pair = topicPairByName[routeName] || {};
+  const targetId = `${routeName}-target`;
+  const requestTopic = pair.downstream_topic || `${routeName}.request`;
+  return {
+    upstream_topics: [{
+      id: `${routeName}-upstream`,
+      name: pair.upstream_topic || '',
+      consumer_group: kafkaConfig.consumer_group || '',
+      source_system_extraction: {mode: 'header', header_key: 'X-Source-System', body_field_path: ''},
+      reply_destination_extraction: {mode: 'header', header_key: 'X-Reply-To', body_field_path: ''},
+    }],
+    inbound_schema: {
+      file: pair.upstream_schema_path || `schemas/${routeName}-upstream.json`,
+      validation_policy: 'strict',
+      failure_behavior: 'nack',
+    },
+    routing_rules: {
+      routing_fields: [{name: 'routeKey', json_path: '$.routeKey'}],
+      rules: [{
+        id: `${routeName}-default-rule`,
+        conditions: [{field: 'routeKey', operator: 'not_null', value: ''}],
+        target: targetId,
+      }],
+      default_target: targetId,
+    },
+    duplicate_correlation_policy: 'reject-new',
+    targets: [{
+      id: targetId,
+      request_topic: requestTopic,
+      response_topic: `${requestTopic}.response`,
+      request_schema: {
+        file: pair.downstream_schema_path || `schemas/${routeName}-downstream.json`,
+        validation_policy: 'strict',
+        failure_behavior: 'nack',
+      },
+      response_schema: {file: `schemas/${routeName}-target-response.json`, validation_policy: 'strict', failure_behavior: 'nack'},
+      request_transform: {file: `transforms/${routeName}-request.yaml`},
+      response_transform: {file: `transforms/${routeName}-response.yaml`},
+      retry: {
+        max_attempts: kafkaConfig.retry_max_attempts || 3,
+        backoff_ms: kafkaConfig.retry_backoff_ms || 1000,
+        dlq_topic: `${requestTopic}.dlq`,
+      },
+      timeout_ms: 30000,
+    }],
+    outbound_schema: {file: `schemas/${routeName}-outbound.json`, validation_policy: 'strict', failure_behavior: 'nack'},
+    nack_routing: {
+      mode: 'default_error',
+      per_source_system: {},
+      fixed_topic: '',
+      default_error_topic: `${routeName}.error`,
+    },
+    timeout: {behavior_with_known_reply: 'nack', behavior_without_reply: 'error_topic'},
+    payload_logging: {policy: 'none', capped_raw_bytes: 512},
+    correlation_store: {type: 'in_memory', timeout_ms: 30000, eviction_interval_ms: 60000},
+  };
+}
+
+function schemaFields(prefix, schema = {}) {
+  return `
+    <div class="field">
+      <label>${prefix} File</label>
+      <input type="text" class="schema-file" value="${esc(schema.file)}" placeholder="schemas/example.json">
+    </div>
+    <div class="field">
+      <label>Validation Policy</label>
+      <select class="schema-validation-policy">
+        <option value="strict" ${schema.validation_policy !== 'lenient' ? 'selected' : ''}>strict</option>
+        <option value="lenient" ${schema.validation_policy === 'lenient' ? 'selected' : ''}>lenient</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Failure Behavior</label>
+      <input type="text" class="schema-failure-behavior" value="${esc(schema.failure_behavior || 'nack')}" readonly>
+    </div>
+  `;
+}
+
+function extractionFields(kind, extraction = {}) {
+  const mode = extraction.mode || 'header';
+  return `
+    <div class="${kind}-extraction card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div class="field">
+        <label>${kind === 'source-system' ? 'Source System Mode' : 'Reply Destination Mode'}</label>
+        <select class="extraction-mode">
+          <option value="header" ${mode === 'header' ? 'selected' : ''}>header</option>
+          <option value="body_field" ${mode === 'body_field' ? 'selected' : ''}>body_field</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Header Key</label>
+        <input type="text" class="extraction-header-key" value="${esc(extraction.header_key)}" placeholder="X-Source-System">
+      </div>
+      <div class="field">
+        <label>Body Field Path</label>
+        <input type="text" class="extraction-body-field-path" value="${esc(extraction.body_field_path)}" placeholder="$.sourceSystem">
+      </div>
+    </div>
+  `;
+}
+
+function upstreamTopicRow(topic = {}) {
+  return `
+    <div class="router-upstream-row step-section-card workflow-surface-row">
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>ID</label><input type="text" class="upstream-id" value="${esc(topic.id)}"></div>
+        <div class="field"><label>Topic Name</label><input type="text" class="upstream-name" value="${esc(topic.name)}"></div>
+        <div class="field"><label>Consumer Group</label><input type="text" class="upstream-consumer-group" value="${esc(topic.consumer_group)}"></div>
+      </div>
+      ${extractionFields('source-system', topic.source_system_extraction || {})}
+      ${extractionFields('reply-destination', topic.reply_destination_extraction || {})}
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.router-upstream-row').remove()">Remove upstream topic</button>
+    </div>
+  `;
+}
+
+function routingFieldRow(field = {}) {
+  return `
+    <div class="mapping-row router-routing-field-row workflow-surface-row">
+      <input type="text" class="routing-field-name" placeholder="field name" value="${esc(field.name)}">
+      <input type="text" class="routing-field-json-path" placeholder="$.jsonPath" value="${esc(field.json_path)}">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `;
+}
+
+function conditionRow(condition = {}) {
+  const operator = condition.operator || 'eq';
+  return `
+    <div class="mapping-row router-condition-row workflow-surface-row">
+      <input type="text" class="condition-field" placeholder="routing field" value="${esc(condition.field)}">
+      <select class="condition-operator">
+        ${['eq', 'in', 'lt', 'lte', 'gt', 'gte', 'not_null'].map(op => `<option value="${op}" ${operator === op ? 'selected' : ''}>${op}</option>`).join('')}
+      </select>
+      <input type="text" class="condition-value" placeholder="value" value="${esc(condition.value)}">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `;
+}
+
+function routingRuleRow(rule = {}) {
+  const conditions = rule.conditions?.length ? rule.conditions : [{}];
+  return `
+    <div class="router-rule-row step-section-card workflow-surface-row">
+      <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div class="field"><label>Rule ID</label><input type="text" class="rule-id" value="${esc(rule.id)}"></div>
+        <div class="field"><label>Target ID</label><input type="text" class="rule-target" value="${esc(rule.target)}"></div>
+      </div>
+      <div class="router-conditions workflow-row-list" style="display:grid;gap:8px">${conditions.map(conditionRow).join('')}</div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addConditionRow(this.closest('.router-rule-row').querySelector('.router-conditions'))">+ Add Condition</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.router-rule-row').remove()">Remove rule</button>
+    </div>
+  `;
+}
+
+function targetRow(target = {}) {
+  return `
+    <div class="router-target-row step-section-card workflow-surface-row">
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>Target ID</label><input type="text" class="target-id" value="${esc(target.id)}"></div>
+        <div class="field"><label>Request Topic</label><input type="text" class="target-request-topic" value="${esc(target.request_topic)}"></div>
+        <div class="field"><label>Response Topic</label><input type="text" class="target-response-topic" value="${esc(target.response_topic)}"></div>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">${schemaFields('Request Schema', target.request_schema || {})}</div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">${schemaFields('Response Schema', target.response_schema || {})}</div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>Request Transform File</label><input type="text" class="target-request-transform-file" value="${esc(target.request_transform?.file)}"></div>
+        <div class="field"><label>Response Transform File</label><input type="text" class="target-response-transform-file" value="${esc(target.response_transform?.file)}"></div>
+        <div class="field"><label>Timeout (ms)</label><input type="number" class="target-timeout-ms" min="1000" value="${esc(target.timeout_ms || 30000)}"></div>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>Retry Max Attempts</label><input type="number" class="target-retry-max-attempts" min="0" value="${esc(target.retry?.max_attempts ?? 3)}"></div>
+        <div class="field"><label>Retry Backoff (ms)</label><input type="number" class="target-retry-backoff-ms" min="0" value="${esc(target.retry?.backoff_ms ?? 1000)}"></div>
+        <div class="field"><label>DLQ Topic</label><input type="text" class="target-retry-dlq-topic" value="${esc(target.retry?.dlq_topic)}"></div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.router-target-row').remove()">Remove target</button>
+    </div>
+  `;
+}
+
+function perSourceRow(source = '', topic = '') {
+  return `
+    <div class="mapping-row router-per-source-row workflow-surface-row">
+      <input type="text" class="per-source-system" placeholder="source system" value="${esc(source)}">
+      <input type="text" class="per-source-topic" placeholder="error topic" value="${esc(topic)}">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `;
+}
+
+function countLabel(count, singular, plural = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function routerPanel(routeName, config, usesStarterConfig = false) {
+  const perSource = Object.entries(config.nack_routing?.per_source_system || {});
+  const savedRouterConfig = !usesStarterConfig;
+  const routingFieldCount = (config.routing_rules?.routing_fields || []).length;
+  const routingRuleCount = (config.routing_rules?.rules || []).length;
+  const targetCount = (config.targets || []).length;
+  const savedDetailState = savedRouterConfig ? 'open' : '';
+  return `
+    <div class="router-fields ${config ? '' : 'hidden'}">
+      ${usesStarterConfig ? `
+        <div class="alert alert-info router-starter-notice" style="margin-bottom:12px">
+          <strong>Starter router config</strong> generated from route name. Edit before saving.
+          These values are not imported or restored data.
+        </div>
+      ` : ''}
+      <details class="disclosure-card workflow-surface-subsection" open>
+        <summary>Router intake and schema</summary>
+        <div class="disclosure-card-body">
+          <p class="text-muted text-sm">Configure request-path intake and the common router request/response schemas.</p>
+          <div class="router-upstream-list workflow-row-list" style="display:grid;gap:12px">${(config.upstream_topics || [{}]).map(upstreamTopicRow).join('')}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addUpstreamTopic(this.closest('.router-fields').querySelector('.router-upstream-list'))">+ Add Upstream Topic</button>
+          <div class="card-grid router-inbound-schema" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">${schemaFields('Inbound Schema', config.inbound_schema || {})}</div>
+          <div class="card-grid outbound-schema" style="grid-template-columns:repeat(3,minmax(0,1fr))">${schemaFields('Outbound Schema', config.outbound_schema || {})}</div>
+        </div>
+      </details>
+
+      <details class="disclosure-card workflow-surface-subsection" ${savedDetailState}>
+        <summary>Routing fields and rules (${countLabel(routingFieldCount, 'field')}, ${countLabel(routingRuleCount, 'rule')})</summary>
+        <div class="disclosure-card-body">
+          <div class="router-routing-fields workflow-row-list" style="display:grid;gap:8px">${(config.routing_rules?.routing_fields || [{}]).map(routingFieldRow).join('')}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addRoutingFieldRow(this.closest('.router-fields').querySelector('.router-routing-fields'))">+ Add Routing Field</button>
+          <div class="field" style="margin-top:12px">
+            <label>Default Target (optional)</label>
+            <input type="text" class="router-default-target" value="${esc(config.routing_rules?.default_target)}" placeholder="blank = NACK on no match">
+          </div>
+          <div class="router-rules-list workflow-row-list" style="display:grid;gap:12px;margin-top:12px">${(config.routing_rules?.rules || [{}]).map(routingRuleRow).join('')}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addRoutingRuleRow(this.closest('.router-fields').querySelector('.router-rules-list'))">+ Add Rule</button>
+        </div>
+      </details>
+
+      <details class="disclosure-card workflow-surface-subsection" ${savedDetailState}>
+        <summary>Targets and transform file references (${countLabel(targetCount, 'target')})</summary>
+        <div class="disclosure-card-body">
+          <p class="text-muted text-sm">Collect manifest paths for request and response transform files. Full response transform row authoring is intentionally future scope.</p>
+          <div class="router-targets-list workflow-row-list" style="display:grid;gap:12px">${(config.targets || [{}]).map(targetRow).join('')}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addTargetRow(this.closest('.router-fields').querySelector('.router-targets-list'))">+ Add Target</button>
+        </div>
+      </details>
+
+      <details class="disclosure-card workflow-surface-subsection" ${savedDetailState}>
+        <summary>NACK routing and runtime policies (${esc(config.nack_routing?.mode || 'default_error')})</summary>
+        <div class="disclosure-card-body">
+          <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="field">
+              <label>NACK Mode</label>
+              <select class="nack-mode">
+                ${['same_as_reply', 'per_source_system', 'fixed', 'default_error'].map(mode => `<option value="${mode}" ${config.nack_routing?.mode === mode ? 'selected' : ''}>${mode}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field"><label>Fixed Topic</label><input type="text" class="nack-fixed-topic" value="${esc(config.nack_routing?.fixed_topic)}"></div>
+            <div class="field"><label>Default Error Topic</label><input type="text" class="nack-default-error-topic" value="${esc(config.nack_routing?.default_error_topic)}"></div>
+          </div>
+          <div class="router-per-source-list workflow-row-list" style="display:grid;gap:8px">${perSource.length ? perSource.map(([source, topic]) => perSourceRow(source, topic)).join('') : perSourceRow()}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addPerSourceRow(this.closest('.router-fields').querySelector('.router-per-source-list'))">+ Add Source Mapping</button>
+
+          <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">
+            <div class="field">
+              <label>Duplicate Correlation Policy</label>
+              <select class="duplicate-correlation-policy">
+                <option value="reject-new" ${config.duplicate_correlation_policy !== 'accept-last' ? 'selected' : ''}>reject-new</option>
+                <option value="accept-last" ${config.duplicate_correlation_policy === 'accept-last' ? 'selected' : ''}>accept-last</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Payload Logging</label>
+              <select class="payload-logging-policy">
+                ${['none', 'hash', 'redacted', 'capped_raw'].map(policy => `<option value="${policy}" ${config.payload_logging?.policy === policy ? 'selected' : ''}>${policy}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field"><label>Capped Raw Bytes</label><input type="number" class="payload-capped-raw-bytes" min="1" value="${esc(config.payload_logging?.capped_raw_bytes || 512)}"></div>
+          </div>
+          <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="field">
+              <label>Known Reply Timeout Behavior</label>
+              <select class="timeout-known-reply">
+                <option value="nack" ${config.timeout?.behavior_with_known_reply !== 'error_topic' ? 'selected' : ''}>nack</option>
+                <option value="error_topic" ${config.timeout?.behavior_with_known_reply === 'error_topic' ? 'selected' : ''}>error_topic</option>
+              </select>
+            </div>
+            <div class="field"><label>Without Reply Timeout Behavior</label><input type="text" class="timeout-without-reply" value="error_topic" readonly></div>
+            <div class="field"><label>Correlation Store Type</label><input type="text" class="correlation-store-type" value="in_memory" readonly></div>
+          </div>
+          <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <div class="field"><label>Correlation Timeout (ms)</label><input type="number" class="correlation-timeout-ms" min="1000" value="${esc(config.correlation_store?.timeout_ms || 30000)}"></div>
+            <div class="field"><label>Eviction Interval (ms)</label><input type="number" class="correlation-eviction-interval-ms" min="1000" value="${esc(config.correlation_store?.eviction_interval_ms || 60000)}"></div>
+          </div>
+        </div>
+      </details>
+    </div>
+  `;
+}
+
+function routeModelTemplate(routeName, index) {
+  const model = routeModelByName[routeName] || {
+    route_name: routeName,
+    pattern: 'fire-and-forget',
+    upstream_reply_topic: '',
+    upstream_reply_schema_path: '',
+    upstream_reply_schema_content: '',
+    downstream_reply_topic: '',
+    downstream_reply_schema_path: '',
+    downstream_reply_schema_content: '',
+    correlation_source: 'header',
+    correlation_field: '',
+    reply_timeout_ms: 5000,
+  };
+  const showReply = model.pattern === 'request-reply';
+  const showRouter = model.pattern === 'router';
+  const usesStarterRouterConfig = !model.router_config;
+  const routerConfig = model.router_config || defaultRouterConfig(routeName);
+  return `
+    <div class="card kafka-route-model-card step-section-card workflow-surface-card" data-route-name="${esc(routeName)}">
+      <div class="step-section-heading">
+        <div>
+          <h3>${esc(routeName)}</h3>
+          <p class="text-muted text-sm">Choose the route pattern first, then open only the details this route needs.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>Pattern</label>
+        <div class="pattern-toggle-group">
+          <label class="pattern-toggle">
+            <input class="pattern-input" type="radio" name="pattern-${index}" value="fire-and-forget" ${model.pattern === 'fire-and-forget' ? 'checked' : ''} onchange="toggleRouteFields(this.closest('.kafka-route-model-card'))">
+            <span>Fire-and-forget</span>
+          </label>
+          <label class="pattern-toggle">
+            <input class="pattern-input" type="radio" name="pattern-${index}" value="request-reply" ${showReply ? 'checked' : ''} onchange="toggleRouteFields(this.closest('.kafka-route-model-card'))">
+            <span>Request-reply</span>
+          </label>
+          <label class="pattern-toggle">
+            <input class="pattern-input" type="radio" name="pattern-${index}" value="router" ${showRouter ? 'checked' : ''} onchange="toggleRouteFields(this.closest('.kafka-route-model-card'))">
+            <span>Router</span>
+          </label>
+        </div>
+      </div>
+      <details class="disclosure-card workflow-surface-subsection reply-fields ${showReply ? 'is-open' : 'hidden'}" ${showReply ? 'open' : ''}>
+        <summary>Reply channel details</summary>
+        <div class="disclosure-card-body">
+          <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <div class="field">
+              <label>Upstream Reply Topic</label>
+              <input type="text" class="upstream-reply-topic" value="${esc(model.upstream_reply_topic)}" placeholder="hub.account.verify.reply.v1">
+            </div>
+            <div class="field">
+              <label>Downstream Reply Topic</label>
+              <input type="text" class="downstream-reply-topic" value="${esc(model.downstream_reply_topic)}" placeholder="core.account.verify.reply.v1">
+            </div>
+          </div>
+          <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <div class="field">
+              <label>Upstream Reply Schema (JSON)</label>
+              <textarea class="upstream-reply-schema-content" rows="8" placeholder='{"type":"object","properties":{"verified":{"type":"boolean"}}}'>${esc(model.upstream_reply_schema_content)}</textarea>
+            </div>
+            <div class="field">
+              <label>Downstream Reply Schema (JSON)</label>
+              <textarea class="downstream-reply-schema-content" rows="8" placeholder='{"type":"object","properties":{"approved":{"type":"boolean"}}}'>${esc(model.downstream_reply_schema_content)}</textarea>
+            </div>
+          </div>
+          <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="field">
+              <label>Correlation Source</label>
+              <select class="correlation-source">
+                <option value="header" ${model.correlation_source === 'header' ? 'selected' : ''}>header</option>
+                <option value="payload" ${model.correlation_source === 'payload' ? 'selected' : ''}>payload</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Correlation Field</label>
+              <input type="text" class="correlation-field" value="${esc(model.correlation_field)}" placeholder="X-Correlation-ID">
+            </div>
+            <div class="field">
+              <label>Reply Timeout (ms)</label>
+              <input type="number" class="reply-timeout-ms" min="1000" value="${esc(model.reply_timeout_ms || 5000)}">
+            </div>
+          </div>
+        </div>
+      </details>
+      ${routerPanel(routeName, routerConfig, usesStarterRouterConfig)}
+    </div>
+  `;
+}
+
+function toggleRouteFields(card) {
+  const pattern = card.querySelector('.pattern-input:checked').value;
+  const replyFields = card.querySelector('.reply-fields');
+  const routerFields = card.querySelector('.router-fields');
+  replyFields.classList.toggle('hidden', pattern !== 'request-reply');
+  replyFields.classList.toggle('is-open', pattern === 'request-reply');
+  replyFields.open = pattern === 'request-reply';
+  routerFields.classList.toggle('hidden', pattern !== 'router');
+}
+
+function addUpstreamTopic(container) {
+  container.insertAdjacentHTML('beforeend', upstreamTopicRow({source_system_extraction: {}, reply_destination_extraction: {}}));
+}
+
+function addRoutingFieldRow(container) {
+  container.insertAdjacentHTML('beforeend', routingFieldRow({}));
+}
+
+function addConditionRow(container) {
+  container.insertAdjacentHTML('beforeend', conditionRow({}));
+}
+
+function addRoutingRuleRow(container) {
+  container.insertAdjacentHTML('beforeend', routingRuleRow({conditions: [{}]}));
+}
+
+function addTargetRow(container) {
+  container.insertAdjacentHTML('beforeend', targetRow({request_schema: {}, response_schema: {}, request_transform: {}, response_transform: {}, retry: {}}));
+}
+
+function addPerSourceRow(container) {
+  container.insertAdjacentHTML('beforeend', perSourceRow());
+}
+
+function collectSchemaRef(container) {
+  return {
+    file: container.querySelector('.schema-file')?.value?.trim() || '',
+    validation_policy: container.querySelector('.schema-validation-policy')?.value || 'strict',
+    failure_behavior: container.querySelector('.schema-failure-behavior')?.value?.trim() || 'nack',
+  };
+}
+
+function collectExtraction(container) {
+  return {
+    mode: container.querySelector('.extraction-mode')?.value || 'header',
+    header_key: container.querySelector('.extraction-header-key')?.value?.trim() || '',
+    body_field_path: container.querySelector('.extraction-body-field-path')?.value?.trim() || '',
+  };
+}
+
+function collectRouterConfig(card) {
+  const router = card.querySelector('.router-fields');
+  const perSource = {};
+  router.querySelectorAll('.router-per-source-row').forEach(row => {
+    const source = row.querySelector('.per-source-system')?.value?.trim() || '';
+    const topic = row.querySelector('.per-source-topic')?.value?.trim() || '';
+    if (source || topic) {
+      perSource[source] = topic;
+    }
+  });
+  return {
+    upstream_topics: Array.from(router.querySelectorAll('.router-upstream-row')).map(row => ({
+      id: row.querySelector('.upstream-id')?.value?.trim() || '',
+      name: row.querySelector('.upstream-name')?.value?.trim() || '',
+      consumer_group: row.querySelector('.upstream-consumer-group')?.value?.trim() || '',
+      source_system_extraction: collectExtraction(row.querySelector('.source-system-extraction')),
+      reply_destination_extraction: collectExtraction(row.querySelector('.reply-destination-extraction')),
+    })),
+    inbound_schema: collectSchemaRef(router.querySelector('.router-inbound-schema')),
+    outbound_schema: collectSchemaRef(router.querySelector('.outbound-schema')),
+    routing_rules: {
+      routing_fields: Array.from(router.querySelectorAll('.router-routing-field-row')).map(row => ({
+        name: row.querySelector('.routing-field-name')?.value?.trim() || '',
+        json_path: row.querySelector('.routing-field-json-path')?.value?.trim() || '',
+      })).filter(row => row.name || row.json_path),
+      rules: Array.from(router.querySelectorAll('.router-rule-row')).map(row => ({
+        id: row.querySelector('.rule-id')?.value?.trim() || '',
+        target: row.querySelector('.rule-target')?.value?.trim() || '',
+        conditions: Array.from(row.querySelectorAll('.router-condition-row')).map(condition => ({
+          field: condition.querySelector('.condition-field')?.value?.trim() || '',
+          operator: condition.querySelector('.condition-operator')?.value || 'eq',
+          value: condition.querySelector('.condition-value')?.value?.trim() || '',
+        })),
+      })).filter(rule => rule.id || rule.target || rule.conditions.some(condition => condition.field || condition.value)),
+      default_target: router.querySelector('.router-default-target')?.value?.trim() || null,
+    },
+    duplicate_correlation_policy: router.querySelector('.duplicate-correlation-policy')?.value || 'reject-new',
+    targets: Array.from(router.querySelectorAll('.router-target-row')).map(row => {
+      const schemas = row.querySelectorAll('.card-grid');
+      return {
+        id: row.querySelector('.target-id')?.value?.trim() || '',
+        request_topic: row.querySelector('.target-request-topic')?.value?.trim() || '',
+        response_topic: row.querySelector('.target-response-topic')?.value?.trim() || '',
+        request_schema: collectSchemaRef(schemas[1]),
+        response_schema: collectSchemaRef(schemas[2]),
+        request_transform: {file: row.querySelector('.target-request-transform-file')?.value?.trim() || ''},
+        response_transform: {file: row.querySelector('.target-response-transform-file')?.value?.trim() || ''},
+        retry: {
+          max_attempts: parseInt(row.querySelector('.target-retry-max-attempts')?.value || '3', 10),
+          backoff_ms: parseInt(row.querySelector('.target-retry-backoff-ms')?.value || '1000', 10),
+          dlq_topic: row.querySelector('.target-retry-dlq-topic')?.value?.trim() || '',
+        },
+        timeout_ms: parseInt(row.querySelector('.target-timeout-ms')?.value || '30000', 10),
+      };
+    }),
+    nack_routing: {
+      mode: router.querySelector('.nack-mode')?.value || 'default_error',
+      per_source_system: perSource,
+      fixed_topic: router.querySelector('.nack-fixed-topic')?.value?.trim() || '',
+      default_error_topic: router.querySelector('.nack-default-error-topic')?.value?.trim() || '',
+    },
+    timeout: {
+      behavior_with_known_reply: router.querySelector('.timeout-known-reply')?.value || 'nack',
+      behavior_without_reply: 'error_topic',
+    },
+    payload_logging: {
+      policy: router.querySelector('.payload-logging-policy')?.value || 'none',
+      capped_raw_bytes: parseInt(router.querySelector('.payload-capped-raw-bytes')?.value || '512', 10),
+    },
+    correlation_store: {
+      type: 'in_memory',
+      timeout_ms: parseInt(router.querySelector('.correlation-timeout-ms')?.value || '30000', 10),
+      eviction_interval_ms: parseInt(router.querySelector('.correlation-eviction-interval-ms')?.value || '60000', 10),
+    },
+  };
+}
+
+function collectRouteModels() {
+  return Array.from(document.querySelectorAll('.kafka-route-model-card')).map(card => {
+    const routeName = card.dataset.routeName;
+    const pattern = card.querySelector('.pattern-input:checked').value;
+    return {
+      route_name: routeName,
+      pattern,
+      upstream_reply_topic: card.querySelector('.upstream-reply-topic')?.value?.trim() || '',
+      upstream_reply_schema_content: card.querySelector('.upstream-reply-schema-content')?.value?.trim() || '',
+      downstream_reply_topic: card.querySelector('.downstream-reply-topic')?.value?.trim() || '',
+      downstream_reply_schema_content: card.querySelector('.downstream-reply-schema-content')?.value?.trim() || '',
+      correlation_source: card.querySelector('.correlation-source')?.value || 'header',
+      correlation_field: card.querySelector('.correlation-field')?.value?.trim() || '',
+      reply_timeout_ms: parseInt(card.querySelector('.reply-timeout-ms')?.value || '5000', 10),
+      router_config: pattern === 'router' ? collectRouterConfig(card) : null,
+    };
+  });
+}
+
+async function saveKafkaRoutes() {
+  hideStatus('kafka-routes-status');
+  const response = await fetch('/kafka/routes/save', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({routes: collectRouteModels()}),
+  });
+  const data = await response.json();
+  if (!data.ok) {
+    showStatus('kafka-routes-status', data.error || 'Unable to save route models.', 'warn');
+    return;
+  }
+  window.location.href = '/kafka/transforms';
+}
+
+const container = document.getElementById('route-model-cards');
+routeNames.forEach((routeName, index) => {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = routeModelTemplate(routeName, index);
+  const card = wrapper.firstElementChild;
+  container.appendChild(card);
+  toggleRouteFields(card);
+});
+</script>
+{% endblock %}

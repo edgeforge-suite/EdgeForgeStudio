@@ -1,0 +1,1710 @@
+{
+  "candidate": "EF-V5-M2-STUDIO-IMAGE-RUNTIME-S2",
+  "counts": {
+    "OPEN": 11,
+    "supported-not-affected": 21
+  },
+  "findings": [
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "base64 altchars accepts the original alphabet; benign URL-safe decoder probe still accepts +. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2025-12781",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2025-12781",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 0,
+        "observation_indexes": [
+          95
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "imaplib._command still assembles/sends CRLF-terminated arguments without the later newline rejection. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2025-15366",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2025-15366",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 1,
+        "observation_indexes": [
+          160
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "poplib._putline still sends line + CRLF without the later newline rejection. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2025-15367",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2025-15367",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 2,
+        "observation_indexes": [
+          187
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [
+        "GHSA-5rjg-fvgr-3xxf"
+      ],
+      "copies": {
+        "bootstrap-pkg-resources-68.0.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if full setuptools or the named affected implementation is vendored.",
+          "reason": "This vendored identity contains pkg_resources only, not setuptools PackageIndex.download or FileList/egg_info sdist code named by this advisory. File inventories retain that distinction; distribution metadata absence alone is not used.",
+          "sources": [
+            "setuptools-vendor-download",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        },
+        "bootstrap-setuptools-79.0.1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Recheck actual full copy/source and vendor corrections after packaging changes; do not infer anything about the stripped pip copy from this version.",
+          "reason": "Both full copies are beyond the vendor 78.1.1 PackageIndex.download fix floor; actual installed 83.0.0 lacks package_index.py; the archived 79.0.1 copy is separately retained.",
+          "sources": [
+            "setuptools-vendor-download"
+          ],
+          "state": "supported-not-affected"
+        },
+        "installed-setuptools-83.0.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Recheck actual full copy/source and vendor corrections after packaging changes; do not infer anything about the stripped pip copy from this version.",
+          "reason": "Both full copies are beyond the vendor 78.1.1 PackageIndex.download fix floor; actual installed 83.0.0 lacks package_index.py; the archived 79.0.1 copy is separately retained.",
+          "sources": [
+            "setuptools-vendor-download"
+          ],
+          "state": "supported-not-affected"
+        },
+        "pip-pkg-resources-70.3.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if full setuptools or the named affected implementation is vendored.",
+          "reason": "This vendored identity contains pkg_resources only, not setuptools PackageIndex.download or FileList/egg_info sdist code named by this advisory. File inventories retain that distinction; distribution metadata absence alone is not used.",
+          "sources": [
+            "setuptools-vendor-download",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2025-47273",
+      "lineage": {
+        "component": "setuptools",
+        "current_group_index": 3370,
+        "observation_indexes": [
+          6724
+        ],
+        "recorded_version": "70.3.0"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "embedded-expat-2.8.5": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "binary",
+            "linkage",
+            "architecture"
+          ],
+          "next_action": "Studio maintainer: obtain PSF-supported embedded Expat update/backport, or separately authorize bounded native 64-bit applicability proof; Debian u4 and scanner silence do not close it.",
+          "reason": "Actual pyexpat embeds 2.8.5 and does not link Debian libexpat1. CNA describes a 32-bit expat_realloc overflow; this image is 64-bit, but the upstream patch adds an unconditional overflow check. No artifact-specific proof sufficient to clear all applicable allocation paths was established.",
+          "sources": [
+            "CVE-2026-102633",
+            "expat-patch",
+            "expat-release",
+            "python-release"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-102633",
+      "lineage": {
+        "component": "embedded-expat",
+        "observation_indexes": [],
+        "recorded_version": "expat_2.8.5"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "TemporaryDirectory cleanup retains the old path-based permission/removal implementation. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2026-12345",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-12345",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 3,
+        "observation_indexes": [
+          332
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2. Applies to bundled bzip2/LZMA behavior, not arbitrary third-party monkey-patched decompressors.",
+          "sources": [
+            "CVE-2026-15310",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-15310",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          3
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2.",
+          "sources": [
+            "CVE-2026-15806",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-15806",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          4
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2.",
+          "sources": [
+            "CVE-2026-17084",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-17084",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          5
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2. CNA range remains broadly <3.16; the later release backport plus the successful synthetic no-outside-directory regression supports this exact artifact despite that stale range.",
+          "sources": [
+            "CVE-2026-19672",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-19672",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          6
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "base64 decoding still accepts trailing data after padding in the captured benign probe. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2026-3446",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-3446",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 4,
+        "observation_indexes": [
+          288
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary"
+          ],
+          "next_action": "Reopen if the PSF advisory changes or an application relies on get_data() as a security boundary.",
+          "reason": "PSF explicitly disputes this as a code vulnerability under the intended open()-like security model; this does not provide path confinement. Exact installed pkgutil source matches the official release.",
+          "sources": [
+            "CVE-2026-3479",
+            "python-release"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-3479",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 5,
+        "observation_indexes": [
+          738
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-41254",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-46917",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-46968",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-47010",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-47021",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-47027",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-47059",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-47063",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [
+        "GHSA-h35f-9h28-mq5c"
+      ],
+      "copies": {
+        "bootstrap-pkg-resources-68.0.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if full setuptools or the named affected implementation is vendored.",
+          "reason": "This vendored identity contains pkg_resources only, not setuptools PackageIndex.download or FileList/egg_info sdist code named by this advisory. File inventories retain that distinction; distribution metadata absence alone is not used.",
+          "sources": [
+            "setuptools-vendor-unicode",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        },
+        "bootstrap-setuptools-79.0.1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: choose a vendor-supported CPython bootstrap refresh or separately authorize replacement of bundled wheels/version constants with the constrained toolchain, and test ensurepip/venv on supported filesystems. Do not remove supported bootstrap capability.",
+          "reason": "The 79.0.1 bootstrap wheel contains the old FileList path. The current maintainer advisory lists no patched version while the global advisory lists 83.0.0 and a concrete normalization patch. Linux overlay behavior narrows the stated APFS/HFS+ exposure, but does not establish absence for every supported build/mount context.",
+          "sources": [
+            "setuptools-vendor-unicode",
+            "GHSA-h35f-9h28-mq5c",
+            "setuptools-fix"
+          ],
+          "state": "OPEN"
+        },
+        "installed-setuptools-83.0.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Recheck actual full copy/source and vendor corrections after packaging changes; do not infer anything about the stripped pip copy from this version.",
+          "reason": "Installed 83.0.0 contains the normalization implementation named by the upstream fix. Global advisory identifies 83.0.0 as fixed; maintainer page is stale/no patched version. This does not clear the separate 79.0.1 bootstrap copy.",
+          "sources": [
+            "setuptools-vendor-unicode",
+            "GHSA-h35f-9h28-mq5c",
+            "setuptools-fix"
+          ],
+          "state": "supported-not-affected"
+        },
+        "pip-pkg-resources-70.3.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if full setuptools or the named affected implementation is vendored.",
+          "reason": "This vendored identity contains pkg_resources only, not setuptools PackageIndex.download or FileList/egg_info sdist code named by this advisory. File inventories retain that distinction; distribution metadata absence alone is not used.",
+          "sources": [
+            "setuptools-vendor-unicode",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-59890",
+      "lineage": {
+        "component": "setuptools",
+        "current_group_index": 3371,
+        "observation_indexes": [
+          6725
+        ],
+        "recorded_version": "70.3.0"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-july",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-60147",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Studio maintainer: obtain a released PSF-supported 3.11 backport or separately authorize a tested vendor patch. A newer Python 3 feature line needs a separate compatibility decision; do not accept risk here.",
+          "reason": "Morsel.js_output retains the older script construction; code presence is not an application exploitability claim. The current PSF range includes 3.11.17; no released 3.11 correction was established.",
+          "sources": [
+            "CVE-2026-6019",
+            "python-release",
+            "python-tags"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-6019",
+      "lineage": {
+        "component": "python",
+        "current_group_index": 6,
+        "observation_indexes": [
+          143
+        ],
+        "recorded_version": "3.11.17"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-august",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-60589",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-august",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-61308",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "temurin-21.0.12.1+1": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "official_archive",
+            "runtime",
+            "differences"
+          ],
+          "next_action": "Recheck the vendor security matrix and actual binaries after any JDK/final release-pair change; fonts and other native/build families remain separate.",
+          "reason": "OpenJDK JDK21 matrix marks the preceding 21.0.11 (July) / 21.0.12 (August CSPU) releases affected. Installed Temurin 21.0.12.1+1 is the subsequent vendor security release. All 247 installed official regular files other than the recipe-regenerated CDS archive match the checksum-verified release tar; src.zip removal is explicit in the pinned container recipe. This is positive release/byte evidence, not a scanner non-match.",
+          "sources": [
+            "openjdk-august",
+            "jdk-release",
+            "jdk-notes-asset",
+            "jdk-checksum",
+            "jdk-archive",
+            "temurin-container-recipe"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-70907",
+      "lineage": {
+        "component": "temurin",
+        "observation_indexes": [],
+        "origin": "vendor-matrix-JDK21",
+        "recorded_version": "21.0.12.1+1"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2.",
+          "sources": [
+            "CVE-2026-82049",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-82049",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          10
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [],
+      "copies": {
+        "cpython-3.11.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "source_match",
+            "binary",
+            "behavior"
+          ],
+          "next_action": "Recheck after source, release, decompressor or final-pair changes; retain historical finding.",
+          "reason": "Official PSF 3.11.17 release explicitly includes this fix; installed affected stdlib modules match the checksum-verified release source. This was already present in the #310 artifact, not a remediation made by S2.",
+          "sources": [
+            "CVE-2026-87910",
+            "python-release",
+            "python-source"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "CVE-2026-87910",
+      "lineage": {
+        "component": "python",
+        "historical_group_indexes": [
+          11
+        ],
+        "observation_indexes": [],
+        "recorded_version": "3.11.16"
+      },
+      "state": "supported-not-affected"
+    },
+    {
+      "aliases": [
+        "GHSA-8988-9cw3-xx77"
+      ],
+      "copies": {
+        "bootstrap-urllib3-1.26.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: use a released pip/CPython vendor bundle containing the fix when available; otherwise separately decide whether to authorize a maintained vendoring patch/unvendoring contract and bootstrap refresh, with offline/proxy/build regression proof. No such policy is selected here.",
+          "reason": "Exact vendored copy is within the maintainer affected range. urllib3 2.8.0 is available, but released pip 26.2.1 still bundles 2.7.0 and the CPython bootstrap still bundles 1.26.17. Installing standalone urllib3 does not replace either vendor copy. Reachability/exploitability in all pip build/download paths is unproven, not cleared.",
+          "sources": [
+            "urllib3-vendor-proxy",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "OPEN"
+        },
+        "pip-urllib3-2.7.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: use a released pip/CPython vendor bundle containing the fix when available; otherwise separately decide whether to authorize a maintained vendoring patch/unvendoring contract and bootstrap refresh, with offline/proxy/build regression proof. No such policy is selected here.",
+          "reason": "Exact vendored copy is within the maintainer affected range. urllib3 2.8.0 is available, but released pip 26.2.1 still bundles 2.7.0 and the CPython bootstrap still bundles 1.26.17. Installing standalone urllib3 does not replace either vendor copy. Reachability/exploitability in all pip build/download paths is unproven, not cleared.",
+          "sources": [
+            "urllib3-vendor-proxy",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-97687",
+      "lineage": {
+        "component": "urllib3",
+        "current_group_index": 3372,
+        "observation_indexes": [
+          6726
+        ],
+        "recorded_version": "2.7.0"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [
+        "GHSA-gh4c-6fx4-qh6g"
+      ],
+      "copies": {
+        "bootstrap-urllib3-1.26.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Recheck if the bootstrap copy changes.",
+          "reason": "Vendor range starts at 2.6.2 for the deflate chunk defect; this exact bootstrap 1.26.17 copy precedes that implementation. Other two urllib3 advisories remain OPEN for this same wheel.",
+          "sources": [
+            "urllib3-vendor-deflate",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        },
+        "pip-urllib3-2.7.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: use a released pip/CPython vendor bundle containing the fix when available; otherwise separately decide whether to authorize a maintained vendoring patch/unvendoring contract and bootstrap refresh, with offline/proxy/build regression proof. No such policy is selected here.",
+          "reason": "Exact vendored copy is within the maintainer affected range. urllib3 2.8.0 is available, but released pip 26.2.1 still bundles 2.7.0 and the CPython bootstrap still bundles 1.26.17. Installing standalone urllib3 does not replace either vendor copy. Reachability/exploitability in all pip build/download paths is unproven, not cleared.",
+          "sources": [
+            "urllib3-vendor-deflate",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-97688",
+      "lineage": {
+        "component": "urllib3",
+        "current_group_index": 3373,
+        "observation_indexes": [
+          6728
+        ],
+        "recorded_version": "2.7.0"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [
+        "GHSA-vxq7-64xx-v4gw"
+      ],
+      "copies": {
+        "bootstrap-urllib3-1.26.17": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: use a released pip/CPython vendor bundle containing the fix when available; otherwise separately decide whether to authorize a maintained vendoring patch/unvendoring contract and bootstrap refresh, with offline/proxy/build regression proof. No such policy is selected here.",
+          "reason": "Exact vendored copy is within the maintainer affected range. urllib3 2.8.0 is available, but released pip 26.2.1 still bundles 2.7.0 and the CPython bootstrap still bundles 1.26.17. Installing standalone urllib3 does not replace either vendor copy. Reachability/exploitability in all pip build/download paths is unproven, not cleared.",
+          "sources": [
+            "urllib3-vendor-chunk",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "OPEN"
+        },
+        "pip-urllib3-2.7.0": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Studio maintainer: use a released pip/CPython vendor bundle containing the fix when available; otherwise separately decide whether to authorize a maintained vendoring patch/unvendoring contract and bootstrap refresh, with offline/proxy/build regression proof. No such policy is selected here.",
+          "reason": "Exact vendored copy is within the maintainer affected range. urllib3 2.8.0 is available, but released pip 26.2.1 still bundles 2.7.0 and the CPython bootstrap still bundles 1.26.17. Installing standalone urllib3 does not replace either vendor copy. Reachability/exploitability in all pip build/download paths is unproven, not cleared.",
+          "sources": [
+            "urllib3-vendor-chunk",
+            "urllib3-release",
+            "pip-release",
+            "pip-vendoring"
+          ],
+          "state": "OPEN"
+        }
+      },
+      "id": "CVE-2026-97689",
+      "lineage": {
+        "component": "urllib3",
+        "current_group_index": 3374,
+        "observation_indexes": [
+          6727
+        ],
+        "recorded_version": "2.7.0"
+      },
+      "state": "OPEN"
+    },
+    {
+      "aliases": [
+        "CVE-2026-57585"
+      ],
+      "copies": {
+        "bootstrap-msgpack-1.0.5": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if a native unpacker/extension or changed msgpack advisory is introduced.",
+          "reason": "The vendor advisory and patch target the native C/Cython unpacker use-after-free. This exact copy contains only Python fallback code and no native unpacker; pip import confirms fallback for the live copy. This excludes this advisory, not future fallback defects.",
+          "sources": [
+            "msgpack-vendor",
+            "msgpack-patch",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        },
+        "pip-msgpack-1.1.2": {
+          "advisory_specific": true,
+          "artifact_evidence": [
+            "file_inventory",
+            "tree_sha256"
+          ],
+          "next_action": "Reopen if a native unpacker/extension or changed msgpack advisory is introduced.",
+          "reason": "The vendor advisory and patch target the native C/Cython unpacker use-after-free. This exact copy contains only Python fallback code and no native unpacker; pip import confirms fallback for the live copy. This excludes this advisory, not future fallback defects.",
+          "sources": [
+            "msgpack-vendor",
+            "msgpack-patch",
+            "pip-vendoring"
+          ],
+          "state": "supported-not-affected"
+        }
+      },
+      "id": "GHSA-6v7p-g79w-8964",
+      "lineage": {
+        "component": "msgpack",
+        "current_group_index": 3369,
+        "observation_indexes": [
+          6723
+        ],
+        "recorded_version": "1.1.2"
+      },
+      "state": "supported-not-affected"
+    }
+  ],
+  "image": {
+    "config_descriptor": {
+      "digest": "sha256:1dac71e187a03e7f13468bd52feeb59328545959ee22bfe11f04a0be7970f8f9",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 10329
+    },
+    "index_digest": "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e",
+    "platform_descriptor": {
+      "digest": "sha256:07a6d9c444dee382aab67461f14987bee1aec0043784fcea640d96ffdfc849cc",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      },
+      "size": 3344
+    }
+  },
+  "image_changed": false,
+  "input_sha256": "7082d83bd99cc0f32673f84aae821fbb76d7d670b1accbc36303bbc36f151246",
+  "interpretation": "Bounded artifact/advisory dispositions only; unresolved findings and overall M2 remain open.",
+  "m2_cleared": false,
+  "newly_encountered": {
+    "archives": {
+      "pip-24.0": {
+        "metadata_member": {
+          "bytes": 3581,
+          "path": "pip-24.0.dist-info/METADATA",
+          "sha256": "90d11f277fd5868da679ee257c97656dde511c8aac7d025231407e6ce90839e2"
+        },
+        "path": "/usr/local/lib/python3.11/ensurepip/_bundled/pip-24.0-py3-none-any.whl",
+        "sha256": "ba0d021a166865d2265246961bec0152ff124de910c5cc39f1156ce3fa7c69dc",
+        "vendor_declarations": {
+          "pip/_vendor/vendor.txt": "CacheControl==0.13.1  # Make sure to update the license in pyproject.toml for this.\ncolorama==0.4.6\ndistlib==0.3.8\ndistro==1.8.0\nmsgpack==1.0.5\npackaging==21.3\nplatformdirs==3.8.1\npyparsing==3.1.0\npyproject-hooks==1.0.0\nrequests==2.31.0\n    certifi==2023.7.22\n    chardet==5.1.0\n    idna==3.4\n    urllib3==1.26.17\nrich==13.4.2\n    pygments==2.15.1\n    typing_extensions==4.7.1\nresolvelib==1.0.1\nsetuptools==68.0.0\nsix==1.16.0\ntenacity==8.2.2\ntomli==2.0.1\ntruststore==0.8.0\nwebencodings==0.5.1\n"
+        }
+      },
+      "setuptools-79.0.1": {
+        "metadata_member": {
+          "bytes": 6548,
+          "path": "setuptools-79.0.1.dist-info/METADATA",
+          "sha256": "d3152caeb1486d143b30b1d41fffaaddb7ea95fdc9547ae1135ce697b1a420b5"
+        },
+        "nested_wheel_members": {
+          "setuptools/_vendor/wheel-0.45.1.dist-info/METADATA": {
+            "bytes": 2313,
+            "sha256": "98acfce07ee6ee3b31272cde21c4d53918936f434f315dfd2af3886211a09a30"
+          },
+          "setuptools/_vendor/wheel/__init__.py": {
+            "bytes": 59,
+            "sha256": "9abc4c9ef757002babfcb59e81b51f879839cac599addeb75099fcf74c2f18d9"
+          },
+          "setuptools/_vendor/wheel/cli/unpack.py": {
+            "bytes": 1021,
+            "sha256": "63f27bca7c4f4a81454d3ec7d1f3206c195512bc320c670e6e099ee4c06ecf9f"
+          }
+        },
+        "path": "/usr/local/lib/python3.11/ensurepip/_bundled/setuptools-79.0.1-py3-none-any.whl",
+        "sha256": "e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51",
+        "vendor_declarations": {
+          "setuptools/_vendor/wheel/vendored/vendor.txt": "packaging==24.0\n"
+        }
+      }
+    },
+    "coverage_limit": "Retained #310 scanner reports did not enumerate these wheel-archive contents/advisories. Archive inventory is not advisory coverage. This is an OPEN M2 coverage exclusion, not a clean result or accepted risk.",
+    "items": [
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-248v-346w-9cwc",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2024.7.4",
+            "vulnerable_version_range": ">= 2021.5.30, < 2024.7.4"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "certifi",
+        "ghsa_id": "GHSA-248v-346w-9cwc",
+        "id": "CVE-2024-39689",
+        "recorded_version": "2023.7.22",
+        "source_receipt": {
+          "bytes": 4158,
+          "retrieved_utc": "2026-10-09T04:08:49.878928+00:00",
+          "sha256": "48f4ec0daf234a7bc07ce8ff77c86e4f7613854d78043a6add38f8e2a3db66d6",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-39689"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-jjg7-2v4v-x38h",
+        "affected_ranges": [
+          {
+            "first_patched_version": "3.7",
+            "vulnerable_version_range": "< 3.7"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "idna",
+        "ghsa_id": "GHSA-jjg7-2v4v-x38h",
+        "id": "CVE-2024-3651",
+        "recorded_version": "3.4",
+        "source_receipt": {
+          "bytes": 4287,
+          "retrieved_utc": "2026-10-09T04:08:50.672344+00:00",
+          "sha256": "04612692a15ad08526346c5522c4dbcc3c669036c56e44b29521f286e086dc63",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-3651"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-65pc-fj4g-8rjx",
+        "affected_ranges": [
+          {
+            "first_patched_version": "3.15",
+            "vulnerable_version_range": "< 3.15"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "idna",
+        "ghsa_id": "GHSA-65pc-fj4g-8rjx",
+        "id": "CVE-2026-45409",
+        "recorded_version": "3.4",
+        "source_receipt": {
+          "bytes": 4815,
+          "retrieved_utc": "2026-10-09T04:08:50.254521+00:00",
+          "sha256": "7effdc1d6252313747434707f20ac79230fee6ee18b4da135034b9d1ea43e9eb",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-45409"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-4xh5-x5gv-qwph",
+        "affected_ranges": [
+          {
+            "first_patched_version": "25.3",
+            "vulnerable_version_range": "<= 25.2"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion. Requires the fallback tar path without PEP 706 filters; the assessed Python has filters, but no new applicability disposition is made in this disclosure.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-4xh5-x5gv-qwph",
+        "id": "CVE-2025-8869",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 7589,
+          "retrieved_utc": "2026-10-09T04:08:45.259638+00:00",
+          "sha256": "577ef11475d5e01cbe2987cc42150ac59d092213d440fc9e50e4ed506655e8a1",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2025-8869"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-qwm4-qh6w-59xr",
+        "affected_ranges": [
+          {
+            "first_patched_version": "26.2.0",
+            "vulnerable_version_range": "< 26.2.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-qwm4-qh6w-59xr",
+        "id": "CVE-2026-13346",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 2279,
+          "retrieved_utc": "2026-10-09T04:08:43.101081+00:00",
+          "sha256": "08c5330d0282cffc38e1f63e7e11aad6765b96d59ed59a0e348d3eccf9b8c59c",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-13346"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-6vgw-5pg2-w6jp",
+        "affected_ranges": [
+          {
+            "first_patched_version": "26.0",
+            "vulnerable_version_range": "< 26.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-6vgw-5pg2-w6jp",
+        "id": "CVE-2026-1703",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 1842,
+          "retrieved_utc": "2026-10-09T04:08:44.819616+00:00",
+          "sha256": "1e3ce19c19aebf620457408e4552e24a4624ff5c0934873b61f32e5473b03133",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-1703"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-58qw-9mgm-455v",
+        "affected_ranges": [
+          {
+            "first_patched_version": "26.1",
+            "vulnerable_version_range": "<= 26.0.1"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-58qw-9mgm-455v",
+        "id": "CVE-2026-3219",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 4044,
+          "retrieved_utc": "2026-10-09T04:08:44.439897+00:00",
+          "sha256": "f9b084c5d7ecc57407699e333a64a8679ff9a905e2cdea9a00c080d4c503814f",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-3219"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-jp4c-xjxw-mgf9",
+        "affected_ranges": [
+          {
+            "first_patched_version": "26.1",
+            "vulnerable_version_range": "< 26.1"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-jp4c-xjxw-mgf9",
+        "id": "CVE-2026-6357",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 2105,
+          "retrieved_utc": "2026-10-09T04:08:44.050179+00:00",
+          "sha256": "9c911cc5bb7e4efb7a01afabe67ebf522d4989745b0255fee38b50baf6fa2211",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-6357"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-wf93-45jw-7689",
+        "affected_ranges": [
+          {
+            "first_patched_version": "26.1.2",
+            "vulnerable_version_range": "< 26.1.2"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "pip",
+        "ghsa_id": "GHSA-wf93-45jw-7689",
+        "id": "CVE-2026-8643",
+        "recorded_version": "24.0",
+        "source_receipt": {
+          "bytes": 3598,
+          "retrieved_utc": "2026-10-09T04:08:43.639506+00:00",
+          "sha256": "8bc863afb8a94d4b584aa41d3c4e66525975de9128c82725220072e07ea9eafc",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-8643"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-9wx4-h78v-vm56",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.32.0",
+            "vulnerable_version_range": "< 2.32.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "requests",
+        "ghsa_id": "GHSA-9wx4-h78v-vm56",
+        "id": "CVE-2024-35195",
+        "recorded_version": "2.31.0",
+        "source_receipt": {
+          "bytes": 6725,
+          "retrieved_utc": "2026-10-09T04:08:49.455605+00:00",
+          "sha256": "5b5dcd1dcfca25c0ceace0312541811ccfbfe07b46dae397b918abb125f1d1cb",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-35195"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-9hjg-9r4m-mvj7",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.32.4",
+            "vulnerable_version_range": "< 2.32.4"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "requests",
+        "ghsa_id": "GHSA-9hjg-9r4m-mvj7",
+        "id": "CVE-2024-47081",
+        "recorded_version": "2.31.0",
+        "source_receipt": {
+          "bytes": 6518,
+          "retrieved_utc": "2026-10-09T04:08:49.015051+00:00",
+          "sha256": "96c1a29bada1e03039ffb8b35ef9eb6de1434b57928f51f2f1f385557482a533",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-47081"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-gc5v-m9x4-r6x2",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.33.0",
+            "vulnerable_version_range": "< 2.33.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "requests",
+        "ghsa_id": "GHSA-gc5v-m9x4-r6x2",
+        "id": "CVE-2026-25645",
+        "recorded_version": "2.31.0",
+        "source_receipt": {
+          "bytes": 5498,
+          "retrieved_utc": "2026-10-09T04:08:48.570834+00:00",
+          "sha256": "30337a2f5a73ad028f92936bcb45a93163bf3dca4b8a1333a23125a62151f84c",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-25645"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-cx63-2mw6-8hw5",
+        "affected_ranges": [
+          {
+            "first_patched_version": "70.0.0",
+            "vulnerable_version_range": "< 70.0.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion. Advisory targets package_index; this identity is the stripped pkg_resources subset, not full setuptools. Absence of the named implementation must be considered in follow-up, not silently counted as a vulnerability or clearance.",
+        "archive": "pip-24.0",
+        "component": "setuptools",
+        "ghsa_id": "GHSA-cx63-2mw6-8hw5",
+        "id": "CVE-2024-6345",
+        "recorded_version": "68.0.0",
+        "source_receipt": {
+          "bytes": 2174,
+          "retrieved_utc": "2026-10-09T04:08:51.078691+00:00",
+          "sha256": "9bfad0cd6f5e1b0c7b4b09b103e59da6de34a811f6345289860fd1ff14f23e65",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-6345"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-g4mx-q9vg-27p4",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.0.7",
+            "vulnerable_version_range": ">= 2.0.0, < 2.0.7"
+          },
+          {
+            "first_patched_version": "1.26.18",
+            "vulnerable_version_range": ">= 0, < 1.26.18"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-g4mx-q9vg-27p4",
+        "id": "CVE-2023-45803",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 8609,
+          "retrieved_utc": "2026-10-09T04:08:48.187736+00:00",
+          "sha256": "8471feca2ad9570ca8458bc1b1d57687b89b997af760c8e0669c3fb50df7787a",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2023-45803"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-34jh-p97f-mpxf",
+        "affected_ranges": [
+          {
+            "first_patched_version": "1.26.19",
+            "vulnerable_version_range": "< 1.26.19"
+          },
+          {
+            "first_patched_version": "2.2.2",
+            "vulnerable_version_range": ">= 2.0.0, < 2.2.2"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-34jh-p97f-mpxf",
+        "id": "CVE-2024-37891",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 6741,
+          "retrieved_utc": "2026-10-09T04:08:47.788192+00:00",
+          "sha256": "127712da544050af568fa1efb50b2d36dac913f603168a8a6b4934f7622b18f0",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2024-37891"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-pq67-6m6q-mj2v",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.5.0",
+            "vulnerable_version_range": "< 2.5.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-pq67-6m6q-mj2v",
+        "id": "CVE-2025-50181",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 7413,
+          "retrieved_utc": "2026-10-09T04:08:47.395396+00:00",
+          "sha256": "6a2713a69ce815097989bb0739c01bb008a0e66bdd8047239d6ed15a72c93e65",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2025-50181"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-gm62-xv2j-4w53",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.6.0",
+            "vulnerable_version_range": ">= 1.24, < 2.6.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-gm62-xv2j-4w53",
+        "id": "CVE-2025-66418",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 5495,
+          "retrieved_utc": "2026-10-09T04:08:46.971795+00:00",
+          "sha256": "30e6ae21636b35f6f772453b2727bdfb80d4cc7ae22aa0e3a415c1e92ae14ee2",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2025-66418"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-2xpw-w6gg-jr37",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.6.0",
+            "vulnerable_version_range": ">= 1.0, < 2.6.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-2xpw-w6gg-jr37",
+        "id": "CVE-2025-66471",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 9731,
+          "retrieved_utc": "2026-10-09T04:08:46.534951+00:00",
+          "sha256": "0c6249bea81556b02ec0f990d301e38b26f3163ed607ba9e19cf07114c843bfe",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2025-66471"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-38jv-5279-wg99",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.6.3",
+            "vulnerable_version_range": ">= 1.22, < 2.6.3"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-38jv-5279-wg99",
+        "id": "CVE-2026-21441",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 7265,
+          "retrieved_utc": "2026-10-09T04:08:46.103235+00:00",
+          "sha256": "5b4cbe7051589ec8e1b1651b90cc397fbd20a7fba0963c0103eb4eeebca7596f",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-21441"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-qccp-gfcp-xxvc",
+        "affected_ranges": [
+          {
+            "first_patched_version": "2.7.0",
+            "vulnerable_version_range": ">= 1.23, < 2.7.0"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion.",
+        "archive": "pip-24.0",
+        "component": "urllib3",
+        "ghsa_id": "GHSA-qccp-gfcp-xxvc",
+        "id": "CVE-2026-44431",
+        "recorded_version": "1.26.17",
+        "source_receipt": {
+          "bytes": 5890,
+          "retrieved_utc": "2026-10-09T04:08:45.688538+00:00",
+          "sha256": "57f73930138d1c376224fa52ed497d853f05c5121d1d9c40191bf6e04fa555ac",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-44431"
+        },
+        "status": "OPEN-unassessed"
+      },
+      {
+        "advisory_url": "https://github.com/advisories/GHSA-8rrh-rw8j-w5fx",
+        "affected_ranges": [
+          {
+            "first_patched_version": "0.46.2",
+            "vulnerable_version_range": ">= 0.40.0, <= 0.46.1"
+          }
+        ],
+        "applicability_note": "Package/version association only; dormant until bootstrap/install use. Advisory-specific reachability, vendor modifications and supported-context applicability are unassessed; this is not a confirmed exploit or an exclusion. The vendored wheel/cli/unpack.py member is present in the setuptools bootstrap archive; source and archive hashes are retained.",
+        "archive": "setuptools-79.0.1",
+        "component": "wheel",
+        "ghsa_id": "GHSA-8rrh-rw8j-w5fx",
+        "id": "CVE-2026-24049",
+        "recorded_version": "0.45.1",
+        "source_receipt": {
+          "bytes": 13118,
+          "retrieved_utc": "2026-10-09T04:08:51.479963+00:00",
+          "sha256": "9be0c106f703b2a33b401c6d154f6fd9ae30f113fb6e783cff2bb7c6a375b425",
+          "url": "https://api.github.com/advisories?cve_id=CVE-2026-24049"
+        },
+        "status": "OPEN-unassessed"
+      }
+    ],
+    "next_action": "Studio-owned bootstrap follow-up: assess each association and use released corrected pip/CPython bundles when available, or obtain separate authorization for a maintained bootstrap replacement with ensurepip/venv, constrained toolchain, offline/proxy and filesystem proof. No replacement/remediation is implemented here.",
+    "observed_date": "2026-10-08",
+    "observed_timezone": "America/Chicago",
+    "research_cutoff_utc": "2026-10-09T04:08:51.479963+00:00",
+    "review_url": "https://github.com/santosh-sh/EdgeForgeStudio/pull/311#issuecomment-6071211549",
+    "status": "OPEN-unassessed"
+  },
+  "revision": 1,
+  "risk_accepted": false,
+  "scanner_advisory_cutoff_utc": "2026-10-05T01:02:53.479177+00:00",
+  "schema_version": 1,
+  "vendor_research_cutoff_utc": "2026-10-08T19:50:48.254100+00:00"
+}

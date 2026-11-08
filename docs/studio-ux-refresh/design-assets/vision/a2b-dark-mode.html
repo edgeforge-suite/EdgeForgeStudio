@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>A2b — Studio Dark Mode (vision asset)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* dark remap — proposed */
+  --d-bg:#0f1b2d;--d-surface:#16233a;--d-editor:#1c2b45;--d-line:#26364e;--d-line2:#31435f;
+  --d-ink:#e8eef7;--d-mut:#9db0c9;--d-sel:#7db8ff;--d-selbg:#1d355a;
+  --dz-scan:#121e30;--dz-derived:#221c38;--dz-derived-line:#372c55;--dz-attn:#2c2312;--dz-attn-line:#4d3d1c;--dz-ready:#12262b;
+  --fam-rest:#0d9488;--fam-fixed:#15803d;--fam-csv:#4f46e5;--fam-xml:#b45309;--fam-soap:#1e3a5f;--fam-staging:#475569;
+  --t-rest:#2dd4bf;--t-fixed:#4ade80;--t-csv:#a5b4fc;--t-xml:#fbbf24;--t-soap:#7db8ff;--t-staging:#94a3b8;
+  --derived:#c4b5fd;--ok:#4ade80;--warn:#fbbf24;--danger:#f87171;
+  --doc-line:#dde3ec;--doc-mut:#68788c;--doc-ink:#1c2733;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:#f4f6f9;color:var(--doc-ink);padding:26px 34px 34px}
+.badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;font-size:11px;font-weight:800;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+h1{font-size:19px;font-weight:800;color:#1e3a5f;letter-spacing:-.3px}
+.sub{color:var(--doc-mut);margin:4px 0 18px;font-size:12.5px;max-width:1000px}
+.grid{display:grid;grid-template-columns:.62fr 1.38fr;gap:18px;align-items:start}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--doc-line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--doc-mut);font-weight:700;padding:7px 11px;border-bottom:1px solid var(--doc-line);background:#fbfcfe}
+td{padding:7px 11px;border-bottom:1px solid #f0f3f8;font-size:11.5px;vertical-align:middle}
+td.tok{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;white-space:nowrap}
+.swp{display:inline-flex;align-items:center;gap:5px}
+.sw{display:inline-block;width:22px;height:16px;border-radius:4px;border:1px solid rgba(16,35,63,.18);vertical-align:middle}
+.cr{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#0b6e3f;font-weight:700}
+.notes{margin-top:12px;background:#fff;border:1px solid var(--doc-line);border-radius:10px;padding:11px 14px;font-size:11.5px;color:#43566e}
+.notes b{color:#1e3a5f}
+/* ============ dark specimen ============ */
+.dark{background:var(--d-bg);border-radius:14px;padding:18px;color:var(--d-ink)}
+.dhead{font-size:15px;font-weight:800;letter-spacing:-.2px;margin-bottom:2px}
+.dsub{font-size:11.5px;color:var(--d-mut);margin-bottom:12px}
+.stats{display:flex;gap:9px;margin-bottom:12px}
+.stat{background:var(--dz-ready);border:1px solid var(--d-line);border-radius:9px;padding:8px 12px;flex:1}
+.stat .n{font-size:18px;font-weight:800;color:var(--d-ink);line-height:1}
+.stat .l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--d-mut);margin-top:4px;font-weight:600}
+.stat.attn{background:var(--dz-attn);border-color:var(--dz-attn-line)} .stat.attn .n{color:var(--warn)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{border:1px solid var(--d-line);border-radius:11px;overflow:hidden}
+.panel.board{background:var(--dz-scan)}
+.panel.editor{background:var(--d-editor);box-shadow:0 6px 22px rgba(0,0,0,.35)}
+.phd{padding:10px 13px;border-bottom:1px solid var(--d-line);font-size:12px;font-weight:700}
+.phd .pd{font-size:10.5px;color:var(--d-mut);font-weight:400;margin-top:1px}
+.grouphd{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;padding:8px 13px 4px;color:var(--danger);background:var(--dz-attn);border-top:1px solid var(--dz-attn-line)}
+.grouphd.ok{color:var(--d-mut);background:transparent;border-top:none}
+.row{display:flex;align-items:center;gap:9px;padding:9px 13px;border-top:1px solid var(--d-line);position:relative}
+.row.sel{background:#1d355a}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--d-sel)}
+.mono{width:40px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+.rn{font-weight:700;font-size:12px}
+.rm{font-size:10px;color:var(--d-mut);font-family:ui-monospace,Menlo,monospace;margin-top:1px}
+.blocker{font-size:10.5px;color:var(--danger);font-weight:600;margin-top:3px}
+.pill{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;white-space:nowrap}
+.pill.ok{background:rgba(74,222,128,.14);color:var(--ok)}.pill.attn{background:rgba(251,191,36,.14);color:var(--warn)}
+.ehd{padding:11px 13px;border-bottom:1px solid var(--d-line)}
+.etype{font-size:9px;font-weight:800;color:#fff;background:var(--fam-soap);border:1px solid #35578a;padding:2px 7px;border-radius:5px;letter-spacing:.4px}
+.ename{font-weight:800;font-size:13px;margin-left:6px;color:var(--t-soap)}
+.banner{display:flex;gap:8px;align-items:center;margin:10px 13px;padding:8px 10px;background:var(--dz-attn);border:1px solid var(--dz-attn-line);border-radius:8px;font-size:10.5px;color:#e8d5a0}
+.tabs{display:flex;gap:3px;padding:0 13px;border-bottom:1px solid var(--d-line)}
+.tab{font-size:10.5px;padding:7px 9px;color:var(--d-mut);border-bottom:2px solid transparent;font-weight:600}
+.tab.on{color:var(--t-soap);border-bottom-color:var(--t-soap)}
+.tab .b{display:inline-flex;align-items:center;justify-content:center;min-width:14px;height:14px;background:var(--danger);color:#301010;border-radius:8px;font-size:9px;margin-left:4px;padding:0 3px;font-weight:800}
+.tab .ck{color:var(--ok);margin-left:3px}
+.seedbox{border:1px solid var(--dz-derived-line);border-radius:9px;overflow:hidden;margin:11px 13px;background:var(--dz-derived)}
+.seedhd{padding:7px 10px;border-bottom:1px solid var(--dz-derived-line);font-size:10.5px;font-weight:700;color:var(--derived)}
+.seedrow{display:grid;grid-template-columns:13px 1fr 1fr auto;gap:8px;align-items:center;padding:6px 10px;border-top:1px solid var(--dz-derived-line);font-size:10.5px}
+.seedrow input{width:12px;height:12px;accent-color:var(--d-sel)}
+.seedrow .s{font-family:ui-monospace,Menlo,monospace}
+.seedrow .t{font-family:ui-monospace,Menlo,monospace;color:var(--d-mut)}
+.seedrow .b2{font-size:9px;color:var(--derived);font-weight:700;text-align:right}
+.efoot{padding:9px 13px;border-top:1px solid var(--d-line);display:flex;justify-content:flex-end;gap:8px}
+.btn{font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--d-line2);color:var(--d-ink)}
+.btn.pri{background:var(--d-sel);color:#0f1b2d;border-color:var(--d-sel);font-weight:700}
+.dfoot{margin-top:10px;font-size:10.5px;color:var(--d-mut)}
+.dfoot b{color:var(--d-ink)}
+</style></head>
+<body>
+<div class="badge">⚠ VISION ASSET — dark theme is NOT in the build contract</div>
+<h1>A2b · Studio dark mode — a token remap, not a redraw</h1>
+<div class="sub">Dark is derived entirely from the locked system: same components, same family hues (as accents), zones re-tinted as dark hue-washes, text scale flipped. All contrast <b>measured</b> — and dark actually <b>fixes</b> the light-mode borderline (muted goes 4.3:1 → 6.4–7.8:1). If ever built, it lands as a second token set in <code>studio.css</code> behind <code>prefers-color-scheme</code> / a toggle — no template changes.</div>
+
+<div class="grid">
+  <div>
+    <table>
+      <tr><th>Token</th><th>Light → Dark</th><th>Ink CR</th></tr>
+      <tr><td class="tok">--bg</td><td class="swp"><span class="sw" style="background:#dce8f5"></span>→<span class="sw" style="background:#0f1b2d"></span> #0f1b2d</td><td class="cr">14.8:1</td></tr>
+      <tr><td class="tok">--surface</td><td class="swp"><span class="sw" style="background:#fff"></span>→<span class="sw" style="background:#16233a"></span> #16233a</td><td class="cr">13.5:1</td></tr>
+      <tr><td class="tok">--text</td><td class="swp"><span class="sw" style="background:#10233f"></span>→<span class="sw" style="background:#e8eef7"></span> #e8eef7</td><td class="cr">—</td></tr>
+      <tr><td class="tok">--muted</td><td class="swp"><span class="sw" style="background:#5e718f"></span>→<span class="sw" style="background:#9db0c9"></span> #9db0c9</td><td class="cr">6.4–7.8:1 ✓</td></tr>
+      <tr><td class="tok">--zone-scan</td><td class="swp"><span class="sw" style="background:#eaf0f8"></span>→<span class="sw" style="background:#121e30"></span> #121e30</td><td class="cr">14.4:1</td></tr>
+      <tr><td class="tok">--zone-editor</td><td class="swp"><span class="sw" style="background:#fff"></span>→<span class="sw" style="background:#1c2b45"></span> #1c2b45 <span style="color:#8a97a8">(brightest dark panel + elevation)</span></td><td class="cr">12.2:1</td></tr>
+      <tr><td class="tok">--zone-derived</td><td class="swp"><span class="sw" style="background:#f3ecfd"></span>→<span class="sw" style="background:#221c38"></span> #221c38</td><td class="cr">13.9:1</td></tr>
+      <tr><td class="tok">--zone-attn</td><td class="swp"><span class="sw" style="background:#fdf0d8"></span>→<span class="sw" style="background:#2c2312"></span> #2c2312</td><td class="cr">13.3:1</td></tr>
+      <tr><td class="tok">--zone-ready</td><td class="swp"><span class="sw" style="background:#e8f2f2"></span>→<span class="sw" style="background:#12262b"></span> #12262b</td><td class="cr">13.5:1</td></tr>
+      <tr><td class="tok">--fam-* (tiles/borders)</td><td>unchanged — accents pop on dark</td><td class="cr">—</td></tr>
+      <tr><td class="tok">--fam-*-text (new)</td><td>on-dark text tints (e.g. SOAP → #7db8ff)</td><td class="cr">5.5–8.5:1 ✓</td></tr>
+    </table>
+    <div class="notes" style="margin-top:8px"><b>Reading the CR column:</b> ✓ = a measured text pair that meets AA · “—” = not a text pair (the text token itself, or a tile / border / background swatch, judged by the label+shape rule). Every dark <i>text</i> pair here is ≥5:1 — dark clears the light-mode muted borderline rather than introducing a new one.</div>
+    <div class="notes"><b>Rules carried over unchanged:</b> family = element accents only · zone = container bg only · selection &gt; zone &gt; default (selection becomes a lighter navy #1d355a + #7db8ff bar) · every signal keeps its text label. <b>New for dark:</b> status/provenance text uses tint variants (ok #4ade80 · warn #fbbf24 · danger #f87171 · derived #c4b5fd) on translucent fills — all ≥5:1 measured.</div>
+  </div>
+
+  <!-- DARK SPECIMEN -->
+  <div class="dark">
+    <div class="dhead">Step 5 · Downstream Interfaces</div>
+    <div class="dsub">The flagship surface, dark — board (scan) + focused editor, zones and precedence intact.</div>
+    <div class="stats">
+      <div class="stat"><div class="n">5</div><div class="l">Contracts</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">Ready</div></div>
+      <div class="stat attn"><div class="n">1</div><div class="l">Needs action</div></div>
+      <div class="stat"><div class="n" style="color:var(--danger)">1</div><div class="l">Export blockers</div></div>
+    </div>
+    <div class="split">
+      <section class="panel board">
+        <div class="phd">Loaded downstream interfaces<div class="pd">Grouped by family · blocked-first · one readiness source</div></div>
+        <div class="grouphd">▾ Needs action</div>
+        <div class="row sel">
+          <span class="mono" style="background:var(--fam-soap);border:1px solid #35578a">SOAP</span>
+          <div style="flex:1;min-width:0"><div class="rn">Account Status Notify</div><div class="rm">downstream/account-status.wsdl</div><div class="blocker">⚠ Choose the WSDL operation — 3 available</div></div>
+          <span class="pill attn">Needs op</span>
+        </div>
+        <div class="grouphd ok">▾ Ready</div>
+        <div class="row">
+          <span class="mono" style="background:var(--fam-fixed)">FIXED</span>
+          <div style="flex:1;min-width:0"><div class="rn">Account Fixed-Width Archive</div><div class="rm">downstream/account-eod.layout.yaml</div></div>
+          <span class="pill ok">Ready</span>
+        </div>
+        <div class="row">
+          <span class="mono" style="background:var(--fam-csv)">CSV</span>
+          <div style="flex:1;min-width:0"><div class="rn">Account CSV Reconciliation</div><div class="rm">delimiter | · header true</div></div>
+          <span class="pill ok">Ready</span>
+        </div>
+        <div class="row">
+          <span class="mono" style="background:var(--fam-xml)">XML</span>
+          <div style="flex:1;min-width:0"><div class="rn">Account XML Outbound</div><div class="rm">root AccountMessage</div></div>
+          <span class="pill ok">Ready</span>
+        </div>
+      </section>
+
+      <section class="panel editor">
+        <div class="ehd"><span class="etype">SOAP / WSDL</span><span class="ename">Account Status Notify</span></div>
+        <div class="banner">⚠ <b style="margin:0 4px;color:#fbd88a">One field blocks export:</b> select the WSDL operation.</div>
+        <div class="tabs">
+          <span class="tab">Identity<span class="ck">✓</span></span>
+          <span class="tab on">WSDL &amp; Operation<span class="b">1</span></span>
+          <span class="tab">Mapping</span>
+          <span class="tab">Sample</span>
+        </div>
+        <div class="seedbox">
+          <div class="seedhd">Deterministic seeds from the WSDL — nothing applied until kept</div>
+          <div class="seedrow"><input type="checkbox" checked><span class="s">Account.accountId</span><span class="t">accountId</span><span class="b2">exact match</span></div>
+          <div class="seedrow"><input type="checkbox" checked><span class="s">Account.status</span><span class="t">accountStatus</span><span class="b2">snake↔camel</span></div>
+          <div class="seedrow"><input type="checkbox"><span class="s">Account.openedOn</span><span class="t">— no match</span><span class="b2" style="color:var(--d-mut)">left blank</span></div>
+        </div>
+        <div class="efoot"><span class="btn">Cancel</span><span class="btn pri">Save contract</span></div>
+      </section>
+    </div>
+    <div class="dfoot"><b>Dark rules demonstrated:</b> editor is the brightest dark panel (+elevation) · needs-action rows wash <span style="color:#e8d5a0">amber-dark</span> · seeds wash <span style="color:var(--derived)">lilac-dark</span> · readiness strip teal-dark · selection (light-navy + blue bar) wins over zone · family tiles unchanged, family <i>text</i> uses on-dark tints.</div>
+  </div>
+</div>
+</body></html>

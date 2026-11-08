@@ -1,0 +1,3016 @@
+{
+  "advisory_cutoff_utc": "2026-10-05T01:02:53.479177+00:00",
+  "audit": {
+    "http_boundary": "GET https://pypi.org/pypi/<public-third-party-name>/<version>/json; no private coordinates/source/inventory upload",
+    "raw_sha256": "1af0804212fe8f8db649c6afa3db8ef1b3ce243588b42874e2fe5452f45f1e0a",
+    "reference_pin_count": 95,
+    "scope": "Reference constraints only; not filesystem/vendor/native/OS/JDK coverage",
+    "skipped_records": 0,
+    "strict_exit_code": 0,
+    "tool": "pip-audit 2.9.0",
+    "vulnerabilities": 0
+  },
+  "build": {
+    "attempts": 1,
+    "buildkit_ref": "desktop-linux/desktop-linux/k0f8ru08qsgn0h1rngjjw4egg",
+    "command": "docker buildx build --pull --no-cache --platform linux/amd64 --build-context edgeforge_engine=$OUT/engine --build-arg APP_UID=1000 --build-arg APP_GID=1000 --metadata-file $OUT/build-metadata.json --iidfile $OUT/image.iid --load --progress plain -t edgeforge-studio-image-refresh:20261004 .",
+    "corrective_builds": 0,
+    "exit_code": 0,
+    "fresh_apt_evidence": "build.log contains newly fetched official Bookworm amd64 InRelease/Packages and libexpat1 u4 installation; no cached APT result is credited.",
+    "invoked_at_utc_clock": "2026-10-05T00:55:40Z",
+    "log_completed_at_utc": "2026-10-05T00:57:21.515560+00:00",
+    "no_cache": true,
+    "platform": "linux/amd64",
+    "pull": true,
+    "raw_log_sha256": "822e3215f6fb210fbe2e2086f92d8488901adbdd404b657ecf9712f1d41707bb",
+    "raw_receipt_sha256": "4be1b20a1083d754fa88905e9482dea5d61dcaf81bb891ad4492f21aa2ba49bd",
+    "recipe_changed": false,
+    "timeout_note": "Initial build actively monitored to successful completion; later costly commands explicitly process-timeout bounded. No time-limit reset.",
+    "uid_gid": [
+      1000,
+      1000
+    ]
+  },
+  "candidate": "EF-V5-M2-STUDIO-IMAGE-REFRESH-S1",
+  "classification_counts": {
+    "open/unassessed": 3375
+  },
+  "commands": {
+    "audit-coverage-corrected": {
+      "command": [
+        "python3",
+        "$OUT/validate.py",
+        "--audit-coverage-only"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:08:42.065994+00:00",
+      "log_sha256": "482b9be327fcfd815d4ce293c5b7c7f6df7409c8595cd59e79f18833559dc085",
+      "started_at_utc": "2026-10-05T01:08:41.727522+00:00",
+      "timeout_seconds": 600
+    },
+    "build-run-proof": {
+      "command": [
+        "docker",
+        "exec",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "python",
+        "/tmp/runner.py",
+        "--project",
+        "/tmp/synthetic.edgeforge-project.json",
+        "--profile",
+        "springboot-legacy-compatible",
+        "--proof-root",
+        "/workspace/data/image-refresh",
+        "--jobless",
+        "--run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:03.380587+00:00",
+      "log_sha256": "dfb6ea976dc98d3af87ff37a79ffe73e38ab533294cacbb0b38e99eee1268cb7",
+      "started_at_utc": "2026-10-05T00:59:55.581094+00:00",
+      "timeout_seconds": 1000
+    },
+    "changed-python-lint": {
+      "command": [
+        "ruff",
+        "check",
+        "scripts/maven_image_build_run_proof.py",
+        "tests/test_maven_image_build_run_proof.py"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:32:21.833161+00:00",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "started_at_utc": "2026-10-05T01:32:21.744253+00:00",
+      "timeout_seconds": 120
+    },
+    "copy-runner.py": {
+      "command": [
+        "docker",
+        "cp",
+        "$STUDIO/scripts/maven_image_build_run_proof.py",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/runner.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:53.389860+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T00:59:53.349528+00:00",
+      "timeout_seconds": 60
+    },
+    "copy-runtime-probe.py": {
+      "command": [
+        "docker",
+        "cp",
+        "$OUT/inspect_runtime.py",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/runtime-probe.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:53.349102+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T00:59:53.275722+00:00",
+      "timeout_seconds": 60
+    },
+    "copy-synthetic.edgeforge-project.json": {
+      "command": [
+        "docker",
+        "cp",
+        "$STUDIO/docs/sample-packs/hc-authorization-status/project/hc-authorization-status.edgeforge-project.json",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/synthetic.edgeforge-project.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:53.426834+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T00:59:53.390307+00:00",
+      "timeout_seconds": 60
+    },
+    "corrected-attempt-output-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "edgeforge-studio-image-refresh-20261004-proof:/workspace/data/image-refresh-corrected",
+        "$OUT/corrected-attempt"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:11:10.769012+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:11:10.694922+00:00",
+      "timeout_seconds": 60
+    },
+    "corrected-build-run-proof": {
+      "command": [
+        "docker",
+        "exec",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "python",
+        "/tmp/runner-corrected.py",
+        "--project",
+        "/tmp/synthetic.edgeforge-project.json",
+        "--profile",
+        "springboot-legacy-compatible",
+        "--proof-root",
+        "/workspace/data/image-refresh-corrected",
+        "--jobless",
+        "--run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 1,
+      "finished_at_utc": "2026-10-05T01:08:45.043388+00:00",
+      "log_sha256": "b92666bdfb0ff9d94e4f792b8ca7ce6b6307510315a519d35a0f1a22ecde46fa",
+      "started_at_utc": "2026-10-05T01:08:41.083940+00:00",
+      "timeout_seconds": 1000
+    },
+    "corrected-confined-build-run-proof": {
+      "command": [
+        "docker",
+        "exec",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "python",
+        "/tmp/runner-corrected.py",
+        "--project",
+        "/tmp/synthetic.edgeforge-project.json",
+        "--profile",
+        "springboot-legacy-compatible",
+        "--proof-root",
+        "/workspace/data/image-refresh/corrected",
+        "--jobless",
+        "--run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:12:19.688984+00:00",
+      "log_sha256": "79ca10c0105c756b9d44679b04e6f0b891aaa7661774e8e907d0d710eccaa3d9",
+      "started_at_utc": "2026-10-05T01:11:10.769749+00:00",
+      "timeout_seconds": 1000
+    },
+    "corrected-confined-proof-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "edgeforge-studio-image-refresh-20261004-proof:/workspace/data/image-refresh/corrected",
+        "$OUT/corrected-build-run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:12:20.171713+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:12:19.690446+00:00",
+      "timeout_seconds": 120
+    },
+    "corrected-confined-proof-stop": {
+      "command": [
+        "docker",
+        "stop",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:12:30.524175+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T01:12:20.172175+00:00",
+      "timeout_seconds": 60
+    },
+    "corrected-proof-start": {
+      "command": [
+        "docker",
+        "start",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:08:41.041320+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T01:08:40.591550+00:00",
+      "timeout_seconds": 60
+    },
+    "corrected-runner-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "$STUDIO/scripts/maven_image_build_run_proof.py",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/runner-corrected.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:08:41.083459+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:08:41.042676+00:00",
+      "timeout_seconds": 60
+    },
+    "debian-tracker-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "120",
+        "https://security-tracker.debian.org/tracker/data/json",
+        "-o",
+        "$OUT/debian-tracker.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:00:15.290683+00:00",
+      "log_sha256": "f1a15fb49f42c68e229f0f46baca1d9f264e0d234b713e9a5a4b656e2db18d18",
+      "started_at_utc": "2026-10-05T01:00:12.977531+00:00",
+      "timeout_seconds": 130
+    },
+    "diff-hygiene": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:08:42.010961+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:08:41.772450+00:00",
+      "timeout_seconds": 30
+    },
+    "eclipse-temurin-base-index": {
+      "command": [
+        "docker",
+        "buildx",
+        "imagetools",
+        "inspect",
+        "--raw",
+        "docker.io/library/eclipse-temurin@sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:09:26.398704+00:00",
+      "log_sha256": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "started_at_utc": "2026-10-05T01:09:25.512901+00:00",
+      "timeout_seconds": 120
+    },
+    "eclipse-temurin-base-platform": {
+      "command": [
+        "docker",
+        "buildx",
+        "imagetools",
+        "inspect",
+        "--raw",
+        "docker.io/library/eclipse-temurin@sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:09:27.015499+00:00",
+      "log_sha256": "442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+      "started_at_utc": "2026-10-05T01:09:26.400297+00:00",
+      "timeout_seconds": 120
+    },
+    "effective-pom": {
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/workspace/data/image-refresh/authorization-status/generated-app",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "mvn",
+        "-B",
+        "-ntp",
+        "help:effective-pom",
+        "-Doutput=/workspace/data/image-refresh/effective-pom.xml"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:50.438195+00:00",
+      "log_sha256": "d165d31c49258c9c2d4d5aef871917777a1ae420e8ccfa402a751b89601f8bb7",
+      "started_at_utc": "2026-10-05T01:02:39.901995+00:00",
+      "timeout_seconds": 300
+    },
+    "expat-binary-container-start": {
+      "command": [
+        "docker",
+        "start",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:26:21.166823+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T01:26:20.978730+00:00",
+      "timeout_seconds": 60
+    },
+    "expat-binary-container-stop": {
+      "command": [
+        "docker",
+        "stop",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:26:32.533393+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T01:26:22.253848+00:00",
+      "timeout_seconds": 60
+    },
+    "expat-binary-identity": {
+      "command": [
+        "docker",
+        "exec",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "python",
+        "/tmp/verify-expat-binary.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:26:22.252131+00:00",
+      "log_sha256": "59795de5cdf8d1d3319464df52f2c54086a285dde1f62b3212ca8034c646f5df",
+      "started_at_utc": "2026-10-05T01:26:21.288589+00:00",
+      "timeout_seconds": 60
+    },
+    "expat-binary-package-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "$OUT/libexpat1-u4-amd64.deb",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/libexpat-u4.deb"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:26:21.241858+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:26:21.167299+00:00",
+      "timeout_seconds": 60
+    },
+    "expat-binary-verifier-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "$OUT/verify_expat_binary.py",
+        "edgeforge-studio-image-refresh-20261004-proof:/tmp/verify-expat-binary.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:26:21.288124+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:26:21.242369+00:00",
+      "timeout_seconds": 60
+    },
+    "expat-changelog-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "60",
+        "https://metadata.ftp-master.debian.org/changelogs/main/e/expat/expat_2.5.0-1+deb12u4_changelog",
+        "-o",
+        "$OUT/expat-changelog.txt"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 56,
+      "finished_at_utc": "2026-10-05T01:00:16.403028+00:00",
+      "log_sha256": "c81a41718eed8a9711d59052b06dabd07dbc2e4f66ead54774770f8e3c6ede77",
+      "started_at_utc": "2026-10-05T01:00:16.116615+00:00",
+      "timeout_seconds": 70
+    },
+    "expat-debian-source-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "60",
+        "https://security.debian.org/debian-security/pool/updates/main/e/expat/expat_2.5.0-1+deb12u4.debian.tar.xz",
+        "-o",
+        "$OUT/expat.debian.tar.xz"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:01:28.897217+00:00",
+      "log_sha256": "fb5c6b0ffbfea1e217dc364465e4f6b31271872b7a7188571ead97189ca2caed",
+      "started_at_utc": "2026-10-05T01:01:28.727555+00:00",
+      "timeout_seconds": 600
+    },
+    "expat-source-dsc-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "60",
+        "https://security.debian.org/debian-security/pool/updates/main/e/expat/expat_2.5.0-1+deb12u4.dsc",
+        "-o",
+        "$OUT/expat.dsc"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:02.726984+00:00",
+      "log_sha256": "e225fe4af2dc2c9463dc6ccfb123b09dc7accf42f7be434bf40b41bf376835b9",
+      "started_at_utc": "2026-10-05T01:03:02.597731+00:00",
+      "timeout_seconds": 600
+    },
+    "expat-vendor-page-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "60",
+        "https://security-tracker.debian.org/tracker/source-package/expat",
+        "-o",
+        "$OUT/expat-vendor.html"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:00:16.116223+00:00",
+      "log_sha256": "d4a30fa872d9e6b960e8301e5c14a6e279c0b25b888df25a2805bd00377c8f86",
+      "started_at_utc": "2026-10-05T01:00:15.296341+00:00",
+      "timeout_seconds": 70
+    },
+    "final-projection-validation": {
+      "command": [
+        "$PYTHON",
+        "$OUT/final_validate.py"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 1,
+      "finished_at_utc": "2026-10-05T01:33:50.571387+00:00",
+      "log_sha256": "4c450af4f9d01e0e9f5d2f5a5e3a5b46e7a9efa5ce8e9b042571dd09c6ce04f5",
+      "started_at_utc": "2026-10-05T01:33:49.902987+00:00",
+      "timeout_seconds": 180
+    },
+    "final-proof-output-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "edgeforge-studio-image-refresh-20261004-proof:/workspace/data/image-refresh",
+        "$OUT/final-build-run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:50.925322+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:50.441597+00:00",
+      "timeout_seconds": 120
+    },
+    "final-secret-scan": {
+      "command": [
+        "gitleaks",
+        "dir",
+        ".",
+        "--redact",
+        "--exit-code",
+        "1",
+        "--report-format",
+        "json",
+        "--report-path",
+        "$OUT/final-gitleaks.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:32:24.829539+00:00",
+      "log_sha256": "0766fde660817e743ec58512291879bd73450311b89259ef1bfa86ba0e629676",
+      "started_at_utc": "2026-10-05T01:32:21.913930+00:00",
+      "timeout_seconds": 120
+    },
+    "focused": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "pytest",
+        "tests/test_image_assessment_report.py",
+        "tests/test_image_consolidated_disposition.py",
+        "tests/test_maven_image_build_run_proof.py",
+        "tests/test_apache_maven_install.py",
+        "tests/test_dependency_audit_policy.py",
+        "-q"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:04.269959+00:00",
+      "log_sha256": "979a8acadd2a1325f0e9116384fe75005f86b528edd1fb6f32183b57a37dd354",
+      "started_at_utc": "2026-10-05T01:02:53.834145+00:00",
+      "timeout_seconds": 300
+    },
+    "focused-corrected": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "pytest",
+        "tests/test_image_assessment_report.py",
+        "tests/test_image_consolidated_disposition.py",
+        "tests/test_maven_image_build_run_proof.py",
+        "tests/test_apache_maven_install.py",
+        "tests/test_dependency_audit_policy.py",
+        "-q"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:09:30.727011+00:00",
+      "log_sha256": "f25198ec1d0fa6b0cfa91f03b63f77642889b47bd6adf2e408246eda3bfb7e76",
+      "started_at_utc": "2026-10-05T01:09:26.677373+00:00",
+      "timeout_seconds": 600
+    },
+    "grype-db-download": {
+      "command": [
+        "$OUT/tools/grype",
+        "db",
+        "update"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "GRYPE_CHECK_FOR_APP_UPDATE": "false",
+        "GRYPE_DB_CACHE_DIR": "$OUT/grype-db"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:17.187922+00:00",
+      "log_sha256": "c7b4223d373ec352807b8acc11eb7e7406fdde188ecab4cafe351eec1decfe54",
+      "started_at_utc": "2026-10-05T00:58:04.666578+00:00",
+      "timeout_seconds": 600
+    },
+    "grype-pass-1": {
+      "command": [
+        "$OUT/tools/grype",
+        "sbom:$OUT/syft-1.json",
+        "--output",
+        "json",
+        "--file",
+        "$OUT/grype-1.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "GRYPE_CHECK_FOR_APP_UPDATE": "false",
+        "GRYPE_DB_AUTO_UPDATE": "false",
+        "GRYPE_DB_CACHE_DIR": "$OUT/grype-db",
+        "GRYPE_EXTERNAL_SOURCES_ENABLE": "false"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:01:54.159720+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:01:43.752288+00:00",
+      "timeout_seconds": 600
+    },
+    "grype-pass-2": {
+      "command": [
+        "$OUT/tools/grype",
+        "sbom:$OUT/syft-2.json",
+        "--output",
+        "json",
+        "--file",
+        "$OUT/grype-2.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "GRYPE_CHECK_FOR_APP_UPDATE": "false",
+        "GRYPE_DB_AUTO_UPDATE": "false",
+        "GRYPE_DB_CACHE_DIR": "$OUT/grype-db",
+        "GRYPE_EXTERNAL_SOURCES_ENABLE": "false"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:52.025196+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:42.081134+00:00",
+      "timeout_seconds": 600
+    },
+    "grype-version": {
+      "command": [
+        "$OUT/tools/grype",
+        "version"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:58:02.130107+00:00",
+      "log_sha256": "260b812dc5bee0dfc26f363ce09f719b6dd2dd1536117e2f9a4359798519baf3",
+      "started_at_utc": "2026-10-05T00:58:01.167152+00:00",
+      "timeout_seconds": 30
+    },
+    "historical-ledger-replay": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "scripts.image_consolidated_disposition",
+        "--retained",
+        "$HISTORICAL_RAW",
+        "--identity",
+        "docs/handover-evidence/studio-image-curl-identities.json",
+        "--curl-ledger",
+        "docs/handover-evidence/studio-image-curl-ledger.json",
+        "--output",
+        "$OUT/historical-replayed-ledger.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:20:02.477989+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:19:51.588248+00:00",
+      "timeout_seconds": 600
+    },
+    "image-smoke": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "pytest",
+        "tests/smoke/test_docker_image_launch_smoke.py",
+        "-q",
+        "-m",
+        "smoke"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {
+        "EDGEFORGE_STUDIO_IMAGE_PREBUILT": "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:18.020057+00:00",
+      "log_sha256": "e19d7e90c78d5ec9272bd8109a36ab1d3bf6a7f689894f8749995b93f502cec4",
+      "started_at_utc": "2026-10-05T01:03:04.271228+00:00",
+      "timeout_seconds": 180
+    },
+    "installed-components": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--platform",
+        "linux/amd64",
+        "--network",
+        "none",
+        "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e",
+        "sh",
+        "-c",
+        "id; python --version; java -version; mvn --version; dpkg-query -W libexpat1; dpkg --compare-versions \"$(dpkg-query -W -f=\"${Version}\" libexpat1)\" ge 2.5.0-1+deb12u4; zcat /usr/share/doc/libexpat1/changelog.Debian.gz; cat /etc/apt/sources.list.d/debian.sources; python -m pip check"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:58:42.327365+00:00",
+      "log_sha256": "7207baccabffa7d545ad67553b01a75ea3dbe74e581748828527d4f5469d553a",
+      "started_at_utc": "2026-10-05T00:58:30.285725+00:00",
+      "timeout_seconds": 600
+    },
+    "ledger-pass-1": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "scripts.image_findings_ledger",
+        "--syft",
+        "$OUT/syft-1.json",
+        "--grype",
+        "$OUT/grype-1.json",
+        "--trivy",
+        "$OUT/trivy-1.json",
+        "--output",
+        "$OUT/ledger-1.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:07.470249+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:06.911758+00:00",
+      "timeout_seconds": 60
+    },
+    "ledger-pass-2": {
+      "command": [
+        "$PYTHON",
+        "-m",
+        "scripts.image_findings_ledger",
+        "--syft",
+        "$OUT/syft-2.json",
+        "--grype",
+        "$OUT/grype-2.json",
+        "--trivy",
+        "$OUT/trivy-2.json",
+        "--output",
+        "$OUT/ledger-2.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:54.543293+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:53.995450+00:00",
+      "timeout_seconds": 60
+    },
+    "oci-identity": {
+      "command": [
+        "python3",
+        "$OUT/verify_oci.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 1,
+      "finished_at_utc": "2026-10-05T01:04:40.166256+00:00",
+      "log_sha256": "d2e6b11983e3c6cba41b7614af0bb684355465411976c4f1a4e03d96fbe39e22",
+      "started_at_utc": "2026-10-05T01:04:32.970444+00:00",
+      "timeout_seconds": 600
+    },
+    "oci-identity-corrected": {
+      "command": [
+        "$PYTHON",
+        "$OUT/verify_oci.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:07:07.335586+00:00",
+      "log_sha256": "69bde17e4abff9098c39d4d1b31bcff52700660f096398ff71811aced877ff50",
+      "started_at_utc": "2026-10-05T01:07:01.571910+00:00",
+      "timeout_seconds": 600
+    },
+    "official-expat-package-download": {
+      "command": [
+        "curl",
+        "-fL",
+        "--max-time",
+        "60",
+        "https://security.debian.org/debian-security/pool/updates/main/e/expat/libexpat1_2.5.0-1+deb12u4_amd64.deb",
+        "-o",
+        "$OUT/libexpat1-u4-amd64.deb"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:19:56.939953+00:00",
+      "log_sha256": "5b2341baca302a362576ee98a74df1603c3c7f529acb787f9630a5461dcea78f",
+      "started_at_utc": "2026-10-05T01:19:56.700750+00:00",
+      "timeout_seconds": 600
+    },
+    "proof-container-create": {
+      "command": [
+        "docker",
+        "create",
+        "--name",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "--platform",
+        "linux/amd64",
+        "-e",
+        "PYTHONPATH=/workspace/EdgeForgeStudio",
+        "-e",
+        "EDGEFORGE_STUDIO_ENGINE_TRANSPORT=cli",
+        "-e",
+        "EDGEFORGE_STUDIO_DEFAULT_OUTPUT_PATH=/workspace/data/image-refresh",
+        "-e",
+        "PYTHONOPTIMIZE=0",
+        "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e",
+        "sleep",
+        "3600"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:52.516578+00:00",
+      "log_sha256": "002b9901ab3a0a81d43c2668692c4ef24e5a371648d63189dc9874b050f7bbc8",
+      "started_at_utc": "2026-10-05T00:59:52.029194+00:00",
+      "timeout_seconds": 60
+    },
+    "proof-container-inspect": {
+      "command": [
+        "docker",
+        "inspect",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:53.275312+00:00",
+      "log_sha256": "6dd306a20f79afa4ee3f270ff219476ae2d9af38466da68e1a42c8fee986b11b",
+      "started_at_utc": "2026-10-05T00:59:53.235202+00:00",
+      "timeout_seconds": 30
+    },
+    "proof-container-start": {
+      "command": [
+        "docker",
+        "start",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:53.234713+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T00:59:52.518508+00:00",
+      "timeout_seconds": 60
+    },
+    "proof-container-stop": {
+      "command": [
+        "docker",
+        "stop",
+        "edgeforge-studio-image-refresh-20261004-proof"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:04.697385+00:00",
+      "log_sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8",
+      "started_at_utc": "2026-10-05T01:02:50.925857+00:00",
+      "timeout_seconds": 60
+    },
+    "proof-output-copy": {
+      "command": [
+        "docker",
+        "cp",
+        "edgeforge-studio-image-refresh-20261004-proof:/workspace/data/image-refresh",
+        "$OUT/build-run"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:03.974940+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:03.381431+00:00",
+      "timeout_seconds": 120
+    },
+    "python-base-index": {
+      "command": [
+        "docker",
+        "buildx",
+        "imagetools",
+        "inspect",
+        "--raw",
+        "docker.io/library/python@sha256:2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:09:27.673487+00:00",
+      "log_sha256": "2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb",
+      "started_at_utc": "2026-10-05T01:09:27.016030+00:00",
+      "timeout_seconds": 120
+    },
+    "python-base-platform": {
+      "command": [
+        "docker",
+        "buildx",
+        "imagetools",
+        "inspect",
+        "--raw",
+        "docker.io/library/python@sha256:31feac62e3aa66d2cdddb4e1f80f839d8f14ad02b98b77e7eee90df6dc65f0c5"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:09:28.276604+00:00",
+      "log_sha256": "31feac62e3aa66d2cdddb4e1f80f839d8f14ad02b98b77e7eee90df6dc65f0c5",
+      "started_at_utc": "2026-10-05T01:09:27.674217+00:00",
+      "timeout_seconds": 120
+    },
+    "resolved-dependency-tree": {
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/workspace/data/image-refresh/authorization-status/generated-app",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "mvn",
+        "-B",
+        "-ntp",
+        "dependency:tree",
+        "-DoutputFile=/workspace/data/image-refresh/dependency-tree.txt"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:39.898686+00:00",
+      "log_sha256": "0d976539f7c0db0e00c70e3eba61388e9431118b8ba8d8bfb5571dc83cdc4075",
+      "started_at_utc": "2026-10-05T01:02:03.979312+00:00",
+      "timeout_seconds": 300
+    },
+    "runtime-inspection": {
+      "command": [
+        "docker",
+        "exec",
+        "edgeforge-studio-image-refresh-20261004-proof",
+        "python",
+        "/tmp/runtime-probe.py"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:55.580339+00:00",
+      "log_sha256": "4c5527484f9c8e316234033a80686c2a70f186c29a4579b758aa5adddedf3642",
+      "started_at_utc": "2026-10-05T00:59:53.427356+00:00",
+      "timeout_seconds": 120
+    },
+    "strict-audit": {
+      "command": [
+        "$AUDIT_TOOLS/bin/pip-audit",
+        "-r",
+        "$STUDIO/constraints.txt",
+        "--no-deps",
+        "--disable-pip",
+        "--progress-spinner",
+        "off",
+        "--strict",
+        "--vulnerability-service",
+        "pypi",
+        "--cache-dir",
+        "$OUT/audit-http-cache",
+        "--format",
+        "json",
+        "--output",
+        "$OUT/strict-audit.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:22.531689+00:00",
+      "log_sha256": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+      "started_at_utc": "2026-10-05T01:03:18.021079+00:00",
+      "timeout_seconds": 300
+    },
+    "summary-pass-1": {
+      "command": [
+        "$PYTHON",
+        "scripts/image_assessment_report.py",
+        "--syft",
+        "$OUT/syft-1.json",
+        "--grype",
+        "$OUT/grype-1.json",
+        "--trivy",
+        "$OUT/trivy-1.json",
+        "--output",
+        "$OUT/summary-1.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:06.911236+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:06.465689+00:00",
+      "timeout_seconds": 60
+    },
+    "summary-pass-2": {
+      "command": [
+        "$PYTHON",
+        "scripts/image_assessment_report.py",
+        "--syft",
+        "$OUT/syft-2.json",
+        "--grype",
+        "$OUT/grype-2.json",
+        "--trivy",
+        "$OUT/trivy-2.json",
+        "--output",
+        "$OUT/summary-2.json"
+      ],
+      "cwd": "$STUDIO",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:53.993994+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:53.479698+00:00",
+      "timeout_seconds": 60
+    },
+    "syft-convert-cyclonedx": {
+      "command": [
+        "$OUT/tools/syft",
+        "convert",
+        "$OUT/syft-1.json",
+        "--output",
+        "cyclonedx-json=$OUT/sbom.cdx.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "SYFT_CHECK_FOR_APP_UPDATE": "false",
+        "SYFT_EXTERNAL_SOURCES_ENABLE": "false"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:03:04.188895+00:00",
+      "log_sha256": "5c8929afe98946a6baf1442874d05a1d122b8a33052bc3c887ea70aa12dd9a9d",
+      "started_at_utc": "2026-10-05T01:03:03.047381+00:00",
+      "timeout_seconds": 60
+    },
+    "syft-pass-1": {
+      "command": [
+        "$OUT/tools/syft",
+        "scan",
+        "docker:edgeforge-studio-image-refresh:20261004",
+        "--platform",
+        "linux/amd64",
+        "--output",
+        "syft-json=$OUT/syft-1.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "SYFT_CHECK_FOR_APP_UPDATE": "false",
+        "SYFT_EXTERNAL_SOURCES_ENABLE": "false"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:01:43.749470+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:01:27.797744+00:00",
+      "timeout_seconds": 600
+    },
+    "syft-pass-2": {
+      "command": [
+        "$OUT/tools/syft",
+        "scan",
+        "docker:edgeforge-studio-image-refresh:20261004",
+        "--platform",
+        "linux/amd64",
+        "--output",
+        "syft-json=$OUT/syft-2.json"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {
+        "SYFT_CHECK_FOR_APP_UPDATE": "false",
+        "SYFT_EXTERNAL_SOURCES_ENABLE": "false"
+      },
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:42.080425+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_at_utc": "2026-10-05T01:02:24.721046+00:00",
+      "timeout_seconds": 600
+    },
+    "syft-version": {
+      "command": [
+        "$OUT/tools/syft",
+        "version"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:58:00.669638+00:00",
+      "log_sha256": "4d86b6d5b952a1487eec391f9009a8cf983dab4d9349e30d83d3b8a128ac3863",
+      "started_at_utc": "2026-10-05T00:57:59.607404+00:00",
+      "timeout_seconds": 30
+    },
+    "trivy-db-download": {
+      "command": [
+        "$OUT/tools/trivy",
+        "image",
+        "--download-db-only",
+        "--cache-dir",
+        "$OUT/trivy-cache",
+        "--disable-telemetry",
+        "--skip-check-update",
+        "--skip-version-check"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:59:26.099720+00:00",
+      "log_sha256": "483e65fcebeffa7217d8b2e62103921234cc62bc14b531ef8a47cdfafe1d8086",
+      "started_at_utc": "2026-10-05T00:59:17.194869+00:00",
+      "timeout_seconds": 600
+    },
+    "trivy-java-db-download": {
+      "command": [
+        "$OUT/tools/trivy",
+        "image",
+        "--download-java-db-only",
+        "--cache-dir",
+        "$OUT/trivy-cache",
+        "--disable-telemetry",
+        "--skip-check-update",
+        "--skip-version-check"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:00:03.389292+00:00",
+      "log_sha256": "9bf8afda4ec748161eb013c7484f1bc0b89bbe3f36f4b40d26efcda3bd4c04af",
+      "started_at_utc": "2026-10-05T00:59:26.100510+00:00",
+      "timeout_seconds": 600
+    },
+    "trivy-pass-1": {
+      "command": [
+        "$OUT/tools/trivy",
+        "image",
+        "--cache-dir",
+        "$OUT/trivy-cache",
+        "--image-src",
+        "docker",
+        "--platform",
+        "linux/amd64",
+        "--offline-scan",
+        "--skip-db-update",
+        "--skip-java-db-update",
+        "--skip-check-update",
+        "--skip-version-check",
+        "--disable-telemetry",
+        "--scanners",
+        "vuln",
+        "--list-all-pkgs",
+        "--format",
+        "json",
+        "--output",
+        "$OUT/trivy-1.json",
+        "edgeforge-studio-image-refresh:20261004"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:06.464856+00:00",
+      "log_sha256": "ba582ebc21cc4fbce04ecbd43df1f14195ecdeb2e1331559c23c429c42254aba",
+      "started_at_utc": "2026-10-05T01:01:54.164948+00:00",
+      "timeout_seconds": 600
+    },
+    "trivy-pass-2": {
+      "command": [
+        "$OUT/tools/trivy",
+        "image",
+        "--cache-dir",
+        "$OUT/trivy-cache",
+        "--image-src",
+        "docker",
+        "--platform",
+        "linux/amd64",
+        "--offline-scan",
+        "--skip-db-update",
+        "--skip-java-db-update",
+        "--skip-check-update",
+        "--skip-version-check",
+        "--disable-telemetry",
+        "--scanners",
+        "vuln",
+        "--list-all-pkgs",
+        "--format",
+        "json",
+        "--output",
+        "$OUT/trivy-2.json",
+        "edgeforge-studio-image-refresh:20261004"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T01:02:53.479177+00:00",
+      "log_sha256": "9034d20c8b24c21187d3c82b5e61a8983fb3654ab6467ef049bcdecf8ad668fc",
+      "started_at_utc": "2026-10-05T01:02:52.025926+00:00",
+      "timeout_seconds": 600
+    },
+    "trivy-version": {
+      "command": [
+        "$OUT/tools/trivy",
+        "version"
+      ],
+      "cwd": "$INITIAL_WORKSPACE",
+      "env_overrides": {},
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-05T00:58:04.665922+00:00",
+      "log_sha256": "41e22ed321a4c139a4fae57e92d8fa971cf7e91a8c1c4444d9a948c52a72c73a",
+      "started_at_utc": "2026-10-05T00:58:02.964608+00:00",
+      "timeout_seconds": 30
+    }
+  },
+  "compatibility": {
+    "actual_packaged_app_class_major": [
+      61
+    ],
+    "actual_runtime_jdk": "Temurin 21.0.12.1+1-LTS",
+    "build_command": [
+      "mvn",
+      "clean",
+      "package",
+      "-DskipTests"
+    ],
+    "cache_writable": true,
+    "effective_pom_sha256": "9bd35997fabdfb7fe6868aaa7d94f060904288753d1043bdf577fa0d59284a18",
+    "engine_source": "ab41a02fc854f89681e0473d9914e9e16528c3c2",
+    "fixture_sha256": "2366b20f7c7e6a59c84cda05bff8ee205ee951bd04302120be4ea11f8a4226ae",
+    "generated_app": "authorization-status/generated-app",
+    "generated_java_release": "17",
+    "h2_packaged_version": "2.4.240",
+    "health": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    },
+    "health_http_status": 200,
+    "initial_pom_sha256": "8e471010e56168631378b9e0b7b30d867ee8d8b9ab57bde5cf35361d2f13f9c9",
+    "initial_resolved_graph_applicable_by_equivalent_pom_and_identical_packaged_libraries": true,
+    "jar_built": true,
+    "jar_sha256": "904140e4985c52b5fe483f55c9249dd71f48c9f93e13b39b2f699893087cd201",
+    "jobless": true,
+    "ka_enabled": false,
+    "maven": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)\nMaven home: /opt/maven\nJava version: 21.0.12.1, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en, platform encoding: UTF-8\nOS name: \"linux\", version: \"6.12.76-linuxkit\", arch: \"amd64\", family: \"unix\"",
+    "maven_test_reports": [
+      {
+        "name": "TEST-com.appbuilder.authorization_status.AuthorizationStatusApplicationTest.xml",
+        "sha256": "75655dcf8e1b304facde4237efa676e8698dbf5336b96425132a884bcc533a14"
+      }
+    ],
+    "maven_tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 1
+    },
+    "packaged_batch_absent": true,
+    "packaged_libraries": [
+      {
+        "name": "HdrHistogram-2.2.2.jar",
+        "sha256": "22d1d4316c4ec13a68b559e98c8256d69071593731da96136640f864fa14fad8"
+      },
+      {
+        "name": "HikariCP-7.0.2.jar",
+        "sha256": "f1e612fa27345be3107a85431e8a8aeb205c15364ab2f2d411e40a9d7bb08095"
+      },
+      {
+        "name": "angus-activation-2.0.3.jar",
+        "sha256": "a6bd35c538cf90fff941ad6258c40c08fca0b5c9c3f536c657114f27ce0527a7"
+      },
+      {
+        "name": "antlr4-runtime-4.13.2.jar",
+        "sha256": "dd3e8a13a2d669bf84fb8d834de35ce4875f27157698d206241ec8488aadcaf7"
+      },
+      {
+        "name": "aspectjweaver-1.9.25.1.jar",
+        "sha256": "4fe86fdc18faea571f29129c70eaad5d121363504a06d7907be88f6c60ba3116"
+      },
+      {
+        "name": "byte-buddy-1.18.11.jar",
+        "sha256": "e32f454c2c1f4aca982f9ec764ed892d9a6eee7e8a77f435cbdd180f6ffdb821"
+      },
+      {
+        "name": "classmate-1.7.3.jar",
+        "sha256": "75fbda45456f123fb6e2028a6189442d8d0730b357adce4c0a6d7e789f70669b"
+      },
+      {
+        "name": "commons-logging-1.3.6.jar",
+        "sha256": "f8ead8943401081dea0aa824b5b1ba40a0e4ed297a572a0f02258150a0b62357"
+      },
+      {
+        "name": "flyway-core-12.4.0.jar",
+        "sha256": "c3f93df1f3e0c9d14652adb5ade97401f2ede503859ac693c2af5c06e2797799"
+      },
+      {
+        "name": "h2-2.4.240.jar",
+        "sha256": "29b70e427cc1c40cdc376283adbb0cc62853073797bb5fe5761f81fe73d57ce0"
+      },
+      {
+        "name": "hibernate-core-7.4.5.Final.jar",
+        "sha256": "e894c0ae560f0031883a2f5c819e1ef1ee3e16b2cbca31e6301a004876a67dc7"
+      },
+      {
+        "name": "hibernate-models-1.1.1.jar",
+        "sha256": "7cb645f2ebe5fcb63e21d26259cef62d93a1ca77c400bda6992c92cb19826a89"
+      },
+      {
+        "name": "hibernate-validator-9.1.3.Final.jar",
+        "sha256": "0497ebbe23fafe4180b74bd0b96a67eee8556552decc4d3c120c1dc737a2b5fb"
+      },
+      {
+        "name": "istack-commons-runtime-4.1.2.jar",
+        "sha256": "7fd6792361f4dd00f8c56af4a20cecc0066deea4a8f3dec38348af23fc2296ee"
+      },
+      {
+        "name": "jackson-annotations-2.21.jar",
+        "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+      },
+      {
+        "name": "jackson-core-3.1.5.jar",
+        "sha256": "9431b7fa2673bbb618c11d865fe15e13222fd182a214ff998cb7e56afd8f35d2"
+      },
+      {
+        "name": "jackson-databind-3.1.5.jar",
+        "sha256": "3a2338d996fd3056791df8d335fa9ba8a62a706ed4245ecf81b3e583df37d08a"
+      },
+      {
+        "name": "jakarta.activation-api-2.1.4.jar",
+        "sha256": "c9db52100ce6c8aac95cc39075f95720d2e561b11f8051b81c121ad4effd7004"
+      },
+      {
+        "name": "jakarta.annotation-api-3.0.0.jar",
+        "sha256": "b01f55552284cfb149411e64eabca75e942d26d2e1786b32914250e4330afaa2"
+      },
+      {
+        "name": "jakarta.inject-api-2.0.1.jar",
+        "sha256": "f7dc98062fccf14126abb751b64fab12c312566e8cbdc8483598bffcea93af7c"
+      },
+      {
+        "name": "jakarta.persistence-api-3.2.0.jar",
+        "sha256": "be8a26b0e75c84c1b7600f759256fbc68d60333d89ec0ce3f784fc3ffa09aa8c"
+      },
+      {
+        "name": "jakarta.transaction-api-2.0.1.jar",
+        "sha256": "50c0a7c760c13ae6c042acf182b28f0047413db95b4636fb8879bcffab5ba875"
+      },
+      {
+        "name": "jakarta.validation-api-3.1.1.jar",
+        "sha256": "63ce00156388c365f3ac1be71fcfaf114682fc0c452020b5df6e7ec236e142ab"
+      },
+      {
+        "name": "jakarta.xml.bind-api-4.0.5.jar",
+        "sha256": "5e489b6c874c4119e003ff1403db523ee3a8959ec499f3de29e77245efccf216"
+      },
+      {
+        "name": "jaxb-core-4.0.9.jar",
+        "sha256": "6b014df25d22c8446cc2df0a378c5b2137747f197a731d99eb24c756b26f7e8d"
+      },
+      {
+        "name": "jaxb-runtime-4.0.9.jar",
+        "sha256": "93e09b7316b6af68d6e2083e4c297daf28e8957f45d725077af812c0b12c39ab"
+      },
+      {
+        "name": "jboss-logging-3.6.3.Final.jar",
+        "sha256": "7c12ee575508f81e22b1db9334b969d0ec54ef0fd1dcba24eeab1a44235fc366"
+      },
+      {
+        "name": "jspecify-1.0.1.jar",
+        "sha256": "070d75f261fe4c5b8202508366715f7f2d4660f88c8ef7e6d3575e48c9683b66"
+      },
+      {
+        "name": "jul-to-slf4j-2.0.18.jar",
+        "sha256": "cbb7d1aaaa9e871eb1a06594abd911bf97027152976edf1edc315be75239204e"
+      },
+      {
+        "name": "log4j-api-2.25.5.jar",
+        "sha256": "64777f73ea0b3104c04eb82befbdccc30a425a19e83ad06cb2f93aa303511863"
+      },
+      {
+        "name": "log4j-to-slf4j-2.25.5.jar",
+        "sha256": "b68e8b47342dbc9b35644a14fe2efc0b7bf18da703910cd05ad5501ffe07bba1"
+      },
+      {
+        "name": "logback-classic-1.5.38.jar",
+        "sha256": "afb439c61fa287c9e1925523b13baab03617e724406a389d48b61c2c3e46b700"
+      },
+      {
+        "name": "logback-core-1.5.38.jar",
+        "sha256": "a855a0fc97b1d06f4efb1c3bba5ebd0eb508d8b58e68e89e4bbc23a85135c883"
+      },
+      {
+        "name": "micrometer-commons-1.17.1.jar",
+        "sha256": "f2cee6ef046e72eec8128474c7f58c6217173b45ae373c30de0289f2a56ab0fd"
+      },
+      {
+        "name": "micrometer-core-1.17.1.jar",
+        "sha256": "9ca47dfa831409b40253c8dc98c17b9d3e050ebbde4d1543c5521dca2b95ad56"
+      },
+      {
+        "name": "micrometer-jakarta9-1.17.1.jar",
+        "sha256": "37fbb0a98ba92e185ae7ebe0804fe6c1394bf7fba7573b204fa6fc3998c2e246"
+      },
+      {
+        "name": "micrometer-observation-1.17.1.jar",
+        "sha256": "eb34f0cd84a879393ae5c21160fc06385ccdc74f36a4d1e31b199f59acfdaf71"
+      },
+      {
+        "name": "slf4j-api-2.0.18.jar",
+        "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55"
+      },
+      {
+        "name": "snakeyaml-2.6.jar",
+        "sha256": "c8f7a98e7394adda02f6317249710e4d1b4c7a25aa8c7eace0c2eea52eb8bf85"
+      },
+      {
+        "name": "spring-aop-7.0.9.jar",
+        "sha256": "b8c5d6bfcb1f4993f2cc124f7ab7fac40edf5256b9e43c2f7250a733cb5510e9"
+      },
+      {
+        "name": "spring-aspects-7.0.9.jar",
+        "sha256": "68247ea5d8cc7c2d06fb36b80b9e9692bddab72fffeac5e68f974d547fb28875"
+      },
+      {
+        "name": "spring-beans-7.0.9.jar",
+        "sha256": "ff218b827a25c9e8929b0cd56dfb56916cea9d5b669ed97dc7cb262508ff548b"
+      },
+      {
+        "name": "spring-boot-4.1.1.jar",
+        "sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0"
+      },
+      {
+        "name": "spring-boot-actuator-4.1.1.jar",
+        "sha256": "2bbb38417af25cfc6f57a9b01a85db9b6ccdcadb9e5d40f6b1b2f54a08f8b798"
+      },
+      {
+        "name": "spring-boot-actuator-autoconfigure-4.1.1.jar",
+        "sha256": "bedbd4282a0f0c6a08bd5342d3940b50d8a013420d8a536695aedb1421b5e0f5"
+      },
+      {
+        "name": "spring-boot-autoconfigure-4.1.1.jar",
+        "sha256": "59228756ddd76cea050f95d86deff334789bc53b6688beaa673b1af2b9794592"
+      },
+      {
+        "name": "spring-boot-data-commons-4.1.1.jar",
+        "sha256": "e9911b99825ea5650827ec1e2d2fc1890c7e63b6f048c1f4dba2c8e85ff6d354"
+      },
+      {
+        "name": "spring-boot-data-jpa-4.1.1.jar",
+        "sha256": "19860139ccffcdeb27ea5a6c96bc2977bbc586f0aa2e5bb64eca49602e9de95c"
+      },
+      {
+        "name": "spring-boot-flyway-4.1.1.jar",
+        "sha256": "61db32d08f2b1b04cf006e916575da22ecee0a2e0bb0604aca26c04f7bd4aa0e"
+      },
+      {
+        "name": "spring-boot-health-4.1.1.jar",
+        "sha256": "f60151e1f014b40761d0644be1cb04f82df7fc3e9b7bf6e946848547eec399e7"
+      },
+      {
+        "name": "spring-boot-hibernate-4.1.1.jar",
+        "sha256": "8ad72a7fea79102390661779157a5064ac9e61c395dccc01c0696debf3c69859"
+      },
+      {
+        "name": "spring-boot-http-converter-4.1.1.jar",
+        "sha256": "52a167430a918c223b2ccd2eb62aff91a8e43e6daebe5a07caa37b9a04c61cb9"
+      },
+      {
+        "name": "spring-boot-jackson-4.1.1.jar",
+        "sha256": "69a9b4d8850a0532a5e44ff7306a03621485b26596e7f9481de7d28e68a2dd42"
+      },
+      {
+        "name": "spring-boot-jarmode-tools-4.1.1.jar",
+        "sha256": "062a9edf01809f4a2b48bfc2fe392fedd27448a3a57113bef510576673d4397f"
+      },
+      {
+        "name": "spring-boot-jdbc-4.1.1.jar",
+        "sha256": "30de56a06ccedb40245fd3a69a5107c7b3c0500447bb982a54a3b5da2859ae2c"
+      },
+      {
+        "name": "spring-boot-jpa-4.1.1.jar",
+        "sha256": "ccefec84e31f99938543031511215ea16d9a06984be010702ca5c5960c3a2c1f"
+      },
+      {
+        "name": "spring-boot-micrometer-metrics-4.1.1.jar",
+        "sha256": "70dd91dcc319d00998ce5e410b03b841e682aa2f60e4bab159c78ff0ecdb7d0f"
+      },
+      {
+        "name": "spring-boot-micrometer-observation-4.1.1.jar",
+        "sha256": "09ebd9ff7de21d10b1f11c70ca0ea8766a8a727affd19642584bee5a314ea11a"
+      },
+      {
+        "name": "spring-boot-persistence-4.1.1.jar",
+        "sha256": "0f78d2556ac3ed75f9eaf3134a1fba94ad1ec3414b52aa279c1f690217e71e3c"
+      },
+      {
+        "name": "spring-boot-servlet-4.1.1.jar",
+        "sha256": "4dcb156e311a4c1ad5f1ed7eabd94a78ea74510b05c429a4fcfdcf8beb9d5882"
+      },
+      {
+        "name": "spring-boot-sql-4.1.1.jar",
+        "sha256": "fa4f6ddded1bb3bbc496897686336d8433e34f1f22daa886872be2aa184def23"
+      },
+      {
+        "name": "spring-boot-tomcat-4.1.1.jar",
+        "sha256": "17f65629e4eb3c979c0572b69b57d630bb12e64869e9d7520adddaa6734256b6"
+      },
+      {
+        "name": "spring-boot-transaction-4.1.1.jar",
+        "sha256": "e7f2fad4fe65bf6aaf1b1a538a68a1cf69988adb558f4a0fc0992a8be4fddf64"
+      },
+      {
+        "name": "spring-boot-validation-4.1.1.jar",
+        "sha256": "c2546a81b6b7a39f51d889c99047f24567e4b28d1717fb53a65e9327cfc436f1"
+      },
+      {
+        "name": "spring-boot-web-server-4.1.1.jar",
+        "sha256": "6912fb1fdf7f657a61ac050760fa835fb1e7496399291697e2901f82887a4fee"
+      },
+      {
+        "name": "spring-boot-webmvc-4.1.1.jar",
+        "sha256": "9f08c1fb938c45a8693fec5f3065be3aca203948a7ab4d56b06444986f75a6b2"
+      },
+      {
+        "name": "spring-context-7.0.9.jar",
+        "sha256": "7552a2fcfa30cea53eb14d7a65a7a8e1b1dd82e832a7164fb7e6fb105f438858"
+      },
+      {
+        "name": "spring-core-7.0.9.jar",
+        "sha256": "5195f4722699b39878d99a832549fe65df2890b159d063b88fff31b1ca65ae36"
+      },
+      {
+        "name": "spring-data-commons-4.1.1.jar",
+        "sha256": "cf2a3f9bfabefca1a8c2c0f0a65c393d9ff83b0cb1cf7b705accac18a6ed0ee4"
+      },
+      {
+        "name": "spring-data-jpa-4.1.1.jar",
+        "sha256": "e90191b8d9f1c5a9398db0587460f1f4002e0fe4ff267321ed3a107f7fec46e1"
+      },
+      {
+        "name": "spring-expression-7.0.9.jar",
+        "sha256": "046434c40f43819729b9b1db0e6c659dfa68184c1c2c2efa5f7b3a5b27c4e2e2"
+      },
+      {
+        "name": "spring-jdbc-7.0.9.jar",
+        "sha256": "ca0d9af1c5721eef8cac1f94c8b9d27a753248bc33c86e3472bd3d1dbd78f450"
+      },
+      {
+        "name": "spring-orm-7.0.9.jar",
+        "sha256": "d44082acd9377b67858ae207316057e2ef236a16c96e1b4fd8af8d43a6784b31"
+      },
+      {
+        "name": "spring-tx-7.0.9.jar",
+        "sha256": "bfb15da6e096e2c0752e9db9987d2415bf0da1d744efc988535c10c6b6c2eedd"
+      },
+      {
+        "name": "spring-web-7.0.9.jar",
+        "sha256": "941ced476427bde2533872f293da535fd0258de3f3a650a7f1bfe01ed2927302"
+      },
+      {
+        "name": "spring-webmvc-7.0.9.jar",
+        "sha256": "8f114c1461692c5e534e82b27de23b7fb23370db8dee7ce0c92d5106906c9555"
+      },
+      {
+        "name": "tomcat-embed-core-11.0.24.jar",
+        "sha256": "e7b966dcaac8c5ffa4f10e44031ebf5b71f2123560c08ac8b7120028615aea08"
+      },
+      {
+        "name": "tomcat-embed-el-11.0.24.jar",
+        "sha256": "ad0546f12dace008aacce18ba13222137760b310ca719e173d3e13021b9af6c6"
+      },
+      {
+        "name": "tomcat-embed-websocket-11.0.24.jar",
+        "sha256": "825160101f0da4a10e19b5730c2ae2f99f8c2c7a7211ac05562726c5e97ab91e"
+      },
+      {
+        "name": "txw2-4.0.9.jar",
+        "sha256": "d6343e5945d87266ca4e8974a0a2a876e1bd147a00fb65ed3f2e1a3a00f3a82a"
+      }
+    ],
+    "pom_equivalence_normalization": "Only the single Generation run timestamp XML comment differs; all other POM text and every packaged dependency library byte match.",
+    "pom_sha256": "b915b7aa2ef7f76591e1f2d3360ca299762c860edb3cf22ed72b8aa27e85cf79",
+    "profile": "springboot-legacy-compatible",
+    "python_optimization": 0,
+    "resolved_dependency_tree_sha256": "c27a693ed414af9c105dc39f0fd43d0a23c564f134111f6431551ebd5a54654d",
+    "resolved_graph_note": "Initial successful run on same image/profile/Engine has equivalent POM and byte-identical packaged libraries versus corrected run; resolved tree/effective POM applicability verified.",
+    "result": "pass",
+    "runner_sha256": "715a4e3ac62791eac2f9226e538542a685fb33086642671516874c78962fa422",
+    "runner_source_commit": "c58e3c057ebc4adcf2732708d46a41c67fbc9a11",
+    "spring_boot_parent": "4.1.1",
+    "uid": 1000,
+    "verify_log_sha256": "584a886fa64014f4286b2f7ad073986284251698701fc866cba9ade8474a1272"
+  },
+  "copied_image_inputs_unchanged_through_proof_commit": true,
+  "corrected_proof_source_commit": "c58e3c057ebc4adcf2732708d46a41c67fbc9a11",
+  "corrected_proof_source_tree": "82650e93d3ca8227ca3424e039ab64bf64b26515",
+  "coverage": {
+    "copied_jdk": {
+      "name": "openjdk",
+      "version": "21.0.12.1+1-LTS"
+    },
+    "debian_packages": 166,
+    "java_archives": 52,
+    "python_packages": 109,
+    "trivy_imported_python_sbom_records": 18
+  },
+  "databases": {
+    "grype": {
+      "import": {
+        "client_version": "v6.1.9",
+        "digest": "xxh64:4c2e4a7eb4cfca3f",
+        "source": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-04T01:12:18Z_1791101507.tar.zst?checksum=sha256%3A2bd87418b8877e75d07351ef8daa9636ef98d69e09e0f69a15ae9c191e895d39"
+      },
+      "sha256": "864b157235663cad97651579e3ab161e73d32cbe24f54d6d4b9ebc70b15edbb6",
+      "status": {
+        "built": "2026-10-04T08:11:47Z",
+        "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-04T01:12:18Z_1791101507.tar.zst?checksum=sha256%3A2bd87418b8877e75d07351ef8daa9636ef98d69e09e0f69a15ae9c191e895d39",
+        "schemaVersion": "v6.1.10",
+        "valid": true
+      }
+    },
+    "trivy": {
+      "metadata": {
+        "DownloadedAt": "2026-10-05T00:59:26.082777Z",
+        "NextUpdate": "2026-10-05T19:39:34.715623193Z",
+        "UpdatedAt": "2026-10-04T19:39:34.715623444Z",
+        "Version": 2
+      },
+      "sha256": "5431ac51a3c8810e82e72be1de6cb21ef9585d86b85ca90d4d08ac6d6c84712e"
+    },
+    "trivy_java": {
+      "metadata": {
+        "DownloadedAt": "2026-10-05T01:00:03.362476Z",
+        "NextUpdate": "2026-10-07T01:44:08.185724764Z",
+        "UpdatedAt": "2026-10-04T01:44:08.185725365Z",
+        "Version": 1
+      },
+      "sha256": "b0e4a6342d1d9d86aa4df7ec193aaa6cb2cd02841895c8d17ff6137ae43321db"
+    }
+  },
+  "date_local": "2026-10-04",
+  "engine_appbuilder_tree": "79b270c3cbe57d315182266a5ad43427c41949bd",
+  "engine_archive_embedded_commit_verified": "ab41a02fc854f89681e0473d9914e9e16528c3c2",
+  "engine_archive_sha256": "d2b3afe0bf5ae88941514583a481039a5b88081a64fcf469345153744a359ffe",
+  "expat_backport_archive_sha256": "f522d550e0a3ff992c293f2c49d44a1248985863d64005f91e086afc5d295908",
+  "expat_official_binary_comparison": {
+    "dpkg_verification_output": [
+      "missing     /usr/share/doc/libexpat1/AUTHORS",
+      "missing     /usr/share/doc/libexpat1/changelog.Debian.gz",
+      "missing     /usr/share/doc/libexpat1/changelog.gz"
+    ],
+    "installed_library_integrity_verified": true,
+    "libraries": [
+      {
+        "actual_installed_library_sha256": "453732cb225bc46f9337066d782118d24194bccee4c85b59eccf7e8714b5e62f",
+        "image_path": "/lib/x86_64-linux-gnu/libexpat.so.1.8.10",
+        "matches": true,
+        "official_package_library_sha256": "453732cb225bc46f9337066d782118d24194bccee4c85b59eccf7e8714b5e62f"
+      }
+    ],
+    "official_package_archive_sha256": "ed010cc41577d75ab01cccc6afa93496d9a99f1e16bd469caf58e1b81fddae80",
+    "official_package_identity": "Package: libexpat1\nVersion: 2.5.0-1+deb12u4\nArchitecture: amd64",
+    "removed_documentation_note": "Existing Dockerfile removes /usr/share/doc; no library difference accepted."
+  },
+  "expat_source_descriptor_checksum_verified": true,
+  "expat_source_descriptor_sha256": "e1537fb367ee0036f87b3bc2e8f44de9fb042b7c141643aaaa187bca0f25b0e4",
+  "family_decisions": 103,
+  "frozen_engine_sha": "ab41a02fc854f89681e0473d9914e9e16528c3c2",
+  "groups": 3375,
+  "historical_ledger_replay_byte_identical": true,
+  "image": {
+    "all_manifest_layer_blob_hashes_sizes_and_decompressed_diff_ids_verified": true,
+    "config_descriptor": {
+      "digest": "sha256:1dac71e187a03e7f13468bd52feeb59328545959ee22bfe11f04a0be7970f8f9",
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "size": 10329
+    },
+    "index_digest": "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e",
+    "index_media_type": "application/vnd.oci.image.index.v1+json",
+    "index_size_bytes": 856,
+    "method": "Stream local Docker-save, verify every blob name/hash/descriptor size, follow OCI AMD64/config chain, hash actual gzip-decompressed layers against config DiffIDs and scanner layers; no tar retained.",
+    "ordered_manifest_layers": [
+      {
+        "digest": "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 28238443
+      },
+      {
+        "digest": "sha256:10a883e63048b703b4840f0d2b04129475f576df95fc9b94473f24a7c1d4b07d",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 3980830
+      },
+      {
+        "digest": "sha256:163a3f25e7bd110c86a026a3e8bb07e2fd014076db1b45eb4a784fc5a15a74ed",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 16028190
+      },
+      {
+        "digest": "sha256:a1b2023426baeaed37a8e70dd3c4fb5b8cf09acad7a5a8e444f9bf20a459676b",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 249
+      },
+      {
+        "digest": "sha256:e2cb302b1eb7d8358ee1ec9ad0d817b258c8d10570e00d1b76fcd94582b44447",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 158117459
+      },
+      {
+        "digest": "sha256:16b4705e9e4573c1ba43aa4f4441250d41ac8bf1cfefd8042e94aad06e727107",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 9359415
+      },
+      {
+        "digest": "sha256:3909118c1dbaf6522a555dd4361020030ea6cbd319e9f5716a0eb93b3c4ce616",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 114894542
+      },
+      {
+        "digest": "sha256:69e86de569a971f0a501e5184376b3b88c23257fb8a5275fa8c636f80a269157",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 3316
+      },
+      {
+        "digest": "sha256:e6e9ca15b147ecca589cf89114df9277c6a0f6bd6dfa950b49130f790c5c934e",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 131
+      },
+      {
+        "digest": "sha256:39f7d8dfe2225b08c889891de48c2bdaf5bc784ccb0324e4556d6a62064f2765",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 1385
+      },
+      {
+        "digest": "sha256:fb37445855a0165c630df38123ae5ff6a7b8e1119424cb3853b7891c64919a77",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 977
+      },
+      {
+        "digest": "sha256:dde69307950aa876d6d0383ba6f7001e1969b0ba0cd54b1021ed75d5dc3f485a",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 65738676
+      },
+      {
+        "digest": "sha256:95f6c2b8e4dc8dd9d4df2e00a421611fd711c00bba5dcd6c55a9d3c9ed87ac3a",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 484885
+      },
+      {
+        "digest": "sha256:009a3b3dd81b25ef58a5163a7d01a16a38e1389e92e437993d1e3344d8d7b69e",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 171
+      },
+      {
+        "digest": "sha256:0dde72e55bef8fa6e8b5d6d985b7045f95e47399e29f8832462059ff6b745325",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 309874
+      },
+      {
+        "digest": "sha256:f5b38a77c27e61cd9d023bd400db2cefb696a71e27b4e6d3e4bc8fd39bd5cbdf",
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "size": 796639
+      }
+    ],
+    "ordered_uncompressed_diff_ids": [
+      "sha256:34467cc93912af891dfee8a3902adf9b4f355a9bca4eaa46f658d1181a21de0d",
+      "sha256:c868a373a60dec23674485a015ca034ecb59cab12c4e6d5cecad5272deef8fba",
+      "sha256:a313ed48c416cf820dfec3f272ea91db54f0d94258a2148740fc070c34ca0c93",
+      "sha256:9b4472240541b61b012c99ffb5489d1e356b5b8d7bcd875c9f5ff63b77258ceb",
+      "sha256:ba9719e159cba2b8e071d0134b063264ed15f8dcc21f6d56657bc0fe5fe5dd55",
+      "sha256:cd33a4b7f2da8611dc7f95aefb87b1f4f32131010cc33055c8c11c555630f22e",
+      "sha256:314ecd58d56d20022343188c817d313a4c5b282e54986020c078f0d90cb2710f",
+      "sha256:8d23675f9b97264f4dd44ee32c23837ecd7b832d6e70054c6712d28c9534fba6",
+      "sha256:6c87000854fdf50f98ac3bbfaaa756b4a8e02853ee4f668ddbab5fe1369219ab",
+      "sha256:b3edd90299f2c2619af400a6ecdaf9562bc0ab7e1d63cdf20bcf8fb51341b242",
+      "sha256:96895e021d4b7eeff5fde775e5213c44ddb972a52fb4c4f90838391b05b92f34",
+      "sha256:c2eedacb990f6c9f26d020d7d52dbee30cab907c6e94ee2f92668ae21ac64c41",
+      "sha256:e249a9708f72419456ccdf7d33fafd942fdd217ee69ab86b45606423fd42c6ca",
+      "sha256:503415f3b65476ccc284e42a1c62b8423141ed90ee1b8aa1d8fca9e74a53055d",
+      "sha256:1b1416200dea45a8c69ae25623a312d14507290c2e9cc7eecf38be1ff5473756",
+      "sha256:aa474e83dc7a4ddf7f69d77cdbf476c561b7a2f6b260141d8f5289e1afe6f7ed"
+    ],
+    "platform_descriptor": {
+      "digest": "sha256:07a6d9c444dee382aab67461f14987bee1aec0043784fcea640d96ffdfc849cc",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      },
+      "size": 3344
+    },
+    "scanner_serialized_manifest_digest": "sha256:a0969e988f6bfeb9b9cb7b485def0a1cf442b65dfefabaab7b349806a163a5ab",
+    "scanner_serialized_manifest_is_not_oci_platform_manifest": true,
+    "scanner_serialized_manifest_media_type": "application/vnd.docker.distribution.manifest.v2+json"
+  },
+  "image_app_tree": "36ad6838c772ced7e1bc0a2308a1613e6c6ce4ad",
+  "image_input_sha256": {
+    ".dockerignore": "befa86785357e7960823f02c8f4df4cd08259b0c38de76581fa08ef62b0812c6",
+    "Dockerfile": "2e2824c878e79be554a169c131b8303ac570fabfe371ebf2a61e18a2448542ec",
+    "constraints.txt": "a5d788695ef6d67a6013607d6c6ff892ced6dfc5d7743c92140a27195d99667e",
+    "requirements.txt": "d2c9b40eff8805e62be925149a87f7f4d2b35f15941c80aa3542521b3a34d3e1",
+    "scripts/install_apache_maven.py": "8fba8bc732681c191551369bad797df829fd730e6bdfcff52c5e9bc0bc5dd3b3",
+    "scripts/verify-packaging-toolchain.py": "42954666f6b33ae5562241437ddea9b6ede1bb2566e4ce690eef3902a512dadd"
+  },
+  "image_tested_studio_sha": "a333ab58433909f6ab224585be6471ed2c184aa2",
+  "image_tested_studio_tree": "8c5c0e8d37857de737cb3ae8f075218583a58a14",
+  "inventory_types": {
+    "binary": 19,
+    "deb": 166,
+    "java-archive": 52,
+    "python": 109
+  },
+  "limits": [
+    "Final filesystem on linux/amd64 only; no other platform or whole build-stage clearance.",
+    "Copied JDK identified but vendor advisory coverage unknown; Java archive zero matches is not Maven/plugin clearance.",
+    "Unrecognized embedded/native code and downstream Maven downloads are not exhaustively assessed.",
+    "No automatic carryforward of 18 historical curl exclusions; current family is open pending revalidation.",
+    "Representative ordinary-profile jobless H2 app only; Java target 17 on JDK 21, not a Java 17 runtime proof.",
+    "Font-rendering limitation remains; no font/A11y/full L5/PostgreSQL/Kafka proof.",
+    "Open findings, no risk acceptance, M2/release clearance, image publication/signing, merge or next task."
+  ],
+  "local_validation": {
+    "focused_passed_after_helper_change": 89,
+    "focused_passed_before_helper_change": 85,
+    "full_local_suite": "Not run; evidence plus narrow proof helper change, applicable focused regressions executed; full unit/L2/audit and secret gates required on final submitted head.",
+    "image_smoke_passed": 1,
+    "projection_integrity": {
+      "lossless_projection_valid": true,
+      "negative_controls_rejected": [
+        "dropped active observation",
+        "dropped ignored observation",
+        "rewritten severity",
+        "dropped group",
+        "dropped inventory identity",
+        "unowned decision",
+        "unsupported exclusion",
+        "rewritten vendor status"
+      ]
+    },
+    "runner_passed": 15
+  },
+  "native": {
+    "cache_writable": {
+      "/home/appuser/.m2": true,
+      "/workspace/data": true
+    },
+    "debian_ordering_ge_u4": true,
+    "gid": 1000,
+    "ldd": {
+      "_sqlite3": "\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007fffff649000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff467000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fffff387000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffcb000)\n",
+      "_ssl": "\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fffff6e7000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fffff25d000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff07b000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffcb000)\n",
+      "pyexpat": "\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff5a9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffcb000)\n",
+      "zlib": "\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fffff79b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff5b9000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffcb000)\n"
+    },
+    "openssl": "OpenSSL 3.0.22 25 Aug 2026",
+    "pip_vendor_txt": "CacheControl==0.14.4\ndistlib==0.4.2\ndistro==1.9.0\nmsgpack==1.1.2\npackaging==26.2\nplatformdirs==4.10.0\npyproject-hooks==1.2.0\nrequests==2.34.2\n    certifi==2026.6.17\n    idna==3.18\n    urllib3==2.7.0\nrich==14.2.0\n    pygments==2.20.0\nresolvelib==1.2.1\nsetuptools==70.3.0\ntomli==2.4.1\ntomli-w==1.2.0\ntruststore==0.10.4\n",
+    "pyexpat_runtime": "expat_2.8.5",
+    "python": "3.11.17 (main, Oct  1 2026, 21:52:00) [GCC 12.2.0]",
+    "python_optimization": 0,
+    "sqlite": "3.40.1",
+    "stdlib_extension_sha256": {
+      "/usr/local/lib/python3.11/lib-dynload/_sqlite3.cpython-311-x86_64-linux-gnu.so": "37e8f14811971c319d56fee10d80a509d22ccbf8bff6373ae8b650189e4c7505",
+      "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-x86_64-linux-gnu.so": "40f888321d4dcd994cce6380ad32eb1f1430bac374d14d3594d84162deeab8ae",
+      "/usr/local/lib/python3.11/lib-dynload/pyexpat.cpython-311-x86_64-linux-gnu.so": "5f6a12bb8ae5cd0958271b9f6db1b31d8f91f5955efaf209252c5695849eb767",
+      "/usr/local/lib/python3.11/lib-dynload/zlib.cpython-311-x86_64-linux-gnu.so": "e1f1a8d4948eee386720bd17438c224f4b9b0b1519cde2e6ac8ba1373bd19fcb"
+    },
+    "system_libexpat_file_sha256": {
+      "/usr/lib/x86_64-linux-gnu/libexpat.so.1": "453732cb225bc46f9337066d782118d24194bccee4c85b59eccf7e8714b5e62f",
+      "/usr/lib/x86_64-linux-gnu/libexpat.so.1.8.10": "453732cb225bc46f9337066d782118d24194bccee4c85b59eccf7e8714b5e62f"
+    },
+    "system_libexpat_package": "2.5.0-1+deb12u4",
+    "system_libexpat_runtime": "expat_2.5.0",
+    "uid": 1000,
+    "zlib_compile": "1.2.13",
+    "zlib_runtime": "1.2.13"
+  },
+  "native_extension_count": 32,
+  "native_raw_sha256": "4c5527484f9c8e316234033a80686c2a70f186c29a4579b758aa5adddedf3642",
+  "partial_attempts": [
+    {
+      "name": "installed-components",
+      "outcome": "Shell sequence returned 0 but dpkg format expansion and missing slim-image changelog failed. Not credited for ordering/backport proof; corrected native probe and official source archive establish those results."
+    },
+    {
+      "name": "expat-binary-identity-initial",
+      "outcome": "Optional dpkg integrity checker rejected three missing documentation files deleted by the existing recipe. Corrected checker accepts exactly those three missing docs, rejects any other difference, and independently verifies installed library bytes against official u4 binary. No build or scanner retry."
+    },
+    {
+      "name": "final-projection-validation",
+      "outcome": "Task-only cross-check initially expected a source_sha256 field added by CLI rather than normalize(). Corrected cross-check treats that metadata field as optional while preserving every normalized content field. Historical raw-root host path was sanitized before final delivery."
+    },
+    {
+      "name": "expat-changelog-download",
+      "outcome": "Connection error 56. One materially different recovery used official security.debian.org source archive plus dsc checksum; no missing vendor proof."
+    },
+    {
+      "name": "oci-identity",
+      "outcome": "System Python 3.9 lacked strict zip. Required Python 3.11 rerun verified same image chain/layers; no build/scan retry."
+    },
+    {
+      "name": "audit-coverage",
+      "outcome": "Strict audit itself passed, but task-only checker initially did not canonicalize dots. Corrected PEP-503 name comparison validates exact 95 pins; no changed audit input or suppression."
+    },
+    {
+      "name": "corrected-build-run-proof",
+      "outcome": "Output outside configured Docker export root correctly refused. Confined child-directory rerun passed, with all protections unchanged."
+    }
+  ],
+  "pass_times": {
+    "1": {
+      "grype": "2026-10-05T01:01:54.159720+00:00",
+      "syft": "2026-10-05T01:01:43.749470+00:00",
+      "trivy": "2026-10-05T01:02:06.464856+00:00"
+    },
+    "2": {
+      "grype": "2026-10-05T01:02:52.025196+00:00",
+      "syft": "2026-10-05T01:02:42.080425+00:00",
+      "trivy": "2026-10-05T01:02:53.479177+00:00"
+    }
+  },
+  "pip_vendor_file_count": 541,
+  "resolved_bases": [
+    {
+      "base_descriptor_bytes_verified": true,
+      "config_descriptor": {
+        "digest": "sha256:a4ab626836123d37d64448578f511211694b118a22936d328d870f8ac0f70825",
+        "mediaType": "application/vnd.oci.image.config.v1+json",
+        "size": 9131
+      },
+      "index_digest": "sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "index_media_type": "application/vnd.oci.image.index.v1+json",
+      "material": {
+        "digest": {
+          "sha256": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b"
+        },
+        "uri": "pkg:docker/eclipse-temurin@21-jdk?platform=linux%2Famd64"
+      },
+      "ordered_compressed_layers": [
+        {
+          "digest": "sha256:4e07a0f12b2c009f98326fa391e869bd52fc63728c482400af6cb752bc16744b",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 41837521
+        },
+        {
+          "digest": "sha256:06ad70e463aa4a17833d00d6d5d346c895ebb66fee637eefd67024dc6cdc2f1c",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 388
+        },
+        {
+          "digest": "sha256:ffef58b983c1fc65e2b180d4a71e8d35211c0f21f4c5ff937c831b94fd5f3d7e",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 27026097
+        },
+        {
+          "digest": "sha256:4411437139e9ca69460255dfb3dfc7a92fdb38dc8aa6f93dc99ab7380e7b5781",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 158122875
+        },
+        {
+          "digest": "sha256:cb3511313ef09e63104df472ecde5f05c8e2840b9e6096d16b0be6388f90361f",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 158
+        },
+        {
+          "digest": "sha256:7b5b1cd28d30690f97801a3a5f73b0de4dba50777f3a89d111f5f9201a3a7bf2",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 2464
+        }
+      ],
+      "platform_descriptor": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+          "org.opencontainers.image.base.name": "ubuntu:26.04",
+          "org.opencontainers.image.created": "2026-10-02T01:18:30Z",
+          "org.opencontainers.image.revision": "511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07",
+          "org.opencontainers.image.source": "https://github.com/adoptium/containers.git#511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07:21/jdk/ubuntu/resolute",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/eclipse-temurin",
+          "org.opencontainers.image.version": "21.0.12.1_1-jdk-resolute"
+        },
+        "digest": "sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 2137
+      }
+    },
+    {
+      "base_descriptor_bytes_verified": true,
+      "config_descriptor": {
+        "digest": "sha256:5883930d537197d2148ae3b6cdf01f9553435fd209c8d8b5486b6d6a099a293f",
+        "mediaType": "application/vnd.oci.image.config.v1+json",
+        "size": 5505
+      },
+      "index_digest": "sha256:2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb",
+      "index_media_type": "application/vnd.oci.image.index.v1+json",
+      "material": {
+        "digest": {
+          "sha256": "2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb"
+        },
+        "uri": "pkg:docker/python@3.11-slim-bookworm?platform=linux%2Famd64"
+      },
+      "ordered_compressed_layers": [
+        {
+          "digest": "sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 28238443
+        },
+        {
+          "digest": "sha256:10a883e63048b703b4840f0d2b04129475f576df95fc9b94473f24a7c1d4b07d",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 3980830
+        },
+        {
+          "digest": "sha256:163a3f25e7bd110c86a026a3e8bb07e2fd014076db1b45eb4a784fc5a15a74ed",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 16028190
+        },
+        {
+          "digest": "sha256:a1b2023426baeaed37a8e70dd3c4fb5b8cf09acad7a5a8e444f9bf20a459676b",
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "size": 249
+        }
+      ],
+      "platform_descriptor": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:f3034a6ec3c1205360777c4aae76234998866ad18806ae62b63a3f84ccad782b",
+          "org.opencontainers.image.base.name": "debian:bookworm-slim",
+          "org.opencontainers.image.created": "2026-10-01T21:45:41Z",
+          "org.opencontainers.image.revision": "cede844ace77284e32c03b61ebc35cdfc945e862",
+          "org.opencontainers.image.source": "https://github.com/docker-library/python.git#cede844ace77284e32c03b61ebc35cdfc945e862:3.11/slim-bookworm",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+          "org.opencontainers.image.version": "3.11.17-slim-bookworm"
+        },
+        "digest": "sha256:31feac62e3aa66d2cdddb4e1f80f839d8f14ad02b98b77e7eee90df6dc65f0c5",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 1752
+      }
+    }
+  ],
+  "retention": {
+    "availability": "Task-local temporary storage, no public URL/retention SLA. Obtain hash-identified files and frozen databases from maintainer before cleanup; absence prevents exact replay. Local image remains in task host Docker; it is not registry-published.",
+    "local_directory_basename": "edgeforge-studio-image-refresh-20261004-proof",
+    "raw_files": {
+      "audit-boundary.json": {
+        "bytes": 4791,
+        "sha256": "79d17ca1875778ce53d75bfc9925fadcec74171dc91dc13c853af65d39c4fdee"
+      },
+      "audit-coverage-corrected-command.json": {
+        "bytes": 477,
+        "sha256": "1efb29f4329e8bd5339c6d8e8fa3bf8650ec3ee91c985e2d37cb8c49b4150caf"
+      },
+      "audit-coverage-corrected.log": {
+        "bytes": 436,
+        "sha256": "482b9be327fcfd815d4ce293c5b7c7f6df7409c8595cd59e79f18833559dc085"
+      },
+      "bases.py": {
+        "bytes": 1795,
+        "sha256": "f024b2cb4bc1487d501ea6717cef42d3c9d8251a7658724332205d72c84095c9"
+      },
+      "build-metadata.json": {
+        "bytes": 2645,
+        "sha256": "4be1b20a1083d754fa88905e9482dea5d61dcaf81bb891ad4492f21aa2ba49bd"
+      },
+      "build-run-proof-command.json": {
+        "bytes": 673,
+        "sha256": "b6e6587ee03378353d79753f9b491b7daf970e3c82634802e54daafee0fda2ea"
+      },
+      "build-run-proof.log": {
+        "bytes": 873,
+        "sha256": "dfb6ea976dc98d3af87ff37a79ffe73e38ab533294cacbb0b38e99eee1268cb7"
+      },
+      "build-run/authorization-status/assessment-report.json": {
+        "bytes": 331,
+        "sha256": "48ef0aa997d720598ba48d1c5c6040f45dd02f11b0b864c9cb30d57e2eff2147"
+      },
+      "build-run/authorization-status/contracts/authorization-api-spec.json": {
+        "bytes": 4892,
+        "sha256": "63683fae6b109d176a72561ff2ffed0daaf8a0b04315825357ce0c3ee10aefe4"
+      },
+      "build-run/authorization-status/evidence-trail.json": {
+        "bytes": 470,
+        "sha256": "2e11bc4dfa6def130edd073d9a30e8c57623802a9c95de6b0c6bcd0753d7dbdd"
+      },
+      "build-run/authorization-status/generated-app/db/generation-provenance.json": {
+        "bytes": 105,
+        "sha256": "3898722f625c465d1907d46f3ea0328e8d911402ae510f23d99d8b7d2c2225cc"
+      },
+      "build-run/authorization-status/generated-app/db/schema-baseline.json": {
+        "bytes": 3342,
+        "sha256": "7822f9d8f7975d31a963cb479843493f8628e5afae4af7e1308e66c147f1c187"
+      },
+      "build-run/authorization-status/generated-app/pom.xml": {
+        "bytes": 3077,
+        "sha256": "8e471010e56168631378b9e0b7b30d867ee8d8b9ab57bde5cf35361d2f13f9c9"
+      },
+      "build-run/authorization-status/generated-app/target/authorization-status-0.0.1-SNAPSHOT.jar": {
+        "bytes": 57064937,
+        "sha256": "29bafcbd668c80eae85e678fb443b9de5702e7accc6599c767580d5a1aeca031"
+      },
+      "build-run/authorization-status/studio-project.json": {
+        "bytes": 20174,
+        "sha256": "0df0b3ca1bf7785f600abe3aa591c1b3c1b67cb4b52e8d086be348b84bc21886"
+      },
+      "build-run/authorization-status/upstream/sample-createauthorization-request.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "build-run/authorization-status/upstream/sample-createauthorization-response.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "build-run/build.json": {
+        "bytes": 6802,
+        "sha256": "356531fd9728d46ed5e74b72bf973e711656f762356e5f8c26868502ce37227c"
+      },
+      "build-run/generate.json": {
+        "bytes": 329,
+        "sha256": "3a0165a8dc945fa085a8b5d9b11905e3e654ef5d8b45f93c046e95082167942e"
+      },
+      "build-run/result.json": {
+        "bytes": 873,
+        "sha256": "dfb6ea976dc98d3af87ff37a79ffe73e38ab533294cacbb0b38e99eee1268cb7"
+      },
+      "build-run/run.json": {
+        "bytes": 1898,
+        "sha256": "1cddd6ddfae9b4d219548bc9eb3ff93e58720bdb9c3b587864f004d940e899fc"
+      },
+      "build-run/stop.json": {
+        "bytes": 9236,
+        "sha256": "74c8300fdd625aeefe4f9e70551c388ddc8dedd3e0f43835239023e05c07dbdc"
+      },
+      "build-run/verify.log": {
+        "bytes": 10483,
+        "sha256": "23c328d16755f08954b5a48b37ecf2a4dc2fd3548b3a24567d8bf1c6eb05ce98"
+      },
+      "build-run/write.json": {
+        "bytes": 2874,
+        "sha256": "0e44876ec2f44473b76913e281b37cf3c26143322988a0fac8e09414403bcb60"
+      },
+      "build.log": {
+        "bytes": 73198,
+        "sha256": "822e3215f6fb210fbe2e2086f92d8488901adbdd404b657ecf9712f1d41707bb"
+      },
+      "build_evidence.py": {
+        "bytes": 34865,
+        "sha256": "ccc8cd82f32431caead680dc86cba73393e70578cf010192e0bcb1231e78ec74"
+      },
+      "changed-python-lint-command.json": {
+        "bytes": 465,
+        "sha256": "b5deb841a1325ee7260aed1804895d4c5839b7b3f6565fdc0a4c043e24bdb0c5"
+      },
+      "changed-python-lint.log": {
+        "bytes": 19,
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+      },
+      "copy-runner.py-command.json": {
+        "bytes": 539,
+        "sha256": "691eb2a13ed014df9c8d411dbe3e0c363361b5823845944bcf5ff564b189fef9"
+      },
+      "copy-runner.py.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "copy-runtime-probe.py-command.json": {
+        "bytes": 538,
+        "sha256": "70cbe114875f91e359d7fa13726db99be46b91b4c36f296dbd5b1e562538f486"
+      },
+      "copy-runtime-probe.py.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "copy-synthetic.edgeforge-project.json-command.json": {
+        "bytes": 620,
+        "sha256": "c9603c3ac8941ae361a7928e2cce6d54da8422d7ffe623c6553625335960aa02"
+      },
+      "copy-synthetic.edgeforge-project.json.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "corrected-attempt-output-copy-command.json": {
+        "bytes": 555,
+        "sha256": "2cb183d93fff0e78492695312a43ee8c777a547ef0f7aa6b508a380893062a20"
+      },
+      "corrected-attempt-output-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "corrected-attempt/write.json": {
+        "bytes": 186,
+        "sha256": "0e4d1e25858ea19da36fb4efd8e45f6bf2437c7d0cfe11ce2a8216da0e53082e"
+      },
+      "corrected-build-run-proof-command.json": {
+        "bytes": 693,
+        "sha256": "81c23b8d9eda256136b8c8c2a1efd085eb21152abe89302a791f1f8dc692ed8d"
+      },
+      "corrected-build-run-proof.log": {
+        "bytes": 812,
+        "sha256": "b92666bdfb0ff9d94e4f792b8ca7ce6b6307510315a519d35a0f1a22ecde46fa"
+      },
+      "corrected-build-run/authorization-status/assessment-report.json": {
+        "bytes": 331,
+        "sha256": "48ef0aa997d720598ba48d1c5c6040f45dd02f11b0b864c9cb30d57e2eff2147"
+      },
+      "corrected-build-run/authorization-status/contracts/authorization-api-spec.json": {
+        "bytes": 4892,
+        "sha256": "63683fae6b109d176a72561ff2ffed0daaf8a0b04315825357ce0c3ee10aefe4"
+      },
+      "corrected-build-run/authorization-status/evidence-trail.json": {
+        "bytes": 470,
+        "sha256": "7852e77f8eb4d9d7f49ee10655bade3afb814843a2922765500ffcd1412d16b8"
+      },
+      "corrected-build-run/authorization-status/generated-app/db/generation-provenance.json": {
+        "bytes": 105,
+        "sha256": "3898722f625c465d1907d46f3ea0328e8d911402ae510f23d99d8b7d2c2225cc"
+      },
+      "corrected-build-run/authorization-status/generated-app/db/schema-baseline.json": {
+        "bytes": 3342,
+        "sha256": "8a42e01b7fa147fcca8f1f7239ecbedd66f92569e172b937ce37c8c664e1f5b8"
+      },
+      "corrected-build-run/authorization-status/generated-app/pom.xml": {
+        "bytes": 3077,
+        "sha256": "b915b7aa2ef7f76591e1f2d3360ca299762c860edb3cf22ed72b8aa27e85cf79"
+      },
+      "corrected-build-run/authorization-status/generated-app/target/authorization-status-0.0.1-SNAPSHOT.jar": {
+        "bytes": 57064937,
+        "sha256": "904140e4985c52b5fe483f55c9249dd71f48c9f93e13b39b2f699893087cd201"
+      },
+      "corrected-build-run/authorization-status/studio-project.json": {
+        "bytes": 20204,
+        "sha256": "6891a10b8626dd663630741d54e2369da10e344aa1d6273af85cb3eaa2ec2ea2"
+      },
+      "corrected-build-run/authorization-status/upstream/sample-createauthorization-request.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "corrected-build-run/authorization-status/upstream/sample-createauthorization-response.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "corrected-build-run/build.json": {
+        "bytes": 6920,
+        "sha256": "ab4297c447dc14d758b46bb4ffe078749364218c1440dda7f4a4b09673ebeb3c"
+      },
+      "corrected-build-run/generate.json": {
+        "bytes": 339,
+        "sha256": "cafa7e90fdc6caf760a4665f663e673303e51a14950e9614ba2c04c2b7f90208"
+      },
+      "corrected-build-run/result.json": {
+        "bytes": 1134,
+        "sha256": "79ca10c0105c756b9d44679b04e6f0b891aaa7661774e8e907d0d710eccaa3d9"
+      },
+      "corrected-build-run/run.json": {
+        "bytes": 1918,
+        "sha256": "085860b615df87b609e8c8c6486f7ab78b24dd8d8d28026e5240901b8f7fde25"
+      },
+      "corrected-build-run/stop.json": {
+        "bytes": 9275,
+        "sha256": "1424bc613a984b877e54e02056e94eae22be88a14f8e21f2f62350c7d796ceb3"
+      },
+      "corrected-build-run/verified-test-reports/TEST-com.appbuilder.authorization_status.AuthorizationStatusApplicationTest.xml": {
+        "bytes": 38991,
+        "sha256": "75655dcf8e1b304facde4237efa676e8698dbf5336b96425132a884bcc533a14"
+      },
+      "corrected-build-run/verify.log": {
+        "bytes": 10532,
+        "sha256": "584a886fa64014f4286b2f7ad073986284251698701fc866cba9ade8474a1272"
+      },
+      "corrected-build-run/write.json": {
+        "bytes": 2954,
+        "sha256": "621029563044b0feda7281220204d6f79bc2249446295739f39080bce8021ac8"
+      },
+      "corrected-confined-build-run-proof-command.json": {
+        "bytes": 693,
+        "sha256": "9781d2975846fc54ca492c786fe6713b6f069432b257eaa58fd8becf73426814"
+      },
+      "corrected-confined-build-run-proof.log": {
+        "bytes": 1134,
+        "sha256": "79ca10c0105c756b9d44679b04e6f0b891aaa7661774e8e907d0d710eccaa3d9"
+      },
+      "corrected-confined-proof-copy-command.json": {
+        "bytes": 558,
+        "sha256": "54054424125b6837bd66e79f76733525938bd062e66324803fb15b2e32dcae59"
+      },
+      "corrected-confined-proof-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "corrected-confined-proof-stop-command.json": {
+        "bytes": 433,
+        "sha256": "cab6f0f67b58c21e12766c24265bba63778b1685cfcfcdf668387d6dc0473f8a"
+      },
+      "corrected-confined-proof-stop.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "corrected-proof-start-command.json": {
+        "bytes": 434,
+        "sha256": "73de8f76d1b200196ad3af8aeb1ddc0ed5386bab5dbeb9e4eaf56ba6db0b58c0"
+      },
+      "corrected-proof-start.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "corrected-runner-copy-command.json": {
+        "bytes": 549,
+        "sha256": "664cf05f518c2edd9e2db47ba7f467090e03751357433a73ef76d41b27f45ae3"
+      },
+      "corrected-runner-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "debian-tracker-download-command.json": {
+        "bytes": 564,
+        "sha256": "47a982bacfde2e26e267e2e286e5decdb2626c2c3e421061fbe5ced131a861e1"
+      },
+      "debian-tracker-download.log": {
+        "bytes": 475,
+        "sha256": "f1a15fb49f42c68e229f0f46baca1d9f264e0d234b713e9a5a4b656e2db18d18"
+      },
+      "debian-tracker.json": {
+        "bytes": 81510898,
+        "sha256": "b99a97b18ee9e473d2d52b25956b3fa68c30be34e5f03e38f2726c374dc90748"
+      },
+      "diff-hygiene-command.json": {
+        "bytes": 382,
+        "sha256": "99ac18bbdb1adb8b986b4c3d6a8e1a5c3c29057f0bd49dd4b1d033df991e3da6"
+      },
+      "diff-hygiene.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "eclipse-temurin-base-index-command.json": {
+        "bytes": 542,
+        "sha256": "c1a472f1a8652cdfdaf38569076db2494bc30a7b2c40416684143db8ef52c619"
+      },
+      "eclipse-temurin-base-index.log": {
+        "bytes": 5926,
+        "sha256": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b"
+      },
+      "eclipse-temurin-base-platform-command.json": {
+        "bytes": 542,
+        "sha256": "616bd176754feddb75c03b4aca62251628ed87ea6597b47160a37ca36acf0a36"
+      },
+      "eclipse-temurin-base-platform.log": {
+        "bytes": 2137,
+        "sha256": "442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d"
+      },
+      "effective-pom-command.json": {
+        "bytes": 639,
+        "sha256": "b75509eb79fe468b6037a2396a27231ca45af2c5c8659d8cbb5f78a628e6d988"
+      },
+      "effective-pom.log": {
+        "bytes": 780,
+        "sha256": "d165d31c49258c9c2d4d5aef871917777a1ae420e8ccfa402a751b89601f8bb7"
+      },
+      "engine.tar": {
+        "bytes": 26644480,
+        "sha256": "d2b3afe0bf5ae88941514583a481039a5b88081a64fcf469345153744a359ffe"
+      },
+      "expat-binary-container-start-command.json": {
+        "bytes": 434,
+        "sha256": "8165642843891ddacbf95201fe7e83b078aefde1047b945c3b03b0d401a74072"
+      },
+      "expat-binary-container-start.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "expat-binary-container-stop-command.json": {
+        "bytes": 433,
+        "sha256": "c35d7419b25bc05fa08d4808c2337cfe46d076d8018882363b3fbf2504009517"
+      },
+      "expat-binary-container-stop.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "expat-binary-identity-command.json": {
+        "bytes": 482,
+        "sha256": "c8d5834efc5ef2e26290c8f95e19f4a35a83e1a2eca4255999ea2b8bafe9d2dc"
+      },
+      "expat-binary-identity.log": {
+        "bytes": 914,
+        "sha256": "59795de5cdf8d1d3319464df52f2c54086a285dde1f62b3212ca8034c646f5df"
+      },
+      "expat-binary-package-copy-command.json": {
+        "bytes": 541,
+        "sha256": "025c5ef33412e8f500c99f9b89dbdd5970a87523205c912123b16ff75bae469d"
+      },
+      "expat-binary-package-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expat-binary-verifier-copy-command.json": {
+        "bytes": 548,
+        "sha256": "be1fe2b437e795dacdde5148492c99fd6316f047c138f8b451af2bbec7f0bdf7"
+      },
+      "expat-binary-verifier-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expat-changelog-download-command.json": {
+        "bytes": 604,
+        "sha256": "0da34bad466545105d4d6d81b1c1c1ef6bbb0702bd74d536ea47c8ed01cc9c7b"
+      },
+      "expat-changelog-download.log": {
+        "bytes": 366,
+        "sha256": "c81a41718eed8a9711d59052b06dabd07dbc2e4f66ead54774770f8e3c6ede77"
+      },
+      "expat-debian-source-download-command.json": {
+        "bytes": 615,
+        "sha256": "215f6cc38dd4e89b4bf12151759d377f09a14eb45d9c13717f22d3d44f49e567"
+      },
+      "expat-debian-source-download.log": {
+        "bytes": 317,
+        "sha256": "fb5c6b0ffbfea1e217dc364465e4f6b31271872b7a7188571ead97189ca2caed"
+      },
+      "expat-source-dsc-download-command.json": {
+        "bytes": 595,
+        "sha256": "a25cb3af2a113a9f8d9660cdddad830d285d7cd2c2a48913bc0027700df4cd32"
+      },
+      "expat-source-dsc-download.log": {
+        "bytes": 317,
+        "sha256": "e225fe4af2dc2c9463dc6ccfb123b09dc7accf42f7be434bf40b41bf376835b9"
+      },
+      "expat-vendor-page-download-command.json": {
+        "bytes": 571,
+        "sha256": "43d07d061fdeb5b8965d7cf02017017483580764f273353ff4814c9c132c7066"
+      },
+      "expat-vendor-page-download.log": {
+        "bytes": 317,
+        "sha256": "d4a30fa872d9e6b960e8301e5c14a6e279c0b25b888df25a2805bd00377c8f86"
+      },
+      "expat-vendor.html": {
+        "bytes": 17818,
+        "sha256": "59940b16f74a5c08394f6672ab3ae66fba31215bf32991b41ccb59e3f135f088"
+      },
+      "expat.debian.tar.xz": {
+        "bytes": 64488,
+        "sha256": "f522d550e0a3ff992c293f2c49d44a1248985863d64005f91e086afc5d295908"
+      },
+      "expat.dsc": {
+        "bytes": 1427,
+        "sha256": "e1537fb367ee0036f87b3bc2e8f44de9fb042b7c141643aaaa187bca0f25b0e4"
+      },
+      "expat_binary_campaign.py": {
+        "bytes": 601,
+        "sha256": "cca0d35a1aa657b2a5c457cd138928ff5c36c19736023194cab42a98ba0373ea"
+      },
+      "final-build-run/authorization-status/assessment-report.json": {
+        "bytes": 331,
+        "sha256": "48ef0aa997d720598ba48d1c5c6040f45dd02f11b0b864c9cb30d57e2eff2147"
+      },
+      "final-build-run/authorization-status/contracts/authorization-api-spec.json": {
+        "bytes": 4892,
+        "sha256": "63683fae6b109d176a72561ff2ffed0daaf8a0b04315825357ce0c3ee10aefe4"
+      },
+      "final-build-run/authorization-status/evidence-trail.json": {
+        "bytes": 470,
+        "sha256": "2e11bc4dfa6def130edd073d9a30e8c57623802a9c95de6b0c6bcd0753d7dbdd"
+      },
+      "final-build-run/authorization-status/generated-app/db/generation-provenance.json": {
+        "bytes": 105,
+        "sha256": "3898722f625c465d1907d46f3ea0328e8d911402ae510f23d99d8b7d2c2225cc"
+      },
+      "final-build-run/authorization-status/generated-app/db/schema-baseline.json": {
+        "bytes": 3342,
+        "sha256": "7822f9d8f7975d31a963cb479843493f8628e5afae4af7e1308e66c147f1c187"
+      },
+      "final-build-run/authorization-status/generated-app/pom.xml": {
+        "bytes": 3077,
+        "sha256": "8e471010e56168631378b9e0b7b30d867ee8d8b9ab57bde5cf35361d2f13f9c9"
+      },
+      "final-build-run/authorization-status/generated-app/target/authorization-status-0.0.1-SNAPSHOT.jar": {
+        "bytes": 57064937,
+        "sha256": "29bafcbd668c80eae85e678fb443b9de5702e7accc6599c767580d5a1aeca031"
+      },
+      "final-build-run/authorization-status/studio-project.json": {
+        "bytes": 20174,
+        "sha256": "0df0b3ca1bf7785f600abe3aa591c1b3c1b67cb4b52e8d086be348b84bc21886"
+      },
+      "final-build-run/authorization-status/upstream/sample-createauthorization-request.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "final-build-run/authorization-status/upstream/sample-createauthorization-response.json": {
+        "bytes": 141,
+        "sha256": "109e89aed41bba76c75afb5f5b4771062a98adee02375ef9038b84409b928c28"
+      },
+      "final-build-run/build.json": {
+        "bytes": 6802,
+        "sha256": "356531fd9728d46ed5e74b72bf973e711656f762356e5f8c26868502ce37227c"
+      },
+      "final-build-run/dependency-tree.txt": {
+        "bytes": 8501,
+        "sha256": "c27a693ed414af9c105dc39f0fd43d0a23c564f134111f6431551ebd5a54654d"
+      },
+      "final-build-run/effective-pom.xml": {
+        "bytes": 378945,
+        "sha256": "9bd35997fabdfb7fe6868aaa7d94f060904288753d1043bdf577fa0d59284a18"
+      },
+      "final-build-run/generate.json": {
+        "bytes": 329,
+        "sha256": "3a0165a8dc945fa085a8b5d9b11905e3e654ef5d8b45f93c046e95082167942e"
+      },
+      "final-build-run/result.json": {
+        "bytes": 873,
+        "sha256": "dfb6ea976dc98d3af87ff37a79ffe73e38ab533294cacbb0b38e99eee1268cb7"
+      },
+      "final-build-run/run.json": {
+        "bytes": 1898,
+        "sha256": "1cddd6ddfae9b4d219548bc9eb3ff93e58720bdb9c3b587864f004d940e899fc"
+      },
+      "final-build-run/stop.json": {
+        "bytes": 9236,
+        "sha256": "74c8300fdd625aeefe4f9e70551c388ddc8dedd3e0f43835239023e05c07dbdc"
+      },
+      "final-build-run/verify.log": {
+        "bytes": 10483,
+        "sha256": "23c328d16755f08954b5a48b37ecf2a4dc2fd3548b3a24567d8bf1c6eb05ce98"
+      },
+      "final-build-run/write.json": {
+        "bytes": 2874,
+        "sha256": "0e44876ec2f44473b76913e281b37cf3c26143322988a0fac8e09414403bcb60"
+      },
+      "final-gitleaks.json": {
+        "bytes": 3,
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      },
+      "final-projection-validation-command.json": {
+        "bytes": 495,
+        "sha256": "f4dca1befee5908cd5af11651a3809f7bd49f6705cf7cd8341f5f6348f935b8c"
+      },
+      "final-projection-validation.log": {
+        "bytes": 202,
+        "sha256": "4c450af4f9d01e0e9f5d2f5a5e3a5b46e7a9efa5ce8e9b042571dd09c6ce04f5"
+      },
+      "final-proof-output-copy-command.json": {
+        "bytes": 544,
+        "sha256": "6aa9869bd510ac8b83480b54960763dc9ff43f9ecfe6992e9368d171bf081692"
+      },
+      "final-proof-output-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "final-secret-scan-command.json": {
+        "bytes": 567,
+        "sha256": "a44ee6b4efbd52e2a6cef90a523b53ca093d66ea1b026d82e5c360e1ef546fe3"
+      },
+      "final-secret-scan.log": {
+        "bytes": 146,
+        "sha256": "0766fde660817e743ec58512291879bd73450311b89259ef1bfa86ba0e629676"
+      },
+      "final_validate.py": {
+        "bytes": 5725,
+        "sha256": "fc892ef972c8454433f7e08447cb19fb380b6359aa281b040ae9ede0eefdecea"
+      },
+      "focused-command.json": {
+        "bytes": 678,
+        "sha256": "3fbaecf1efb9c204889c86485b2b36730ad38b2de942e0a4521875e2a122a28d"
+      },
+      "focused-corrected-command.json": {
+        "bytes": 678,
+        "sha256": "697f92aa2c42ae991924e1d31a7122cf2c62415fa654de48989ce12f5048889b"
+      },
+      "focused-corrected.log": {
+        "bytes": 179,
+        "sha256": "f25198ec1d0fa6b0cfa91f03b63f77642889b47bd6adf2e408246eda3bfb7e76"
+      },
+      "focused.log": {
+        "bytes": 179,
+        "sha256": "979a8acadd2a1325f0e9116384fe75005f86b528edd1fb6f32183b57a37dd354"
+      },
+      "frozen-db-hashes.json": {
+        "bytes": 308,
+        "sha256": "5dc2718b96713d13234d0a49bb79126acf445ee9f284c77a1fb6023c53f47ae3"
+      },
+      "grype-1.json": {
+        "bytes": 18185462,
+        "sha256": "2728e1ccf02b61c66143f4ef4d269fedfe2d5bb0257324a5744178a5169688ca"
+      },
+      "grype-2.json": {
+        "bytes": 18185461,
+        "sha256": "c6197e5f152f19d7fbb9b24c2601b7a7c0f0c939e2e80748a07c9b159078dbad"
+      },
+      "grype-db-download-command.json": {
+        "bytes": 599,
+        "sha256": "4e59f834988faedf6c56aefeb5eb0b319dde2724435d66f20e96ad9bd87184f1"
+      },
+      "grype-db-download.log": {
+        "bytes": 50,
+        "sha256": "c7b4223d373ec352807b8acc11eb7e7406fdde188ecab4cafe351eec1decfe54"
+      },
+      "grype-pass-1-command.json": {
+        "bytes": 862,
+        "sha256": "ddad532b671858d3598de72c55bd72c97249734f4bdd37d838908b53f6f24ee2"
+      },
+      "grype-pass-1.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "grype-pass-2-command.json": {
+        "bytes": 862,
+        "sha256": "8775fd4073b30afc4b94c2ea5fcd0abd7036ae537e279b5fc033e60d798f1a9e"
+      },
+      "grype-pass-2.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "grype-version-command.json": {
+        "bytes": 447,
+        "sha256": "aba0f57212666508ab3da2593963261c6b749bbdf29a84aea1a2b72f7a7aa942"
+      },
+      "grype-version.log": {
+        "bytes": 330,
+        "sha256": "260b812dc5bee0dfc26f363ce09f719b6dd2dd1536117e2f9a4359798519baf3"
+      },
+      "historical-ledger-replay-command.json": {
+        "bytes": 813,
+        "sha256": "bd0c133a60d6efd4d116b1ca7b7e9ac997181e06bc66ad30a5403a2fc9397df8"
+      },
+      "historical-ledger-replay.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "historical-replayed-ledger.json": {
+        "bytes": 2963105,
+        "sha256": "43453fba882568f405d6e82c8b49621b4e4a31c54e2fcfc39a71936ea458ea28"
+      },
+      "image-smoke-command.json": {
+        "bytes": 637,
+        "sha256": "f6e8f502cfda68c4656e6ceefb1e6d447e6a1b4809832054c3c202a07fdc3b79"
+      },
+      "image-smoke.log": {
+        "bytes": 98,
+        "sha256": "e19d7e90c78d5ec9272bd8109a36ab1d3bf6a7f689894f8749995b93f502cec4"
+      },
+      "inspect_runtime.py": {
+        "bytes": 2599,
+        "sha256": "4da7972abec26b8e87428ca5ce68e5e8d3cddd15fc80741d06627b8a89f5c692"
+      },
+      "installed-components-command.json": {
+        "bytes": 849,
+        "sha256": "4eef0f18d58319068a5c24260d96ae77630ac09dc955e59e2abf862b793abad1"
+      },
+      "installed-components.log": {
+        "bytes": 1204,
+        "sha256": "7207baccabffa7d545ad67553b01a75ea3dbe74e581748828527d4f5469d553a"
+      },
+      "ledger-1.json": {
+        "bytes": 1994539,
+        "sha256": "72c65b9e62a302c62bb6ac22db7835f89a3238a179f3e2f918bae8ccd180bc5a"
+      },
+      "ledger-2.json": {
+        "bytes": 1994539,
+        "sha256": "63e7314a7d99d560b85b929d4a170c91586918c5b093e585eaacb31c441d49c6"
+      },
+      "ledger-pass-1-command.json": {
+        "bytes": 833,
+        "sha256": "77fad02696f9954215062af2da81d85c62f5b5463f253d45e708c7fc89ca3d46"
+      },
+      "ledger-pass-1.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ledger-pass-2-command.json": {
+        "bytes": 833,
+        "sha256": "79c2d9fd0d5cded4f8a2712dc7ad6bd75e00a801da26e1753d2daeb545359ae5"
+      },
+      "ledger-pass-2.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "libexpat1-u4-amd64.deb": {
+        "bytes": 105852,
+        "sha256": "ed010cc41577d75ab01cccc6afa93496d9a99f1e16bd469caf58e1b81fddae80"
+      },
+      "oci-identity-command.json": {
+        "bytes": 450,
+        "sha256": "af88309ca8103d55a8a8d01d04b808de77028bea2a4e140684b1dad8da958286"
+      },
+      "oci-identity-corrected-command.json": {
+        "bytes": 501,
+        "sha256": "74558abb1d9ae616477b6d1e7e787c6eaa806f83a8d3a98bbf4315d87807957a"
+      },
+      "oci-identity-corrected.log": {
+        "bytes": 25104,
+        "sha256": "69bde17e4abff9098c39d4d1b31bcff52700660f096398ff71811aced877ff50"
+      },
+      "oci-identity.log": {
+        "bytes": 277,
+        "sha256": "d2e6b11983e3c6cba41b7614af0bb684355465411976c4f1a4e03d96fbe39e22"
+      },
+      "official-expat-package-download-command.json": {
+        "bytes": 618,
+        "sha256": "3b3748ed90598e6e7ca590d5b3e6f72d1beb6c1e754dc901dfa73751c5c078a9"
+      },
+      "official-expat-package-download.log": {
+        "bytes": 317,
+        "sha256": "5b2341baca302a362576ee98a74df1603c3c7f529acb787f9630a5461dcea78f"
+      },
+      "prepare.py": {
+        "bytes": 2836,
+        "sha256": "c1a9419c4368f1c1ab89099eb7a5933af5ab297914add16c2a80dceba3f5fa85"
+      },
+      "projection-validation.json": {
+        "bytes": 312,
+        "sha256": "0f35d825fd1cbd25cd38cb46df51e1b34f263b2877cdd34b7bf1d5487c6ef640"
+      },
+      "proof-container-create-command.json": {
+        "bytes": 818,
+        "sha256": "aef401d9567f24d5fc17cb5db9555955749d65de01efee516250d6f82f415cc9"
+      },
+      "proof-container-create.log": {
+        "bytes": 65,
+        "sha256": "002b9901ab3a0a81d43c2668692c4ef24e5a371648d63189dc9874b050f7bbc8"
+      },
+      "proof-container-inspect-command.json": {
+        "bytes": 436,
+        "sha256": "c270f80118f64ad0aaa5d09ba38b6d69c158f7ee0f15589f15edc6ec829d8e0e"
+      },
+      "proof-container-inspect.log": {
+        "bytes": 7611,
+        "sha256": "6dd306a20f79afa4ee3f270ff219476ae2d9af38466da68e1a42c8fee986b11b"
+      },
+      "proof-container-start-command.json": {
+        "bytes": 434,
+        "sha256": "45242999a7bab42cb58e0319f412abeed89c36c539759d8061b506ddd8764839"
+      },
+      "proof-container-start.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "proof-container-stop-command.json": {
+        "bytes": 433,
+        "sha256": "b832d028cf3db0b6e18a0ee60b4d596952049b6bb90c435b2b0865409761c6e1"
+      },
+      "proof-container-stop.log": {
+        "bytes": 46,
+        "sha256": "761145cf673a68ace606610b456c07156a02642d033be272a1da4a367fd371d8"
+      },
+      "proof-output-copy-command.json": {
+        "bytes": 538,
+        "sha256": "abe2f75c3b704386b9c92a34b53ad1a236dccccd2602a9bc0b079c5eaacf9124"
+      },
+      "proof-output-copy.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "prove.py": {
+        "bytes": 2265,
+        "sha256": "f511ca209af4d316cd52477f730e7e23c65c109acf719857a8a98983cdf91e34"
+      },
+      "python-base-index-command.json": {
+        "bytes": 533,
+        "sha256": "2a0384344641931e33bdd38cdb993bedd800a95f029f9a02c2b607462b509028"
+      },
+      "python-base-index.log": {
+        "bytes": 6546,
+        "sha256": "2333bd330d12de02514770b3585cad313644316047cdee24a7acfdece6de6efb"
+      },
+      "python-base-platform-command.json": {
+        "bytes": 533,
+        "sha256": "a3b5b8ccaf7caae1cc367997d596b1dd5228bb9fc9db4fdd4008b9fa1407c86a"
+      },
+      "python-base-platform.log": {
+        "bytes": 1752,
+        "sha256": "31feac62e3aa66d2cdddb4e1f80f839d8f14ad02b98b77e7eee90df6dc65f0c5"
+      },
+      "reprove.py": {
+        "bytes": 854,
+        "sha256": "b8f2697beec77b2a339825f97613978bb1060d8cc29d7364aa4901667ce51bdb"
+      },
+      "reprove_confined.py": {
+        "bytes": 762,
+        "sha256": "d7a9d1cbc132d4e667fc9e4c396e2e2ed0338f9004ea493657a63aa903842455"
+      },
+      "resolved-bases.json": {
+        "bytes": 5429,
+        "sha256": "ae6d9bcd8f6e6ebee85bee2bd8e2b95c022b699aa7b9411455b4af867db21d6f"
+      },
+      "resolved-dependency-tree-command.json": {
+        "bytes": 642,
+        "sha256": "14a1b032c393ad523e124b3d74033ef4b2e69bb58f199dfbc1e77fc3a7e7071c"
+      },
+      "resolved-dependency-tree.log": {
+        "bytes": 781,
+        "sha256": "0d976539f7c0db0e00c70e3eba61388e9431118b8ba8d8bfb5571dc83cdc4075"
+      },
+      "run.py": {
+        "bytes": 1848,
+        "sha256": "0856c892f2ba7d4dbf7de9b2e928bebdbc012e945d296651c58a51d8fa2f1f16"
+      },
+      "runtime-inspection-command.json": {
+        "bytes": 477,
+        "sha256": "4d81a423ebe8a1ea27c68d4e600ed8bf662fa112bcb25e4442c8b10046331c4a"
+      },
+      "runtime-inspection.log": {
+        "bytes": 98856,
+        "sha256": "4c5527484f9c8e316234033a80686c2a70f186c29a4579b758aa5adddedf3642"
+      },
+      "sbom.cdx.json": {
+        "bytes": 3263934,
+        "sha256": "1c636b02dcfebd1f0052c0ddc052cea0866eefd9fb5055b331a72a11ec3a5715"
+      },
+      "scan.py": {
+        "bytes": 3309,
+        "sha256": "9470327b959afec076269b41c091179e15a7ba6701b246250f6715f8a12b3b6f"
+      },
+      "strict-audit-command.json": {
+        "bytes": 877,
+        "sha256": "a34de5469761a028cbd374725e16b9664cb3e011c15cdedbd228ee951ba05f8f"
+      },
+      "strict-audit.json": {
+        "bytes": 5479,
+        "sha256": "1af0804212fe8f8db649c6afa3db8ef1b3ce243588b42874e2fe5452f45f1e0a"
+      },
+      "strict-audit.log": {
+        "bytes": 265,
+        "sha256": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e"
+      },
+      "summary-1.json": {
+        "bytes": 132141,
+        "sha256": "05de10720f903488bad8975288fcacbd24b9f0aad694e8b84599b9f152517764"
+      },
+      "summary-2.json": {
+        "bytes": 132141,
+        "sha256": "05de10720f903488bad8975288fcacbd24b9f0aad694e8b84599b9f152517764"
+      },
+      "summary-pass-1-command.json": {
+        "bytes": 829,
+        "sha256": "9ecf130d61a952c249ab7cb0a394e2d1a204f177bbd61de202c4fe853010a078"
+      },
+      "summary-pass-1.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "summary-pass-2-command.json": {
+        "bytes": 829,
+        "sha256": "a7e2cd98d61b9bbc07009493c5620d90a28a53488724c5d0a5a145d1e99a0c48"
+      },
+      "summary-pass-2.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "syft-1.json": {
+        "bytes": 9322410,
+        "sha256": "ce10c8814c97ef00bded5b2ec7fc3b13fe0105dd48ae59c97487960317e7e546"
+      },
+      "syft-2.json": {
+        "bytes": 9322410,
+        "sha256": "ee7af90d92c4b2f368f342b81d5f6b9d473562b5a32daa75f02cdf4ab91f4f9b"
+      },
+      "syft-convert-cyclonedx-command.json": {
+        "bytes": 724,
+        "sha256": "02e9b38559c6d79babc4e9fbaed17ac1761f2762f100a0b7b124aca96fd638e7"
+      },
+      "syft-convert-cyclonedx.log": {
+        "bytes": 80,
+        "sha256": "5c8929afe98946a6baf1442874d05a1d122b8a33052bc3c887ea70aa12dd9a9d"
+      },
+      "syft-pass-1-command.json": {
+        "bytes": 728,
+        "sha256": "24e0638eaeda68c96822dd9a3c2557c51d17645be31d58ed272cfff00a967aaa"
+      },
+      "syft-pass-1.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "syft-pass-2-command.json": {
+        "bytes": 728,
+        "sha256": "176249046a3f1ea75a6991429dffd6602a0c339c84889339fb3965f4d92e64b6"
+      },
+      "syft-pass-2.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "syft-version-command.json": {
+        "bytes": 446,
+        "sha256": "825f69ae54b6aad6aab88cad2c2728ce72e1bfd3d981332ce91869cdab97abc0"
+      },
+      "syft-version.log": {
+        "bytes": 251,
+        "sha256": "4d86b6d5b952a1487eec391f9009a8cf983dab4d9349e30d83d3b8a128ac3863"
+      },
+      "tools-integrity.json": {
+        "bytes": 1382,
+        "sha256": "b50cc31ce34efcec7a056edebe5d4edb8ca808b407ecced4ee2f439146404f3c"
+      },
+      "trivy-1.json": {
+        "bytes": 13710602,
+        "sha256": "b70c03a070ad8b255fe99061e93b763c46a1d978c2297c45733ae228d9b791ed"
+      },
+      "trivy-2.json": {
+        "bytes": 13710602,
+        "sha256": "dbab0f8a2337e600c6952edfc6a0894df7b58b3f236a70c3957ac19ebaa92188"
+      },
+      "trivy-db-download-command.json": {
+        "bytes": 651,
+        "sha256": "000d7f6b5ef3cbfb5f53a4adbf939e07b02e98976c9067945f5ac1c680d28a15"
+      },
+      "trivy-db-download.log": {
+        "bytes": 3747,
+        "sha256": "483e65fcebeffa7217d8b2e62103921234cc62bc14b531ef8a47cdfafe1d8086"
+      },
+      "trivy-java-db-download-command.json": {
+        "bytes": 656,
+        "sha256": "c32bd8b8b1d4a15039ae10245392db7c79bb318de252f146ab60718fba29112c"
+      },
+      "trivy-java-db-download.log": {
+        "bytes": 18265,
+        "sha256": "9bf8afda4ec748161eb013c7484f1bc0b89bbe3f36f4b40d26efcda3bd4c04af"
+      },
+      "trivy-pass-1-command.json": {
+        "bytes": 993,
+        "sha256": "141ba66974f0a923d01ade135fb94a081becc14d8386e47794f725039eae07ee"
+      },
+      "trivy-pass-1.log": {
+        "bytes": 982,
+        "sha256": "ba582ebc21cc4fbce04ecbd43df1f14195ecdeb2e1331559c23c429c42254aba"
+      },
+      "trivy-pass-2-command.json": {
+        "bytes": 993,
+        "sha256": "fed2e25241fb6bb2b43561e5b698c2f5a8092a889129812bc13f6cb12b377754"
+      },
+      "trivy-pass-2.log": {
+        "bytes": 641,
+        "sha256": "9034d20c8b24c21187d3c82b5e61a8983fb3654ab6467ef049bcdecf8ad668fc"
+      },
+      "trivy-version-command.json": {
+        "bytes": 447,
+        "sha256": "b11dd0ff81047940b15129bac6e7807d69b9d7145008cd56d52c99cc05ce2320"
+      },
+      "trivy-version.log": {
+        "bytes": 16,
+        "sha256": "41e22ed321a4c139a4fae57e92d8fa971cf7e91a8c1c4444d9a948c52a72c73a"
+      },
+      "two-pass-result.json": {
+        "bytes": 268,
+        "sha256": "e65a805ee7c865394d3ab1903278c6a06d9b5318ef96c231ec2d9279b786eb76"
+      },
+      "validate.py": {
+        "bytes": 2662,
+        "sha256": "f62590ac6de15eb8576b135050b94c98a21f8165aa9060cc229cda064d5c6815"
+      },
+      "verify_expat_binary.py": {
+        "bytes": 2099,
+        "sha256": "bc6968685f3c343afa23679a4812b5a211ed5a7feef73701e5de30a803d23d7f"
+      },
+      "verify_oci.py": {
+        "bytes": 5315,
+        "sha256": "3baac18581090e2987d24d86d2a6bfb9b03d83f5d0725ee4a5a8ec902eef5980"
+      }
+    }
+  },
+  "revision": 1,
+  "scanners": {
+    "grype": {
+      "archive": "grype_0.119.0_darwin_arm64.tar.gz",
+      "archive_and_executable_integrity_verified": true,
+      "archive_sha256": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+      "checksums_sha256": "9cb7f68e8fa2b039e67f33d1fda29e7224946167f3b8abb43c51a6fff0c0de78",
+      "executable_sha256": "f8486425f232aea78fc932249ca0923672d88be36c9661e25e82ea1fa8cd0cae",
+      "host_platform": "darwin/arm64",
+      "version": "0.119.0"
+    },
+    "syft": {
+      "archive": "syft_1.52.0_darwin_arm64.tar.gz",
+      "archive_and_executable_integrity_verified": true,
+      "archive_sha256": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+      "checksums_sha256": "21d9ee36c7c6fb43d6493718a387ecca021321791d1815c716e56c99b9c8d6b9",
+      "executable_sha256": "17e4215af72264e186a843269d0b797697d643f53841d9598f73614bbcbe9022",
+      "host_platform": "darwin/arm64",
+      "version": "1.52.0"
+    },
+    "trivy": {
+      "archive": "trivy_0.74.0_macOS-ARM64.tar.gz",
+      "archive_and_executable_integrity_verified": true,
+      "archive_sha256": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11",
+      "checksums_sha256": "bc701c3c3ee8b9acbea2c23257e41381e3854888f51281616a6ba5dc96963821",
+      "executable_sha256": "0ed07c205ca9ecc1065dc57b9f9f77adc79393bb469d9d1de9ec90c8c94ffc2f",
+      "host_platform": "darwin/arm64",
+      "version": "0.74.0"
+    }
+  },
+  "schema_version": 1,
+  "source_observation_counts": {
+    "grype_active": 1046,
+    "grype_ignored": 2315,
+    "trivy_debian": 3362,
+    "trivy_python": 6
+  },
+  "task_base_studio_sha": "a333ab58433909f6ab224585be6471ed2c184aa2",
+  "two_pass": {
+    "complete_normalized_ledger_equivalent": true,
+    "frozen_db_hashes_verified_before_and_after_each_pass": true,
+    "full_syft_artifact_inventory_equivalent": true,
+    "source_hashes_excluded_only_from_equivalence_comparison": true,
+    "summary_byte_identical": true
+  }
+}

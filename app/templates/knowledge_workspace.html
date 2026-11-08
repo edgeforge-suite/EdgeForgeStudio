@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Knowledge Workspace{% endblock %}
+
+{% block content %}
+<div class="knowledge-workspace">
+  <header class="knowledge-header">
+    <div>
+      <span class="kickoff-section-label">Knowledge Assist</span>
+      <h2>Knowledge Workspace</h2>
+      <p class="subtitle">
+        Search, browse, and review evidence/reference documents used by Knowledge Assist. OpenAPI or YAML contract specs belong in Step 2 Contract Source, not this workspace.
+      </p>
+    </div>
+    <div class="knowledge-header-actions">
+      <a href="/" class="btn btn-secondary">&larr; Back to Step 1</a>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-knowledge-modal-open
+        aria-controls="knowledge-upload-modal"
+      >
+        Add Documents
+      </button>
+    </div>
+  </header>
+
+  <div class="knowledge-namespace-strip">
+    <div>
+      <span class="knowledge-meta-label">Workspace namespace</span>
+      <code>{{ ks_project_id }}</code>
+    </div>
+    <div>
+      <span class="knowledge-meta-label">Status</span>
+      {% if ks_available %}
+      <span class="status-badge ok">Available</span>
+      {% elif ks_warning %}
+      <span class="status-badge warn">Degraded</span>
+      {% else %}
+      <span class="status-badge running">Linked</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if status_message %}
+  <div class="alert alert-{{ status_type }}">{{ status_message }}</div>
+  {% endif %}
+
+  {% if ks_warning %}
+  <div class="alert alert-warn">
+    <strong>Knowledge Workspace degraded mode:</strong> {{ ks_warning }}<br>
+    <span class="text-sm">Manual Studio authoring remains available. You can retry from this page when Knowledge Assist is ready.</span>
+  </div>
+  {% endif %}
+
+  {% if search_warnings %}
+  <div class="alert alert-warn">
+    {% for warning in search_warnings %}
+    <div>{{ warning }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if field_catalog_warnings %}
+  <div class="alert alert-warn">
+    {% for warning in field_catalog_warnings %}
+    <div>{{ warning }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <section class="knowledge-layout" aria-label="Knowledge Workspace two-panel layout">
+    <aside class="knowledge-panel knowledge-library-panel workflow-surface-group" aria-label="Library">
+      <div class="knowledge-panel-heading">
+        <div>
+          <h3>Library</h3>
+          <p>{{ documents|length }} document(s), {{ field_catalog|length }} catalog field(s)</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          {% if field_catalog %}
+          <a href="#knowledge-field-catalog" class="btn btn-secondary btn-sm">{{ field_catalog|length }} catalog field{% if field_catalog|length != 1 %}s{% endif %}</a>
+          {% endif %}
+          <a href="/knowledge" class="btn btn-secondary btn-sm">Refresh</a>
+        </div>
+      </div>
+
+      <form method="get" action="/knowledge" class="knowledge-search-form workflow-surface-detail">
+        <label for="knowledge-search" class="knowledge-meta-label">Search documents</label>
+        <div class="knowledge-search-row">
+          <input id="knowledge-search" type="text" name="q" value="{{ search_query }}" placeholder="Search ingested documents">
+          <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+        </div>
+        <div class="knowledge-filter-row">
+          <input type="text" name="source" value="{{ catalog_source }}" placeholder="Filter source">
+          <input type="text" name="entity" value="{{ catalog_entity }}" placeholder="Filter entity">
+        </div>
+      </form>
+
+      <div class="knowledge-library-section">
+        <div class="knowledge-section-title">
+          <h4>Documents</h4>
+          <span class="badge badge-entity">{{ documents|length }}</span>
+        </div>
+
+        {% if documents %}
+          {% for group in document_groups %}
+          <details class="knowledge-disclosure workflow-surface-card" {% if group["count"] or loop.first %}open{% endif %}>
+            <summary>
+              <span>{{ group["label"] }}</span>
+              <span>{{ group["count"] }}</span>
+            </summary>
+            <div class="knowledge-doc-list">
+              {% if group["items"] %}
+                {% for doc in group["items"][:20] %}
+                <div
+                  class="knowledge-doc-row {{ 'is-active' if doc.is_selected else '' }}"
+                >
+                  <a class="knowledge-doc-main" href="/knowledge?document_id={{ doc.document_id|urlencode }}">
+                    <span class="knowledge-status-dot is-{{ doc.status.state }}" aria-label="{{ doc.status.label }}">{{ doc.status.symbol }}</span>
+                    <span class="knowledge-doc-copy">
+                      <strong>{{ doc.name }}</strong>
+                      <span><code>{{ doc.doc_type }}</code> · {{ doc.section_count }} sections · {{ doc.field_count }} fields</span>
+                    </span>
+                    {% if doc.error %}
+                    <span class="badge badge-warning">!</span>
+                    {% endif %}
+                  </a>
+                  <form
+                    method="post"
+                    action="/knowledge/delete"
+                    class="knowledge-doc-remove-form"
+                    onsubmit="return confirm('Removing this document may refresh or stale related suggestions and evidence. Continue?')"
+                  >
+                    <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+                    <input type="hidden" name="document_id" value="{{ doc.document_id }}">
+                    <input type="hidden" name="document_name" value="{{ doc.name }}">
+                    <button type="submit" class="btn btn-secondary btn-sm">Remove</button>
+                  </form>
+                </div>
+                {% endfor %}
+                {% if group["items"]|length > 20 %}
+                <div class="knowledge-more-note">Showing first 20 of {{ group["items"]|length }} documents in this group.</div>
+                {% endif %}
+              {% else %}
+              <div class="knowledge-empty-line">No documents in this group yet.</div>
+              {% endif %}
+            </div>
+          </details>
+          {% endfor %}
+        {% else %}
+        <div class="knowledge-empty-state">
+          No Knowledge Workspace documents yet. Use <strong>Add Documents</strong> to upload a supported file and begin indexing this workspace namespace.
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="knowledge-library-section" id="knowledge-field-catalog">
+        <div class="knowledge-section-title">
+          <h4>Field Catalog</h4>
+          <span class="badge badge-entity">{{ field_catalog|length }}</span>
+        </div>
+
+        {% if field_catalog_groups %}
+          {% for group in field_catalog_groups %}
+          <details class="knowledge-disclosure workflow-surface-card" {% if group.is_selected or loop.first %}open{% endif %}>
+            <summary>
+              <span>{{ group["entity"] }}</span>
+              <span>{{ group["count"] }} field{% if group["count"] != 1 %}s{% endif %}</span>
+            </summary>
+            <div class="knowledge-field-list">
+              <a class="knowledge-entity-row {{ 'is-active' if group["is_selected"] else '' }}" href="/knowledge?entity={{ group["entity"]|urlencode }}">
+                <strong>View {{ group["entity"] }} field set</strong>
+                <span>Click an individual field below to open field-level detail.</span>
+              </a>
+              {% for field in group["fields"][:12] %}
+              <a
+                class="knowledge-field-row {{ 'is-active' if field.is_selected else '' }}"
+                href="/knowledge?entity={{ group["entity"]|urlencode }}&amp;field={{ field.name|urlencode }}"
+              >
+                <code>{{ field.name }}</code>
+                <span>{{ field.type }} · open detail</span>
+              </a>
+              {% endfor %}
+              {% if group["fields"]|length > 12 %}
+              <div class="knowledge-more-note">Showing first 12 of {{ group["fields"]|length }} fields.</div>
+              {% endif %}
+            </div>
+          </details>
+          {% endfor %}
+        {% else %}
+        <div class="knowledge-empty-state">
+          No field catalog entries yet. Upload a CSV, SQL, or Excel document to browse structured fields here.
+        </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <main class="knowledge-panel knowledge-detail-panel workflow-surface-group" aria-label="Detail">
+      <div class="knowledge-panel-heading">
+        <div>
+          <h3>Detail</h3>
+          <p>Search results, selected document text, and field catalog detail appear here.</p>
+        </div>
+      </div>
+
+      {% if search_query %}
+      <section class="knowledge-detail-section workflow-surface-detail">
+        <div class="knowledge-section-title">
+          <h4>Search Results</h4>
+          <span class="badge badge-entity">{{ search_results|length }}</span>
+        </div>
+        {% if search_results %}
+        <div class="knowledge-result-stack">
+          {% for result in search_results %}
+          <article class="knowledge-result-card workflow-surface-card">
+            <div class="knowledge-result-topline">
+              <div>
+                <strong>{{ result.document_name }}</strong>
+                <div class="text-muted text-sm">Score {{ "%.2f"|format(result.score) }}</div>
+              </div>
+              <a href="/knowledge?q={{ search_query|urlencode }}&amp;document_id={{ result.document_id|urlencode }}" class="btn btn-secondary btn-sm">Open Document</a>
+            </div>
+            <pre class="knowledge-snippet">{{ result.snippet }}</pre>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">No search results for <code>{{ search_query }}</code>.</div>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {% if selected_detail["kind"] == 'document' %}
+      {% set doc = selected_detail["document"] %}
+      <section class="knowledge-detail-section workflow-surface-detail">
+        <div class="knowledge-detail-title-row">
+          <div>
+            <span class="kickoff-section-label">Document</span>
+            <h4>{{ doc.document_name }}</h4>
+          </div>
+          <span class="status-badge {{ 'ok' if doc.status.state == 'ready' else 'warn' }}">{{ doc.status.label }}</span>
+        </div>
+        <div class="knowledge-detail-meta-grid">
+          <div><span>Type</span><strong>{{ doc.doc_type }}</strong></div>
+          <div><span>Sections</span><strong>{{ doc.section_count }}</strong></div>
+          <div><span>Fields</span><strong>{{ doc.field_count }}</strong></div>
+          <div><span>Citations</span><strong>{{ doc.citations|length }}</strong></div>
+          <div><span>Chunks</span><strong>{{ doc.chunk_count }}</strong></div>
+          <div><span>Ingested</span><strong>{{ doc.ingested_at }}</strong></div>
+        </div>
+        {% if doc.field_count and doc.field_count != '—' %}
+        <div class="alert alert-info">
+          This document contributed <strong>{{ doc.field_count }}</strong> catalog field{% if doc.field_count != 1 %}s{% endif %}. Use the Field Catalog shortcut in the Library panel to inspect extracted field details.
+        </div>
+        {% endif %}
+        {% if selected_document_warnings %}
+        <div class="alert alert-warn">
+          {% for warning in selected_document_warnings %}
+          <div>{{ warning }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <pre class="knowledge-document-preview">{{ doc.text or 'No extracted text is available for this document yet.' }}</pre>
+      </section>
+      {% elif selected_detail["kind"] == 'entity' %}
+      {% set entity = selected_detail["entity"] %}
+      <section class="knowledge-detail-section workflow-surface-detail">
+        <div class="knowledge-detail-title-row">
+          <div>
+            <span class="kickoff-section-label">Entity</span>
+            <h4>{{ entity.entity }}</h4>
+          </div>
+          <span class="badge badge-entity">{{ entity.count }} fields</span>
+        </div>
+        <div class="drawer-table-shell">
+          <table>
+            <thead>
+              <tr><th>Field</th><th>Type</th><th>Nullable</th><th>Source</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              {% for field in entity["fields"] %}
+              <tr>
+                <td><a href="/knowledge?entity={{ entity.entity|urlencode }}&amp;field={{ field.name|urlencode }}"><code>{{ field.name }}</code><br><span class="text-muted text-sm">Open field detail</span></a></td>
+                <td>{{ field.type }}</td>
+                <td>{% if field.nullable is sameas true %}true{% elif field.nullable is sameas false %}false{% else %}—{% endif %}</td>
+                <td>{{ field.source_document }}</td>
+                <td>{{ field.description }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      {% elif selected_detail["kind"] == 'field' %}
+      {% set field = selected_detail["field"] %}
+      <section class="knowledge-detail-section workflow-surface-detail">
+        <div class="knowledge-detail-title-row">
+          <div>
+            <span class="kickoff-section-label">Field</span>
+            <h4><code>{{ field.entity }}.{{ field.name }}</code></h4>
+          </div>
+          <span class="badge badge-entity">{{ field.type }}</span>
+        </div>
+        <div class="knowledge-detail-meta-grid">
+          <div><span>Entity</span><strong>{{ field.entity }}</strong></div>
+          <div><span>Field name</span><strong>{{ field.name }}</strong></div>
+          <div><span>Type</span><strong>{{ field.normalized_type }}</strong></div>
+          <div><span>Length</span><strong>{{ field.length }}</strong></div>
+          <div><span>Precision</span><strong>{{ field.precision }}</strong></div>
+          <div><span>Scale</span><strong>{{ field.scale }}</strong></div>
+          <div><span>Nullable</span><strong>{% if field.nullable is sameas true %}true{% elif field.nullable is sameas false %}false{% else %}—{% endif %}</strong></div>
+          <div><span>Source document</span><strong>{{ field.source_document }}</strong></div>
+          <div><span>Source location</span><strong>{{ field.source_location }}</strong></div>
+          <div><span>Confidence</span><strong>{{ field.confidence }}</strong></div>
+        </div>
+        <p class="knowledge-field-description">{{ field.description }}</p>
+        {% if field.conflict_hint %}
+        <div class="alert alert-warn">{{ field.conflict_hint }}</div>
+        {% endif %}
+      </section>
+      {% elif not search_query %}
+      <section class="knowledge-detail-empty">
+        <h4>Select a document or field to view details.</h4>
+        <p>Use the Library panel to open indexed documents, browse extracted field groups, or search across this workspace.</p>
+      </section>
+      {% endif %}
+    </main>
+  </section>
+</div>
+
+<div
+  id="knowledge-upload-modal"
+  class="knowledge-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="knowledge-upload-title"
+  data-knowledge-upload-modal
+>
+  <div class="knowledge-modal-card">
+    <div class="knowledge-modal-header">
+      <div>
+        <span class="kickoff-section-label">Add Documents</span>
+        <h3 id="knowledge-upload-title">Upload to Knowledge Workspace</h3>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" data-knowledge-modal-close aria-label="Close upload dialog">Close</button>
+    </div>
+
+    <p class="data-handling-notice" role="note">
+      Use synthetic or approved content only. Studio does not sanitize uploaded or pasted content. Depending on the workflow, it may be retained in project state, Knowledge Workspace storage, and exported packages.
+    </p>
+
+    <form method="post" action="/knowledge/upload" enctype="multipart/form-data">
+      <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+      <div class="knowledge-upload-dropzone">
+        <p>Knowledge Workspace is for evidence and reference documents only. Upload contract OpenAPI/YAML specs in Step 2 Contract Source.</p>
+        <div class="knowledge-supported-types">
+          {% for row in supported_doc_types %}
+          <span><code>{{ row.extensions }}</code></span>
+          {% endfor %}
+        </div>
+        <p class="text-muted text-sm" style="margin:10px 0 0">Supported here: .md, .csv, .sql, .xlsx, .pdf, .docx. Not here: .yaml/.yml OpenAPI specs.</p>
+      </div>
+
+      <div class="field">
+        <label for="document_file">Document File</label>
+        <input id="document_file" type="file" name="document_file" accept=".md,.markdown,.csv,.sql,.xlsx,.pdf,.docx" required>
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <input id="description" type="text" name="description" placeholder="Optional short note for the document catalog">
+      </div>
+      <div class="knowledge-modal-actions">
+        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="button" class="btn btn-secondary" data-knowledge-modal-close>Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,304 @@
+{
+  "candidate": "EF-V5-STUDIO-S8-NEWCOMER-JOURNEY",
+  "revision": 1,
+  "status": "pass",
+  "started_at": "2026-10-09T22:50:20.429155+00:00",
+  "studio_sha": "6900db9d05f719cf8b66c6946a46792721d4338a",
+  "engine_sha": "64f51d0bac92b4c70f26c8f5f067888717df7b14",
+  "source_clean": true,
+  "python": "3.11.15",
+  "platform": "macOS-26.5-arm64-arm-64bit",
+  "java": "openjdk version \"17.0.18\" 2026-01-20\nOpenJDK Runtime Environment Homebrew (build 17.0.18+0)\nOpenJDK 64-Bit Server VM Homebrew (build 17.0.18+0, mixed mode, sharing)",
+  "maven": "Apache Maven 3.9.12 (848fbb4bf2d427b72bdb2471c22fced7ebd9a7a1)",
+  "sample": "docs/sample-packs/fs-account-servicing/project/fs-account-servicing.edgeforge-project.json",
+  "sample_sha256": "a232c852d19d7489acf2cabffbfb68208676c2aa0ba439c3856ef1a1770e4139",
+  "profile": "springboot-legacy-compatible",
+  "flags": {
+    "regen_preview": true,
+    "shared_mode": false,
+    "knowledge_assist": false
+  },
+  "observation": "HTTP route automation plus explicit terminal developer/Maven/Java steps; not browser observation",
+  "steps": [
+    {
+      "method": "POST",
+      "route": "/project/open",
+      "status": 303
+    },
+    {
+      "method": "POST",
+      "route": "/",
+      "status": 303
+    },
+    {
+      "method": "POST",
+      "route": "/entities/save",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/upstream",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/entities",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/handoffs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/downstream",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/rules",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/export",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/write",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/validate",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/generate",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/project/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/build",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/run",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/stop",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/upstream/ingest-file",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/entities/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/mappings/upstream/samples/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/mappings/upstream/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/project/save",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/rules/save-one",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/export/write",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/regen/apply",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/regen/apply",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "route": "/project/save",
+      "status": 200
+    }
+  ],
+  "project_schema": "1.4",
+  "manifest_schema": "2.0",
+  "studio_build_run": {
+    "command": [
+      "mvn",
+      "clean",
+      "package",
+      "-DskipTests"
+    ],
+    "tests_skipped_by_build_button": true,
+    "requests": {
+      "request": {
+        "accountId": "ACCT-S8-001",
+        "customerId": "CUST-INPUT",
+        "status": "OPEN",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "openedAt": "2026-01-15"
+      },
+      "create_status": 201,
+      "create_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-INPUT",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "read_status": 200,
+      "read_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-INPUT",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "missing_id_status": 404
+    }
+  },
+  "before_regeneration": {
+    "command": "mvn -B -ntp clean verify",
+    "tests": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "requests": {
+      "request": {
+        "accountId": "ACCT-S8-001",
+        "customerId": "CUST-INPUT",
+        "status": "OPEN",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "openedAt": "2026-01-15"
+      },
+      "create_status": 201,
+      "create_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-S8-HOOK",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "read_status": 200,
+      "read_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-S8-HOOK",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "missing_id_status": 404
+    },
+    "jar_sha256": "f9c81dfcdfff7c08828f44b5a61e9018b7eec942e1d05009b5988282d710c74c",
+    "test_reports": {
+      "TEST-com.appbuilder.account_servicing.AccountServicingApplicationTest.xml": "a6c402955341cd466335572b0a386aa354e2b69d45e7cfb8fb576ac1b8dd8250"
+    }
+  },
+  "preservation": {
+    "path": "src/main/java/com/appbuilder/account_servicing/service/AccountService.java",
+    "before_sha256": "6d55191332a6c1c43604eee9fbb9bc75f53130300d54151ae05c572f20254f6c",
+    "after_sha256": "6d55191332a6c1c43604eee9fbb9bc75f53130300d54151ae05c572f20254f6c",
+    "generated_base_changed": true,
+    "stale_approval_refused": true,
+    "migration": "V4__alter_account_add_nickname.sql",
+    "migration_sha256": "b0995bdf4741aa34d57b10cd26a98a0a9182035835fefa74bf65fa13755cf7cd"
+  },
+  "after_regeneration": {
+    "command": "mvn -B -ntp clean verify",
+    "tests": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "requests": {
+      "request": {
+        "accountId": "ACCT-S8-001",
+        "customerId": "CUST-INPUT",
+        "status": "OPEN",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "openedAt": "2026-01-15",
+        "nickname": "SYNTHETIC-NICKNAME"
+      },
+      "create_status": 201,
+      "create_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-S8-HOOK",
+        "nickname": "SYNTHETIC-NICKNAME",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "read_status": 200,
+      "read_response": {
+        "accountId": "ACCT-S8-001",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-S8-HOOK",
+        "nickname": "SYNTHETIC-NICKNAME",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "missing_id_status": 404
+    },
+    "jar_sha256": "149ff3ec23d60dd8fd7a528aa611169ab6c8b92b92584921e2228f803a0a43bc",
+    "test_reports": {
+      "TEST-com.appbuilder.account_servicing.AccountServicingApplicationTest.xml": "e9901ee7711f7f276d6bda3d536af2f913dd076d92f45b922e7b7590a236282c"
+    }
+  },
+  "limitations": [
+    "Local macOS ARM64, Python 3.11, Java 17/H2 reference only; profile intentionally selected in Step 1.",
+    "HTTP automation is not browser, keyboard, or native accessibility observation; A11y-01 remains open.",
+    "Step 8 skips tests and still targets the original output; terminal verification uses the managed regenerated copy.",
+    "Fresh H2 memory database per process; no production data migration or persistent-database continuity claim.",
+    "Create and read-by-ID only; filtered lists, computed reads, EOD delivery and arbitrary generated-file edits are not proven.",
+    "Final selected Studio/Engine release pair requires applicability review and relevant journey re-proof."
+  ],
+  "finished_at": "2026-10-09T22:51:21.690391+00:00"
+}

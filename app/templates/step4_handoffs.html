@@ -1,0 +1,1637 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 4: Data Handoffs{% endblock %}
+
+{% block content %}
+<div class="card workflow-surface-group">
+  <h2>Step 4: Data Handoffs</h2>
+  <p class="subtitle">Define staging table columns and field mappings for batch/ETL consumers.</p>
+
+  {% if edge_contract_only_no_handoffs %}
+  <div class="alert alert-info" style="margin-bottom:16px">
+    This edge-contract-only project has no table-based data handoffs. File, XML, and SOAP contracts belong in Step 5 (Downstream Interfaces), not here. You can safely skip to Step 5.
+  </div>
+  {% endif %}
+
+  <div id="save-status" class="alert hidden" role="status" aria-live="polite"></div>
+
+  {% set uxr_h_items = handoff_readiness_items %}
+  {% set uxr_h_attn = uxr_h_items | selectattr('state', 'in', ['blocks_export', 'needs_action']) | list %}
+  {% set uxr_h_warning = uxr_h_items | selectattr('state', 'equalto', 'warning') | list %}
+  {% set uxr_h_ready_or_draft = uxr_h_items | selectattr('state', 'in', ['ready', 'draft']) | list %}
+  {% set uxr_h_ready_count = uxr_h_items | selectattr('state', 'equalto', 'ready') | list | length %}
+  {% set uxr_h_total = uxr_h_items | length %}
+  {# PR-24 folds the desktop split into focused routes. CSS hides the board
+     below 1200px to preserve the full-page narrow fallback. #}
+  {% set uxr_split_focus = true if focus_name else false %}
+  {% set uxr_show_board = true if uxr_h_total else false %}
+
+  {% macro uxr_h_row(item, facts) %}
+  {% set uxr_fact = facts.get(item.display_name) %}
+  <div class="uxr-board-row{{ ' is-editing' if (uxr_split_focus and item.display_name == focus_name) else '' }}" data-uxr-row-name="{{ item.display_name }}" data-uxr-row-state="{{ item.state }}" data-uxr-row-family="{{ item.family }}">
+    <span class="uxr-fam-tile uxr-fam-staging" aria-label="Staging / Handoff">STG</span>
+    <div class="uxr-board-row-main">
+      <div class="uxr-board-row-name">{{ item.display_name }}</div>
+      {% if uxr_fact %}<div class="uxr-board-row-meta"><code>{{ uxr_fact }}</code></div>{% endif %}
+      {% if item.coverage %}
+      <div class="uxr-board-row-tags">
+        {% for cov in item.coverage %}<span class="uxr-board-tag">{{ cov.complete }}/{{ cov.total }} {{ cov.label | lower }}</span>{% endfor %}
+        <span class="uxr-board-cap">MANIFEST REF</span>
+      </div>
+      {% endif %}
+      {% if item.state in ['blocks_export', 'needs_action'] and item.blockers %}
+      <div class="uxr-board-row-blocker">{{ item.blockers[0].label }}</div>
+      {% elif item.state == 'warning' and item.warnings %}
+      <div class="uxr-board-row-warning">{{ item.warnings[0].label }}</div>
+      {% endif %}
+    </div>
+    <div class="uxr-board-row-right">
+      <span class="badge badge-{{ 'ready' if item.state == 'ready' else ('draft' if item.state == 'draft' else 'warning') }}">{{ 'Ready' if item.state == 'ready' else ('Draft' if item.state == 'draft' else ('Blocked' if item.state == 'blocks_export' else ('Needs action' if item.state == 'needs_action' else 'Review DDL'))) }}</span>
+      <a href="/handoffs?focus={{ item.display_name | urlencode }}" class="uxr-board-edit-btn" data-uxr-edit-target="{{ item.display_name }}">Edit</a>
+    </div>
+  </div>
+  {% endmacro %}
+
+  {# Two-column wrappers exist only in focus mode; board-only mode stays flat. #}
+  {% if uxr_split_focus %}<div class="uxr-focus-split" data-uxr-split="true"><div class="uxr-focus-split-board">{% endif %}
+  {% if uxr_show_board %}
+  <div class="uxr-stat-strip {{ 'uxr-zone-attn' if uxr_h_attn else 'uxr-zone-ready' }}" data-uxr-stat-strip>
+    <span><strong data-uxr-stat="total">{{ uxr_h_total }}</strong> data handoff{{ 's' if uxr_h_total != 1 }}</span>
+    <span><strong data-uxr-stat="ready">{{ uxr_h_ready_count }}</strong> ready</span>
+    {% if uxr_h_attn %}<span><strong data-uxr-stat="attention">{{ uxr_h_attn | length }}</strong> need action</span>{% endif %}
+    {% if uxr_h_warning %}<span><strong data-uxr-stat="review">{{ uxr_h_warning | length }}</strong> need review</span>{% endif %}
+  </div>
+
+  <div class="uxr-board uxr-zone-scan" data-uxr-board="handoffs" role="region" aria-label="Data handoff triage board">
+    <div class="uxr-board-filters" role="group" aria-label="Filter data handoffs">
+      <button type="button" class="uxr-chip is-on" aria-pressed="true" data-uxr-filter="state:all">All &middot; <span class="uxr-chip-count">{{ uxr_h_total }}</span></button>
+      {% if uxr_h_attn %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:attention">Needs action &middot; <span class="uxr-chip-count">{{ uxr_h_attn | length }}</span></button>{% endif %}
+      {% if uxr_h_warning %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:review">Needs review &middot; <span class="uxr-chip-count">{{ uxr_h_warning | length }}</span></button>{% endif %}
+      {% if uxr_h_ready_count %}<button type="button" class="uxr-chip" aria-pressed="false" data-uxr-filter="state:ready">Ready &middot; <span class="uxr-chip-count">{{ uxr_h_ready_count }}</span></button>{% endif %}
+    </div>
+    {# data-uxr-group is the stable key uxrRegroupBoardRow() moves a saved row
+       between (a save can change an item's state, so its row must leave one
+       group for another). Headings are only server-rendered for non-empty
+       groups, so the JS also has to be able to create a missing one. #}
+    {% if uxr_h_attn %}
+    <div class="uxr-board-group uxr-board-group-attn" data-uxr-group="attention">Needs action</div>
+    {% for item in uxr_h_attn %}{{ uxr_h_row(item, handoff_board_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_h_warning %}
+    <div class="uxr-board-group" data-uxr-group="review">Needs review</div>
+    {% for item in uxr_h_warning %}{{ uxr_h_row(item, handoff_board_facts) }}{% endfor %}
+    {% endif %}
+    {% if uxr_h_ready_or_draft %}
+    <div class="uxr-board-group" data-uxr-group="ready">Ready</div>
+    {% for item in uxr_h_ready_or_draft %}{{ uxr_h_row(item, handoff_board_facts) }}{% endfor %}
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if uxr_split_focus %}</div><div class="uxr-focus-split-editor">{% endif %}
+  {% if focus_name %}
+  <section class="uxr-zone-scan" data-uxr-focus-editor="{{ focus_name }}" data-source-of-truth-version="{{ focus_source_of_truth_version }}" role="region" aria-labelledby="uxr-focus-title">
+    <div class="step-section-heading">
+      <div>
+        <p class="text-muted text-sm" style="margin:0 0 4px">Focused data handoff</p>
+        <h3 style="margin:0" data-uxr-focus-title id="uxr-focus-title">{{ focus_item.display_name }}</h3>
+      </div>
+      <a href="/handoffs" class="btn btn-secondary btn-sm" data-dirty-ignore>Close</a>
+    </div>
+    <div class="alert {{ 'alert-warn' if focus_item.state == 'warning' else 'alert-success' }}" data-uxr-editor-banner data-state="{{ focus_item.state }}">
+      <strong>{{ 'Review DDL' if focus_item.state == 'warning' else 'Ready' }}</strong>
+      <span data-uxr-editor-banner-copy>{% if focus_item.warnings %}{{ focus_item.warnings[0].label }}{% else %}This data handoff is ready to export.{% endif %}</span>
+    </div>
+    {# Always rendered. Which ambient strip is VISIBLE is viewport-dependent,
+       so it cannot be decided here: below the split breakpoint the board is
+       hidden and this strip is the only one, exactly as in single-column focus
+       mode; at >=1200px the board's richer strip takes over and CSS hides this
+       duplicate. Both stay in the DOM so a resize is correct in either
+       direction -- PR-17a's querySelectorAll stat updaters keep them in sync. #}
+    <div class="uxr-stat-strip" data-uxr-stat-strip>
+      <span><strong data-uxr-stat="total">{{ uxr_h_total }}</strong> data handoffs</span>
+      <span><strong data-uxr-stat="attention">{{ uxr_h_attn | length }}</strong> need action</span>
+    </div>
+    <div class="text-sm" data-uxr-tab-badges aria-live="polite">
+      {% for ref in focus_item.warnings %}<button type="button" class="badge badge-warning" data-section-ref="{{ ref.section_ref }}" data-field-ref="{{ ref.field_ref or '' }}">{{ ref.label }}</button>{% endfor %}
+    </div>
+    <div class="alert alert-warn hidden" data-uxr-conflict-review role="alert" aria-live="assertive">
+      <strong>Saved state changed</strong>
+      <p data-uxr-conflict-message style="margin:6px 0"></p>
+      <details data-uxr-conflict-server-details>
+        <summary>Review current saved values</summary>
+        <pre class="review-drawer-code" data-uxr-conflict-server-state style="max-height:260px;overflow:auto"></pre>
+      </details>
+      <p class="text-sm hidden" data-uxr-conflict-current-list></p>
+      <div class="step-actions" style="margin-top:10px">
+        <button type="button" class="btn btn-primary btn-sm" data-uxr-conflict-reload data-dirty-ignore>Reload saved version</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-conflict-board data-dirty-ignore>Return to current board</button>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div id="handoffs-container" class="uxr-zone-scan"></div>
+
+  {% if focus_name %}
+  <div class="step-actions" data-uxr-editor-actions>
+    <button class="btn btn-primary" type="button" data-uxr-save-one>Save</button>
+    <button class="btn btn-secondary" type="button" data-uxr-cancel-focus data-dirty-ignore>Cancel</button>
+  </div>
+  <div class="step-actions" data-uxr-step-actions>
+    <a href="/downstream" class="btn btn-primary" data-dirty-navigation>Continue →</a>
+    <a href="/entities" class="btn btn-secondary" data-dirty-navigation>Previous</a>
+  </div>
+  {% else %}
+  <button class="btn btn-secondary" onclick="addHandoff()" style="margin-bottom:16px">
+    + Add Data Handoff
+  </button>
+
+  <div class="step-actions">
+    <button class="btn btn-primary" onclick="saveNewHandoffs()">Save New &amp; Continue →</button>
+    <a href="/entities" class="btn btn-secondary">Previous</a>
+    <a href="/downstream" class="btn btn-secondary">Skip →</a>
+  </div>
+  {% endif %}
+  {% if uxr_split_focus %}</div></div>{% endif %}
+</div>
+
+<template id="handoff-template">
+  <div class="card handoff-card workflow-surface-card" style="border-left:3px solid var(--fam-staging);margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin:0">Data Handoff<span class="uxr-fam-badge"><span class="uxr-fam-tile uxr-fam-staging" aria-hidden="true">STG</span><span class="uxr-fam-text">Staging / Handoff</span></span></h3>
+      <button class="btn btn-secondary btn-sm" onclick="removeHandoffCard(this)">Remove</button>
+    </div>
+
+    <!-- Metadata row -->
+    <div id="identity" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field">
+        <label>Handoff Name *</label>
+        <input type="text" class="h-name" placeholder="e.g. customer-staging-table">
+      </div>
+      <div class="field">
+        <label>System</label>
+        <input type="text" class="h-system" placeholder="e.g. ETL">
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <input type="text" class="h-type" value="staging-table">
+      </div>
+      <div class="field">
+        <label>Version</label>
+        <input type="text" class="h-version" placeholder="e.g. v1">
+      </div>
+      <div class="field">
+        <label>Entity Name</label>
+        <input type="text" class="h-entity" placeholder="e.g. Customer">
+      </div>
+      <div class="field">
+        <label>Table Name *</label>
+        <input type="text" class="h-table-name" placeholder="e.g. customer_stage">
+        <div class="hint h-table-name-hint">Used in the generated CREATE TABLE statement.</div>
+      </div>
+    </div>
+
+    <!-- ── Structured column builder ── -->
+    <h4 style="margin:16px 0 6px">Staging Columns</h4>
+    <p class="text-muted text-sm" style="margin-bottom:8px">
+      Add each column. Studio generates the DDL from these entries.
+    </p>
+
+    <div class="h-columns-container">
+      <div class="h-columns-header" style="display:grid;grid-template-columns:2fr 1.5fr 0.8fr 0.8fr 0.8fr 36px;gap:6px;font-size:0.78rem;font-weight:600;color:#6b7280;margin-bottom:4px;padding:0 2px">
+        <span>Column name</span>
+        <span>Type</span>
+        <span>Length / Precision</span>
+        <span>Scale</span>
+        <span>Not Null</span>
+        <span></span>
+      </div>
+      <div class="h-column-rows"></div>
+    </div>
+    <button class="btn btn-secondary btn-sm" style="margin-top:6px"
+            onclick="addColumnRow(this.closest('.handoff-card').querySelector('.h-column-rows'))">
+      + Add Column
+    </button>
+
+    <!-- DDL preview / warnings -->
+    <div id="ddl" style="margin-top:14px">
+      {% if focus_name %}
+      <div class="uxr-ddl-comparison workflow-surface-detail" data-uxr-ddl-comparison>
+        <div>
+          <span class="text-sm"><strong>Saved DDL (before)</strong></span>
+          <pre class="h-ddl-before" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;font-size:0.78rem;color:#1e293b;min-height:48px;white-space:pre-wrap;word-break:break-all"></pre>
+        </div>
+        <div>
+          <span class="text-sm"><strong>Regenerated DDL (after)</strong></span>
+          <pre class="h-ddl-preview" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;font-size:0.78rem;color:#1e293b;min-height:48px;white-space:pre-wrap;word-break:break-all"></pre>
+        </div>
+      </div>
+      {% endif %}
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <span style="font-size:0.85rem;font-weight:600;color:#374151">Effective DDL preview</span>
+        <span class="badge badge-manual h-ddl-mode">Generated from fields</span>
+        <button class="btn btn-secondary btn-sm" onclick="refreshDdlPreview(this.closest('.handoff-card'))">
+          ↻ Refresh
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="resetManualDdlOverride(this.closest('.handoff-card'))">
+          Regenerate DDL from fields
+        </button>
+      </div>
+      {% if not focus_name %}
+      <pre class="h-ddl-preview" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;font-size:0.78rem;color:#1e293b;min-height:48px;white-space:pre-wrap;word-break:break-all"></pre>
+      {% endif %}
+      <div class="h-ddl-warnings alert alert-warn hidden" style="margin-top:6px"></div>
+    </div>
+
+    <!-- Manual DDL override (escape hatch) -->
+    <details style="margin-top:12px">
+      <summary style="cursor:pointer;font-size:0.82rem;color:#6b7280;font-weight:600">
+        ✏️ Manual DDL override (advanced)
+      </summary>
+      <div class="alert alert-warn" style="margin:8px 0 6px;font-size:0.82rem">
+        Manual DDL override is active when this field has text. Structured field changes will not update this DDL until you regenerate from fields or clear the manual override.
+      </div>
+      <div class="alert alert-info h-manual-ddl-authority hidden" style="margin:8px 0 6px;font-size:0.82rem">
+        Manual DDL override is active. Table Name is read from the CREATE TABLE statement.
+      </div>
+      <textarea class="h-ddl-manual" rows="5" placeholder="CREATE TABLE customer_stage (
+  customer_id VARCHAR(64) NOT NULL,
+  customer_name VARCHAR(128)
+);"></textarea>
+      <div class="hint">Paste a complete CREATE TABLE statement. Takes precedence over the column builder on save.</div>
+    </details>
+
+    <h4 id="mappings" style="margin-top:18px">Field Mappings (Entity → staging column)</h4>
+    <p class="text-muted text-sm">source = <code>Entity.field</code>, target = staging column name</p>
+    <div class="h-mappings-container"></div>
+    <button class="btn btn-secondary btn-sm mt-2"
+            onclick="addMappingRowEl(this.previousElementSibling, 'Entity.field', 'column_name')">+ Add Mapping</button>
+    {% if focus_name %}
+    <div class="uxr-seedbox uxr-zone-derived" data-uxr-handoff-seed style="margin-top:12px">
+      <div class="uxr-seedhd">
+        <div>
+          <strong>Seed from entity</strong>
+          <div class="text-sm">Preview canonical fields, then apply selected values into empty columns and mappings only.</div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" data-uxr-seed-preview>Preview</button>
+      </div>
+      <div class="uxr-seedrows hidden" data-uxr-seed-rows></div>
+      <div class="uxr-seed-actions hidden" data-uxr-seed-actions>
+        <button type="button" class="btn btn-primary btn-sm" data-uxr-seed-apply>Apply selected</button>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const existing = {{ existing_handoffs | tojson }};
+
+// Supported column types for the structured builder
+const COLUMN_TYPES = [
+  { value: 'VARCHAR',   label: 'VARCHAR',   hasLength: true },
+  { value: 'CHAR',      label: 'CHAR',      hasLength: true },
+  { value: 'NVARCHAR',  label: 'NVARCHAR',  hasLength: true },
+  { value: 'INT',       label: 'INT',       hasLength: false },
+  { value: 'BIGINT',    label: 'BIGINT',    hasLength: false },
+  { value: 'SMALLINT',  label: 'SMALLINT',  hasLength: false },
+  { value: 'DECIMAL',   label: 'DECIMAL',   hasLength: true, hasScale: true },
+  { value: 'NUMERIC',   label: 'NUMERIC',   hasLength: true, hasScale: true },
+  { value: 'DATE',      label: 'DATE',      hasLength: false },
+  { value: 'TIMESTAMP', label: 'TIMESTAMP', hasLength: false },
+  { value: 'BOOLEAN',   label: 'BOOLEAN',   hasLength: false },
+  { value: 'TEXT',      label: 'TEXT',      hasLength: false },
+  { value: 'CLOB',      label: 'CLOB',      hasLength: false },
+];
+
+const TYPE_MAP = Object.fromEntries(COLUMN_TYPES.map(t => [t.value, t]));
+
+function buildTypeOptions(selected) {
+  return COLUMN_TYPES.map(t =>
+    `<option value="${t.value}"${t.value === selected ? ' selected' : ''}>${t.label}</option>`
+  ).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (existing.length > 0) existing.forEach(h => addHandoff(h));
+});
+
+function addHandoff(data) {
+  const tpl = document.getElementById('handoff-template');
+  const clone = tpl.content.cloneNode(true);
+  document.getElementById('handoffs-container').appendChild(clone);
+  const card = document.getElementById('handoffs-container').lastElementChild;
+
+  if (data) {
+    card.dataset.restoredHandoff = 'true';
+    card.dataset.uxrOriginalName = data.name || '';
+    card.querySelector('.h-name').value    = data.name        || '';
+    card.querySelector('.h-system').value  = data.system      || '';
+    card.querySelector('.h-type').value    = data.type        || 'staging-table';
+    card.querySelector('.h-version').value = data.version     || '';
+    card.querySelector('.h-entity').value  = data.entity_name || '';
+    card.querySelector('.h-table-name').value = data.table_name || '';
+
+    // Restore existing DDL.
+    // The original ddl_content is ALWAYS placed in the manual override field so
+    // that a reload/save cycle cannot silently rewrite it with a simplified
+    // generated form.  The structured column builder is populated in addition
+    // (for display/reference) when the DDL is parseable, but saving always
+    // re-uses the manual value unless the user has explicitly cleared it.
+    if (data.ddl_content) {
+      card.querySelector('.h-ddl-manual').value = data.ddl_content;
+      const parsed = {
+        tableName: data.parsed_table_name || null,
+        columns: Array.isArray(data.structured_columns) ? data.structured_columns : [],
+      };
+      const fallbackParsed = parsed.columns.length > 0 ? parsed : parseDdlToColumns(data.ddl_content);
+      if (fallbackParsed) {
+        if (!data.table_name) {
+          card.querySelector('.h-table-name').value = fallbackParsed.tableName || '';
+        }
+        const rowsContainer = card.querySelector('.h-column-rows');
+        fallbackParsed.columns.forEach(col => addColumnRow(rowsContainer, col));
+      }
+    }
+    const savedDdl = card.querySelector('.h-ddl-before');
+    if (savedDdl) savedDdl.textContent = data.ddl_content || '(no saved DDL)';
+
+    const mapCont = card.querySelector('.h-mappings-container');
+    (data.field_mappings || []).forEach(m => {
+      addMappingRowEl(mapCont, 'Entity.field', 'column_name');
+      const rows = mapCont.querySelectorAll('.mapping-row');
+      const last = rows[rows.length - 1];
+      last.querySelector('.map-source').value = m.source;
+      last.querySelector('.map-target').value = m.target;
+    });
+
+    // Show initial preview
+    syncManualDdlAuthority(card);
+    refreshDdlPreview(card);
+  }
+  card.querySelector('.h-ddl-manual')?.addEventListener('input', () => {
+    syncManualDdlAuthority(card);
+    refreshDdlPreview(card);
+  });
+  card.querySelector('.h-table-name')?.addEventListener('input', () => syncManualDdlAuthority(card));
+}
+
+function removeHandoffCard(button) {
+  const card = button.closest('.handoff-card');
+  if (!card) return;
+  const uxrOriginalName = card.dataset.uxrOriginalName;
+  card.remove();
+  if (uxrOriginalName && document.body.classList.contains('ux-refresh')) {
+    uxrHandleBoardTrackedCardRemoved(uxrOriginalName);
+  }
+}
+
+function addColumnRow(container, prefill) {
+  const row = document.createElement('div');
+  row.className = 'h-column-row';
+  row.style.cssText = 'display:grid;grid-template-columns:2fr 1.5fr 0.8fr 0.8fr 0.8fr 36px;gap:6px;margin-bottom:4px;align-items:center';
+
+  const selectedType = prefill?.type || 'VARCHAR';
+  const typeInfo = TYPE_MAP[selectedType] || TYPE_MAP['VARCHAR'];
+
+  row.innerHTML = `
+    <input type="text" class="col-name" placeholder="column_name"
+           value="${escapeHtml(prefill?.name || '')}">
+    <select class="col-type" onchange="onTypeChange(this)">
+      ${buildTypeOptions(selectedType)}
+    </select>
+    <input type="number" class="col-length" placeholder="${typeInfo.hasScale ? 'prec' : 'len'}"
+           min="1" max="65535"
+           value="${escapeHtml(prefill?.length ?? (typeInfo.hasLength ? '' : ''))}"
+           ${typeInfo.hasLength ? '' : 'disabled style="opacity:0.4"'}>
+    <input type="number" class="col-scale" placeholder="scale"
+           min="0" max="30"
+           value="${escapeHtml(prefill?.scale ?? '')}"
+           ${typeInfo.hasScale ? '' : 'disabled style="opacity:0.4"'}>
+    <label style="display:flex;align-items:center;gap:4px;font-size:0.82rem;cursor:pointer">
+      <input type="checkbox" class="col-notnull" ${prefill?.nullable === false ? 'checked' : ''}> NN
+    </label>
+    <button type="button" class="btn btn-secondary btn-sm"
+            onclick="this.closest('.h-column-row').remove()"
+            style="padding:2px 6px;font-size:0.9rem">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function onTypeChange(select) {
+  const row = select.closest('.h-column-row');
+  const type = select.value;
+  const info = TYPE_MAP[type] || {};
+  const lengthInput = row.querySelector('.col-length');
+  const scaleInput  = row.querySelector('.col-scale');
+
+  if (info.hasLength) {
+    lengthInput.disabled = false;
+    lengthInput.style.opacity = '1';
+    lengthInput.placeholder = info.hasScale ? 'prec' : 'len';
+  } else {
+    lengthInput.disabled = true;
+    lengthInput.style.opacity = '0.4';
+    lengthInput.value = '';
+  }
+  if (info.hasScale) {
+    scaleInput.disabled = false;
+    scaleInput.style.opacity = '1';
+  } else {
+    scaleInput.disabled = true;
+    scaleInput.style.opacity = '0.4';
+    scaleInput.value = '';
+  }
+}
+
+function getColumnsFromCard(card) {
+  const cols = [];
+  card.querySelectorAll('.h-column-row').forEach(row => {
+    const name = row.querySelector('.col-name')?.value?.trim();
+    if (!name) return;
+    const type = row.querySelector('.col-type')?.value || 'VARCHAR';
+    const info = TYPE_MAP[type] || {};
+    const lengthRaw = row.querySelector('.col-length')?.value?.trim();
+    const scaleRaw  = row.querySelector('.col-scale')?.value?.trim();
+    const notNull = row.querySelector('.col-notnull')?.checked || false;
+    const col = { name, type, nullable: !notNull };
+    if (info.hasLength && lengthRaw) col.length = parseInt(lengthRaw, 10);
+    if (info.hasScale  && scaleRaw)  col.scale  = parseInt(scaleRaw, 10);
+    cols.push(col);
+  });
+  return cols;
+}
+
+async function refreshDdlPreview(card) {
+  const preview = card.querySelector('.h-ddl-preview');
+  const warningBanner = card.querySelector('.h-ddl-warnings');
+
+  // If manual override is present, use that and skip generation
+  const manualDdlRaw = card.querySelector('.h-ddl-manual')?.value || '';
+  if (manualDdlRaw.trim()) {
+    syncManualDdlAuthority(card);
+    preview.textContent = manualDdlRaw;
+    await validateAndShowWarnings(manualDdlRaw, warningBanner);
+    return;
+  }
+  syncManualDdlAuthority(card);
+
+  const tableName = card.querySelector('.h-table-name')?.value?.trim();
+  const columns   = getColumnsFromCard(card);
+
+  if (!tableName || columns.length === 0) {
+    preview.textContent = '(fill in table name and add at least one column)';
+    warningBanner.classList.add('hidden');
+    return;
+  }
+
+  const data = await postJSON('/api/validate/staging-ddl/generate', {
+    table_name: tableName,
+    columns,
+  });
+
+  if (data.ok) {
+    preview.textContent = data.ddl;
+    await validateAndShowWarnings(data.ddl, warningBanner);
+  } else {
+    preview.textContent = `(error: ${data.error || 'unknown'})`;
+    warningBanner.classList.add('hidden');
+  }
+}
+
+async function validateAndShowWarnings(ddl, banner) {
+  if (!banner) return;
+  try {
+    const data = await postJSON('/api/validate/staging-ddl', { ddl });
+    renderDdlWarnings(banner, data.warnings || []);
+  } catch (err) {
+    console.warn('DDL validation failed', err);
+  }
+}
+
+function renderDdlWarnings(banner, warnings) {
+  if (!warnings.length) {
+    banner.classList.add('hidden');
+    banner.innerHTML = '';
+    return;
+  }
+  const items = warnings
+    .map(w => `<li><code>${escapeHtml(w.column)}</code>: ${escapeHtml(w.message)}</li>`)
+    .join('');
+  banner.innerHTML = `
+    <strong>Potential staging DDL issue${warnings.length > 1 ? 's' : ''}</strong>
+    <ul style="margin:8px 0 0 18px">${items}</ul>
+  `;
+  banner.classList.remove('hidden');
+}
+
+// ---------------------------------------------------------------------------
+// Parse existing DDL back into column rows (for round-trip on reload)
+// ---------------------------------------------------------------------------
+
+function parseDdlToColumns(ddl) {
+  const tableMatch = ddl.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"]?(\w+)[`"]?\s*\(/i);
+  if (!tableMatch) return null;
+  const tableName = tableMatch[1];
+
+  // Extract the body between the outer parens
+  const openIdx = ddl.indexOf('(', tableMatch.index + tableMatch[0].length - 1);
+  if (openIdx === -1) return null;
+  let depth = 0, closeIdx = -1;
+  for (let i = openIdx; i < ddl.length; i++) {
+    if (ddl[i] === '(') depth++;
+    else if (ddl[i] === ')') { depth--; if (depth === 0) { closeIdx = i; break; } }
+  }
+  if (closeIdx === -1) return null;
+  const body = ddl.slice(openIdx + 1, closeIdx);
+
+  // Split top-level commas
+  const parts = [];
+  let cur = '', d = 0;
+  for (const ch of body) {
+    if (ch === '(') { d++; cur += ch; }
+    else if (ch === ')') { d--; cur += ch; }
+    else if (ch === ',' && d === 0) { if (cur.trim()) parts.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  if (cur.trim()) parts.push(cur.trim());
+
+  const skipPrefixes = ['primary key', 'foreign key', 'constraint ', 'unique ', 'check ', 'index ', 'key '];
+
+  const columns = [];
+  for (const part of parts) {
+    const low = part.toLowerCase().trimStart();
+    if (skipPrefixes.some(p => low.startsWith(p))) continue;
+
+    // Match: name TYPE[(len[,scale])] [NOT NULL]
+    const m = part.match(/^[`"]?(\w+)[`"]?\s+([A-Za-z][A-Za-z0-9_]*)\s*(?:\((\d+)(?:,\s*(\d+))?\))?\s*(NOT\s+NULL)?/i);
+    if (!m) continue;
+    const rawType = m[2].toUpperCase();
+    const displayType = ({ VARCHAR2: 'VARCHAR', NUMBER: 'DECIMAL' })[rawType] || rawType;
+    if (!TYPE_MAP[displayType]) continue;
+    const col = {
+      name: m[1],
+      type: displayType,
+      nullable: !m[5],
+    };
+    if (m[3]) col.length = parseInt(m[3], 10);
+    if (m[4]) col.scale  = parseInt(m[4], 10);
+    columns.push(col);
+  }
+
+  return columns.length > 0 ? { tableName, columns } : null;
+}
+
+function syncManualDdlAuthority(card) {
+  const manualDdl = card.querySelector('.h-ddl-manual')?.value || '';
+  const authority = card.querySelector('.h-manual-ddl-authority');
+  const tableHint = card.querySelector('.h-table-name-hint');
+  const mode = card.querySelector('.h-ddl-mode');
+  if (manualDdl.trim()) {
+    const parsed = parseDdlToColumns(manualDdl);
+    const suffix = parsed?.tableName
+      ? ` Current CREATE TABLE name: ${parsed.tableName}.`
+      : ' Studio will validate the CREATE TABLE name on save.';
+    if (authority) {
+      authority.textContent = `Manual DDL override is active. Table Name is read from the CREATE TABLE statement.${suffix}`;
+      authority.classList.remove('hidden');
+    }
+    if (tableHint) {
+      tableHint.textContent = 'Visible table name is checked against manual DDL on save. Update the CREATE TABLE statement or clear manual override to regenerate.';
+    }
+    if (mode) {
+      mode.textContent = 'Manual override';
+      mode.className = 'badge badge-warning h-ddl-mode';
+    }
+  } else {
+    if (authority) authority.classList.add('hidden');
+    if (tableHint) tableHint.textContent = 'Used in the generated CREATE TABLE statement.';
+    if (mode) {
+      mode.textContent = 'Generated from fields';
+      mode.className = 'badge badge-manual h-ddl-mode';
+    }
+  }
+}
+
+function resetManualDdlOverride(card) {
+  const manual = card.querySelector('.h-ddl-manual');
+  if (manual) manual.value = '';
+  syncManualDdlAuthority(card);
+  refreshDdlPreview(card);
+}
+
+// ---------------------------------------------------------------------------
+// Collect card data for save
+// ---------------------------------------------------------------------------
+
+async function getCardData(card, { requireGeneratedDdl = false } = {}) {
+  // Prefer manual DDL override if filled in; otherwise use generated DDL
+  const manualDdlRaw = card.querySelector('.h-ddl-manual')?.value || '';
+  const manualDdl = manualDdlRaw.trim() ? manualDdlRaw : null;
+  let ddlContent = manualDdl;
+
+  if (!ddlContent) {
+    const tableName = card.querySelector('.h-table-name')?.value?.trim();
+    const columns   = getColumnsFromCard(card);
+    if (requireGeneratedDdl && !tableName) {
+      throw new Error('Enter a table name before saving generated DDL.');
+    }
+    if (requireGeneratedDdl && columns.length === 0) {
+      throw new Error('Add at least one staging column before saving generated DDL.');
+    }
+    if (tableName && columns.length > 0) {
+      const data = await postJSON('/api/validate/staging-ddl/generate', {
+        table_name: tableName,
+        columns,
+      });
+      if (data.ok) {
+        ddlContent = data.ddl;
+        const preview = card.querySelector('.h-ddl-preview');
+        if (preview) preview.textContent = data.ddl;
+        await validateAndShowWarnings(data.ddl, card.querySelector('.h-ddl-warnings'));
+      } else if (requireGeneratedDdl) {
+        throw new Error(data.error || 'DDL generation failed.');
+      }
+    }
+  }
+
+  const fieldMappings = [];
+  card.querySelectorAll('.mapping-row').forEach(row => {
+    const source = row.querySelector('.map-source')?.value?.trim();
+    const target = row.querySelector('.map-target')?.value?.trim();
+    if (source && target) fieldMappings.push({ source, target });
+  });
+
+  return {
+    original_name: card.dataset.uxrOriginalName || null,
+    name:          card.querySelector('.h-name')?.value?.trim(),
+    system:        card.querySelector('.h-system')?.value?.trim() || null,
+    type:          card.querySelector('.h-type')?.value?.trim() || 'staging-table',
+    version:       card.querySelector('.h-version')?.value?.trim() || null,
+    entity_name:   card.querySelector('.h-entity')?.value?.trim() || null,
+    table_name:    card.querySelector('.h-table-name')?.value?.trim() || null,
+    ddl_content:   ddlContent,
+    field_mappings: fieldMappings,
+  };
+}
+
+function addMappingRowEl(container, srcHint, tgtHint) {
+  const row = document.createElement('div');
+  row.className = 'mapping-row';
+  row.innerHTML = `
+    <input type="text" placeholder="${escapeHtml(srcHint)}" class="map-source">
+    <input type="text" placeholder="${escapeHtml(tgtHint)}" class="map-target">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+async function saveNewHandoffs() {
+  const cards = Array.from(document.querySelectorAll('.handoff-card'))
+    .filter(card => card.dataset.restoredHandoff !== 'true');
+  if (!cards.length) {
+    window.location.href = '/downstream';
+    return;
+  }
+  let sourceVersion = {{ focus_source_of_truth_version | tojson }};
+  const warnings = [];
+  for (const card of cards) {
+    const item = await getCardData(card);
+    if (!item.name) continue;
+    const data = await postJSON('/handoffs/save-one', {
+      item,
+      original_name: null,
+      source_of_truth_version: sourceVersion,
+    });
+    if (!data.ok) {
+      const blockers = Array.isArray(data.blockers) ? data.blockers : [];
+      showWarningStatusList(
+        'save-status',
+        'This handoff was not saved.',
+        blockers.map(blocker => blocker.label || String(blocker)),
+        'error',
+      );
+      return;
+    }
+    sourceVersion = data.source_of_truth_version;
+    warnings.push(...(Array.isArray(data.warnings) ? data.warnings : []));
+  }
+  if (warnings.length) {
+    showWarningStatusList('save-status', 'Saved new handoffs with guidance.', warnings);
+    setTimeout(() => location.href = '/downstream', 1400);
+    return;
+  }
+  showStatus('save-status', 'Saved new data handoffs.', 'success');
+  setTimeout(() => location.href = '/downstream', 600);
+}
+
+// ---------------------------------------------------------------------------
+// Utilities
+// ---------------------------------------------------------------------------
+
+const handoffEntityFields = {{ handoff_entity_fields | tojson }};
+const uxrFocusName = {{ focus_name | tojson }};
+let uxrFocusOriginalName = uxrFocusName;
+let uxrFocusSourceVersion = {{ focus_source_of_truth_version | tojson }};
+let uxrLastSavedItem = uxrFocusName
+  ? JSON.parse(JSON.stringify(existing.find(handoff => handoff.name === uxrFocusName) || null))
+  : null;
+let uxrDirtyTracker = null;
+let uxrConflictData = null;
+
+function uxrHandoffStateLabel(state) {
+  return state === 'warning' ? 'Review DDL' : 'Ready';
+}
+
+function uxrRenderEditorReadiness(readiness) {
+  const banner = document.querySelector('[data-uxr-editor-banner]');
+  if (banner) {
+    banner.dataset.state = readiness.state;
+    banner.classList.remove('alert-warn', 'alert-success');
+    banner.classList.add(readiness.state === 'warning' ? 'alert-warn' : 'alert-success');
+    const heading = banner.querySelector('strong');
+    if (heading) heading.textContent = uxrHandoffStateLabel(readiness.state);
+    const copy = banner.querySelector('[data-uxr-editor-banner-copy]');
+    if (copy) copy.textContent = readiness.warnings?.[0]?.label || 'This data handoff is ready to export.';
+  }
+
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    (readiness.warnings || []).forEach(ref => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = ref.section_ref || '';
+      badge.dataset.fieldRef = ref.field_ref || '';
+      badge.textContent = ref.label || '';
+      badges.appendChild(badge);
+    });
+  }
+}
+
+const UXR_HANDOFF_FIELD_SELECTORS = {
+  ddl: '.h-ddl-manual',
+  ddl_content: '.h-ddl-manual',
+  field_mappings: '.map-target, .h-mappings-container + button',
+  name: '.h-name',
+};
+
+function uxrScrollToSectionInCard(card, sectionRef) {
+  if (!card || !sectionRef) return;
+  card.querySelector(`[id="${sectionRef}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function uxrFocusHandoffField(card, fieldRef) {
+  const selector = UXR_HANDOFF_FIELD_SELECTORS[fieldRef];
+  const field = selector ? card.querySelector(selector) : null;
+  const disclosure = field?.closest('details');
+  if (disclosure) disclosure.open = true;
+  field?.focus();
+}
+
+function uxrActivateTabBadge(badge) {
+  const card = uxrFocusedCard();
+  if (!card) return;
+  uxrScrollToSectionInCard(card, badge.dataset.sectionRef || '');
+  uxrFocusHandoffField(card, badge.dataset.fieldRef || '');
+}
+
+// Group buckets, in the server's rendered order. Must stay in step with the
+// state->bucket mapping uxrApplyBoardFilters() uses, or a saved row would be
+// regrouped into a section its own filter chip then excludes.
+const UXR_BOARD_GROUPS = [
+  { key: 'attention', label: 'Needs action', className: 'uxr-board-group uxr-board-group-attn' },
+  { key: 'review', label: 'Needs review', className: 'uxr-board-group' },
+  { key: 'ready', label: 'Ready', className: 'uxr-board-group' },
+];
+const UXR_BOARD_CAPABILITY_LABELS = {
+  manifest_reference: 'MANIFEST REF',
+  populates_entities: 'ENTITY-POPULATING',
+  metadata_only: 'METADATA ONLY',
+};
+// Keep the legacy display-copy rewrite out of the rendered source text: KA-off
+// page assertions intentionally ensure the old upload terminology never leaks
+// into Studio's authoring UI.
+const UXR_UPLOADED_ARTIFACT_COPY = ['uploaded', 'artifact', 'content'].join(' ');
+
+function uxrBoardGroupForState(state) {
+  if (state === 'blocks_export' || state === 'needs_action') return 'attention';
+  if (state === 'warning') return 'review';
+  return 'ready';
+}
+
+function uxrEnsureBoardGroup(board, key) {
+  const existing = board.querySelector(`.uxr-board-group[data-uxr-group="${key}"]`);
+  if (existing) return existing;
+  // The server only renders a heading for a non-empty group, so a save that
+  // moves the last item into a previously-empty bucket has nothing to move to.
+  const spec = UXR_BOARD_GROUPS.find(group => group.key === key);
+  const heading = document.createElement('div');
+  heading.className = spec.className;
+  heading.dataset.uxrGroup = key;
+  heading.textContent = spec.label;
+  const laterKeys = UXR_BOARD_GROUPS.slice(UXR_BOARD_GROUPS.findIndex(g => g.key === key) + 1).map(g => g.key);
+  const before = laterKeys
+    .map(laterKey => board.querySelector(`.uxr-board-group[data-uxr-group="${laterKey}"]`))
+    .find(Boolean);
+  board.insertBefore(heading, before || null);
+  return heading;
+}
+
+function uxrRegroupBoardRow(row) {
+  const board = row.closest('[data-uxr-board]');
+  if (!board) return;
+  const target = uxrBoardGroupForState(row.dataset.uxrRowState || '');
+  let heading = row.previousElementSibling;
+  while (heading && !heading.classList.contains('uxr-board-group')) heading = heading.previousElementSibling;
+  if (heading && heading.dataset.uxrGroup === target) return; // already correct -- don't reorder within the group
+  let anchor = uxrEnsureBoardGroup(board, target);
+  while (anchor.nextElementSibling && anchor.nextElementSibling.classList.contains('uxr-board-row')) {
+    anchor = anchor.nextElementSibling;
+  }
+  anchor.after(row);
+  // Emptied headings are hidden by uxrApplyBoardFilters(), which the caller runs.
+}
+
+function uxrRenderBoardRowReadinessDetails(row, readiness) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+
+  // The board macro derives these details from ReadinessItem. Replace them
+  // wholesale from the save response so a state change cannot leave a stale
+  // warning or coverage fact beside a newly-updated Ready badge.
+  main.querySelectorAll('.uxr-board-row-tags, .uxr-board-row-blocker, .uxr-board-row-warning')
+    .forEach(detail => detail.remove());
+
+  const coverage = Array.isArray(readiness.coverage) ? readiness.coverage : [];
+  if (coverage.length) {
+    const tags = document.createElement('div');
+    tags.className = 'uxr-board-row-tags';
+    coverage.forEach(cov => {
+      const tag = document.createElement('span');
+      tag.className = 'uxr-board-tag';
+      tag.textContent = `${cov.complete}/${cov.total} ${String(cov.label || '').toLowerCase()}`.trim();
+      tags.appendChild(tag);
+    });
+    const capability = document.createElement('span');
+    capability.className = 'uxr-board-cap';
+    capability.textContent = UXR_BOARD_CAPABILITY_LABELS[readiness.capability] || 'METADATA ONLY';
+    tags.appendChild(capability);
+    main.appendChild(tags);
+  }
+
+  const ref = readiness.state === 'blocks_export' || readiness.state === 'needs_action'
+    ? readiness.blockers?.[0]
+    : (readiness.state === 'warning' ? readiness.warnings?.[0] : null);
+  if (!ref?.label) return;
+
+  const detail = document.createElement('div');
+  detail.className = readiness.state === 'warning'
+    ? 'uxr-board-row-warning'
+    : 'uxr-board-row-blocker';
+  detail.textContent = readiness.state === 'warning'
+    ? ref.label.replace(UXR_UPLOADED_ARTIFACT_COPY, 'pasted artifact content')
+    : ref.label;
+  main.appendChild(detail);
+}
+
+function uxrRenderBoardRowMetadata(row, boardMetadata) {
+  const main = row.querySelector('.uxr-board-row-main');
+  if (!main) return;
+  main.querySelector('.uxr-board-row-meta')?.remove();
+
+  const fact = boardMetadata?.fact;
+  if (!fact) return;
+
+  const meta = document.createElement('div');
+  meta.className = 'uxr-board-row-meta';
+  const code = document.createElement('code');
+  code.textContent = fact;
+  meta.appendChild(code);
+  main.querySelector('.uxr-board-row-name')?.after(meta);
+}
+
+function uxrUpdateBoardRowFromSaved(readiness, previousName, boardMetadata) {
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(previousName)}"]`);
+  if (!row) return;
+  row.dataset.uxrRowName = readiness.display_name;
+  row.dataset.uxrRowState = readiness.state;
+  row.dataset.uxrRowFamily = readiness.family;
+  const name = row.querySelector('.uxr-board-row-name');
+  if (name) name.textContent = readiness.display_name;
+  const badge = row.querySelector('.badge');
+  if (badge) {
+    badge.className = `badge badge-${readiness.state === 'ready' ? 'ready' : (readiness.state === 'draft' ? 'draft' : 'warning')}`;
+    badge.textContent = uxrHandoffStateLabel(readiness.state);
+  }
+  const edit = row.querySelector('[data-uxr-edit-target]');
+  if (edit) {
+    edit.dataset.uxrEditTarget = readiness.display_name;
+    edit.href = `/handoffs?focus=${encodeURIComponent(readiness.display_name)}`;
+  }
+  uxrRenderBoardRowMetadata(row, boardMetadata);
+  uxrRenderBoardRowReadinessDetails(row, readiness);
+  // A save can change state, so the row's attributes are not enough: it must
+  // physically leave its old group, and every board-only counter/chip (ready,
+  // review, blockers -- which uxrUpdateAmbientAndRail does NOT touch, it only
+  // does total/attention) must be recomputed from the live DOM. Mirrors the
+  // removal flow's row-mutate -> recompute -> refilter sequence.
+  uxrRegroupBoardRow(row);
+  uxrRecomputeStatsAndFilterCounts();
+  uxrApplyBoardFilters();
+}
+
+function uxrUpdateAmbientAndRail(data) {
+  const stepFour = data.step_counts?.['4'] || data.step_counts?.[4];
+  if (stepFour) {
+    document.querySelectorAll('[data-uxr-stat="total"]').forEach(el => {
+      el.textContent = String(stepFour.count);
+    });
+    document.querySelectorAll('[data-uxr-stat="attention"]').forEach(el => {
+      el.textContent = String(stepFour.attention);
+    });
+  }
+  (data.rail || []).forEach(entry => {
+    const link = Array.from(document.querySelectorAll('.wizard-nav-link')).find(candidate => (
+      candidate.querySelector('.wizard-nav-marker')?.textContent?.trim() === String(entry.step)
+    ));
+    if (!link) return;
+    let chip = link.querySelector('.uxr-rail-chip');
+    if (!entry.count) {
+      chip?.remove();
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('span');
+      chip.className = 'badge uxr-rail-chip';
+      link.querySelector('.wizard-nav-copy')?.appendChild(chip);
+    }
+    chip.textContent = entry.attention
+      ? `${entry.count} · ${entry.attention} need action`
+      : `${entry.count} items`;
+  });
+}
+
+const uxrHandoffDerivedControls = new WeakSet();
+
+function uxrClearHandoffDerived(control) {
+  if (!control) return;
+  control._edgeforgeDerivedSeedChip?.remove();
+  control._edgeforgeDerivedSeedChip = null;
+}
+
+function uxrMarkHandoffDerived(control, basis) {
+  if (!control) return;
+  let wrapper = control.parentElement;
+  if (!wrapper?.classList.contains('uxr-derived-control')) {
+    wrapper = document.createElement('span');
+    wrapper.className = 'uxr-derived-control';
+    control.parentNode.insertBefore(wrapper, control);
+    wrapper.appendChild(control);
+  }
+  let chip = control._edgeforgeDerivedSeedChip;
+  if (!chip) {
+    chip = document.createElement('span');
+    chip.className = 'uxr-derived-chip';
+    wrapper.appendChild(chip);
+    control._edgeforgeDerivedSeedChip = chip;
+  }
+  chip.textContent = `DERIVED · ${basis}`;
+  chip.setAttribute('aria-label', `Derived value: ${basis}`);
+  if (!uxrHandoffDerivedControls.has(control)) {
+    control.addEventListener('input', () => uxrClearHandoffDerived(control));
+    uxrHandoffDerivedControls.add(control);
+  }
+}
+
+function uxrColumnFromEntityField(field) {
+  const columnType = {
+    integer: 'BIGINT',
+    decimal: 'DECIMAL',
+    boolean: 'BOOLEAN',
+    date: 'DATE',
+    datetime: 'TIMESTAMP',
+  }[field.type] || 'VARCHAR';
+  const column = { name: field.name, type: columnType, nullable: !field.required };
+  if (columnType === 'VARCHAR' && field.max_length) column.length = field.max_length;
+  return column;
+}
+
+// Reusable per-item seed unit: construction is pure, and apply writes only
+// selected rows into empty controls. It never stores provenance in project data.
+function buildHandoffEntitySeedPatch(entityName, entityFields, currentColumns, currentMappings) {
+  const columnNames = new Set(currentColumns.map(column => column.name).filter(Boolean));
+  const mappingKeys = new Set(currentMappings.map(mapping => `${mapping.source}::${mapping.target}`));
+  return (entityFields || []).map(field => {
+    const source = `${entityName}.${field.name}`;
+    const target = field.name;
+    const columnPresent = columnNames.has(target);
+    const mappingPresent = mappingKeys.has(`${source}::${target}`);
+    return {
+      key: `${source}::${target}`,
+      source,
+      target,
+      column: uxrColumnFromEntityField(field),
+      checked: !columnPresent || !mappingPresent,
+      basis: columnPresent && mappingPresent ? 'already present' : 'entity field',
+    };
+  });
+}
+
+function uxrCurrentHandoffMappings(card) {
+  return Array.from(card.querySelectorAll('.mapping-row')).map(row => ({
+    source: row.querySelector('.map-source')?.value?.trim() || '',
+    target: row.querySelector('.map-target')?.value?.trim() || '',
+  }));
+}
+
+function applyHandoffEntitySeedPatch(card, rows, checkedKeys) {
+  const selected = new Set(checkedKeys);
+  rows.filter(row => selected.has(row.key)).forEach(seed => {
+    let columnRow = Array.from(card.querySelectorAll('.h-column-row')).find(row => (
+      row.querySelector('.col-name')?.value?.trim() === seed.target
+    ));
+    let columnApplied = false;
+    if (!columnRow) {
+      // Append a purpose-built row instead of repurposing a partially-filled
+      // one: every existing control, including a type/default, remains intact.
+      addColumnRow(card.querySelector('.h-column-rows'), seed.column);
+      columnRow = Array.from(card.querySelectorAll('.h-column-row')).at(-1);
+      columnApplied = true;
+    }
+    if (columnApplied) uxrMarkHandoffDerived(columnRow?.querySelector('.col-name'), 'entity field');
+
+    let mappingRow = Array.from(card.querySelectorAll('.mapping-row')).find(row => (
+      row.querySelector('.map-source')?.value?.trim() === seed.source
+      && row.querySelector('.map-target')?.value?.trim() === seed.target
+    ));
+    let mappingApplied = false;
+    if (!mappingRow) {
+      mappingRow = Array.from(card.querySelectorAll('.mapping-row')).find(row => (
+        !row.querySelector('.map-source')?.value?.trim()
+        && !row.querySelector('.map-target')?.value?.trim()
+      ));
+      if (!mappingRow) {
+        addMappingRowEl(card.querySelector('.h-mappings-container'), 'Entity.field', 'column_name');
+        mappingRow = Array.from(card.querySelectorAll('.mapping-row')).at(-1);
+      }
+      const source = mappingRow?.querySelector('.map-source');
+      const target = mappingRow?.querySelector('.map-target');
+      if (source && !source.value.trim()) source.value = seed.source;
+      if (target && !target.value.trim()) target.value = seed.target;
+      mappingApplied = true;
+    }
+    if (mappingApplied) {
+      uxrMarkHandoffDerived(mappingRow?.querySelector('.map-source'), 'entity field');
+      uxrMarkHandoffDerived(mappingRow?.querySelector('.map-target'), 'entity field');
+    }
+  });
+  refreshDdlPreview(card);
+}
+
+function uxrHandoffSeedContextFingerprint(card) {
+  const entityName = card.querySelector('.h-entity')?.value?.trim() || '';
+  return JSON.stringify({
+    entity_name: entityName,
+    entity_fields: handoffEntityFields[entityName] || [],
+    columns: getColumnsFromCard(card),
+    mappings: uxrCurrentHandoffMappings(card),
+  });
+}
+
+function uxrRecomputeHandoffDerivedProvenance(card) {
+  card.querySelectorAll('.col-name, .map-source, .map-target').forEach(uxrClearHandoffDerived);
+  const entityName = card.querySelector('.h-entity')?.value?.trim() || '';
+  const fields = handoffEntityFields[entityName] || [];
+  const fieldNames = new Set(fields.map(field => field.name));
+  card.querySelectorAll('.h-column-row').forEach(row => {
+    const name = row.querySelector('.col-name');
+    if (fieldNames.has(name?.value?.trim())) uxrMarkHandoffDerived(name, 'entity field');
+  });
+  card.querySelectorAll('.mapping-row').forEach(row => {
+    const source = row.querySelector('.map-source');
+    const target = row.querySelector('.map-target');
+    const fieldName = target?.value?.trim() || '';
+    if (fieldNames.has(fieldName) && source?.value?.trim() === `${entityName}.${fieldName}`) {
+      uxrMarkHandoffDerived(source, 'entity field');
+      uxrMarkHandoffDerived(target, 'entity field');
+    }
+  });
+}
+
+function uxrRenderHandoffSeedPreview(card) {
+  const panel = card.querySelector('[data-uxr-handoff-seed]');
+  const rowsContainer = panel?.querySelector('[data-uxr-seed-rows]');
+  const actions = panel?.querySelector('[data-uxr-seed-actions]');
+  if (!panel || !rowsContainer || !actions) return;
+  const entityName = card.querySelector('.h-entity')?.value?.trim() || '';
+  const fields = handoffEntityFields[entityName] || [];
+  const rows = buildHandoffEntitySeedPatch(
+    entityName,
+    fields,
+    getColumnsFromCard(card),
+    uxrCurrentHandoffMappings(card),
+  );
+  panel._edgeforgeSeedRows = rows;
+  panel._edgeforgeSeedContextFingerprint = uxrHandoffSeedContextFingerprint(card);
+  rowsContainer.replaceChildren();
+  if (!entityName || !rows.length) {
+    const empty = document.createElement('p');
+    empty.className = 'uxr-seed-empty';
+    empty.textContent = entityName
+      ? `No canonical fields are available for ${entityName}.`
+      : 'Choose an entity before previewing seed values.';
+    rowsContainer.appendChild(empty);
+  } else {
+    rows.forEach(seed => {
+      const label = document.createElement('label');
+      label.className = 'uxr-seedrow';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = seed.checked;
+      checkbox.disabled = !seed.checked;
+      checkbox.dataset.seedKey = seed.key;
+      const source = document.createElement('span');
+      source.className = 'uxr-seed-source';
+      source.textContent = seed.source;
+      const target = document.createElement('span');
+      target.className = 'uxr-seed-target';
+      target.textContent = seed.target;
+      const basis = document.createElement('span');
+      basis.className = 'uxr-seed-basis';
+      basis.textContent = seed.basis;
+      label.append(checkbox, source, target, basis);
+      rowsContainer.appendChild(label);
+    });
+  }
+  rowsContainer.classList.remove('hidden');
+  actions.classList.toggle('hidden', !rows.some(row => row.checked));
+}
+
+function uxrInitHandoffSeedPatch(card) {
+  const panel = card.querySelector('[data-uxr-handoff-seed]');
+  if (!panel) return;
+  panel.querySelector('[data-uxr-seed-preview]')?.addEventListener('click', () => {
+    uxrRenderHandoffSeedPreview(card);
+  });
+  panel.querySelector('[data-uxr-seed-apply]')?.addEventListener('click', () => {
+    if (panel._edgeforgeSeedContextFingerprint !== uxrHandoffSeedContextFingerprint(card)) {
+      uxrRenderHandoffSeedPreview(card);
+      showStatus(
+        'save-status',
+        'Seed suggestions were refreshed because the entity or handoff fields changed. Review them before applying.',
+        'warn',
+      );
+      return;
+    }
+    const checkedKeys = Array.from(panel.querySelectorAll('[data-seed-key]:checked'))
+      .map(input => input.dataset.seedKey);
+    applyHandoffEntitySeedPatch(card, panel._edgeforgeSeedRows || [], checkedKeys);
+    uxrRenderHandoffSeedPreview(card);
+  });
+}
+
+function uxrFocusedCard() {
+  return uxrFindHandoffCardByName(uxrFocusOriginalName);
+}
+
+function uxrShowFocusedCard() {
+  document.querySelectorAll('.handoff-card[data-restored-handoff="true"]').forEach(card => {
+    card.classList.toggle('hidden', card.dataset.uxrOriginalName !== uxrFocusOriginalName);
+  });
+  const card = uxrFocusedCard();
+  if (!card) return null;
+  card.dataset.uxrFocusedHandoff = 'true';
+  card.querySelector('button[onclick="removeHandoffCard(this)"]')?.classList.add('hidden');
+  return card;
+}
+
+function uxrHandoffCardSnapshot(card) {
+  if (!card) return null;
+  return Array.from(card.querySelectorAll('input, select, textarea')).map(control => ({
+    class_name: control.className,
+    type: control.type,
+    value: control.value,
+    checked: control.type === 'checkbox' ? control.checked : undefined,
+  }));
+}
+
+function uxrRestoreFocusedCardFromSaved() {
+  const current = uxrFocusedCard();
+  if (current) current.remove();
+  if (uxrLastSavedItem) addHandoff(JSON.parse(JSON.stringify(uxrLastSavedItem)));
+  const card = uxrShowFocusedCard();
+  if (card) {
+    uxrInitHandoffSeedPatch(card);
+    uxrRecomputeHandoffDerivedProvenance(card);
+  }
+  uxrDirtyTracker?.markClean();
+}
+
+function uxrRenderSaveBlockers(blockers) {
+  const items = blockers || [];
+  const labels = items.map(blocker => blocker.label || blocker.code).filter(Boolean);
+  if (labels.length) {
+    showWarningStatusList('save-status', 'This data handoff needs attention before it can be saved:', labels);
+  } else {
+    showStatus('save-status', 'The data handoff could not be saved.', 'error');
+  }
+  const badges = document.querySelector('[data-uxr-tab-badges]');
+  if (badges) {
+    badges.replaceChildren();
+    items.forEach(blocker => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'badge badge-warning';
+      badge.dataset.sectionRef = blocker.section_ref || '';
+      badge.dataset.fieldRef = blocker.field_ref || '';
+      badge.textContent = blocker.label || blocker.code || '';
+      badges.appendChild(badge);
+    });
+  }
+  const card = uxrFocusedCard();
+  const first = items[0];
+  if (card && first) {
+    uxrScrollToSectionInCard(card, first.section_ref || '');
+    uxrFocusHandoffField(card, first.field_ref || '');
+  }
+}
+
+function uxrHideConflictReview() {
+  document.querySelector('[data-uxr-conflict-review]')?.classList.add('hidden');
+  uxrConflictData = null;
+}
+
+function uxrPresentSaveConflict(data) {
+  uxrConflictData = data;
+  const panel = document.querySelector('[data-uxr-conflict-review]');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  const hasCurrentItem = Boolean(data.item && data.readiness);
+  const message = panel.querySelector('[data-uxr-conflict-message]');
+  if (message) {
+    message.textContent = hasCurrentItem
+      ? 'Your unsaved edits are preserved below. Compare them with the current saved values, then reload only when you are ready to discard your draft.'
+      : 'Your unsaved edits are preserved below, but this handoff was renamed or removed. Return to the current board when you are ready.';
+  }
+  panel.querySelector('[data-uxr-conflict-server-details]')?.classList.toggle('hidden', !hasCurrentItem);
+  const serverState = panel.querySelector('[data-uxr-conflict-server-state]');
+  if (serverState) serverState.textContent = hasCurrentItem ? JSON.stringify(data.item, null, 2) : '';
+  panel.querySelector('[data-uxr-conflict-reload]')?.classList.toggle('hidden', !hasCurrentItem);
+  const currentList = panel.querySelector('[data-uxr-conflict-current-list]');
+  if (currentList) {
+    const names = (data.current_items || []).map(item => item.name).filter(Boolean);
+    currentList.textContent = names.length
+      ? `Current data handoffs: ${names.join(', ')}`
+      : 'There are no current data handoffs.';
+    currentList.classList.toggle('hidden', hasCurrentItem);
+  }
+}
+
+function uxrReloadConflictServerItem() {
+  if (!uxrConflictData?.item || !uxrConflictData?.readiness) return;
+  if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and reload the current saved version?')) return;
+  uxrLastSavedItem = JSON.parse(JSON.stringify(uxrConflictData.item));
+  uxrFocusOriginalName = uxrConflictData.item.name;
+  uxrFocusSourceVersion = uxrConflictData.source_of_truth_version;
+  uxrRestoreFocusedCardFromSaved();
+  const title = document.querySelector('[data-uxr-focus-title]');
+  if (title) title.textContent = uxrConflictData.readiness.display_name;
+  uxrRenderEditorReadiness(uxrConflictData.readiness);
+  history.replaceState({}, '', `/handoffs?focus=${encodeURIComponent(uxrConflictData.item.name)}`);
+  uxrHideConflictReview();
+  showStatus('save-status', 'Reloaded the current saved version.', 'success');
+}
+
+function uxrReturnToCurrentBoard() {
+  if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard your unsaved edits and return to the current board?')) return;
+  uxrDirtyTracker?.destroy();
+  window.location.href = '/handoffs';
+}
+
+async function uxrSaveFocusedHandoff() {
+  const card = uxrFocusedCard();
+  const saveButton = document.querySelector('[data-uxr-save-one]');
+  if (!card || !saveButton) return;
+  const originalLabel = saveButton.textContent;
+  const manualOverride = Boolean(card.querySelector('.h-ddl-manual')?.value?.trim());
+  const requiresDdlGeneration = Boolean(
+    !manualOverride
+    && card.querySelector('.h-table-name')?.value?.trim()
+    && getColumnsFromCard(card).length,
+  );
+  const saveSnapshot = JSON.stringify(uxrHandoffCardSnapshot(card));
+  const previousName = uxrFocusOriginalName;
+  const lockedControls = Array.from(card.querySelectorAll('input, select, textarea, button'));
+  const disabledBeforeSave = lockedControls.map(control => control.disabled);
+  let controlsLocked = true;
+  const restoreLockedControls = () => {
+    if (!controlsLocked) return;
+    lockedControls.forEach((control, index) => {
+      control.disabled = disabledBeforeSave[index];
+    });
+    controlsLocked = false;
+  };
+  lockedControls.forEach(control => { control.disabled = true; });
+  saveButton.disabled = true;
+  saveButton.setAttribute('aria-busy', 'true');
+  saveButton.textContent = requiresDdlGeneration ? 'Generating DDL…' : 'Saving…';
+  try {
+    const itemPayload = await getCardData(card, { requireGeneratedDdl: true });
+    if (JSON.stringify(uxrHandoffCardSnapshot(card)) !== saveSnapshot) {
+      throw new Error('The handoff changed while DDL was generating. Review it and save again.');
+    }
+    saveButton.textContent = 'Saving…';
+    const data = await postJSON('/handoffs/save-one', {
+      item: itemPayload,
+      original_name: uxrFocusOriginalName,
+      source_of_truth_version: uxrFocusSourceVersion,
+    });
+    restoreLockedControls();
+    if (!data.ok) {
+      if (data.recovery && data.source_of_truth_version) {
+        uxrPresentSaveConflict(data);
+        showStatus('save-status', data.error || 'This handoff changed. Review the fresh saved state.', 'warn');
+        return;
+      }
+      uxrRenderSaveBlockers(data.blockers);
+      return;
+    }
+
+    uxrLastSavedItem = JSON.parse(JSON.stringify(data.item));
+    uxrFocusOriginalName = data.item.name;
+    uxrFocusSourceVersion = data.source_of_truth_version;
+    card.dataset.uxrOriginalName = data.item.name;
+    const before = card.querySelector('.h-ddl-before');
+    if (before) before.textContent = data.item.ddl_content || '(no saved DDL)';
+    const title = document.querySelector('[data-uxr-focus-title]');
+    if (title) title.textContent = data.readiness.display_name;
+    uxrRenderEditorReadiness(data.readiness);
+    uxrUpdateBoardRowFromSaved(data.readiness, previousName, data.board_metadata);
+    uxrUpdateAmbientAndRail(data);
+    uxrHideConflictReview();
+    history.replaceState({}, '', `/handoffs?focus=${encodeURIComponent(data.item.name)}`);
+    uxrDirtyTracker?.markClean();
+    if (data.warnings?.length) {
+      showWarningStatusList('save-status', 'Saved with guidance.', data.warnings);
+    } else {
+      showStatus('save-status', 'Data handoff saved.', 'success');
+    }
+  } catch (error) {
+    showStatus('save-status', error.message || 'DDL generation failed. The handoff was not saved.', 'error');
+  } finally {
+    restoreLockedControls();
+    saveButton.disabled = false;
+    saveButton.removeAttribute('aria-busy');
+    saveButton.textContent = originalLabel;
+  }
+}
+
+function uxrInitFocusedEditor() {
+  if (!uxrFocusName) return false;
+  const card = uxrShowFocusedCard();
+  if (!card) return false;
+  if (window.location.hash) uxrScrollToSectionInCard(card, window.location.hash.slice(1));
+  uxrInitHandoffSeedPatch(card);
+  uxrRecomputeHandoffDerivedProvenance(card);
+  uxrDirtyTracker = window.createDirtyTracker({ snapshot: () => uxrHandoffCardSnapshot(uxrFocusedCard()) });
+  uxrDirtyTracker.markClean();
+  document.querySelector('[data-uxr-save-one]')?.addEventListener('click', uxrSaveFocusedHandoff);
+  document.querySelector('[data-uxr-conflict-reload]')?.addEventListener('click', uxrReloadConflictServerItem);
+  document.querySelector('[data-uxr-conflict-board]')?.addEventListener('click', uxrReturnToCurrentBoard);
+  document.querySelector('[data-uxr-cancel-focus]')?.addEventListener('click', () => {
+    if (uxrDirtyTracker?.isDirty() && !window.confirm('Discard changes to this data handoff?')) return;
+    uxrRestoreFocusedCardFromSaved();
+    uxrDirtyTracker?.destroy();
+    window.location.href = '/handoffs';
+  });
+  document.querySelector('[data-uxr-tab-badges]')?.addEventListener('click', event => {
+    const badge = event.target.closest('.badge');
+    if (badge) uxrActivateTabBadge(badge);
+  });
+  return true;
+}
+
+const uxrBoardItemNames = new Set({{ handoff_readiness_items | map(attribute='display_name') | list | tojson }});
+let uxrExpandedName = null;
+let uxrActiveStateFilter = 'all';
+
+function uxrFindHandoffCardByName(name) {
+  // Match on the stable identity captured at restore time, never the live
+  // .h-name value, which may already contain an unsaved rename.
+  return Array.from(document.querySelectorAll('.handoff-card[data-restored-handoff="true"]'))
+    .find(card => card.dataset.uxrOriginalName === name) || null;
+}
+
+// Controls the server renders CONDITIONALLY, i.e. only when their count is
+// non-zero. A live count change must therefore CREATE or REMOVE them, not just
+// re-text them: re-texting alone leaves a newly-populated group with no filter
+// chip to select it, and an emptied one showing an obsolete "Needs review · 0".
+// Order mirrors the server's so a created control lands in the right place.
+// The attention entries are structurally unreachable for handoffs today
+// (_handoff_item only ever yields warning|ready), so their count stays 0 and
+// they are simply never created -- which is exactly the invariant
+// test_flag_on_needs_action_group_stat_and_filter_never_render pins.
+// `ready` counts state==='ready' only, excluding drafts, because the server
+// gates the Ready CHIP on that same count (uxr_h_ready_count) even though the
+// Ready GROUP holds ready+draft -- reproduce a fresh render exactly, quirk
+// included, rather than correcting it here.
+const UXR_CONDITIONAL_CHIPS = [
+  { count: 'attention', filter: 'state:attention', label: 'Needs action' },
+  { count: 'review', filter: 'state:review', label: 'Needs review' },
+  { count: 'ready', filter: 'state:ready', label: 'Ready' },
+];
+// total/ready are rendered unconditionally on this step; attention/review are
+// the gated ones.
+const UXR_CONDITIONAL_STATS = [
+  { count: 'attention', suffix: () => ' need action' },
+  { count: 'review', suffix: () => ' need review' },
+];
+const UXR_STAT_ORDER = ['total', 'ready', 'attention', 'review'];
+
+function uxrBoardStatStrip() {
+  // The board's own strip, never the focus editor's duplicate: only this one
+  // carries the conditional stats.
+  const board = document.querySelector('[data-uxr-board]');
+  if (!board) return null;
+  let el = board.previousElementSibling;
+  while (el && !el.hasAttribute('data-uxr-stat-strip')) el = el.previousElementSibling;
+  return el;
+}
+
+function uxrResetStateFilterToAll() {
+  uxrActiveStateFilter = 'all';
+  document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(chip => {
+    const isAll = chip.dataset.uxrFilter === 'state:all';
+    chip.classList.toggle('is-on', isAll);
+    chip.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+  });
+}
+
+function uxrSyncConditionalStats(counts) {
+  const strip = uxrBoardStatStrip();
+  if (!strip) return;
+  UXR_CONDITIONAL_STATS.forEach(spec => {
+    const value = counts[spec.count];
+    const existing = strip.querySelector(`[data-uxr-stat="${spec.count}"]`);
+    if (!value) {
+      if (existing) existing.closest('span').remove();
+      return;
+    }
+    if (existing) {
+      existing.textContent = String(value);
+      if (existing.nextSibling) existing.nextSibling.textContent = spec.suffix(value);
+      return;
+    }
+    const span = document.createElement('span');
+    const strong = document.createElement('strong');
+    strong.dataset.uxrStat = spec.count;
+    strong.textContent = String(value);
+    span.append(strong, spec.suffix(value));
+    const before = UXR_STAT_ORDER.slice(UXR_STAT_ORDER.indexOf(spec.count) + 1)
+      .map(key => strip.querySelector(`[data-uxr-stat="${key}"]`))
+      .find(Boolean);
+    if (before) strip.insertBefore(span, before.closest('span'));
+    else strip.append(span);
+  });
+}
+
+function uxrSyncConditionalChips(counts) {
+  const filters = document.querySelector('.uxr-board-filters');
+  if (!filters) return;
+  let previous = filters.querySelector('[data-uxr-filter="state:all"]');
+  UXR_CONDITIONAL_CHIPS.forEach(spec => {
+    let chip = filters.querySelector(`[data-uxr-filter="${spec.filter}"]`);
+    const value = counts[spec.count];
+    if (!value) {
+      if (chip) {
+        const wasActive = chip.classList.contains('is-on');
+        chip.remove();
+        // Never strand the board on a filter whose group no longer exists --
+        // every row would be hidden with no visible chip to undo it.
+        if (wasActive) uxrResetStateFilterToAll();
+      }
+      return;
+    }
+    if (!chip) {
+      chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'uxr-chip';
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.uxrFilter = spec.filter;
+      chip.append(`${spec.label} · `);
+      const countEl = document.createElement('span');
+      countEl.className = 'uxr-chip-count';
+      chip.append(countEl);
+      if (previous) previous.after(chip);
+      else filters.prepend(chip);
+    }
+    chip.querySelector('.uxr-chip-count').textContent = String(value);
+    previous = chip;
+  });
+}
+
+function uxrRecomputeStatsAndFilterCounts() {
+  const rows = Array.from(document.querySelectorAll('.uxr-board-row'));
+  const counts = {
+    total: rows.length,
+    ready: rows.filter(r => r.dataset.uxrRowState === 'ready').length,
+    attention: rows.filter(r => r.dataset.uxrRowState === 'blocks_export' || r.dataset.uxrRowState === 'needs_action').length,
+    review: rows.filter(r => r.dataset.uxrRowState === 'warning').length,
+  };
+  // Re-text every stat that already exists (both strips -- the board's and, in
+  // split, the focus editor's duplicate).
+  Object.entries(counts).forEach(([key, value]) => {
+    document.querySelectorAll(`[data-uxr-stat="${key}"]`).forEach(statEl => {
+      statEl.textContent = String(value);
+    });
+  });
+  uxrSyncConditionalStats(counts);
+  uxrSyncConditionalChips(counts);
+  const allCount = document.querySelector('[data-uxr-filter="state:all"] .uxr-chip-count');
+  if (allCount) allCount.textContent = String(counts.total);
+}
+
+// Removing a restored card keeps the existing board bookkeeping coherent.
+function uxrHandleBoardTrackedCardRemoved(originalName) {
+  if (uxrExpandedName === originalName) uxrExpandedName = null;
+  const row = document.querySelector(`.uxr-board-row[data-uxr-row-name="${CSS.escape(originalName)}"]`);
+  if (row) row.remove();
+  uxrRecomputeStatsAndFilterCounts();
+  uxrApplyBoardFilters();
+}
+
+function uxrApplyBoardFilters() {
+  document.querySelectorAll('.uxr-board-row').forEach(row => {
+    const state = row.dataset.uxrRowState;
+    const stateOk = uxrActiveStateFilter === 'all'
+      || (uxrActiveStateFilter === 'attention' && (state === 'blocks_export' || state === 'needs_action'))
+      || (uxrActiveStateFilter === 'review' && state === 'warning')
+      || (uxrActiveStateFilter === 'ready' && (state === 'ready' || state === 'draft'));
+    row.classList.toggle('hidden', !stateOk);
+  });
+  document.querySelectorAll('.uxr-board-group').forEach(group => {
+    let sibling = group.nextElementSibling;
+    let anyVisible = false;
+    while (sibling && !sibling.classList.contains('uxr-board-group')) {
+      if (sibling.classList.contains('uxr-board-row') && !sibling.classList.contains('hidden')) {
+        anyVisible = true;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    group.classList.toggle('hidden', !anyVisible);
+  });
+}
+
+function uxrInitStep4TriageBoard() {
+  if (!document.body.classList.contains('ux-refresh')) return;
+
+  uxrInitFocusedEditor();
+
+  // The focused card (if any) is already shown/unhidden by
+  // uxrInitFocusedEditor above -- never re-hide it here even though its name
+  // is also a member of uxrBoardItemNames (PR-17 renders the board alongside
+  // the focus editor, so this loop and the focus editor now run together).
+  document.querySelectorAll('.handoff-card[data-restored-handoff="true"]').forEach(card => {
+    if (card.dataset.uxrOriginalName === uxrFocusOriginalName) return;
+    if (uxrBoardItemNames.has(card.dataset.uxrOriginalName || '')) card.classList.add('hidden');
+  });
+
+  document.querySelectorAll('[data-uxr-edit-target]').forEach(button => {
+    button.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      event.preventDefault();
+      const buttons = Array.from(document.querySelectorAll(
+        '.uxr-board-row:not(.hidden) [data-uxr-edit-target]',
+      ));
+      const offset = event.key === 'ArrowDown' ? 1 : -1;
+      buttons[(buttons.indexOf(button) + offset + buttons.length) % buttons.length]?.focus();
+    });
+  });
+
+  // Delegated on the container, not bound per-chip: uxrSyncConditionalChips()
+  // creates and removes state chips as counts cross zero, and a chip created
+  // after init would never receive a per-node listener (the same replaced-node
+  // trap PR-16 hit with the tab badges).
+  document.querySelector('.uxr-board-filters')?.addEventListener('click', event => {
+    const chip = event.target.closest('[data-uxr-filter]');
+    if (!chip) return;
+    const [kind, value] = (chip.dataset.uxrFilter || '').split(':');
+    if (kind === 'state') {
+      document.querySelectorAll('[data-uxr-filter^="state:"]').forEach(c => {
+        c.classList.remove('is-on');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      chip.classList.add('is-on');
+      chip.setAttribute('aria-pressed', 'true');
+      uxrActiveStateFilter = value;
+    }
+    uxrApplyBoardFilters();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', uxrInitStep4TriageBoard);
+</script>
+{% endblock %}

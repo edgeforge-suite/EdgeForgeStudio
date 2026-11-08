@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 5 — Downstream Contract Board (final)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#e9edf4;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;
+  --rest:#0d9488;--fixed:#15803d;--csv:#4f46e5;--xml:#b45309;--soap:#1e3a5f;--stg:#475569;
+  /* B1 — functional-zone tints: tint by ROLE, never by family (family stays an accent).
+     All tints ≥ 96% luminance so ink text keeps ≥ 12:1 contrast; zones are always
+     paired with a header/label — the tint is never the only encoding. */
+  --zone-scan:#eaf0f8;         /* scan/board — cool neutral (D1 merged: Fable palette @ Codex intensity) */
+  --zone-editor:#ffffff;       /* focused editor — brightest = "act here" */
+  --zone-derived:#f3ecfd;      /* derived/seed — lilac (ties to provenance) */
+  --zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;         /* needs-action — amber wash */
+  --zone-attn-line:#eccf97;
+  --zone-ready:#e8f2f2;        /* ambient readiness — faint teal (Codex coolness) */
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a .cnt{float:right;font-size:11px;color:var(--mut2)}
+.nav a .cnt b{color:var(--warn)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.warn .n{color:var(--warn)} .stat.warn{background:var(--warnbg);border-color:#eccfa6}
+.stat.blk .n{color:var(--danger)}
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+/* zone roles: the board is a scan surface (faint cool neutral); the editor stays the
+   brightest panel on the page and gets a touch of elevation — "act here". */
+.panel.zone-board{background:var(--zone-scan)}
+.panel.zone-editor{background:var(--zone-editor);box-shadow:0 6px 20px rgba(16,35,63,.10)}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.phd h2{font-size:13.5px;font-weight:700}
+.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.filters{display:flex;gap:6px;flex-wrap:wrap;padding:10px 15px;border-bottom:1px solid var(--line);align-items:center}
+.fg{display:flex;gap:5px}
+.chip{font-size:11.5px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);background:#fff;color:var(--mut);cursor:default;white-space:nowrap}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
+.chip.warn.on{background:var(--warn);border-color:var(--warn)}
+.fsep{width:1px;height:18px;background:var(--line);margin:0 3px}
+.grouphd{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;padding:9px 15px 5px;color:var(--mut)}
+.grouphd.blk{color:var(--danger);background:var(--zone-attn);border-top:1px solid var(--zone-attn-line)}
+.row{display:flex;align-items:center;gap:10px;padding:10px 15px;border-top:1px solid #eef1f5;cursor:default;position:relative}
+.row:hover{background:#eef2f8}
+/* needs-action rows sit on the faint amber wash; row SELECTION (blue) always wins over
+   the zone tint — selection > zone > default is the precedence rule. */
+.row.attn{background:var(--zone-attn)}
+.row.attn:hover{background:#fbf3e2}
+.row.sel{background:var(--selbg)}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.mono{width:46px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:.3px}
+.m-fixed{background:var(--fixed)}.m-csv{background:var(--csv)}.m-xml{background:var(--xml)}.m-soap{background:var(--soap)}.m-rest{background:var(--rest)}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:700;font-size:13px;color:var(--ink)}
+.rmeta{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rtags{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.tag{font-size:10.5px;padding:2px 7px;border-radius:5px;background:#eef1f6;color:#5a6b7e;font-weight:600}
+.tag.ent{background:#e9eefb;color:#3b4da6}
+.cap{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--mut2)}
+.cap svg{width:11px;height:11px}
+.blocker{font-size:11.5px;color:var(--danger);font-weight:600;display:flex;align-items:center;gap:5px;margin-top:5px}
+.blocker svg{width:12px;height:12px;flex-shrink:0}
+.ready{font-size:11.5px;color:var(--ok);font-weight:600;margin-top:5px}
+.rright{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px}
+.pill.ok{background:var(--okbg);color:var(--ok)} .pill.attn{background:var(--warnbg);color:var(--warn)} .pill.draft{background:#eef1f6;color:var(--mut)}
+.edit{font-size:11.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;background:#fff;border-radius:6px;padding:4px 11px;cursor:default}
+.row.sel .edit{background:var(--sel);color:#fff;border-color:var(--sel)}
+/* editor */
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.eribbon{display:inline-flex;align-items:center;gap:7px}
+.etype{font-size:10px;font-weight:800;color:#fff;background:var(--soap);padding:3px 8px;border-radius:5px;letter-spacing:.4px}
+.ename{font-weight:800;font-size:15px;color:var(--navy)}
+.epath{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:4px}
+.banner{display:flex;gap:9px;align-items:flex-start;margin:12px 15px;padding:10px 12px;background:var(--warnbg);border:1px solid #eccfa6;border-radius:8px}
+.banner svg{width:15px;height:15px;color:var(--warn);flex-shrink:0;margin-top:1px}
+.banner b{color:#8a4b08}.banner .bt{font-size:12px;color:#7a531a}
+.tabs{display:flex;gap:4px;padding:0 15px;border-bottom:1px solid var(--line)}
+.tab{font-size:12px;padding:8px 11px;color:var(--mut);border-bottom:2px solid transparent;font-weight:600;position:relative}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy)}
+.tab .b{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;background:var(--danger);color:#fff;border-radius:8px;font-size:9.5px;margin-left:5px;padding:0 4px;font-weight:800}
+.tab .b.warn{background:var(--warn)}
+.tab .bl{font-size:9.5px;color:var(--mut);margin-left:4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.tab .ck{color:var(--ok);margin-left:4px}
+.ebody{padding:14px 15px}
+.fld{margin-bottom:12px}
+.flabel{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between}
+.derv{color:var(--derived);background:var(--derivedbg);padding:1px 6px;border-radius:4px;font-size:9.5px;letter-spacing:.3px}
+.req{color:var(--danger);background:var(--dangerbg);padding:1px 6px;border-radius:4px;font-size:9.5px;letter-spacing:.3px}
+.inp{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12.5px;background:#fff;color:var(--ink)}
+.inp.dd{background:#f7f9fc}
+.inp.need{border-color:var(--danger);box-shadow:0 0 0 3px var(--dangerbg)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seedbox{border:1px solid var(--zone-derived-line);border-radius:9px;overflow:hidden;margin-top:4px;background:var(--zone-derived)}
+.seedhd{background:#ece0fb;padding:8px 11px;border-bottom:1px solid var(--zone-derived-line)}
+.seedhd b{font-size:12px}.seedhd .st{font-size:11px;color:var(--mut);margin-top:1px}
+.seedrow{display:grid;grid-template-columns:15px 1fr 1fr auto;gap:9px;align-items:center;padding:7px 11px;border-top:1px solid var(--zone-derived-line);font-size:12px}
+.seedrow input{width:14px;height:14px;accent-color:var(--sel)}
+.seedrow .src{font-family:ui-monospace,Menlo,monospace;color:var(--ink)}
+.seedrow .tgt{font-family:ui-monospace,Menlo,monospace;color:var(--mut)}
+.seedrow .basis{font-size:10px;color:var(--derived);font-weight:700;text-align:right}
+.seedrow.blank .tgt{color:var(--mut2)} .seedrow.blank .basis{color:var(--mut2)}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;flex:1}
+.btns{display:flex;gap:8px;flex-shrink:0}
+.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut);display:flex;gap:16px;align-items:center}
+.legend{display:flex;gap:12px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dotc{width:9px;height:9px;border-radius:2px;display:inline-block}
+.resp{margin-left:auto;font-style:italic}
+</style></head>
+<body><div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#">3 · Entity Model</a>
+    <a href="#">4 · Data Handoffs</a>
+    <a href="#" class="on">5 · Downstream <span class="cnt"><b>1</b> to fix</span></a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 5 · Downstream Interfaces</div>
+  <div class="sub">Scan every outbound contract in one triage board — blocked first. Edit one contract at a time; the board stays in view.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">5</div><div class="l">Contracts</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">Ready</div></div>
+    <div class="stat warn"><div class="n">1</div><div class="l">Needs action</div></div>
+    <div class="stat blk"><div class="n">1</div><div class="l">Export blockers</div></div>
+  </div>
+
+  <div class="split">
+    <!-- BOARD (zone: scan — faint cool neutral) -->
+    <section class="panel zone-board">
+      <div class="phd"><div><h2>Loaded downstream interfaces</h2><div class="pd">Grouped by family · sorted blocked-first · readiness from one source</div></div></div>
+      <div class="filters">
+        <div class="fg"><span class="chip">All</span><span class="chip warn on">Needs action · 1</span><span class="chip">Ready · 4</span><span class="chip">Draft · 0</span></div>
+        <div class="fsep"></div>
+        <div class="fg"><span class="chip">File</span><span class="chip">XML/XSD</span><span class="chip">SOAP</span></div>
+      </div>
+
+      <div class="grouphd blk">▾ Needs action</div>
+      <div class="row sel attn">
+        <div class="mono m-soap">SOAP</div>
+        <div class="rmain">
+          <div class="rname">Account Status Notify</div>
+          <div class="rmeta">downstream/account-status.wsdl · PARTNER_GATEWAY</div>
+          <div class="blocker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>Choose the WSDL operation — 3 available</div>
+        </div>
+        <div class="rright"><span class="pill attn">Needs op</span><span class="edit">Editing</span></div>
+      </div>
+
+      <div class="grouphd">▾ Ready</div>
+      <div class="row">
+        <div class="mono m-fixed">FIXED</div>
+        <div class="rmain">
+          <div class="rname">Account Fixed-Width Archive</div>
+          <div class="rmeta">downstream/account-eod.layout.yaml</div>
+          <div class="rtags"><span class="tag ent">Account</span><span class="tag">142 cols · 12/12 mapped</span><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>MANIFEST REF</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+      <div class="row">
+        <div class="mono m-csv">CSV</div>
+        <div class="rmain">
+          <div class="rname">Account CSV Reconciliation</div>
+          <div class="rmeta">delimiter | · header true</div>
+          <div class="rtags"><span class="tag ent">Account</span><span class="tag">8/8 mapped</span><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>MANIFEST REF</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+      <div class="row">
+        <div class="mono m-xml">XML</div>
+        <div class="rmain">
+          <div class="rname">Account XML Document Outbound</div>
+          <div class="rmeta">root AccountMessage · urn:edgeforge:account:v1</div>
+          <div class="rtags"><span class="tag ent">Account</span><span class="tag">6/6 paths</span><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>MANIFEST REF</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+      <div class="row">
+        <div class="mono m-soap">SOAP</div>
+        <div class="rmain">
+          <div class="rname">Customer Sync Client</div>
+          <div class="rmeta">operation syncCustomer · invoke-by-id</div>
+          <div class="rtags"><span class="tag ent">Customer</span><span class="tag">5/5 mapped</span><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>MANIFEST REF</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+    </section>
+
+    <!-- EDITOR (desktop split · zone: editor — brightest panel = "act here") -->
+    <section class="panel zone-editor">
+      <div class="ehd">
+        <div class="eribbon"><span class="etype">SOAP / WSDL</span><span class="ename">Account Status Notify</span></div>
+        <div class="epath">downstream/account-status.wsdl · PARTNER_GATEWAY</div>
+      </div>
+      <div class="banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="bt"><b>One field blocks export:</b> select the WSDL operation. The WSDL declares 3.</div>
+      </div>
+      <div class="tabs">
+        <span class="tab">Identity<span class="ck">✓</span></span>
+        <span class="tab on">WSDL &amp; Operation<span class="b">1</span><span class="bl">blocker</span></span>
+        <span class="tab">Mapping<span class="b warn">6</span><span class="bl">warnings</span></span>
+        <span class="tab">Sample<span class="bl">optional</span></span>
+      </div>
+      <div class="ebody">
+        <div class="grid2">
+          <div class="fld"><div class="flabel">Service <span class="derv">DERIVED</span></div><div class="inp dd">AccountStatusService ▾</div></div>
+          <div class="fld"><div class="flabel">Port <span class="derv">DERIVED</span></div><div class="inp dd">AccountStatusSoap11Port ▾</div></div>
+          <div class="fld"><div class="flabel">Binding <span class="derv">DERIVED</span></div><div class="inp dd">AccountStatusSoap11Binding ▾</div></div>
+          <div class="fld"><div class="flabel">Operation <span class="req">REQUIRED</span></div><div class="inp need">Choose operation ▾</div></div>
+        </div>
+        <div class="seedbox">
+          <div class="seedhd"><b>Deterministic seeds from the WSDL</b><div class="st">Exact matches only — chip-marked, editable, nothing applied until you keep it.</div></div>
+          <div class="seedrow"><input type="checkbox" checked><span class="src">Account.accountId</span><span class="tgt">accountId</span><span class="basis">exact match</span></div>
+          <div class="seedrow"><input type="checkbox" checked><span class="src">Account.status</span><span class="tgt">accountStatus</span><span class="basis">snake↔camel</span></div>
+          <div class="seedrow blank"><input type="checkbox"><span class="src">Account.openedOn</span><span class="tgt">— no match</span><span class="basis">left blank</span></div>
+        </div>
+      </div>
+      <div class="efoot">
+        <div class="note">Edits the same downstream-interface fields Studio exports today. It does not change the manifest shape or Engine behavior.</div>
+        <div class="btns"><span class="btn">Cancel</span><span class="btn pri">Save contract</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">
+    <div class="legend">
+      <span><span class="dotc" style="background:var(--rest)"></span>REST</span>
+      <span><span class="dotc" style="background:var(--fixed)"></span>Fixed-width</span>
+      <span><span class="dotc" style="background:var(--csv)"></span>CSV</span>
+      <span><span class="dotc" style="background:var(--xml)"></span>XML/XSD</span>
+      <span><span class="dotc" style="background:var(--soap)"></span>SOAP</span>
+      <span style="color:var(--mut2)">≣ = manifest reference (not entity-populating)</span>
+    </div>
+    <span class="resp">Below 1200px: board and editor use the supported full-page focus route.</span>
+  </div>
+  <div class="foot" style="margin-top:6px">
+    <div class="legend">
+      <span style="font-weight:700;color:var(--mut)">Zone tints (by role, never by family):</span>
+      <span><span class="dotc" style="background:var(--zone-scan);border:1px solid var(--line)"></span>scan / board</span>
+      <span><span class="dotc" style="background:var(--zone-editor);border:1px solid var(--line)"></span>focused editor (brightest)</span>
+      <span><span class="dotc" style="background:var(--zone-derived);border:1px solid var(--zone-derived-line)"></span>derived / seeds</span>
+      <span><span class="dotc" style="background:var(--zone-attn);border:1px solid var(--zone-attn-line)"></span>needs action</span>
+      <span><span class="dotc" style="background:var(--zone-ready);border:1px solid var(--line)"></span>readiness strip</span>
+      <span style="color:var(--mut2)">every zone also carries a header/label — the tint is never the only cue; selection (blue) always wins over zone.</span>
+    </div>
+  </div>
+</main>
+</div></body></html>

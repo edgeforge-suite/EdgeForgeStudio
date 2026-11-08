@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Kafka Integration Step 1: Topic Ingest{% endblock %}
+
+{% block content %}
+<div class="card step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 2: Topic Ingest</h2>
+      <p class="subtitle">Define the shared consumer shape first, then add one topic pair per mediation route. Advanced retry and schema payload details stay available without overwhelming the first read.</p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Kafka Flow</span>
+      <div class="step-surface-kicker-title">Consumer config + route pairs</div>
+      <div class="text-muted text-sm">Route model behavior still continues in the next step.</div>
+    </div>
+  </div>
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Consumer Group Config</h3>
+        <p class="text-muted text-sm">Start with the required consumer identity and throughput settings, then expand the advanced controls when needed.</p>
+      </div>
+      <span class="step-section-chip">Required first</span>
+    </div>
+
+    <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="field">
+        <label for="consumer-group">Consumer Group <span style="color:var(--danger)">*</span></label>
+        <input id="consumer-group" type="text" value="{{ session.kafka_config.consumer_group }}" placeholder="e.g. payment-mediation-group">
+      </div>
+      <div class="field">
+        <label for="concurrency">Concurrency <span style="color:var(--danger)">*</span></label>
+        <input id="concurrency" type="number" min="1" max="10" value="{{ session.kafka_config.concurrency or 1 }}">
+      </div>
+    </div>
+
+    <details class="disclosure-card workflow-surface-detail">
+      <summary>Advanced consumer settings</summary>
+      <div class="disclosure-card-body">
+        <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <div class="field">
+            <label for="retry-max-attempts">Max Attempts</label>
+            <input id="retry-max-attempts" type="number" min="0" value="{{ session.kafka_config.retry_max_attempts }}">
+          </div>
+          <div class="field">
+            <label for="retry-backoff-ms">Backoff (ms)</label>
+            <input id="retry-backoff-ms" type="number" min="0" value="{{ session.kafka_config.retry_backoff_ms }}">
+          </div>
+          <div class="field">
+            <label for="retry-backoff-multiplier">Backoff Multiplier</label>
+            <input id="retry-backoff-multiplier" type="number" min="1" step="0.1" value="{{ session.kafka_config.retry_backoff_multiplier }}">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label style="display:flex;align-items:center;gap:8px">
+            <input id="dlq-enabled" type="checkbox" {{ 'checked' if session.kafka_config.dlq_enabled else '' }} onchange="toggleDlqSuffix()">
+            Enable DLQ
+          </label>
+        </div>
+        <div id="dlq-suffix-field" class="field {{ '' if session.kafka_config.dlq_enabled else 'hidden' }}">
+          <label for="dlq-topic-suffix">DLQ Topic Suffix</label>
+          <input id="dlq-topic-suffix" type="text" value="{{ session.kafka_config.dlq_topic_suffix or '.dlq' }}" placeholder=".dlq">
+        </div>
+      </div>
+    </details>
+  </section>
+
+  {% if router_topic_summary and not existing_topic_pairs %}
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Router Topic Summary</h3>
+        <p class="text-muted text-sm">
+          Router routes own upstream topics, routing rules, targets, schemas, and transforms in Route Model. Fixed topic pairs are not required for router pattern routes.
+        </p>
+      </div>
+      <span class="step-section-chip">Router-native</span>
+    </div>
+    <div class="step-stack" style="margin-top:16px">
+      {% for route in router_topic_summary %}
+      <div class="card workflow-surface-detail">
+        <h4 style="margin-top:0">{{ route.route_name }}</h4>
+        <div class="review-kv-grid">
+          <div class="review-kv-item workflow-surface-detail">
+            <span class="review-kv-label">Upstream topics</span>
+            <strong>
+              {% if route.upstream_topics %}
+              {{ route.upstream_topics | map(attribute='name') | join(', ') }}
+              {% else %}
+              Not configured
+              {% endif %}
+            </strong>
+          </div>
+          <div class="review-kv-item workflow-surface-detail">
+            <span class="review-kv-label">Targets</span>
+            <strong>
+              {% if route.targets %}
+              {{ route.targets | map(attribute='id') | join(', ') }}
+              {% else %}
+              Not configured
+              {% endif %}
+            </strong>
+          </div>
+          <div class="review-kv-item workflow-surface-detail">
+            <span class="review-kv-label">Inbound schema</span>
+            <strong>{{ route.inbound_schema or 'Not configured' }}</strong>
+          </div>
+          <div class="review-kv-item workflow-surface-detail">
+            <span class="review-kv-label">Outbound schema</span>
+            <strong>{{ route.outbound_schema or 'Not configured' }}</strong>
+          </div>
+        </div>
+        {% if route.targets %}
+        <ul class="text-muted text-sm" style="margin:10px 0 0 18px">
+          {% for target in route.targets %}
+          <li>{{ target.id }}: request {{ target.request_schema or 'not configured' }}, response {{ target.response_schema or 'not configured' }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="step-section-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Topic Pairs</h3>
+        <p class="text-muted text-sm">Keep the route name and the upstream/downstream topics visible first. Expand the schema payloads when you are ready to wire the contract detail.</p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addRouteCard()">+ Add Route</button>
+    </div>
+    <div id="route-cards" class="step-stack" style="margin-top:16px"></div>
+  </section>
+
+  <div id="kafka-topics-status" class="alert hidden" style="margin-top:16px"></div>
+
+  <div class="step-actions">
+    <button type="button" class="btn btn-primary" onclick="saveKafkaTopics()">Save &amp; Continue →</button>
+    <a href="/" class="btn btn-secondary">Previous</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const existingTopicPairs = {{ existing_topic_pairs | tojson }};
+const hasRouterTopicSummary = {{ (router_topic_summary | length > 0) | tojson }};
+
+function toggleDlqSuffix() {
+  document.getElementById('dlq-suffix-field').classList.toggle(
+    'hidden',
+    !document.getElementById('dlq-enabled').checked
+  );
+}
+
+function topicCardTemplate(pair = null) {
+  return `
+    <div class="card kafka-topic-card workflow-surface-subsection">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <strong>Kafka Route</strong>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.kafka-topic-card').remove()">Remove</button>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">
+        <div class="field">
+          <label>Route Name</label>
+          <input type="text" class="route-name" value="${escapeHtml(pair?.route_name || '')}" placeholder="e.g. payment-posted">
+        </div>
+        <div class="field">
+          <label>Upstream Topic</label>
+          <input type="text" class="upstream-topic" value="${escapeHtml(pair?.upstream_topic || '')}" placeholder="abc.payments.posted.v1">
+        </div>
+        <div class="field">
+          <label>Upstream System</label>
+          <input type="text" class="upstream-system" value="${escapeHtml(pair?.upstream_system || '')}" placeholder="PaymentHub">
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div class="field">
+          <label>Downstream Topic</label>
+          <input type="text" class="downstream-topic" value="${escapeHtml(pair?.downstream_topic || '')}" placeholder="xyz.ledger.entries.v1">
+        </div>
+        <div class="field">
+          <label>Downstream System</label>
+          <input type="text" class="downstream-system" value="${escapeHtml(pair?.downstream_system || '')}" placeholder="LedgerService">
+        </div>
+      </div>
+      <details class="disclosure-card workflow-surface-row" style="margin-top:12px">
+        <summary>Schema payloads</summary>
+        <div class="disclosure-card-body">
+          <div class="field">
+            <label>Upstream Schema (JSON)</label>
+            <textarea class="upstream-schema-content" rows="8" placeholder='{"type":"object"}'>${escapeHtml(pair?.upstream_schema_content || '')}</textarea>
+          </div>
+          <div class="field">
+            <label>Downstream Schema (JSON)</label>
+            <textarea class="downstream-schema-content" rows="8" placeholder='{"type":"object"}'>${escapeHtml(pair?.downstream_schema_content || '')}</textarea>
+          </div>
+        </div>
+      </details>
+    </div>
+  `;
+}
+
+function addRouteCard(pair = null) {
+  const container = document.getElementById('route-cards');
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = topicCardTemplate(pair);
+  container.appendChild(wrapper.firstElementChild);
+}
+
+function collectTopicPairs() {
+  return Array.from(document.querySelectorAll('.kafka-topic-card')).map(card => ({
+    route_name: card.querySelector('.route-name').value.trim(),
+    upstream_topic: card.querySelector('.upstream-topic').value.trim(),
+    upstream_system: card.querySelector('.upstream-system').value.trim(),
+    upstream_schema_content: card.querySelector('.upstream-schema-content').value.trim(),
+    downstream_topic: card.querySelector('.downstream-topic').value.trim(),
+    downstream_system: card.querySelector('.downstream-system').value.trim(),
+    downstream_schema_content: card.querySelector('.downstream-schema-content').value.trim(),
+  }));
+}
+
+async function saveKafkaTopics() {
+  hideStatus('kafka-topics-status');
+  const payload = {
+    consumer_group: document.getElementById('consumer-group').value.trim(),
+    concurrency: parseInt(document.getElementById('concurrency').value || '1', 10),
+    retry_max_attempts: parseInt(document.getElementById('retry-max-attempts').value || '0', 10),
+    retry_backoff_ms: parseInt(document.getElementById('retry-backoff-ms').value || '0', 10),
+    retry_backoff_multiplier: parseFloat(document.getElementById('retry-backoff-multiplier').value || '0'),
+    dlq_enabled: document.getElementById('dlq-enabled').checked,
+    dlq_topic_suffix: document.getElementById('dlq-topic-suffix').value.trim(),
+    topic_pairs: collectTopicPairs(),
+  };
+  const response = await fetch('/kafka/topics/save', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!data.ok) {
+    showStatus('kafka-topics-status', data.error || 'Unable to save Kafka topics.', 'warn');
+    return;
+  }
+  window.location.href = '/kafka/routes';
+}
+
+if (existingTopicPairs.length) {
+  existingTopicPairs.forEach(addRouteCard);
+} else if (!hasRouterTopicSummary) {
+  addRouteCard();
+}
+toggleDlqSuffix();
+</script>
+{% endblock %}

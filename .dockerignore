@@ -1,0 +1,17 @@
+.git
+.github
+.claude
+docs/user-manual
+.edgeforge-studio-data
+GeneratedApps
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.venv
+venv
+*.pyc
+*.pyo
+*.pyd
+*.log
+.DS_Store

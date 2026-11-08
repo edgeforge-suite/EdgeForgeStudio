@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mock 4 — Handoffs registry + DERIVED seeding</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#fff; --line:#dde3ec; --ink:#1c2733; --mut:#68788c; --navy:#1e3a5f;
+  --t-tbl:#475569; --ok:#0f9d6e; --warn:#c47f17; --derived:#7c5cd6;
+}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+.mockbar{background:#101828;color:#cdd6e4;font-size:11px;padding:6px 16px;display:flex;justify-content:space-between}
+.mockbar b{color:#fff}
+.back{filter:blur(1px) grayscale(.15);opacity:.5;padding:16px;max-width:1560px;margin:0 auto}
+.bk-hdr{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin-bottom:10px;font-weight:700}
+.bk-row{background:#fff;border:1px solid var(--line);border-left:3px solid var(--t-tbl);border-radius:9px;padding:11px 12px;margin-top:6px;display:flex;gap:14px;align-items:center;font-size:12px}
+.bk-row .tile{width:26px;height:26px;border-radius:7px;background:var(--t-tbl);color:#fff;font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.bk-pill{margin-left:auto;font-size:10px;font-weight:700;border-radius:10px;padding:3px 9px}
+.bk-ok{color:#0b7c56;background:#e2f6ee}.bk-warn{color:#9a6511;background:#fdf3e2}.bk-draft{color:#5b6b80;background:#edf1f6}
+.scrim{position:fixed;inset:0;background:rgba(18,28,45,.34)}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:820px;background:#fff;box-shadow:-8px 0 30px rgba(10,25,50,.28);display:flex;flex-direction:column}
+.d-hd{border-bottom:1px solid var(--line);padding:14px 20px;background:linear-gradient(#f7f9fc,#fff);display:flex;align-items:center;gap:10px}
+.tile{width:34px;height:34px;border-radius:9px;background:var(--t-tbl);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.d-hd h3{font-size:15px}
+.d-hd .path{font:11px ui-monospace,Menlo,monospace;color:var(--mut)}
+.badge{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--t-tbl);border-radius:9px;padding:2.5px 9px}
+.pill{font-size:10px;font-weight:700;border-radius:10px;padding:3px 9px;color:#9a6511;background:#fdf3e2}
+.d-bd{flex:1;overflow:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.sec{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sec h4{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#54637a;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-bottom:4px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:11px;font-weight:600;color:#3c4c63;display:flex;gap:6px;align-items:center}
+.f input,.f select{border:1px solid #c9d3e0;border-radius:7px;padding:7px 9px;font-size:12.5px;background:#fff}
+.f input.derived{border-color:#cdbcf3;background:#faf8fe}
+.dchip{font-size:8.5px;font-weight:800;letter-spacing:.05em;color:#6d28d9;background:#f1eafd;border:1px solid #ddd0f6;border-radius:7px;padding:1px 6px}
+.seedbar{display:flex;align-items:center;gap:10px;background:#f5f1fe;border:1px solid #e2d8f8;border-radius:8px;padding:8px 10px;font-size:11.5px;color:#4c3a86}
+.seedbar b{color:#3b2a70}
+.cols{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:8px}
+.chead,.crow{display:grid;grid-template-columns:1.3fr .9fr .55fr .5fr .9fr;gap:10px;padding:7px 12px;align-items:center;font-size:12px}
+.chead{background:#f2f5fa;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#54637a;font-weight:700}
+.crow{border-top:1px solid #e9edf4}
+.crow code{font:11.5px ui-monospace,Menlo,monospace}
+.src{font-size:10.5px;color:var(--mut)}
+.map{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:8px}
+.mrow{display:grid;grid-template-columns:1fr 24px 1fr .8fr;gap:8px;padding:7px 12px;border-top:1px solid #e9edf4;align-items:center;font-size:12px}
+.mrow:first-child{border-top:none}
+.mrow code{font:11.5px ui-monospace,Menlo,monospace}
+.blank{color:#a33b3b;font-size:11px;background:#fbe9e9;border-radius:7px;padding:2px 8px;justify-self:start}
+.note{font-size:11px;color:var(--mut);margin-top:6px}
+.d-ft{border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:10px;align-items:center;background:#fbfcfe}
+.btn{border-radius:8px;padding:8px 16px;font-size:12.5px;border:1px solid #c9d3e0;background:#fff;color:#33455e}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700;margin-left:auto}
+</style></head><body>
+<div class="mockbar"><span><b>STUDIO UX REFRESH — TARGET-STATE MOCK 4/5</b> · Step 4 “Data Handoffs” — same registry pattern + deterministic DERIVED seeding (Phase 2)</span><span>Symmetry proof: learn the pattern once on Step 5, Step 4 is already learned</span></div>
+<div class="back">
+  <div class="bk-hdr">Step 4: Data Handoffs — 4 staging handoffs</div>
+  <div class="bk-row"><span class="tile">TBL</span> account-staging · CORE_LEDGER · <b>account_staging · 5 cols · 5/5 mapped</b><span class="bk-pill bk-ok">Ready</span></div>
+  <div class="bk-row" style="outline:2px solid #64748b"><span class="tile">TBL</span> payment-staging · ANALYTICS_WAREHOUSE · <b>payment_staging · seeded 4 cols</b> ← editing<span class="bk-pill bk-warn">Needs mapping</span></div>
+  <div class="bk-row"><span class="tile">TBL</span> transaction-staging · CORE_LEDGER · <b>transaction_staging · 6 cols · 6/6 mapped</b><span class="bk-pill bk-ok">Ready</span></div>
+  <div class="bk-row"><span class="tile">TBL</span> audit-staging · AUDIT_VAULT · <b>no columns yet</b><span class="bk-pill bk-draft">Draft</span></div>
+</div>
+<div class="scrim"></div>
+<aside class="drawer">
+  <div class="d-hd">
+    <div class="tile">TBL</div>
+    <div style="flex:1">
+      <h3>payment-staging <span class="badge">STAGING TABLE · HANDOFF</span></h3>
+      <div class="path">linked entity: Transaction · system: ANALYTICS_WAREHOUSE</div>
+    </div>
+    <span class="pill">Needs mapping</span>
+  </div>
+  <div class="d-bd">
+    <section class="sec">
+      <h4>Identity</h4>
+      <div class="frow2">
+        <div class="f"><label>Handoff Name *</label><input value="payment-staging"></div>
+        <div class="f"><label>System</label><input value="ANALYTICS_WAREHOUSE"></div>
+        <div class="f"><label>Table Name <span class="dchip">DERIVED</span></label><input class="derived" value="payment_staging"></div>
+        <div class="f"><label>Linked entity</label><select><option>Transaction</option><option>Account</option></select></div>
+      </div>
+      <p class="note">Table name derived from handoff name (snake_case) — editable, marked until you touch it.</p>
+    </section>
+    <section class="sec">
+      <h4>Columns <span class="dchip">SEEDED FROM ENTITY</span></h4>
+      <div class="seedbar"><b>Seeded from Transaction (4 of 6 fields):</b> documented type map — string→VARCHAR · decimal→DECIMAL(18,2) · date→DATE · timestamp→TIMESTAMP. Lengths pre-filled only where a spec-derived max-length rule exists. Every row editable.</div>
+      <div class="cols">
+        <div class="chead"><span>Column</span><span>Type</span><span>Length</span><span>Not null</span><span>Provenance</span></div>
+        <div class="crow"><code>transaction_id</code><span>VARCHAR</span><span>36</span><span>✓</span><span class="src"><span class="dchip">DERIVED</span> Transaction.transactionId · len from spec rule</span></div>
+        <div class="crow"><code>amount</code><span>DECIMAL(18,2)</span><span>—</span><span>✓</span><span class="src"><span class="dchip">DERIVED</span> Transaction.amount</span></div>
+        <div class="crow"><code>status</code><span>VARCHAR</span><span>12</span><span></span><span class="src"><span class="dchip">DERIVED</span> Transaction.status · len from spec rule</span></div>
+        <div class="crow"><code>posted_at</code><span>TIMESTAMP</span><span>—</span><span></span><span class="src"><span class="dchip">DERIVED</span> Transaction.postedAt</span></div>
+        <div class="crow"><code>loaded_at</code><span>TIMESTAMP</span><span>—</span><span></span><span class="src">MANUAL — operational column, added by you</span></div>
+      </div>
+      <p class="note">Effective DDL preview regenerates below (unchanged behavior); manual DDL override stays available under ▶ Advanced.</p>
+    </section>
+    <section class="sec">
+      <h4>Field Mappings (Entity → staging column)</h4>
+      <div class="map">
+        <div class="mrow"><code>Transaction.transactionId</code><span>→</span><code>transaction_id</code><span class="src"><span class="dchip">DERIVED</span> exact name match</span></div>
+        <div class="mrow"><code>Transaction.amount</code><span>→</span><code>amount</code><span class="src"><span class="dchip">DERIVED</span> exact name match</span></div>
+        <div class="mrow"><code>Transaction.status</code><span>→</span><code>status</code><span class="src"><span class="dchip">DERIVED</span> exact name match</span></div>
+        <div class="mrow"><code>Transaction.postedAt</code><span>→</span><code>posted_at</code><span class="src"><span class="dchip">DERIVED</span> snake_case match</span></div>
+        <div class="mrow"><code>?</code><span>→</span><code>loaded_at</code><span class="blank">no exact match — left blank, never guessed</span></div>
+      </div>
+    </section>
+  </div>
+  <div class="d-ft"><span style="font-size:11.5px;color:#9a6511">1 unmapped column — map it or mark operational</span><button class="btn">Cancel</button><button class="btn primary">Save handoff</button></div>
+</aside>
+</body></html>

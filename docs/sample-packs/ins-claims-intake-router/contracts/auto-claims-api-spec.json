@@ -1,0 +1,76 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Synthetic Auto Claims API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com"
+    }
+  ],
+  "paths": {
+    "/claims": {
+      "post": {
+        "operationId": "submitAutoClaim",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              },
+              "example": {
+                "claimId": "CLM-0001",
+                "policyId": "POL-0001",
+                "claimAmount": 1250,
+                "reportedDate": "2026-03-01",
+                "lineOfBusiness": "AUTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Synthetic claim accepted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClaimRequest": {
+        "type": "object",
+        "required": [
+          "claimId",
+          "policyId",
+          "claimAmount",
+          "reportedDate",
+          "lineOfBusiness"
+        ],
+        "properties": {
+          "claimId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "policyId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "claimAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "reportedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lineOfBusiness": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

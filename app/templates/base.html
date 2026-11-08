@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="edgeforge-csrf-token"
+    content="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}"
+  >
+  <title>EdgeForge Studio{% block title_suffix %}{% endblock %}</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/studio.css">
+  {% block head %}{% endblock %}
+</head>
+<body
+  class="ux-refresh"
+  data-shell-rail="{{ shell_rail_default if shell_rail_default is defined else 'collapsed' }}"
+  data-shell-drawer="{{ shell_drawer_default if shell_drawer_default is defined else 'collapsed' }}"
+  data-shell-rail-default="{{ shell_rail_default if shell_rail_default is defined else 'collapsed' }}"
+  data-shell-drawer-default="{{ shell_drawer_default if shell_drawer_default is defined else 'collapsed' }}"
+>
+{% set shell_name = shell_project_name if shell_project_name is defined else (session.app_name if session is defined and session.app_name else (session.bounded_context if session is defined and session.bounded_context else 'Untitled project')) %}
+{% set shell_context = shell_project_context if shell_project_context is defined else (session.bounded_context if session is defined else '') %}
+{% set shell_archetype = shell_archetype_label if shell_archetype_label is defined else (
+  'Kafka Integration' if session is defined and session.app_archetype == 'kafka-integration'
+  else 'Passthrough Router' if session is defined and session.app_archetype == 'passthrough-router'
+  else 'CRUD'
+) %}
+{% set shell_step_num = shell_step_index if shell_step_index is defined else (step if step is defined else 1) %}
+{% set show_shell_drawer = shell_drawer_enabled if shell_drawer_enabled is defined else (shell_step_num == 7) %}
+{% set show_suggestion_drawer = suggestion_drawer_enabled if suggestion_drawer_enabled is defined else (session is not defined or (session.capabilities.knowledge_assist_enabled and session.ks_active and (session.project_id or session.ks_project_id))) %}
+
+{% if request is defined and request.state.studio_shared_mode is defined and request.state.studio_shared_mode and request.state.audit_health is defined and not request.state.audit_health.healthy %}
+<div class="audit-health-banner" role="alert" aria-live="assertive" data-audit-health-banner>
+  <strong>Audit recording is temporarily degraded.</strong>
+  Some audit events may not be recorded. Continue with caution and contact the Studio operator.
+</div>
+{% endif %}
+
+{% if nav_steps is not defined %}
+  {% set fallback_archetype = session.app_archetype if session is defined else 'crud' %}
+  {% if fallback_archetype == 'kafka-integration' %}
+    {% set nav_steps = [
+      {'position': 1, 'step_id': 'project-setup', 'label': 'Project Setup', 'route': '/', 'is_active': shell_step_num == 1, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 1 else 'open'},
+      {'position': 2, 'step_id': 'kafka-topic-ingest', 'label': 'Topic Ingest', 'route': '/kafka/topics', 'is_active': shell_step_num == 2, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 2 else 'open'},
+      {'position': 3, 'step_id': 'kafka-route-model', 'label': 'Route Model', 'route': '/kafka/routes', 'is_active': shell_step_num == 3, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 3 else 'open'},
+      {'position': 4, 'step_id': 'kafka-transform-mappings', 'label': 'Transform Mappings', 'route': '/kafka/transforms', 'is_active': shell_step_num == 4, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 4 else 'open'},
+      {'position': 5, 'step_id': 'downstream-interfaces', 'label': 'Downstream Contract', 'route': none, 'is_active': false, 'is_complete': false, 'is_applicable': false, 'state': 'not-applicable'},
+      {'position': 6, 'step_id': 'rules-mappings', 'label': 'Rules & Mappings', 'route': '/rules', 'is_active': shell_step_num == 6, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 6 else 'open'},
+      {'position': 7, 'step_id': 'review', 'label': 'Review', 'route': '/review', 'is_active': shell_step_num == 7, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 7 else 'open'},
+      {'position': 8, 'step_id': 'export-build-run', 'label': 'Export & Build', 'route': '/export', 'is_active': shell_step_num == 8, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 8 else 'open'},
+    ] %}
+  {% elif fallback_archetype == 'passthrough-router' %}
+    {% set nav_steps = [
+      {'position': 1, 'step_id': 'project-setup', 'label': 'Project Setup', 'route': '/', 'is_active': shell_step_num == 1, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 1 else 'open'},
+      {'position': 2, 'step_id': 'passthrough-upstream', 'label': 'Upstream Contract', 'route': '/upstream', 'is_active': shell_step_num == 2, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 2 else 'open'},
+      {'position': 3, 'step_id': 'passthrough-route', 'label': 'Route & Transform', 'route': '/passthrough', 'is_active': shell_step_num == 3, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 3 else 'open'},
+      {'position': 4, 'step_id': 'data-handoffs', 'label': 'Data Handoffs', 'route': none, 'is_active': false, 'is_complete': false, 'is_applicable': false, 'state': 'not-applicable'},
+      {'position': 5, 'step_id': 'downstream-interfaces', 'label': 'Downstream Contract', 'route': none, 'is_active': false, 'is_complete': false, 'is_applicable': false, 'state': 'not-applicable'},
+      {'position': 6, 'step_id': 'rules-mappings', 'label': 'Rules & Mappings', 'route': '/rules', 'is_active': shell_step_num == 6, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 6 else 'open'},
+      {'position': 7, 'step_id': 'review', 'label': 'Review', 'route': '/review', 'is_active': shell_step_num == 7, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 7 else 'open'},
+      {'position': 8, 'step_id': 'export-build-run', 'label': 'Export & Build', 'route': '/export', 'is_active': shell_step_num == 8, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 8 else 'open'},
+    ] %}
+  {% else %}
+    {% set nav_steps = [
+      {'position': 1, 'step_id': 'project-setup', 'label': 'Project Setup', 'route': '/', 'is_active': shell_step_num == 1, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 1 else 'open'},
+      {'position': 2, 'step_id': 'upstream-ingest', 'label': 'Upstream Contract', 'route': '/upstream', 'is_active': shell_step_num == 2, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 2 else 'open'},
+      {'position': 3, 'step_id': 'entity-model', 'label': 'Entity Model', 'route': '/entities', 'is_active': shell_step_num == 3, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 3 else 'open'},
+      {'position': 4, 'step_id': 'data-handoffs', 'label': 'Data Handoffs', 'route': '/handoffs', 'is_active': shell_step_num == 4, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 4 else 'open'},
+      {'position': 5, 'step_id': 'downstream-interfaces', 'label': 'Downstream Contract', 'route': '/downstream', 'is_active': shell_step_num == 5, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 5 else 'open'},
+      {'position': 6, 'step_id': 'rules-mappings', 'label': 'Rules & Mappings', 'route': '/rules', 'is_active': shell_step_num == 6, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 6 else 'open'},
+      {'position': 7, 'step_id': 'review', 'label': 'Review', 'route': '/review', 'is_active': shell_step_num == 7, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 7 else 'open'},
+      {'position': 8, 'step_id': 'export-build-run', 'label': 'Export & Build', 'route': '/export', 'is_active': shell_step_num == 8, 'is_complete': false, 'is_applicable': true, 'state': 'active' if shell_step_num == 8 else 'open'},
+    ] %}
+  {% endif %}
+{% endif %}
+
+<div class="app-shell">
+  <aside class="shell-sidebar">
+    <div class="sidebar-brand">
+      <h1 class="sidebar-brand-title"><span class="sidebar-brand-ef">EdgeForge</span> <span class="sidebar-brand-studio">Studio</span></h1>
+      <p class="sidebar-brand-tagline">Governed App Modernization Workflow</p>
+    </div>
+
+    <nav class="wizard-nav" aria-label="Wizard steps">
+      {% for nav_step in nav_steps %}
+        {% if nav_step.is_applicable and nav_step.route %}
+        <a
+          href="{{ nav_step.route }}"
+          class="wizard-nav-link is-{{ nav_step.state }}"
+          data-step-state="{{ nav_step.state }}"
+          aria-current="{{ 'step' if nav_step.is_active else 'false' }}"
+        >
+          <span class="wizard-nav-marker{% if nav_step.is_active %} is-step-marker{% endif %}">{{ nav_step.position }}</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">{{ nav_step.label }}</span>
+            <span class="wizard-nav-meta">
+              {% if nav_step.state == 'complete' %}
+              Complete
+              {% elif nav_step.state == 'active' %}
+              Current
+              {% elif nav_step.state == 'warning' %}
+              Needs review
+              {% else %}
+              Open
+              {% endif %}
+            </span>
+            {#- Single chip, class + text byte-identical to what Step 5's save-one
+                live updater writes (step5_downstream.html uxrUpdateAmbientAndRail:
+                `badge uxr-rail-chip`, text `N · M need action` | `N items`) so a
+                server render and a post-save DOM update never diverge. Per the
+                locked five-surface rail payload ({step, count, attention} —
+                design doc §1.3), the chip must always convey the total count;
+                when attention is also present it's added alongside, never in
+                place of, the total. Text-only (not colour-only) — the number +
+                word carries the meaning. -#}
+            {%- if nav_step.count is defined and nav_step.count > 0 %}
+            <span class="badge uxr-rail-chip">{{ nav_step.count }}{% if nav_step.attention is defined and nav_step.attention > 0 %} · {{ nav_step.attention }} need action{% else %} items{% endif %}</span>
+            {%- endif %}
+          </span>
+        </a>
+        {% else %}
+        <div class="wizard-nav-link is-not-applicable" data-step-state="not-applicable" aria-disabled="true">
+          <span class="wizard-nav-marker">{{ nav_step.position }}</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">{{ nav_step.label }}</span>
+            <span class="wizard-nav-meta">Not applicable</span>
+          </span>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </nav>
+
+    <div class="sidebar-project-file">
+      <p class="sidebar-section-label">Project File</p>
+
+      <form method="post" action="/project/save" style="margin-bottom: 8px;">
+        <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+        <button type="submit" class="btn btn-secondary sidebar-file-btn" aria-label="Save Project">
+          <span class="sidebar-file-icon" aria-hidden="true">&#8681;</span> <span class="sidebar-file-btn-label">Save Project</span>
+        </button>
+      </form>
+
+      <form method="post" action="/project/open" enctype="multipart/form-data">
+        <input type="hidden" name="_edgeforge_csrf_token" value="{{ request.state.csrf_token if request is defined and request.state.csrf_token is defined else '' }}">
+        <label
+          for="project-file-input"
+          class="btn btn-secondary sidebar-file-btn"
+          title="Upload a previously saved Studio project JSON file"
+          aria-label="Open Project"
+          aria-describedby="studio-data-handling-note"
+        ><span class="sidebar-file-icon" aria-hidden="true">&#8679;</span> <span class="sidebar-file-btn-label">Open Project</span></label>
+        <input
+          id="project-file-input"
+          type="file"
+          name="project_file"
+          accept=".json,application/json"
+          aria-describedby="studio-data-handling-note"
+          style="display:none"
+          onchange="this.form.submit()"
+        >
+      </form>
+    </div>
+  </aside>
+
+  <div class="shell-workspace">
+    <header class="shell-header">
+      <div class="shell-header-title-group">
+        <div class="shell-kicker">Governed authoring workspace</div>
+        <h2 class="shell-project-title">{{ shell_name }}</h2>
+        {% if shell_context and shell_context != shell_name %}
+        <div class="shell-project-context">{{ shell_context }}</div>
+        {% endif %}
+      </div>
+
+      <div class="shell-header-meta">
+        <span class="shell-pill">{{ shell_archetype }}</span>
+        <span class="shell-pill shell-step-indicator">Step {{ shell_step_num }} of 8</span>
+        <details class="shell-data-handling">
+          <summary class="shell-pill shell-data-handling-toggle">Data handling</summary>
+          <div
+            class="data-handling-notice shell-data-handling-panel"
+            id="studio-data-handling-note"
+            role="note"
+          >
+            Use synthetic or approved content only. Studio does not sanitize uploaded or pasted content. Depending on the workflow, it may be retained in project state, Knowledge Workspace storage, and exported packages.
+          </div>
+        </details>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm shell-toggle-btn"
+          data-shell-toggle="rail"
+          aria-controls="shell-right-rail"
+          aria-expanded="false"
+        >
+          Toggle Right Rail
+        </button>
+        {% if show_shell_drawer %}
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm shell-toggle-btn"
+          data-shell-toggle="drawer"
+          aria-controls="shell-bottom-drawer"
+          aria-expanded="false"
+        >
+          Toggle Review Drawer
+        </button>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="shell-body">
+      <main class="shell-main" id="shell-main-pane">
+        {% block content %}{% endblock %}
+      </main>
+
+      <aside class="shell-right-rail" id="shell-right-rail" aria-label="Context panels">
+        <div class="shell-panel-header">
+          {% block rail_header %}
+          <div>
+            <h3>Context Panels</h3>
+            <p>Step-specific context panels appear here when a workflow needs them.</p>
+          </div>
+          {% endblock %}
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm shell-panel-close"
+            data-shell-toggle="rail"
+            aria-controls="shell-right-rail"
+            aria-expanded="false"
+          >
+            Close
+          </button>
+        </div>
+        <div class="shell-panel-body">
+          {% block rail_panels %}
+          <section class="shell-scaffold-panel" id="rail-suggestions-panel" data-rail-panel="suggestions">
+            <h4>Context</h4>
+            <p>No step-specific context has moved into the rail in this slice.</p>
+          </section>
+          <section class="shell-scaffold-panel" id="rail-evidence-panel" data-rail-panel="evidence">
+            <h4>Evidence</h4>
+            <p>Evidence detail remains in the main workflow pages for now.</p>
+          </section>
+          <section class="shell-scaffold-panel" id="rail-conflicts-panel" data-rail-panel="conflicts">
+            <h4>Conflicts</h4>
+            <p>Conflict guidance appears here only when this step has active advisory context.</p>
+          </section>
+          <div id="rail-chat-panel" data-rail-panel="chat" hidden></div>
+          {% endblock %}
+        </div>
+      </aside>
+    </div>
+
+    {% if show_shell_drawer %}
+    <section class="shell-bottom-drawer js-tabs" id="shell-bottom-drawer" aria-label="Review drawer" data-tab-group="shell-drawer">
+      <div class="shell-panel-header">
+        {% block drawer_header %}
+        <div>
+          <h3>Review Surfaces</h3>
+          <p>Manifest, completeness, and decision-history surfaces appear here when the step provides review context.</p>
+        </div>
+        {% endblock %}
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm shell-panel-close"
+          data-shell-toggle="drawer"
+          aria-controls="shell-bottom-drawer"
+          aria-expanded="false"
+        >
+          Close
+        </button>
+      </div>
+
+      {% block drawer_tabs %}
+      <div class="tabs shell-drawer-tabs">
+        <button type="button" class="tab-btn">Manifest</button>
+        <button type="button" class="tab-btn">Decision History</button>
+        <button type="button" class="tab-btn">Completeness</button>
+        <button type="button" class="tab-btn">Evidence Coverage</button>
+      </div>
+      {% endblock %}
+
+      {% block drawer_panels %}
+      <div class="tab-panel shell-drawer-panel">
+        <p class="text-muted text-sm">Manifest detail stays in the main review/export pages in this PR.</p>
+      </div>
+      <div class="tab-panel shell-drawer-panel">
+        <p class="text-muted text-sm">Decision history remains on the current workflow pages until a later UX slice moves it here.</p>
+      </div>
+      <div class="tab-panel shell-drawer-panel">
+        <p class="text-muted text-sm">Completeness detail continues to render in Step 7 for now.</p>
+      </div>
+      <div class="tab-panel shell-drawer-panel">
+        <p class="text-muted text-sm">Evidence coverage remains bounded to supported provenance surfaces.</p>
+      </div>
+      {% endblock %}
+    </section>
+    {% endif %}
+  </div>
+</div>
+
+{% if show_suggestion_drawer %}
+<div
+  class="ka-suggestion-drawer hidden"
+  data-suggestion-drawer
+  aria-hidden="true"
+>
+  <div class="ka-suggestion-drawer-backdrop" data-suggestion-drawer-close></div>
+  <aside
+    class="ka-suggestion-drawer-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ka-suggestion-drawer-title"
+  >
+    <div class="ka-suggestion-drawer-header">
+      <div>
+        <p class="kickoff-section-label">Knowledge Assist</p>
+        <h3 id="ka-suggestion-drawer-title" data-suggestion-drawer-title>Suggestions</h3>
+        <p class="text-muted text-sm" data-suggestion-drawer-subtitle>
+          Suggestions are read-only in this infrastructure slice.
+        </p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" data-suggestion-drawer-close>
+        Close
+      </button>
+    </div>
+    <div class="ka-suggestion-drawer-body" data-suggestion-drawer-body>
+      <div class="ka-suggestion-loading">Choose a suggestion badge to load details.</div>
+    </div>
+  </aside>
+</div>
+{% endif %}
+
+<script src="/static/js/studio.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

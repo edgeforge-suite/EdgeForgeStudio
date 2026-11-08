@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Kafka — Route Model Board (EXPLORATORY, B2)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;
+  /* LOCKED zone tints — implementation-design.md §1.5 (D1 final) */
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+  /* EXPLORATORY pattern sub-palette (route patterns, NOT contract families — assumption to confirm) */
+  --pat-fnf:#0e7490;   /* fire-and-forget — cyan  */
+  --pat-rr:#6d28d9;    /* request-reply  — violet */
+  --pat-rtr:#1e3a5f;   /* request-path router — navy */
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+/* exploratory badge — always visible */
+.explore-badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;
+  font-size:11px;font-weight:800;letter-spacing:.5px;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a .cnt{float:right;font-size:11px;color:var(--mut2)}.nav a .cnt b{color:var(--warn)}
+.nav a.na{color:#c1cad6;font-style:italic}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.warn{background:var(--zone-attn);border-color:var(--zone-attn-line)} .stat.warn .n{color:var(--warn)}
+.stat.blk .n{color:var(--danger)}
+.split{display:grid;grid-template-columns:.92fr 1.08fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel.zone-board{background:var(--zone-scan)}
+.panel.zone-editor{background:var(--zone-editor);box-shadow:0 4px 16px rgba(16,35,63,.08)}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.phd h2{font-size:13.5px;font-weight:700}.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.filters{display:flex;gap:6px;flex-wrap:wrap;padding:10px 15px;border-bottom:1px solid var(--line)}
+.chip{font-size:11.5px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);background:#fff;color:var(--mut)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
+.chip.warn.on{background:var(--warn);border-color:var(--warn)}
+.grouphd{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;padding:9px 15px 5px;color:var(--mut)}
+.grouphd.blk{color:var(--danger);background:var(--zone-attn);border-top:1px solid var(--zone-attn-line)}
+.row{display:flex;align-items:flex-start;gap:10px;padding:11px 15px;border-top:1px solid #e8edf4;position:relative}
+.row.sel{background:var(--selbg)}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.mono{width:46px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:.3px;margin-top:2px}
+.m-fnf{background:var(--pat-fnf)}.m-rr{background:var(--pat-rr)}.m-rtr{background:var(--pat-rtr)}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:700;font-size:13px}
+.rname .plabel{font-size:10px;font-weight:700;color:var(--mut);margin-left:7px;text-transform:uppercase;letter-spacing:.4px}
+.flow{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flow .arr{color:var(--mut2)} .flow b{color:var(--ink);font-weight:600}
+.rtags{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.tag{font-size:10.5px;padding:2px 7px;border-radius:5px;background:#eef1f6;color:#5a6b7e;font-weight:600}
+.tag.dlq{background:#e9eefb;color:#3b4da6}
+.blocker{font-size:11.5px;color:var(--danger);font-weight:600;margin-top:5px;display:flex;gap:5px;align-items:center}
+.blocker svg{width:12px;height:12px;flex-shrink:0}
+.rright{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}.pill.draft{background:#eef1f6;color:var(--mut)}
+.edit{font-size:11.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;background:#fff;border-radius:6px;padding:4px 11px}
+.row.sel .edit{background:var(--sel);color:#fff;border-color:var(--sel)}
+/* editor */
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.eribbon{display:inline-flex;align-items:center;gap:7px}
+.etype{font-size:10px;font-weight:800;color:#fff;background:var(--pat-rtr);padding:3px 8px;border-radius:5px;letter-spacing:.4px}
+.ename{font-weight:800;font-size:15px;color:var(--navy)}
+.epath{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:4px}
+.banner{display:flex;gap:9px;align-items:flex-start;margin:12px 15px;padding:10px 12px;background:var(--zone-attn);border:1px solid var(--zone-attn-line);border-radius:8px}
+.banner svg{width:15px;height:15px;color:var(--warn);flex-shrink:0;margin-top:1px}
+.banner .bt{font-size:12px;color:#7a531a}.banner b{color:#8a4b08}
+.tabs{display:flex;gap:4px;padding:0 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-size:12px;padding:8px 10px;color:var(--mut);border-bottom:2px solid transparent;font-weight:600}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy)}
+.tab .b{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;background:var(--danger);color:#fff;border-radius:8px;font-size:9.5px;margin-left:5px;padding:0 4px;font-weight:800}
+.tab .ck{color:var(--ok);margin-left:4px}
+.tab .bl{font-size:9.5px;color:var(--mut);margin-left:3px;font-weight:600;text-transform:uppercase}
+.ebody{padding:14px 15px}
+.block{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden;background:#fff}
+.bkhd{background:#f7f9fc;padding:8px 12px;border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px;justify-content:space-between}
+.bkhd .left{display:flex;align-items:center;gap:7px}
+.bkhd .step{width:17px;height:17px;border-radius:50%;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.bkbody{padding:11px 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fld .fl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between}
+.inp{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:12.5px;background:#fff;font-family:ui-monospace,Menlo,monospace}
+.inp.need{border-color:var(--danger);box-shadow:0 0 0 3px var(--dangerbg)}
+.derv{color:var(--derived);background:var(--derivedbg);padding:1px 6px;border-radius:4px;font-size:9.5px;font-weight:700;letter-spacing:.3px}
+.req{color:var(--danger);background:var(--dangerbg);padding:1px 6px;border-radius:4px;font-size:9.5px;font-weight:700}
+/* routing rules table */
+.rul{display:grid;grid-template-columns:1.1fr 1.5fr 1fr auto;gap:8px;align-items:center;padding:7px 10px;font-size:12px;border-top:1px solid #f0f3f8}
+.rul:first-of-type{border-top:none}
+.rul .rid{font-weight:700;font-size:11.5px}
+.rul .cond{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink)}
+.rul .tgt{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.rul.bad{background:var(--zone-attn)}
+.rul.bad .tgt{color:var(--danger);font-weight:700}
+.rul .fix{font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff;white-space:nowrap}
+.rulhd{display:grid;grid-template-columns:1.1fr 1.5fr 1fr auto;gap:8px;padding:6px 10px;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;border-bottom:1px solid var(--line);background:#fbfcfe}
+/* target rows */
+.tgtcard{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:8px}
+.tgtcard .thd{display:flex;justify-content:space-between;align-items:center}
+.tgtcard .tn{font-weight:700;font-size:12.5px;font-family:ui-monospace,Menlo,monospace}
+.tgtcard .tmeta{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:3px}
+.tgtcard .tchips{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+/* collapsed runtime summary */
+.runrow{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mut);padding:2px 0}
+.runrow b{color:var(--ink);font-weight:600;font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;flex:1}
+.btns{display:flex;gap:8px}.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.dotc{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:4px}
+</style></head>
+<body>
+<div class="explore-badge">⚠ EXPLORATORY — not the current build contract</div>
+<div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Topic Ingest</a>
+    <a href="#" class="on">3 · Route Model <span class="cnt"><b>1</b> to fix</span></a>
+    <a href="#">4 · Transform Mappings</a>
+    <a href="#" class="na">5 · Downstream — n/a</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 3 · Route Model — Routes Board <span style="font-size:11px;font-weight:700;color:var(--mut2)">(kafka-integration archetype)</span></div>
+  <div class="sub">One row per mediation route: topic in → pattern → target(s). Edit one route at a time in four blocks — the full nested config never stacks on the page again.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">5</div><div class="l">Routes</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Ready</div></div>
+    <div class="stat warn"><div class="n">1</div><div class="l">Needs action</div></div>
+    <div class="stat blk"><div class="n">1</div><div class="l">Export blockers</div></div>
+  </div>
+
+  <div class="split">
+    <!-- BOARD (zone: scan) -->
+    <section class="panel zone-board">
+      <div class="phd"><h2>Mediation routes</h2><div class="pd">Grouped blocked-first · pattern is the family axis · readiness from one source</div></div>
+      <div class="filters">
+        <span class="chip">All</span><span class="chip warn on">Needs action · 1</span><span class="chip">Ready · 3</span><span class="chip">Draft · 1</span>
+        <span class="chip">FNF</span><span class="chip">Req-Reply</span><span class="chip">Router</span>
+      </div>
+
+      <div class="grouphd blk">▾ Needs action</div>
+      <div class="row sel">
+        <div class="mono m-rtr">RTR</div>
+        <div class="rmain">
+          <div class="rname">payment-posted <span class="plabel">request-path router</span></div>
+          <div class="flow"><b>abc.payments.posted.v1</b> <span class="arr">→</span> 2 targets <span class="arr">→</span> per-target reply</div>
+          <div class="blocker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>Rule “high-value” routes to target <b>&nbsp;fraud-check&nbsp;</b> — target not defined</div>
+        </div>
+        <div class="rright"><span class="pill attn">Fix routing</span><span class="edit">Editing</span></div>
+      </div>
+
+      <div class="grouphd">▾ Ready</div>
+      <div class="row">
+        <div class="mono m-fnf">FNF</div>
+        <div class="rmain">
+          <div class="rname">ledger-sync <span class="plabel">fire-and-forget</span></div>
+          <div class="flow"><b>abc.payments.posted.v1</b> <span class="arr">→</span> <b>xyz.ledger.entries.v1</b></div>
+          <div class="rtags"><span class="tag">strict schema</span><span class="tag">4 mappings</span><span class="tag dlq">DLQ .dlq</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+      <div class="row">
+        <div class="mono m-rr">R·R</div>
+        <div class="rmain">
+          <div class="rname">balance-inquiry <span class="plabel">request-reply</span></div>
+          <div class="flow"><b>chn.balance.request.v1</b> <span class="arr">⇄</span> <b>core.balance.reply.v1</b></div>
+          <div class="rtags"><span class="tag">strict schema</span><span class="tag">reply header X-Reply-To</span><span class="tag">timeout 30s</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+      <div class="row">
+        <div class="mono m-fnf">FNF</div>
+        <div class="rmain">
+          <div class="rname">statement-generated <span class="plabel">fire-and-forget</span></div>
+          <div class="flow"><b>core.stmt.generated.v1</b> <span class="arr">→</span> <b>doc.render.queue.v1</b></div>
+          <div class="rtags"><span class="tag">lenient schema</span><span class="tag">6 mappings</span></div>
+        </div>
+        <div class="rright"><span class="pill ok">Ready</span><span class="edit">Edit</span></div>
+      </div>
+
+      <div class="grouphd">▾ Draft</div>
+      <div class="row">
+        <div class="mono m-rr">R·R</div>
+        <div class="rmain">
+          <div class="rname">fraud-score <span class="plabel">request-reply</span></div>
+          <div class="flow"><b>rsk.fraud.score.request.v1</b> <span class="arr">⇄</span> <span style="color:var(--mut2)">reply topic not set</span></div>
+          <div class="rtags"><span class="tag">draft — not in export</span></div>
+        </div>
+        <div class="rright"><span class="pill draft">Draft</span><span class="edit">Edit</span></div>
+      </div>
+    </section>
+
+    <!-- EDITOR (zone: editor — brightest) -->
+    <section class="panel zone-editor">
+      <div class="ehd">
+        <div class="eribbon"><span class="etype">ROUTER</span><span class="ename">payment-posted</span></div>
+        <div class="epath">abc.payments.posted.v1 · consumer group payment-mediation-group</div>
+      </div>
+      <div class="banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="bt"><b>One rule blocks export:</b> “high-value” routes to <b>fraud-check</b>, which is not a defined target. Add the target or repoint the rule.</div>
+      </div>
+      <div class="tabs">
+        <span class="tab">Intake &amp; Schema<span class="ck">✓</span></span>
+        <span class="tab on">Routing<span class="b">1</span><span class="bl">blocker</span></span>
+        <span class="tab">Targets · 2<span class="ck">✓</span></span>
+        <span class="tab">NACK &amp; Runtime<span class="ck">✓</span></span>
+      </div>
+      <div class="ebody">
+
+        <div class="block">
+          <div class="bkhd"><span class="left"><span class="step">1</span>Intake &amp; inbound schema</span><span class="derv">SEEDED FROM TOPIC PAIR</span></div>
+          <div class="bkbody"><div class="grid3">
+            <div class="fld"><div class="fl">Upstream topic</div><div class="inp">abc.payments.posted.v1</div></div>
+            <div class="fld"><div class="fl">Consumer group <span class="derv">DERIVED</span></div><div class="inp">payment-mediation-group</div></div>
+            <div class="fld"><div class="fl">Inbound schema · strict / nack</div><div class="inp">schemas/payment-posted-upstream.json</div></div>
+          </div></div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd"><span class="left"><span class="step">2</span>Routing fields &amp; rules</span><span class="req">1 BLOCKER</span></div>
+          <div class="rulhd"><span>Rule</span><span>Condition</span><span>Target</span><span></span></div>
+          <div class="rul"><span class="rid">default-rule</span><span class="cond">routeKey not_null</span><span class="tgt">ledger-target</span><span></span></div>
+          <div class="rul bad"><span class="rid">high-value</span><span class="cond">$.amount &gt; 10000</span><span class="tgt">fraud-check ⚠ missing</span><span class="fix">Add target</span></div>
+          <div class="bkbody" style="border-top:1px solid var(--line)">
+            <div class="runrow"><span>Routing field: <b>routeKey ← $.routeKey</b></span><span>Default target: <b>ledger-target</b></span><span>Duplicates: <b>reject-new</b></span></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd"><span class="left"><span class="step">3</span>Targets</span></div>
+          <div class="bkbody">
+            <div class="tgtcard">
+              <div class="thd"><span class="tn">ledger-target</span><span class="pill ok">Ready</span></div>
+              <div class="tmeta">req xyz.ledger.entries.v1 · resp xyz.ledger.entries.v1.response</div>
+              <div class="tchips"><span class="tag">req/resp schemas strict</span><span class="tag">transforms: request.yaml · response.yaml</span><span class="tag dlq">retry 3× · DLQ</span><span class="tag">timeout 30s</span></div>
+            </div>
+            <div class="tgtcard" style="border-style:dashed;border-color:var(--zone-attn-line);background:var(--zone-attn)">
+              <div class="thd"><span class="tn" style="color:#8a4b08">+ fraud-check — referenced by “high-value”, not defined yet</span><span class="fix" style="font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff">Create target</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="bkhd"><span class="left"><span class="step">4</span>NACK &amp; runtime policies</span><span style="font-size:10px;color:var(--mut);font-weight:600">collapsed summary — expand to edit</span></div>
+          <div class="bkbody">
+            <div class="runrow"><span>NACK: <b>default_error → payment-posted.error</b></span><span>Timeout: <b>nack / error_topic</b></span><span>Logging: <b>none · 512B cap</b></span><span>Correlation: <b>in-memory · 30s</b></span></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="efoot">
+        <div class="note">Edits the same <code>kafka route model</code> Studio saves today — no manifest shape or Engine change. Starter config stays deterministically seeded from the topic pair.</div>
+        <div class="btns"><span class="btn">Cancel</span><span class="btn pri">Save route</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">
+    <div class="legend">
+      <span style="font-weight:700;color:var(--mut)">Route patterns (exploratory sub-palette — label always adjacent):</span>
+      <span><span class="dotc" style="background:var(--pat-fnf)"></span>FNF · fire-and-forget</span>
+      <span><span class="dotc" style="background:var(--pat-rr)"></span>R·R · request-reply</span>
+      <span><span class="dotc" style="background:var(--pat-rtr)"></span>RTR · request-path router</span>
+      <span style="color:var(--mut2)">zones per locked §1.5 · selection &gt; zone &gt; default</span>
+    </div>
+    <div style="margin-top:6px;color:var(--mut2)">Assumptions to confirm in the blind capture pass: pattern sub-palette hues · “Draft” semantics for incomplete routes · rule-level blocker granularity (rule → missing target) · four-block grouping of the nested config.</div>
+  </div>
+</main>
+</div></body></html>

@@ -1,0 +1,1776 @@
+{
+  "baseline_advisory_cutoff_utc": "2026-10-01T16:30:29Z",
+  "baseline_image_index": "sha256:ff97fb0ee901e2e759d2143fee83538ac1ffeb17248c745a8f3287e9ca264c89",
+  "baseline_ledger": "studio-image-consolidated-ledger.json",
+  "baseline_ledger_sha256": "43453fba882568f405d6e82c8b49621b4e4a31c54e2fcfc39a71936ea458ea28",
+  "candidate": "EF-V5-M2-STUDIO-IMAGE-REFRESH-S1",
+  "catalog_delta": [
+    {
+      "advisory_identity": "CVE-2025-12781",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        0
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        0
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2025-15366",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        1
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        1
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2025-15367",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        2
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        2
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-12345",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        3
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-15310",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        3
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-15806",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        4
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-17084",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        5
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-19672",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        6
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-3446",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        4
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        7
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-3479",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        5
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        8
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-6019",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [
+        6
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        9
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-82049",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        10
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-87910",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "python",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        11
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "binary"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "cpp-12",
+      "new_group_indexes": [
+        253
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "g++-12",
+      "new_group_indexes": [
+        285
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "gcc-12",
+      "new_group_indexes": [
+        288
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "gcc-12-base",
+      "new_group_indexes": [
+        291
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libasan8",
+      "new_group_indexes": [
+        309
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libatomic1",
+      "new_group_indexes": [
+        312
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libcc1-0",
+      "new_group_indexes": [
+        495
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2023-52426",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [
+        698
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        696
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2024-28757",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        697
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-59375",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        698
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-66382",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [
+        699
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        699
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-102633",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [
+        700
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        700
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-24515",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        701
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-25210",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        702
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-32776",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        703
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-32777",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        704
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-32778",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        705
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-41080",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [
+        701
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        706
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-45186",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        707
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-56132",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [
+        702
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        708
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-66046",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        709
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-93990",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libexpat1",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        710
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libgcc-12-dev",
+      "new_group_indexes": [
+        705
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libgcc-s1",
+      "new_group_indexes": [
+        708
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libgomp1",
+      "new_group_indexes": [
+        714
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libitm1",
+      "new_group_indexes": [
+        796
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "liblsan0",
+      "new_group_indexes": [
+        817
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-103111",
+      "attribution": "Component replacement plus changed advisory snapshot; general causality not apportioned. Only separately verified Expat backports receive a fix conclusion.",
+      "component_version_changed": true,
+      "name": "libpcre2-8-0",
+      "new_group_indexes": [],
+      "observation_change": "not-reported-currently",
+      "old_group_indexes": [
+        846
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libquadmath0",
+      "new_group_indexes": [
+        863
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libstdc++-12-dev",
+      "new_group_indexes": [
+        893
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libstdc++6",
+      "new_group_indexes": [
+        896
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libtsan2",
+      "new_group_indexes": [
+        910
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-95619",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "libubsan1",
+      "new_group_indexes": [
+        913
+      ],
+      "observation_change": "newly-reported",
+      "old_group_indexes": [],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-100076",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        1536
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        1535
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-100077",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        1537
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        1536
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-100078",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        1538
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        1537
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-64001",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        1818
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        1817
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-74611",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        2016
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        2015
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-89980",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        2478
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        2477
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-93125",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        2824
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        2823
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-98160",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        3244
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        3243
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-98161",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        3245
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        3244
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-98162",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "linux-libc-dev",
+      "new_group_indexes": [
+        3246
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        3245
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-85091",
+      "attribution": "Version unchanged; advisory-feed drift, detection/metadata or same-version artifact changes require investigation. No remediation/risk-reduction claim.",
+      "component_version_changed": false,
+      "name": "zlib1g",
+      "new_group_indexes": [
+        3368
+      ],
+      "observation_change": "observation-metadata-or-version-changed",
+      "old_group_indexes": [
+        3367
+      ],
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "review_trigger": "Verify vendor range/backport and source/advisory changes for the exact recorded identity",
+      "type": "deb"
+    }
+  ],
+  "catalog_delta_counts": {
+    "newly-reported": 18,
+    "not-reported-currently": 17,
+    "observation-metadata-or-version-changed": 22
+  },
+  "component_version_delta": [
+    {
+      "name": "python",
+      "new_versions": [
+        "3.11.17"
+      ],
+      "old_versions": [
+        "3.11.16"
+      ],
+      "type": "binary"
+    },
+    {
+      "name": "libexpat1",
+      "new_versions": [
+        "2.5.0-1+deb12u4"
+      ],
+      "old_versions": [
+        "2.5.0-1+deb12u3"
+      ],
+      "type": "deb"
+    },
+    {
+      "name": "libpcre2-8-0",
+      "new_versions": [
+        "10.42-1+deb12u2"
+      ],
+      "old_versions": [
+        "10.42-1+deb12u1"
+      ],
+      "type": "deb"
+    }
+  ],
+  "curl_historical_exclusions_carried_forward": 0,
+  "current_advisory_cutoff_utc": "2026-10-05T01:02:53.479177+00:00",
+  "current_image_index": "sha256:145acf7614b67f146959eb1b964c4f0a6eea5f996384025d4968d3a6dddfb62e",
+  "current_ledger": "studio-image-refresh-2026-10-04-ledger.json",
+  "current_ledger_sha256": "98f55b4d799118b5ca660c8798e0459533cb806e6b070b6544f71cbca8aa2155",
+  "disposition_delta": [
+    {
+      "advisory_identity": "CVE-2024-2379",
+      "name": "curl",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        254
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 258,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-0725",
+      "name": "curl",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        255
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 259,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-10966",
+      "name": "curl",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        256
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 260,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15079",
+      "name": "curl",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        258
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 262,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15224",
+      "name": "curl",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        259
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 263,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2024-2379",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        646
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 644,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-0725",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        647
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 645,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-10966",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        648
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 646,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15079",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        650
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 648,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15224",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        651
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 649,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-12064",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        654
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 652,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-80230",
+      "name": "libcurl3-gnutls",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        664
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 662,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2024-2379",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        672
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 670,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-0725",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        673
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 671,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-10966",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        674
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 672,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15079",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        676
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 674,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2025-15224",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        677
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 675,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    },
+    {
+      "advisory_identity": "CVE-2026-12064",
+      "name": "libcurl4",
+      "new_classification": "open/unassessed",
+      "new_group_indexes": [
+        680
+      ],
+      "old_classification": "supported-not-affected",
+      "old_group_index": 678,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "reason": "Historical prerequisite proof is bound to old artifact/advisory inputs; not revalidated on refreshed inputs.",
+      "review_trigger": "Revalidate exact current binary/backend/protocol/advisory prerequisites",
+      "type": "deb"
+    }
+  ],
+  "embedded_expat": {
+    "classification": "open/unassessed",
+    "links_system_libexpat": false,
+    "old_version": "expat_2.8.3",
+    "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+    "review_trigger": "PSF/libexpat backport/advisory, native/parser use or final release pair",
+    "specific_open_question": "Bind CVE-2026-102633 and any newly observed upstream Expat advisory to actual embedded 2.8.5 code/backports and consumers; Debian u4 does not cover this copy.",
+    "version": "expat_2.8.5"
+  },
+  "expat_reconciliation": [
+    {
+      "advisory_id": "CVE-2023-52426",
+      "baseline_group_indexes": [
+        696
+      ],
+      "baseline_observation_indexes": [
+        630,
+        4057
+      ],
+      "classification": "open/applicability-unresolved",
+      "conflicts": [],
+      "current_group_indexes": [
+        698
+      ],
+      "current_observation_indexes": [
+        630,
+        4055
+      ],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": false,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Vendor and current package matches remain open; no-dsa/postponed/wont-fix or severity disagreement is not clearance.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "open",
+        "urgency": "unimportant"
+      }
+    },
+    {
+      "advisory_id": "CVE-2024-28757",
+      "baseline_group_indexes": [
+        697
+      ],
+      "baseline_observation_indexes": [
+        1,
+        4045
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2025-59375",
+      "baseline_group_indexes": [
+        698
+      ],
+      "baseline_observation_indexes": [
+        3,
+        4046
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2025-66382",
+      "baseline_group_indexes": [
+        699
+      ],
+      "baseline_observation_indexes": [
+        320,
+        4051
+      ],
+      "classification": "open/applicability-unresolved",
+      "conflicts": [],
+      "current_group_indexes": [
+        699
+      ],
+      "current_observation_indexes": [
+        325,
+        4052
+      ],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": false,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Vendor and current package matches remain open; no-dsa/postponed/wont-fix or severity disagreement is not clearance.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "nodsa": "Minor issue, revisit when fixed upstream",
+        "nodsa_reason": "postponed",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "open",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-102633",
+      "baseline_group_indexes": [
+        700
+      ],
+      "baseline_observation_indexes": [
+        195,
+        4052
+      ],
+      "classification": "open/applicability-unresolved",
+      "conflicts": [],
+      "current_group_indexes": [
+        700
+      ],
+      "current_observation_indexes": [
+        198,
+        4053
+      ],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": false,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Vendor and current package matches remain open; no-dsa/postponed/wont-fix or severity disagreement is not clearance.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "open",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-24515",
+      "baseline_group_indexes": [
+        701
+      ],
+      "baseline_observation_indexes": [
+        435,
+        4058
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-25210",
+      "baseline_group_indexes": [
+        702
+      ],
+      "baseline_observation_indexes": [
+        209,
+        4047
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-32776",
+      "baseline_group_indexes": [
+        703
+      ],
+      "baseline_observation_indexes": [
+        361,
+        4053
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-32777",
+      "baseline_group_indexes": [
+        704
+      ],
+      "baseline_observation_indexes": [
+        336,
+        4054
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-32778",
+      "baseline_group_indexes": [
+        705
+      ],
+      "baseline_observation_indexes": [
+        363,
+        4055
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-41080",
+      "baseline_group_indexes": [
+        706
+      ],
+      "baseline_observation_indexes": [
+        108,
+        4059
+      ],
+      "classification": "open/applicability-unresolved",
+      "conflicts": [
+        "Grype High versus Trivy LOW; both remain recorded against vendor-open Bookworm status."
+      ],
+      "current_group_indexes": [
+        701
+      ],
+      "current_observation_indexes": [
+        101,
+        4056
+      ],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": false,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Vendor and current package matches remain open; no-dsa/postponed/wont-fix or severity disagreement is not clearance.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "nodsa": "Minor issue",
+        "nodsa_reason": "",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "open",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-45186",
+      "baseline_group_indexes": [
+        707
+      ],
+      "baseline_observation_indexes": [
+        76,
+        4048
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-56132",
+      "baseline_group_indexes": [
+        708
+      ],
+      "baseline_observation_indexes": [
+        414,
+        4056
+      ],
+      "classification": "open/applicability-unresolved",
+      "conflicts": [],
+      "current_group_indexes": [
+        702
+      ],
+      "current_observation_indexes": [
+        417,
+        4054
+      ],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": false,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Vendor and current package matches remain open; no-dsa/postponed/wont-fix or severity disagreement is not clearance.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "nodsa": "Minor issue; needs external parameter entity parsing",
+        "nodsa_reason": "postponed",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "open",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-66046",
+      "baseline_group_indexes": [
+        709
+      ],
+      "baseline_observation_indexes": [
+        15,
+        4049
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    },
+    {
+      "advisory_id": "CVE-2026-93990",
+      "baseline_group_indexes": [
+        710
+      ],
+      "baseline_observation_indexes": [
+        93,
+        4050
+      ],
+      "classification": "supported-fixed",
+      "conflicts": [],
+      "current_group_indexes": [],
+      "current_observation_indexes": [],
+      "evidence": [
+        "retained:build.log",
+        "retained:runtime-inspection.log",
+        "retained:expat.dsc",
+        "retained:expat.debian.tar.xz",
+        "retained:debian-tracker.json"
+      ],
+      "historical_u4_target": true,
+      "owner": "Studio maintainer; adopter security owner owns any exposure/risk decision",
+      "rationale": "Actual official u4 package satisfies Debian ordering and the u4 source changelog names this exact backport; scanner disappearance is corroboration, not the proof. No embedded-copy conclusion.",
+      "review_trigger": "Changed package/backport, advisory/range, consumer/native copy or final release pair",
+      "system_component": {
+        "installed_version": "2.5.0-1+deb12u4",
+        "name": "libexpat1",
+        "old_version": "2.5.0-1+deb12u3"
+      },
+      "vendor_bookworm": {
+        "fixed_version": "2.5.0-1+deb12u4",
+        "repositories": {
+          "bookworm": "2.5.0-1+deb12u2",
+          "bookworm-security": "2.5.0-1+deb12u4"
+        },
+        "status": "resolved",
+        "urgency": "not yet assigned"
+      }
+    }
+  ],
+  "interpretation": "Different source/image/advisory inputs. No count subtraction, causal risk reduction or automatic carryforward of historical curl exclusions.",
+  "revision": 1,
+  "schema_version": 1,
+  "unchanged_catalog_identity_count": 3335,
+  "unchanged_catalog_identity_sha256": "017ed01c7f8500d2725f41facfbbc6299576f8ebf951cbb888e2a84d3fb3d95e"
+}

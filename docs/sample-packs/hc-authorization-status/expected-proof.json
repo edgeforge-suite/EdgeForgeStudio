@@ -1,0 +1,31 @@
+{
+  "pack_id": "hc-authorization-status",
+  "archetype": "crud",
+  "target_profile": "springboot-legacy-compatible",
+  "expected_entities": [
+    "AuthorizationRecord"
+  ],
+  "expected_manifest_schema_version": "2.0",
+  "expected_export_warnings": [],
+  "expected_generation_warnings": [],
+  "expected_harness_warnings": [],
+  "harness_applies": true,
+  "min_studio_project_schema_version": "1.4",
+  "expected_export_dir": "authorization-status",
+  "expected_exported_artifacts": [
+    "app-definition.yaml",
+    "assessment-report.json",
+    "completeness-report.md",
+    "contracts/authorization-api-spec.json",
+    "data-handoffs/authorization-staging-table-mapping.yaml",
+    "data-handoffs/authorization-staging-table.sql",
+    "downstream/authorization-mapping.yaml",
+    "downstream/authorization-schema.xsd",
+    "evidence-trail.json",
+    "rules/authorizationrecord-business-rules.yaml",
+    "studio-project.json",
+    "upstream/authorization-api-mapping.yaml",
+    "upstream/sample-createauthorization-request.json",
+    "upstream/sample-createauthorization-response.json"
+  ]
+}

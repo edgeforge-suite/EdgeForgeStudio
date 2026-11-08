@@ -1,0 +1,108 @@
+{
+  "studio_project_schema_version": "1.4",
+  "project_revision": 1,
+  "app_name": "Synthetic Claims Intake Router",
+  "bounded_context": "claims-intake-router",
+  "app_archetype": "passthrough-router",
+  "target_profile": "springboot-legacy-compatible",
+  "output_path": "",
+  "appbuilder_repo_path": "",
+  "project_id": "ins-claims-intake-router",
+  "ks_active": false,
+  "capabilities": {
+    "knowledge_assist_enabled": false
+  },
+  "classified_entities": [],
+  "classified_operations": [
+    {
+      "name": "submitClaim",
+      "method": "POST",
+      "path": "/claims",
+      "resource": "Claim",
+      "request_schema": "ClaimSubmission",
+      "entity_candidates": [],
+      "is_draft": false
+    }
+  ],
+  "selected_entity_names": [],
+  "selected_operation_names": [],
+  "upstream_interfaces": [
+    {
+      "name": "claim-intake-api",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Claims Intake API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/claims\": {\n      \"post\": {\n        \"operationId\": \"submitClaim\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/ClaimSubmission\"\n              },\n              \"examples\": {\n                \"auto\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0001\",\n                    \"policyId\": \"POL-0001\",\n                    \"amount\": 1250,\n                    \"lineOfBusiness\": \"AUTO\",\n                    \"reportedAt\": \"2026-03-01\"\n                  }\n                },\n                \"property\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0002\",\n                    \"policyId\": \"POL-0002\",\n                    \"amount\": 5400.5,\n                    \"lineOfBusiness\": \"PROP\",\n                    \"reportedAt\": \"2026-03-02\"\n                  }\n                },\n                \"specialty\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0003\",\n                    \"policyId\": \"POL-0003\",\n                    \"amount\": 875,\n                    \"lineOfBusiness\": \"SPEC\",\n                    \"reportedAt\": \"2026-03-03\"\n                  }\n                },\n                \"secondAuto\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0004\",\n                    \"policyId\": \"POL-0004\",\n                    \"amount\": 2200.25,\n                    \"lineOfBusiness\": \"AUTO\",\n                    \"reportedAt\": \"2026-03-04\"\n                  }\n                },\n                \"secondProperty\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0005\",\n                    \"policyId\": \"POL-0005\",\n                    \"amount\": 3100,\n                    \"lineOfBusiness\": \"PROP\",\n                    \"reportedAt\": \"2026-03-05\"\n                  }\n                }\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"202\": {\n            \"description\": \"Synthetic claim accepted for routing\"\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"ClaimSubmission\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"claimId\",\n          \"policyId\",\n          \"amount\",\n          \"lineOfBusiness\",\n          \"reportedAt\"\n        ],\n        \"properties\": {\n          \"claimId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"policyId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"amount\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"lineOfBusiness\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"AUTO\",\n              \"PROP\",\n              \"SPEC\"\n            ]\n          },\n          \"reportedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "selected_operation_name": "submitClaim",
+      "is_draft": false
+    }
+  ],
+  "downstream_interfaces": [
+    {
+      "name": "auto-claims-api",
+      "system": "AUTO_CLAIMS",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Auto Claims API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/claims\": {\n      \"post\": {\n        \"operationId\": \"submitAutoClaim\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/ClaimRequest\"\n              },\n              \"example\": {\n                \"claimId\": \"CLM-0001\",\n                \"policyId\": \"POL-0001\",\n                \"claimAmount\": 1250,\n                \"reportedDate\": \"2026-03-01\",\n                \"lineOfBusiness\": \"AUTO\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"202\": {\n            \"description\": \"Synthetic claim accepted\"\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"ClaimRequest\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"claimId\",\n          \"policyId\",\n          \"claimAmount\",\n          \"reportedDate\",\n          \"lineOfBusiness\"\n        ],\n        \"properties\": {\n          \"claimId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"policyId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"claimAmount\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"reportedDate\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          },\n          \"lineOfBusiness\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "selected_operation_name": "submitAutoClaim"
+    },
+    {
+      "name": "property-claims-api",
+      "system": "PROP_CLAIMS",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Property Claims API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/claims\": {\n      \"post\": {\n        \"operationId\": \"submitPropertyClaim\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/ClaimRequest\"\n              },\n              \"example\": {\n                \"claimId\": \"CLM-0002\",\n                \"policyId\": \"POL-0002\",\n                \"claimAmount\": 5400.5,\n                \"reportedDate\": \"2026-03-02\",\n                \"lineOfBusiness\": \"PROP\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"202\": {\n            \"description\": \"Synthetic claim accepted\"\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"ClaimRequest\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"claimId\",\n          \"policyId\",\n          \"claimAmount\",\n          \"reportedDate\",\n          \"lineOfBusiness\"\n        ],\n        \"properties\": {\n          \"claimId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"policyId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"claimAmount\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"reportedDate\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          },\n          \"lineOfBusiness\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "selected_operation_name": "submitPropertyClaim"
+    },
+    {
+      "name": "specialty-claims-api",
+      "system": "SPEC_CLAIMS",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Specialty Claims API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/claims\": {\n      \"post\": {\n        \"operationId\": \"submitSpecialtyClaim\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/ClaimRequest\"\n              },\n              \"example\": {\n                \"claimId\": \"CLM-0003\",\n                \"policyId\": \"POL-0003\",\n                \"claimAmount\": 875,\n                \"reportedDate\": \"2026-03-03\",\n                \"lineOfBusiness\": \"SPEC\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"202\": {\n            \"description\": \"Synthetic claim accepted\"\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"ClaimRequest\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"claimId\",\n          \"policyId\",\n          \"claimAmount\",\n          \"reportedDate\",\n          \"lineOfBusiness\"\n        ],\n        \"properties\": {\n          \"claimId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"policyId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"claimAmount\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"reportedDate\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          },\n          \"lineOfBusiness\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "selected_operation_name": "submitSpecialtyClaim"
+    }
+  ],
+  "data_handoffs": [],
+  "entity_rules": [],
+  "passthrough_flow": {
+    "upstream_operation_name": "submitClaim",
+    "route_field": "lineOfBusiness",
+    "routes": [
+      {
+        "match": "AUTO",
+        "target": "AUTO_CLAIMS"
+      },
+      {
+        "match": "PROP",
+        "target": "PROP_CLAIMS"
+      }
+    ],
+    "default_target": "SPEC_CLAIMS",
+    "transforms": [
+      {
+        "source": "claimId",
+        "target": "claimId"
+      },
+      {
+        "source": "policyId",
+        "target": "policyId"
+      },
+      {
+        "source": "amount",
+        "target": "claimAmount"
+      },
+      {
+        "source": "reportedAt",
+        "target": "reportedDate"
+      },
+      {
+        "source": "lineOfBusiness",
+        "target": "lineOfBusiness",
+        "default": "UNSPECIFIED"
+      }
+    ]
+  },
+  "raw_spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Claims Intake API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/claims\": {\n      \"post\": {\n        \"operationId\": \"submitClaim\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/ClaimSubmission\"\n              },\n              \"examples\": {\n                \"auto\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0001\",\n                    \"policyId\": \"POL-0001\",\n                    \"amount\": 1250,\n                    \"lineOfBusiness\": \"AUTO\",\n                    \"reportedAt\": \"2026-03-01\"\n                  }\n                },\n                \"property\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0002\",\n                    \"policyId\": \"POL-0002\",\n                    \"amount\": 5400.5,\n                    \"lineOfBusiness\": \"PROP\",\n                    \"reportedAt\": \"2026-03-02\"\n                  }\n                },\n                \"specialty\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0003\",\n                    \"policyId\": \"POL-0003\",\n                    \"amount\": 875,\n                    \"lineOfBusiness\": \"SPEC\",\n                    \"reportedAt\": \"2026-03-03\"\n                  }\n                },\n                \"secondAuto\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0004\",\n                    \"policyId\": \"POL-0004\",\n                    \"amount\": 2200.25,\n                    \"lineOfBusiness\": \"AUTO\",\n                    \"reportedAt\": \"2026-03-04\"\n                  }\n                },\n                \"secondProperty\": {\n                  \"value\": {\n                    \"claimId\": \"CLM-0005\",\n                    \"policyId\": \"POL-0005\",\n                    \"amount\": 3100,\n                    \"lineOfBusiness\": \"PROP\",\n                    \"reportedAt\": \"2026-03-05\"\n                  }\n                }\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"202\": {\n            \"description\": \"Synthetic claim accepted for routing\"\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"ClaimSubmission\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"claimId\",\n          \"policyId\",\n          \"amount\",\n          \"lineOfBusiness\",\n          \"reportedAt\"\n        ],\n        \"properties\": {\n          \"claimId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"policyId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"amount\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"lineOfBusiness\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"AUTO\",\n              \"PROP\",\n              \"SPEC\"\n            ]\n          },\n          \"reportedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+  "raw_spec_url": null,
+  "raw_spec_filename": "claim-intake-api-spec.yaml"
+}

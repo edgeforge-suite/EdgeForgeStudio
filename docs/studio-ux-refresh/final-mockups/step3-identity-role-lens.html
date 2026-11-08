@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 3 — Identity Role Lens (final)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --key:#0d9488;--keybg:#e2f4f2;--meta:#b45309;--metabg:#fbf1e3;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.hid{background:#f3f5f9} .stat.hid .n{color:var(--mut)}
+.split{display:grid;grid-template-columns:.62fr 1.38fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.phd h2{font-size:13.5px;font-weight:700}
+.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.kaoff{font-size:10.5px;font-weight:700;color:#3b5566;background:#e7edf2;border:1px solid #cfdae2;padding:3px 9px;border-radius:20px}
+/* entity cards */
+.ecard{padding:12px 15px;border-top:1px solid #eef1f5;cursor:default;position:relative}
+.ecard:hover{background:#f8fafc}
+.ecard.sel{background:var(--selbg)}
+.ecard.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.ecard .en{font-weight:700;font-size:13.5px;color:var(--navy)}
+.ecard .em{font-size:11.5px;color:var(--mut);margin-top:1px}
+.rolechips{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.rc{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px}
+.rc.key{background:var(--keybg);color:#0b6e64}
+.rc.meta{background:var(--metabg);color:#8a4b08}
+.rc.none{background:var(--dangerbg);color:var(--danger)}
+/* detail */
+.dhd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.dhd h2{font-size:15px;font-weight:800;color:var(--navy)}
+.dhd .dt{font-size:11.5px;color:var(--mut);margin-top:1px}
+.showall{font-size:11.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;background:#fff;border-radius:6px;padding:5px 11px}
+.dbody{padding:14px 15px}
+.pick{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.pick .pl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}
+.keysel{border:1px solid var(--key);background:var(--keybg);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;color:#0b6e64;display:inline-flex;align-items:center;gap:7px}
+.impact{background:#f7f9fc;border:1px solid var(--line);border-radius:9px;padding:10px 13px;margin-bottom:14px}
+.impact .it{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;margin-bottom:7px}
+.impact .row{display:flex;gap:16px;flex-wrap:wrap}
+.impact .ii{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink)}
+.impact .ii svg{width:13px;height:13px;color:var(--ok)}
+.impact .exp{font-size:11px;color:var(--mut);margin-top:7px;font-family:ui-monospace,Menlo,monospace}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;padding:7px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid #eef1f5;font-size:12.5px;vertical-align:top}
+.fname{font-weight:700;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.ftype{font-size:11px;color:var(--mut)}
+.rolepill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:5px}
+.rolepill.key{background:var(--navy);color:#fff}
+.rolepill.meta{background:var(--metabg);color:#8a4b08}
+.behav{font-size:11.5px;color:var(--mut);max-width:290px}
+.behav.strong{color:var(--ink)}
+.change{font-size:11.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;background:#fff;border-radius:6px;padding:4px 11px}
+.onlynote{font-size:11.5px;color:var(--mut);padding:8px 10px;font-style:italic}
+.filters3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.fcard{border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:#fbfcfe}
+.fcard .ft{font-weight:700;font-size:12.5px;color:var(--navy)}
+.fcard .fd{font-size:11.5px;color:var(--mut);margin-top:3px}
+.fcard.metaonly{background:var(--metabg);border-color:#eccfa6}
+.fcard.metaonly .ft{color:#8a4b08}
+.dfoot{padding:10px 15px;border-top:1px solid var(--line);font-size:11px;color:var(--mut);background:#fbfcfe}
+</style></head>
+<body><div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#" class="on">3 · Entity Model</a>
+    <a href="#">4 · Data Handoffs</a>
+    <a href="#">5 · Downstream</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 3 · Entity Model — Identity Role Lens</div>
+  <div class="sub">Default "No role" fields are quiet. Start from assigned roles + deterministic filters; reveal the full table only when needed.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Entities</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Persistence IDs</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Metadata roles</div></div>
+    <div class="stat hid"><div class="n">39</div><div class="l">No-role fields hidden</div></div>
+  </div>
+
+  <div class="split">
+    <!-- entity list -->
+    <section class="panel">
+      <div class="phd"><div><h2>Entities</h2><div class="pd">Assigned roles shown as chips</div></div></div>
+      <div class="ecard sel">
+        <div class="en">Account</div><div class="em">12 fields · 2 assigned roles</div>
+        <div class="rolechips"><span class="rc key">🔑 persistence_id</span><span class="rc meta">business_key</span></div>
+      </div>
+      <div class="ecard">
+        <div class="en">Customer</div><div class="em">9 fields · 1 assigned role</div>
+        <div class="rolechips"><span class="rc key">🔑 persistence_id</span></div>
+      </div>
+      <div class="ecard">
+        <div class="en">Transaction</div><div class="em">23 fields · 2 assigned roles</div>
+        <div class="rolechips"><span class="rc key">🔑 persistence_id</span><span class="rc meta">parent_reference</span></div>
+      </div>
+    </section>
+
+    <!-- detail -->
+    <section class="panel">
+      <div class="dhd">
+        <div><h2>Account roles</h2><div class="dt">Only non-default roles are shown. "No role" is still preserved for every other field.</div></div>
+        <div style="display:flex;gap:8px;align-items:center"><span class="kaoff">● Knowledge Assist: Off</span><span class="showall">Show all 12 fields</span></div>
+      </div>
+      <div class="dbody">
+        <div class="pick"><span class="pl">Persistence identity</span><span class="keysel">🔑 accountId (string)</span></div>
+        <div class="impact">
+          <div class="it">Generation impact of this decision</div>
+          <div class="row">
+            <span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Java <code>@Id</code></span>
+            <span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>DB primary key</span>
+            <span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>Repository lookup</span>
+            <span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>CRUD route identity</span>
+          </div>
+          <div class="exp">exports to → identity_overrides</div>
+        </div>
+        <table>
+          <thead><tr><th>Field</th><th>Role</th><th>Current Engine behavior</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="fname">accountId</div><div class="ftype">string · required</div></td>
+              <td><span class="rolepill key">persistence_id</span></td>
+              <td><div class="behav strong">Drives Java <code>@Id</code>, DB primary key, and API identity via <code>identity_overrides</code>.</div></td>
+              <td><span class="change">Change</span></td>
+            </tr>
+            <tr>
+              <td><div class="fname">externalAccountNumber</div><div class="ftype">string</div></td>
+              <td><span class="rolepill meta">business_key</span></td>
+              <td><div class="behav">Metadata-only export. No generated-app behavior yet.</div></td>
+              <td><span class="change">Change</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="onlynote">↳ 10 more fields are "No role" (default) — hidden to keep this focused. Use "Show all 12 fields" to review them.</div>
+
+        <div class="filters3">
+          <div class="fcard"><div class="ft">ID-looking fields · 3</div><div class="fd">Deterministic matches by name/type (…Id, …Number, uuid). A <b>filter</b> to review — not an assignment.</div></div>
+          <div class="fcard"><div class="ft">Required fields · 5</div><div class="fd">Review the required fields without opening all optional ones.</div></div>
+          <div class="fcard metaonly"><div class="ft">Metadata-only reminder</div><div class="fd">Non-persistence roles do <b>not</b> change generated Java / DDL / runtime.</div></div>
+        </div>
+      </div>
+      <div class="dfoot">This lens writes the exact same Studio project state — it only changes what gets visual priority. Manifest and Engine behavior are unchanged.</div>
+    </section>
+  </div>
+</main>
+</div></body></html>

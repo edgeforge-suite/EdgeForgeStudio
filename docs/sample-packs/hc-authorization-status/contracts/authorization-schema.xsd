@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated review copy. Edit the canonical project JSON, then regenerate this file. -->
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:edgeforge:samples:authorization:v1"
+    targetNamespace="urn:edgeforge:samples:authorization:v1"
+    elementFormDefault="qualified">
+  <xs:element name="Authorization" type="tns:AuthorizationType"/>
+  <xs:complexType name="AuthorizationType">
+    <xs:sequence>
+      <xs:element name="authorizationId" type="xs:string"/>
+      <xs:element name="status" type="xs:string"/>
+      <xs:element name="serviceUnits" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

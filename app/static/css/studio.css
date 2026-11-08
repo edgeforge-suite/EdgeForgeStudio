@@ -1,0 +1,4846 @@
+/* EdgeForge Studio — shared shell + component styles */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --brand-navy: #1e3a5f;
+  --rail-bg: linear-gradient(180deg, #24466b, var(--brand-navy));
+  --rail-line: #2c5a86;
+  --rail-ink: #a9c0dd;
+  --rail-on-ink: #cfe2ff;
+  --rail-bar: #7db8ff;
+  --rail-pill: rgba(125, 184, 255, .16);
+  --rail-island-bg: #9fc3e6;
+  --rail-island-bg-strong: #9fc3e6;
+  --rail-island-border: #5f84a8;
+  --rail-island-ink: #24466b;
+  --rail-island-control: #486b8d;
+  --bg: #edf1f6;
+  --surface: #ffffff;
+  --surface-muted: #f4f7fa;
+  --surface-strong: #dce8f5;
+  --workflow-group-bg: #dcecff;
+  --workflow-group-border: #a9bed2;
+  --workflow-subsection-bg: #eaf1f7;
+  --workflow-subsection-border: #c8d6e4;
+  --workflow-row-bg: #ffffff;
+  --workflow-row-alt-bg: #edf3f8;
+  --workflow-row-border: #ccd9e6;
+  --workflow-detail-border: #d4dde7;
+  --border: #dbe2ea;
+  --border-control: #74899f;
+  --border-strong: #8eaac6;
+  --primary: #2563eb;
+  --primary-dark: #1a3465;
+  --primary-soft: #c7dcf5;
+  --text: #10233f;
+  --muted: #5e718f;
+  --success: #16814a;
+  --success-soft: #ecfdf3;
+  --warn: #b7791f;
+  --warn-soft: #fff7e8;
+  --danger: #c0392b;
+  --danger-soft: #fff1ef;
+  --ka-change-bg: #fff3cf;
+  --ka-change-border: #d59b22;
+  --ka-change-text: #6f4100;
+  --ka-satisfied-bg: #f3f6fa;
+  --ka-satisfied-border: #b9c6d4;
+  --ka-satisfied-text: #4f6075;
+  --ka-advisory-bg: #eaf3fb;
+  --ka-advisory-border: #7fa6c8;
+  --ka-advisory-text: #24506f;
+  --ka-evidence-bg: #e6f6f4;
+  --ka-evidence-border: #3b9b90;
+  --ka-evidence-text: #125b55;
+  --ka-attention-bg: #fff0e8;
+  --ka-attention-border: #d56f43;
+  --ka-attention-text: #8a3316;
+  --shadow-sm: 0 1px 3px rgba(10, 20, 40, .07);
+  --shadow-md: 0 10px 28px rgba(19, 39, 67, .16);
+  --shadow-lg: 0 20px 56px rgba(19, 39, 67, .22);
+  --radius: 8px;
+  --radius-lg: 14px;
+  --transition: 130ms cubic-bezier(.2, .7, .3, 1);
+  /* Studio UX Refresh (Action-5) design tokens — inert until PR-06 applies them. */
+  /* zone tints — by ROLE, never by family (D1 merged: shared palette @ moderate intensity) */
+  --zone-scan: #eaf0f8;
+  --zone-editor: #ffffff;
+  --zone-derived: #f3ecfd;
+  --zone-derived-line: #ddd0f2;
+  --derived-ink: #6d47c9;
+  --zone-attn: #fdf0d8;
+  --zone-attn-line: #eccf97;
+  --zone-ready: #e8f2f2;
+  /* One step darker than --muted (#5e718f), for normal-size muted text ON a
+     zone tint: shipped --muted measures 4.30-4.40:1 on the four zone tints
+     above (just under AA 4.5), while --muted-on-tint measures >=5.1:1 on all
+     four (verified via WCAG relative luminance). Decorative/border uses of
+     --muted are unaffected — this is for readable text only. Per the B1
+     design-system reference (§3 finding a), routed to land here since PR-06
+     is the first PR to actually place muted text on a tint. */
+  --muted-on-tint: #546580;
+  /* family accents — element-level ONLY (monogram tile, 3px left border, ribbon, legend) */
+  --fam-rest: #0d9488;
+  --fam-fixed: #15803d;
+  --fam-csv: #4f46e5;
+  --fam-xml: #b45309;
+  --fam-soap: #1e3a5f;
+  --fam-staging: #475569;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.hidden { display: none !important; }
+.flex { display: flex; }
+.gap-2 { gap: 8px; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.text-muted { color: var(--muted); }
+.text-sm { font-size: 12px; }
+.w-full { width: 100%; }
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+}
+
+.shell-sidebar {
+  background: var(--rail-bg);
+  border-right: 1px solid var(--rail-line);
+  padding: 22px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-color: var(--rail-bar) var(--brand-navy);
+  scrollbar-gutter: stable;
+}
+
+.sidebar-brand {
+  display: flex;
+  height: 128px;
+  min-height: 128px;
+  padding: 14px;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--rail-island-border);
+  border-radius: 16px;
+  background: var(--rail-island-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-brand-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.sidebar-brand-ef {
+  color: #0645ad;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .35);
+}
+
+.sidebar-file-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.sidebar-brand-tagline {
+  margin: 0;
+  color: var(--rail-island-ink);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+
+.wizard-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wizard-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  height: 60px;
+  min-height: 60px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(207, 226, 255, .48);
+  color: #ffffff;
+  background: rgba(207, 226, 255, .18);
+  box-shadow: 0 1px 2px rgba(10, 20, 40, .12);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), color var(--transition), transform var(--transition);
+}
+
+.wizard-nav-link:hover {
+  text-decoration: none;
+  background: rgba(207, 226, 255, .24);
+  border-color: rgba(207, 226, 255, .72);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(10, 20, 40, .18);
+  transform: translateX(2px);
+}
+
+.wizard-nav-link.is-not-applicable {
+  color: var(--rail-on-ink);
+  background: rgba(207, 226, 255, .10);
+  border-color: rgba(207, 226, 255, .24);
+  cursor: default;
+}
+
+.wizard-nav-link.is-not-applicable:hover {
+  box-shadow: 0 1px 2px rgba(10, 20, 40, .12);
+  transform: none;
+}
+
+.wizard-nav-link.is-active {
+  background: rgba(125, 184, 255, .26);
+  border-color: var(--rail-bar);
+  color: #ffffff;
+  box-shadow: inset 3px 0 0 var(--rail-bar), 0 4px 14px rgba(10, 20, 40, .18);
+}
+
+.wizard-nav-link.is-complete {
+  background: rgba(207, 226, 255, .18);
+  border-color: rgba(207, 226, 255, .48);
+}
+
+.wizard-nav-link.is-warning {
+  background: rgba(207, 226, 255, .18);
+  border-color: rgba(207, 226, 255, .48);
+}
+
+.wizard-nav-marker {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid rgba(207, 226, 255, .64);
+  color: #ffffff;
+  background: rgba(10, 20, 40, .18);
+}
+
+.wizard-nav-link.is-active .wizard-nav-marker {
+  color: var(--brand-navy);
+  background: var(--rail-bar);
+  border-color: var(--rail-bar);
+}
+
+.wizard-nav-link.is-complete .wizard-nav-marker {
+  color: var(--success);
+  border-color: rgba(22, 129, 74, 0.2);
+  background: var(--success-soft);
+}
+
+.wizard-nav-link.is-warning .wizard-nav-marker {
+  color: #96450a;
+  border-color: #96450a;
+  background: var(--warn-soft);
+}
+
+.wizard-nav-link.is-not-applicable .wizard-nav-marker {
+  color: var(--rail-on-ink);
+  border-color: rgba(207, 226, 255, .42);
+  background: rgba(10, 20, 40, .12);
+}
+
+.wizard-nav-copy {
+  align-self: stretch;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  text-align: left;
+}
+
+.wizard-nav-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit;
+}
+
+.wizard-nav-meta {
+  margin-top: 0;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--rail-on-ink);
+}
+
+.sidebar-project-file {
+  margin-top: auto;
+  display: block;
+  height: 128px;
+  min-height: 128px;
+  padding: 14px;
+  border: 1px solid var(--rail-island-border);
+  border-radius: 16px;
+  background: var(--rail-island-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-section-label {
+  font-size: 11px;
+  color: var(--rail-island-ink);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+}
+
+.shell-sidebar .sidebar-file-btn {
+  width: 100%;
+  height: 32px;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  border-color: var(--rail-island-control);
+  background: var(--surface-muted);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.shell-sidebar .sidebar-file-btn:hover {
+  border-color: var(--primary);
+  background: #e8edf3;
+  color: var(--text);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.shell-workspace {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.shell-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--rail-island-border);
+  background: var(--rail-island-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.shell-header::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shell-header-title-group {
+  min-width: 0;
+}
+
+.shell-kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--rail-island-ink);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.shell-project-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.shell-project-context {
+  margin-top: 4px;
+  color: var(--rail-island-ink);
+  font-size: 13px;
+}
+
+.shell-header-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.shell-data-handling-toggle {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.shell-data-handling-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.shell-data-handling-toggle::after {
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: "";
+  transform: translateY(-1px) rotate(45deg);
+  transition: transform var(--transition);
+}
+
+.shell-data-handling[open] .shell-data-handling-toggle::after {
+  transform: translateY(2px) rotate(225deg);
+}
+
+.shell-data-handling-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 24px;
+  z-index: 20;
+  box-sizing: border-box;
+  width: min(380px, calc(100vw - 48px));
+  max-height: min(50vh, 300px);
+  margin: 0;
+  overflow: auto;
+  border-color: var(--border-strong);
+  background: #fff;
+  color: var(--text);
+  box-shadow: var(--shadow-md);
+}
+
+.shell-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  background: #fff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.shell-step-indicator {
+  background: var(--workflow-subsection-bg);
+  border-color: var(--workflow-subsection-border);
+  color: var(--primary-dark);
+}
+
+.shell-toggle-btn {
+  white-space: nowrap;
+}
+
+.shell-body {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 0;
+}
+
+body[data-shell-rail="expanded"] .shell-body {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.shell-main {
+  min-width: 0;
+  padding: 24px;
+}
+
+.shell-right-rail {
+  border-left: 1px solid var(--border);
+  background: var(--surface-muted);
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 200ms cubic-bezier(.2, .7, .3, 1), transform 200ms cubic-bezier(.2, .7, .3, 1);
+}
+
+body[data-shell-rail="expanded"] .shell-right-rail {
+  max-width: 320px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.shell-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px 0;
+}
+
+.shell-panel-header h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.shell-panel-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.shell-panel-close {
+  flex-shrink: 0;
+}
+
+.shell-panel-body {
+  padding: 16px 18px 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.shell-scaffold-panel,
+.shell-drawer-panel {
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.shell-scaffold-panel h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.shell-scaffold-panel p,
+.shell-drawer-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.shell-bottom-drawer {
+  border-top: 1px solid var(--border);
+  background: rgba(237, 243, 250, 0.96);
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: transform 200ms cubic-bezier(.2, .7, .3, 1), opacity 200ms cubic-bezier(.2, .7, .3, 1);
+}
+
+body[data-shell-drawer="expanded"] .shell-bottom-drawer {
+  max-height: min(70vh, 640px);
+  opacity: 1;
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+.shell-drawer-tabs {
+  padding: 0 18px;
+  margin-bottom: 0;
+}
+
+.shell-drawer-panel {
+  margin: 0 18px 18px;
+}
+
+.shell-bottom-drawer .shell-drawer-panel.active {
+  min-height: 0;
+  max-height: min(54vh, 500px);
+  overflow-y: auto;
+}
+
+.kickoff-card,
+.step-surface {
+  padding: 28px;
+}
+
+.kickoff-header,
+.step-surface-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.kickoff-next-step,
+.step-surface-kicker {
+  min-width: 220px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.kickoff-section-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.kickoff-next-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.kickoff-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, .9fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.kickoff-form-column {
+  min-width: 0;
+}
+
+.kickoff-archetype-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.kickoff-archetype-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition), background var(--transition);
+}
+
+.kickoff-archetype-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), var(--shadow-sm);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.kickoff-archetype-card:has(input[type="radio"]:checked) {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), var(--shadow-sm);
+}
+
+.kickoff-archetype-card input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+.kickoff-archetype-radio {
+  padding-top: 2px;
+}
+
+.kickoff-archetype-copy {
+  min-width: 0;
+}
+
+.kickoff-archetype-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.kickoff-workspace-panel {
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.kickoff-workspace-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kickoff-workspace-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.assist-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  cursor: pointer;
+  user-select: none;
+}
+
+.assist-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.assist-toggle-track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-strong);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.assist-toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+}
+
+.assist-toggle input:checked + .assist-toggle-track {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.assist-toggle input:checked + .assist-toggle-track::after {
+  transform: translateX(20px);
+}
+
+.assist-toggle input:focus-visible + .assist-toggle-track {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.kickoff-assist-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.kickoff-workspace-panel > p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.kickoff-workspace-alert {
+  margin-bottom: 0;
+}
+
+.kickoff-workspace-alert-guidance {
+  margin-top: 5px;
+}
+
+.kickoff-workspace-stats {
+  display: grid;
+  gap: 10px;
+}
+
+.kickoff-stat {
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.kickoff-stat-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.kickoff-stat-value,
+.step-surface-kicker-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.kickoff-stat-detail {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.kickoff-status-pill.is-available {
+  background: var(--success-soft);
+  border-color: rgba(22, 129, 74, 0.16);
+  color: var(--success);
+}
+
+.kickoff-status-pill.is-linked,
+.kickoff-status-pill.is-idle {
+  background: var(--primary-soft);
+  border-color: rgba(37, 99, 235, 0.16);
+  color: var(--primary-dark);
+}
+
+.kickoff-status-pill.is-degraded {
+  background: var(--warn-soft);
+  border-color: rgba(183, 121, 31, 0.18);
+  color: var(--warn);
+}
+
+.kickoff-workspace-note {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.10);
+  color: var(--text);
+  font-size: 13px;
+  border: 1px solid rgba(26, 52, 101, 0.14);
+}
+
+.step-section-card {
+  padding: 18px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+
+.step-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.step-section-heading h3,
+.step-section-heading h4 {
+  margin: 0 0 4px;
+}
+
+.step-section-heading p {
+  margin: 0;
+}
+
+.step-section-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.step-tab-strip {
+  margin-bottom: 18px;
+}
+
+.step-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.disclosure-card {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.disclosure-card summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.disclosure-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure-card summary::after {
+  content: '';
+  float: right;
+  width: 8px;
+  height: 8px;
+  margin: 5px 3px 0 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--primary-dark);
+  transform: rotate(-45deg);
+  transform-origin: center;
+  transition: transform var(--transition);
+}
+
+.disclosure-card[open] summary::after,
+.disclosure-card.is-open summary::after {
+  transform: rotate(45deg);
+}
+
+.disclosure-card-body {
+  padding: 0 14px 14px;
+}
+
+.shell-inline-actions {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shell-inline-field {
+  flex: 1 1 180px;
+}
+
+.shell-inline-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.shell-rail-panel {
+  display: none;
+}
+
+.shell-rail-panel.shell-rail-panel-active {
+  display: block;
+}
+
+.shell-rail-panel-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.shell-rail-panel-title-row h4 {
+  margin: 0 0 4px;
+}
+
+.shell-rail-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.ka-summary-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ka-summary-row {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 12px;
+}
+
+.ka-summary-row-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ka-summary-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.ka-summary-counts span {
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  padding: 4px 8px;
+}
+
+.step-heading-actions,
+.ka-suggestion-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ka-suggestion-badge-row {
+  justify-content: flex-start;
+  margin: -8px 0 18px;
+}
+
+.ka-suggestion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(10, 20, 40, 0.08);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), color var(--transition), transform var(--transition);
+}
+
+.ka-suggestion-badge:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), var(--shadow-sm);
+}
+
+.ka-suggestion-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ka-suggestion-drawer.hidden {
+  display: none;
+}
+
+.ka-suggestion-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.32);
+}
+
+.ka-suggestion-drawer-panel {
+  position: relative;
+  width: min(560px, 100%);
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ka-suggestion-drawer:not(.hidden) .ka-suggestion-drawer-panel {
+  animation: ka-suggestion-drawer-enter 200ms cubic-bezier(.2, .7, .3, 1) both;
+}
+
+@keyframes ka-suggestion-drawer-enter {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ka-suggestion-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-muted);
+}
+
+.ka-suggestion-drawer-header h3 {
+  margin: 4px 0;
+}
+
+.ka-suggestion-drawer-body {
+  padding: 20px 24px 28px;
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+}
+
+.ka-suggestion-loading,
+.ka-suggestion-empty {
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 16px;
+  color: var(--muted);
+}
+
+.ka-suggestion-scope {
+  display: grid;
+  gap: 12px;
+}
+
+.ka-suggestion-scope-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ka-suggestion-row {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  padding: 14px;
+}
+
+.ks-suggestion-card-compact {
+  padding: 12px;
+}
+
+.ka-compact-summary {
+  margin-top: 10px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ks-suggestion-card-noop,
+.ka-suggestion-row-noop {
+  background: linear-gradient(180deg, #fff, #f8fafc);
+  border-style: dashed;
+  box-shadow: none;
+  opacity: 0.82;
+}
+
+.ka-card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ka-card-category {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 5px 8px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px rgba(10, 20, 40, 0.06);
+}
+
+.ka-category-generated,
+.ka-taxonomy-change {
+  background: var(--ka-change-bg);
+  border-color: var(--ka-change-border);
+  color: var(--ka-change-text);
+}
+
+.ka-category-advisory,
+.ka-taxonomy-advisory {
+  background: var(--ka-advisory-bg);
+  border-color: var(--ka-advisory-border);
+  color: var(--ka-advisory-text);
+}
+
+.ka-category-review,
+.ka-taxonomy-attention {
+  background: var(--ka-attention-bg);
+  border-color: var(--ka-attention-border);
+  color: var(--ka-attention-text);
+}
+
+.ka-category-satisfied,
+.ka-taxonomy-satisfied {
+  background: var(--ka-satisfied-bg);
+  border-color: var(--ka-satisfied-border);
+  color: var(--ka-satisfied-text);
+  box-shadow: none;
+}
+
+.ka-category-evidence,
+.ka-taxonomy-evidence {
+  background: var(--ka-evidence-bg);
+  border-color: var(--ka-evidence-border);
+  color: var(--ka-evidence-text);
+}
+
+.ka-suggestion-row-noop .ka-card-category,
+.ks-suggestion-card-noop .ka-card-category {
+  opacity: 0.85;
+}
+
+.ka-suggestion-impact {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  padding: 10px 12px;
+}
+
+.ka-suggestion-impact ul {
+  margin: 6px 0 0 18px;
+  padding: 0;
+}
+
+.ka-suggestion-impact-muted {
+  background: #f8fafc;
+  color: var(--muted);
+}
+
+.ka-field-delta-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ka-field-delta-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.8fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+}
+
+.ka-field-delta-row-matched {
+  background: #f8fafc;
+  color: var(--muted);
+}
+
+.ka-field-delta-row strong,
+.ka-description-compare strong {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.ka-field-delta-label {
+  font-weight: 800;
+}
+
+.ka-field-delta-label small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.ka-field-delta-row code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ka-suggestion-detail-section {
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.ka-suggestion-detail-section:first-of-type {
+  border-top: 0;
+  margin-top: 8px;
+  padding-top: 0;
+}
+
+.ka-suggestion-detail-section h5 {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.ka-suggestion-detail-list {
+  margin: 6px 0 10px 18px;
+  padding: 0;
+}
+
+.ka-suggestion-raw-json {
+  margin-top: 10px;
+}
+
+.ka-description-editor {
+  grid-column: span 1;
+}
+
+.ka-description-editor textarea {
+  min-height: 92px;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+.ka-description-compare {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 8px;
+}
+
+.ka-description-compare div {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+  padding: 8px;
+}
+
+.ka-description-compare p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ka-suggestion-row-topline,
+.ka-suggestion-row-meta,
+.ka-suggestion-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ka-suggestion-row-topline {
+  justify-content: space-between;
+}
+
+.ka-suggestion-row h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.ka-suggestion-row p {
+  margin: 10px 0 0;
+}
+
+.ka-suggestion-details {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ka-suggestion-details summary {
+  cursor: pointer;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+
+.ka-suggestion-details pre {
+  white-space: pre-wrap;
+  max-height: 220px;
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+}
+
+.ka-suggestion-row-meta {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ka-suggestion-row-actions {
+  margin-top: 12px;
+}
+
+.ka-suggestion-review-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 12px 14px;
+}
+
+.ka-suggestion-edit {
+  margin-top: 12px;
+}
+
+.ka-suggestion-edit summary {
+  cursor: pointer;
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.ka-suggestion-edit textarea {
+  width: 100%;
+  margin-top: 8px;
+  font-family: var(--mono-font, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12px;
+}
+
+.ka-suggestion-scope-badge {
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 8px;
+}
+
+.step3-ka-full-review {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 28px;
+}
+
+.step3-ka-full-review.hidden {
+  display: none;
+}
+
+.step3-ka-full-review-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.40);
+}
+
+.step3-ka-full-review-panel {
+  position: relative;
+  width: min(1180px, 100%);
+  max-height: calc(100vh - 56px);
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr;
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.step3-ka-full-review-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 4% 10%, rgba(37, 99, 235, 0.12), transparent 34%),
+    linear-gradient(135deg, #f8fafc, #eef6ff);
+}
+
+.step3-ka-full-review-header h3 {
+  margin: 4px 0;
+}
+
+.step3-ka-full-review-header p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.step3-ka-full-review-toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-muted);
+}
+
+.step3-ka-full-review-toolbar label,
+.step3-ka-edit-grid label,
+.step3-ka-description-wide label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.step3-ka-full-review-savebar {
+  margin: 14px 24px 0;
+}
+
+.step3-ka-full-review-panel > .alert {
+  margin: 12px 24px 0;
+}
+
+.step3-ka-full-review-body {
+  display: grid;
+  gap: 14px;
+  padding: 16px 24px 24px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.step3-ka-review-table-shell {
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.step3-ka-review-table {
+  width: 100%;
+  min-width: 1040px;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.step3-ka-review-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.step3-ka-review-table th,
+.step3-ka-review-table td {
+  vertical-align: top;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.step3-ka-review-table th:nth-child(1),
+.step3-ka-review-table td:nth-child(1) {
+  width: 96px;
+}
+
+.step3-ka-review-table th:nth-child(5),
+.step3-ka-review-table td:nth-child(5),
+.step3-ka-review-table th:nth-child(6),
+.step3-ka-review-table td:nth-child(6) {
+  width: 92px;
+}
+
+.step3-ka-review-table th:nth-child(7),
+.step3-ka-review-table td:nth-child(7) {
+  width: 190px;
+}
+
+.step3-ka-review-table-row:hover td {
+  background: #fbfdff;
+}
+
+.step3-ka-review-value,
+.ka-line-clamp-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.step3-ka-review-value {
+  -webkit-line-clamp: 2;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ka-line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.step3-ka-review-actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.step3-ka-review-details-row td {
+  padding: 0 10px 10px;
+  background: #fbfdff;
+}
+
+.step3-ka-review-details-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px;
+}
+
+.ka-card-category-compact {
+  white-space: nowrap;
+  font-size: 11px;
+  padding: 4px 7px;
+}
+
+.text-xs {
+  font-size: 11px;
+}
+
+.btn.btn-xs {
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.step3-ka-review-row {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+.step3-ka-review-row-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.step3-ka-review-row-header h4 {
+  margin: 8px 0 0;
+}
+
+.step3-ka-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.step3-ka-description-wide {
+  margin-top: 12px;
+}
+
+.step3-ka-description-wide textarea {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 860px) {
+  .step3-ka-full-review {
+    padding: 10px;
+  }
+
+  .step3-ka-full-review-panel {
+    max-height: calc(100vh - 20px);
+    border-radius: 16px;
+  }
+
+  .step3-ka-full-review-toolbar,
+  .step3-ka-edit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pattern-toggle-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pattern-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.advisory-issues-card {
+  border-color: rgba(183, 121, 31, 0.16);
+  background: linear-gradient(180deg, #fffdfa 0%, #fffaf0 100%);
+}
+
+.advisory-issues-empty {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border-color: var(--border);
+}
+
+.issues-summary-strip {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.issues-summary-strip-compact {
+  margin-bottom: 0;
+}
+
+.issues-summary-pill {
+  min-width: 120px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(183, 121, 31, 0.16);
+  background: rgba(255, 255, 255, 0.82);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.issues-summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.issues-summary-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.issues-group-stack,
+.issue-row-stack,
+.conflicts-rail-summary {
+  display: grid;
+  gap: 12px;
+}
+
+.issue-group-card {
+  border: 1px solid rgba(183, 121, 31, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 16px;
+}
+
+.issue-group-header,
+.issue-row-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.issue-group-header h4 {
+  margin: 0 0 4px;
+}
+
+.issue-group-header p,
+.issue-row p {
+  margin: 0;
+}
+
+.issue-row {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(183, 121, 31, 0.14);
+  background: rgba(255, 251, 235, 0.66);
+}
+
+.issue-row-entity {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.issue-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.issue-rail-group {
+  padding: 12px 14px;
+  border: 1px solid rgba(183, 121, 31, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.issue-rail-group-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.issue-rail-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(217, 228, 242, 0.8);
+  color: var(--text);
+}
+
+.issue-rail-link:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.issue-rail-link:last-of-type {
+  padding-bottom: 0;
+}
+
+.issue-rail-link:hover {
+  text-decoration: none;
+  color: var(--primary-dark);
+}
+
+.entity-rules-card,
+.rules-list-container,
+.rule-row,
+.rule-extras {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.rule-row {
+  grid-template-columns: minmax(160px, 0.8fr) minmax(180px, 0.9fr) minmax(220px, 2fr) auto !important;
+  overflow-wrap: anywhere;
+}
+
+.rule-row input,
+.rule-row select,
+.rule-row textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.rule-extras > div {
+  min-width: 0;
+}
+
+.rule-extras > div[style*="grid-template-columns"] {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+}
+
+@media (max-width: 1180px) {
+  .rule-row {
+    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) !important;
+  }
+
+  .rule-row > .rule-extras {
+    grid-column: 1 / -1;
+  }
+
+  .rule-row > button {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 760px) {
+  .rule-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .rule-row > .rule-extras,
+  .rule-row > button {
+    grid-column: auto;
+  }
+}
+
+.review-step-surface {
+  gap: 0;
+}
+
+.review-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.review-summary-strip-compact {
+  margin-bottom: 0;
+}
+
+.review-summary-card {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-strong);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.review-summary-card.is-ready {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.review-summary-card.is-warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.review-summary-card.is-manual {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.review-summary-card.is-info {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.review-summary-card.is-success {
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+}
+
+.review-summary-card.is-accent {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.review-summary-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.review-summary-label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+}
+
+.review-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, .9fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.review-posture-card {
+  background: var(--surface);
+}
+
+.review-posture-grid,
+.review-kv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.review-posture-item,
+.review-kv-item {
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  display: grid;
+  gap: 4px;
+}
+
+.review-posture-item-label,
+.review-kv-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.review-posture-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.review-project-summary-card {
+  margin-bottom: 0;
+}
+
+.review-drawer-panel {
+  min-height: 0;
+}
+
+.review-drawer-heading {
+  margin-bottom: 14px;
+}
+
+.review-drawer-heading h4,
+.review-drawer-section h5 {
+  margin: 0 0 4px;
+}
+
+.review-drawer-heading p,
+.review-drawer-note {
+  margin: 0;
+}
+
+.decision-history-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.decision-history-filter {
+  align-items: center;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  line-height: 1;
+  padding: 8px 10px;
+}
+
+.decision-history-filter span {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 2px 6px;
+}
+
+.decision-history-filter.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.decision-history-filter-empty {
+  margin-top: 12px;
+}
+
+.review-history-row code,
+.review-drawer-section code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+body.ux-refresh .drawer-table-shell .review-history-row:nth-child(odd) > td {
+  background: var(--workflow-row-bg);
+}
+
+body.ux-refresh .drawer-table-shell .review-history-row:nth-child(even) > td {
+  background: var(--workflow-row-alt-bg);
+}
+
+body.ux-refresh .drawer-table-shell .review-history-row:hover > td {
+  background: var(--workflow-subsection-bg);
+}
+
+.review-drawer-code {
+  max-height: 360px;
+}
+
+.drawer-table-shell {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 520px;
+}
+
+.review-drawer-section + .review-drawer-section {
+  margin-top: 18px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.card .subtitle {
+  color: var(--muted);
+  margin: 0 0 20px;
+  font-size: 13px;
+}
+
+.card-grid,
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field { margin-bottom: 16px; }
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.field .hint,
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+input[type=text],
+input[type=url],
+input[type=number],
+input[type=file],
+input[type=search],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--text);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+input[type=text]:focus,
+input[type=url]:focus,
+input[type=number]:focus,
+input[type=file]:focus,
+input[type=search]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.btn:hover { text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border-color: #1d4ed8;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  border-color: #1d4ed8;
+  box-shadow: 0 8px 18px rgba(29, 78, 216, .24);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled,
+.btn-primary:disabled:hover {
+  background: var(--surface-muted);
+  color: var(--muted);
+  border-color: var(--border-control);
+  box-shadow: none;
+  transform: translateY(0);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--surface-muted);
+  color: var(--text);
+  border-color: var(--border-control);
+}
+
+.btn-secondary:hover {
+  background: #e8edf3;
+  border-color: var(--border-control);
+}
+.btn-success { background: var(--success); color: #fff; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+th {
+  text-align: left;
+  font-weight: 700;
+  padding: 8px 10px;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #edf2f8;
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-entity { background: #dbeafe; color: #1e40af; }
+.badge-dto { background: #f3f4f6; color: #374151; }
+.badge-infra { background: #fef3c7; color: #92400e; }
+.badge-draft { background: #fef3c7; color: #b45309; }
+.badge-confirmed,
+.badge-ready { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #b45309; }
+.badge-manual { background: #fee2e2; color: #b91c1c; }
+
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-size: 13px;
+  border: 1px solid transparent;
+}
+
+.alert-info { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; }
+.alert-warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.alert-error { background: #fef2f2; border-color: #fecaca; color: #7f1d1d; }
+.alert-success { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+
+.audit-health-banner {
+  padding: 12px 20px;
+  border-bottom: 1px solid #f59e0b;
+  background: #fffbeb;
+  color: #78350f;
+  font-size: 13px;
+}
+
+.data-handling-notice {
+  margin: 10px 0 14px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+pre, code {
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+  font-size: 12px;
+}
+
+pre {
+  background: #10233f;
+  color: #e5eefb;
+  padding: 16px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.mapping-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.mapping-row input { margin: 0; }
+
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #edf2f8;
+}
+
+.check-list li:last-child { border-bottom: none; }
+.check-list label { cursor: pointer; flex: 1; }
+
+.step-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e2e8f0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Step 8 boxed layout */
+
+.s8-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-top: 18px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .05);
+}
+
+.s8-box-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.s8-chip {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s8-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.s8-action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.s8-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.s8-meta-item {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.s8-divider {
+  height: 1px;
+  background: #edf0f5;
+  margin: 14px 0;
+}
+
+.s8-log {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.s8-routes-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.s8-reset {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.s8-visibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.s8-surface-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(255, 255, 255, 0.98));
+}
+
+.s8-surface-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.s8-surface-title {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.s8-surface-copy {
+  margin: 0 0 12px;
+}
+
+.s8-empty-state {
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.s8-path-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+.s8-inline-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #1d4ed8;
+}
+
+.s8-artifact-list {
+  display: grid;
+  gap: 10px;
+}
+
+.s8-artifact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.s8-artifact-row.is-provenance {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+.s8-artifact-main {
+  min-width: 0;
+}
+
+.s8-artifact-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.s8-artifact-kind {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e0ecff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.s8-artifact-name {
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.s8-artifact-summary {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.s8-artifact-actions {
+  flex-shrink: 0;
+}
+
+.s8-checkpoint-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.s8-checkpoint-item {
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.s8-checkpoint-item dt {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.s8-checkpoint-item dd {
+  margin: 0;
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.pipeline-track {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 12px 0 0;
+}
+
+.pipeline-step {
+  flex: 1;
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #f9fafb;
+  color: #6b7280;
+  border-right: 1px solid #d1d5db;
+  transition: background var(--transition), color var(--transition);
+}
+
+.pipeline-step:last-child { border-right: none; }
+.pipeline-step.running { background: #eff6ff; color: #2563eb; }
+.pipeline-step.ok      { background: #f0fdf4; color: #16a34a; }
+.pipeline-step.warn    { background: #fffbeb; color: #d97706; }
+.pipeline-step.fail    { background: #fef2f2; color: #dc2626; }
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.ok      { background: #dcfce7; color: #166534; }
+.status-badge.warn    { background: #fef3c7; color: #92400e; }
+.status-badge.fail    { background: #fee2e2; color: #991b1b; }
+.status-badge.running { background: #dbeafe; color: #1d4ed8; }
+
+/* Knowledge Workspace v3 */
+
+.knowledge-workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.knowledge-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.knowledge-header h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.knowledge-header .subtitle {
+  margin: 0;
+  color: var(--muted);
+  max-width: 760px;
+}
+
+.knowledge-header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.knowledge-namespace-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.knowledge-meta-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.knowledge-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.knowledge-panel {
+  min-width: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+}
+
+.knowledge-library-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.knowledge-detail-panel {
+  min-height: 560px;
+}
+
+.knowledge-panel-heading,
+.knowledge-section-title,
+.knowledge-result-topline,
+.knowledge-detail-title-row,
+.knowledge-modal-header,
+.knowledge-modal-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.knowledge-panel-heading h3,
+.knowledge-section-title h4,
+.knowledge-detail-title-row h4,
+.knowledge-modal-header h3 {
+  margin: 0 0 4px;
+}
+
+.knowledge-panel-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.knowledge-search-form {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.knowledge-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.knowledge-filter-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.knowledge-library-section,
+.knowledge-detail-section {
+  display: grid;
+  gap: 12px;
+}
+
+.knowledge-library-section + .knowledge-library-section,
+.knowledge-detail-section + .knowledge-detail-section {
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.knowledge-disclosure {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.knowledge-disclosure summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  cursor: pointer;
+  font-weight: 800;
+  list-style: none;
+}
+
+.knowledge-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.knowledge-doc-list,
+.knowledge-field-list,
+.knowledge-result-stack {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.knowledge-doc-row,
+.knowledge-field-row,
+.knowledge-entity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text);
+  background: var(--surface-muted);
+}
+
+.knowledge-doc-row {
+  justify-content: space-between;
+}
+
+.knowledge-doc-main {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  gap: 10px;
+  min-width: 0;
+  color: inherit;
+}
+
+.knowledge-doc-main:hover {
+  text-decoration: none;
+}
+
+.knowledge-doc-remove-form {
+  flex: 0 0 auto;
+}
+
+.knowledge-doc-row:hover,
+.knowledge-field-row:hover,
+.knowledge-entity-row:hover,
+.knowledge-doc-row.is-active,
+.knowledge-field-row.is-active,
+.knowledge-entity-row.is-active {
+  text-decoration: none;
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.knowledge-doc-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.knowledge-doc-copy span,
+.knowledge-field-row span,
+.knowledge-more-note,
+.knowledge-empty-line {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.knowledge-status-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.knowledge-status-dot.is-ready {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.knowledge-status-dot.is-indexing {
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+}
+
+.knowledge-status-dot.is-failed {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.knowledge-field-row,
+.knowledge-entity-row {
+  justify-content: space-between;
+}
+
+.knowledge-empty-state,
+.knowledge-detail-empty {
+  padding: 18px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+
+.knowledge-detail-empty {
+  min-height: 420px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.knowledge-detail-empty h4,
+.knowledge-detail-empty p {
+  margin: 0;
+}
+
+.knowledge-detail-empty p {
+  margin-top: 6px;
+}
+
+.knowledge-result-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.knowledge-snippet,
+.knowledge-document-preview {
+  white-space: pre-wrap;
+  max-height: 420px;
+}
+
+.knowledge-snippet {
+  margin-top: 10px;
+  max-height: 160px;
+}
+
+.knowledge-detail-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.knowledge-detail-meta-grid > div {
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+}
+
+.knowledge-detail-meta-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 4px;
+}
+
+.knowledge-field-description {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.knowledge-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(10, 20, 40, 0.42);
+}
+
+.knowledge-modal-card {
+  width: min(560px, 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  padding: 22px;
+}
+
+.knowledge-upload-dropzone {
+  padding: 18px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  margin-bottom: 16px;
+}
+
+.knowledge-upload-dropzone p {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.knowledge-supported-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.knowledge-supported-types span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 1180px) {
+  .app-shell {
+    grid-template-columns: 224px minmax(0, 1fr);
+  }
+
+  body[data-shell-rail="expanded"] .shell-body {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .sidebar-brand {
+    height: 88px;
+    min-height: 88px;
+    padding: 8px 4px;
+    text-align: center;
+  }
+
+  .sidebar-brand-title {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .sidebar-brand-ef {
+    display: block;
+  }
+
+  .sidebar-brand-studio,
+  .sidebar-file-btn-label {
+    display: none;
+  }
+
+  .sidebar-project-file {
+    height: 88px;
+    min-height: 88px;
+    padding: 8px 6px;
+  }
+
+  .sidebar-brand p,
+  .wizard-nav-copy,
+  .sidebar-section-label {
+    display: none;
+  }
+
+  .wizard-nav-link,
+  .wizard-nav-link.is-not-applicable {
+    height: 46px;
+    min-height: 46px;
+    justify-content: center;
+    padding: 12px 8px;
+  }
+
+  .wizard-nav-marker {
+    position: static;
+  }
+
+  .sidebar-file-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-sidebar {
+    position: static;
+    height: auto;
+    overflow-y: visible;
+    scrollbar-gutter: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--rail-line);
+  }
+
+  .sidebar-brand {
+    height: 104px;
+    min-height: 104px;
+    padding: 14px;
+    text-align: left;
+  }
+
+  .sidebar-brand-title {
+    font-size: 20px;
+  }
+
+  .sidebar-brand-ef {
+    display: inline;
+  }
+
+  .sidebar-brand-studio,
+  .sidebar-file-btn-label {
+    display: inline;
+  }
+
+  .sidebar-project-file {
+    height: 104px;
+    min-height: 104px;
+    padding: 10px;
+  }
+
+  .sidebar-brand p {
+    display: block;
+  }
+
+  .wizard-nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .wizard-nav-link,
+  .wizard-nav-link.is-not-applicable {
+    height: 60px;
+    min-height: 60px;
+    justify-content: flex-start;
+    padding: 6px 10px;
+  }
+
+  .wizard-nav-copy {
+    display: flex;
+  }
+
+  .sidebar-section-label {
+    display: inline-flex;
+    margin-bottom: 6px;
+  }
+
+  .shell-sidebar .sidebar-file-btn {
+    height: 28px;
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
+
+  .shell-header {
+    padding: 16px 18px;
+  }
+
+  .shell-data-handling-panel {
+    right: 18px;
+    width: min(380px, calc(100vw - 36px));
+  }
+
+  .shell-main {
+    padding: 18px;
+  }
+
+  body[data-shell-rail="expanded"] .shell-body {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-right-rail {
+    max-width: none;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    transform: translateY(-6px);
+  }
+
+  body[data-shell-rail="expanded"] .shell-right-rail {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .step-surface-header,
+  .step-section-heading,
+  .shell-rail-panel-title-row,
+  .issue-group-header,
+  .issue-row-topline {
+    flex-direction: column;
+  }
+
+  .kickoff-header {
+    flex-direction: column;
+  }
+
+  .review-summary-strip,
+  .review-main-grid,
+  .review-posture-grid,
+  .review-kv-grid,
+  .knowledge-layout,
+  .knowledge-detail-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kickoff-layout,
+  .kickoff-archetype-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kickoff-next-step,
+  .step-surface-kicker {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .kickoff-workspace-header {
+    flex-direction: column;
+  }
+  .card-grid,
+  .grid-2,
+  .s8-meta,
+  .s8-visibility-grid,
+  .s8-checkpoint-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shell-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shell-header-meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .shell-data-handling-panel {
+    right: 18px;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .s8-box-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .knowledge-header,
+  .knowledge-panel-heading,
+  .knowledge-section-title,
+  .knowledge-result-topline,
+  .knowledge-detail-title-row,
+  .knowledge-modal-header,
+  .knowledge-modal-actions {
+    flex-direction: column;
+  }
+
+  .knowledge-header-actions {
+    justify-content: flex-start;
+  }
+
+  .knowledge-search-row,
+  .knowledge-filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .s8-surface-header,
+  .s8-artifact-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wizard-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-06 family + zone skin
+   Steps 2/4/5 only. PR-24 made `body.ux-refresh` and the refreshed markup
+   unconditional; the class remains a stable styling namespace.
+
+   Family accents (--fam-*) are element-level ONLY: the monogram tile and
+   the .handoff-card 3px border-left. Zone tints (--zone-*) are backgrounds
+   ONLY: section headings, table rows, and board containers. Never mixed
+   (§1.5 "family never tints a panel; zone never colours an element accent").
+   ========================================================================== */
+
+/* Monogram tile: a small colour+abbreviation chip. Always decorative
+   (aria-hidden) — every usage site keeps a real visible text label
+   immediately next to it (either the existing `row.type_label` column text,
+   or the .uxr-fam-text span below), so colour is never the only signal. */
+body.ux-refresh .uxr-fam-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+  color: #fff;
+  vertical-align: middle;
+}
+
+/* Contrast note: white text is >=4.5:1 on every --fam-* except --fam-rest,
+   which measures ~3.74:1 with white (verified via WCAG relative luminance).
+   Per the B1 design-system reference (§3 finding b), the fix is to darken
+   the REST tile FILL ~12% for tile use only (#0b8277, white text ->
+   4.69:1) rather than switch that one tile to black text — this keeps
+   white text consistent across all six monogram tiles. The locked --fam-rest
+   token (#0d9488, §1.5 D1) is untouched; accent uses of it elsewhere (3px
+   border-left, ribbon, legend) are unaffected — only this tile-specific
+   fill differs. */
+body.ux-refresh .uxr-fam-tile.uxr-fam-rest { background: #0b8277; }
+body.ux-refresh .uxr-fam-tile.uxr-fam-fixed { background: var(--fam-fixed); }
+body.ux-refresh .uxr-fam-tile.uxr-fam-csv { background: var(--fam-csv); }
+body.ux-refresh .uxr-fam-tile.uxr-fam-xml { background: var(--fam-xml); }
+body.ux-refresh .uxr-fam-tile.uxr-fam-soap { background: var(--fam-soap); }
+body.ux-refresh .uxr-fam-tile.uxr-fam-staging { background: var(--fam-staging); }
+
+/* Full badge: tile + adjacent text label, for spots with no pre-existing
+   visible type label (currently just the Step 4 handoff card title). */
+body.ux-refresh .uxr-fam-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+body.ux-refresh .uxr-fam-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Zone tints — plain background utilities, applied by role (scan vs ready),
+   never by family. */
+body.ux-refresh .uxr-zone-scan { background: var(--zone-scan); }
+body.ux-refresh .uxr-zone-ready { background: var(--zone-ready); }
+body.ux-refresh .uxr-zone-derived { background: var(--zone-derived); }
+body.ux-refresh .uxr-zone-attn { background: var(--zone-attn); }
+
+/* Pre-existing .text-muted (color: var(--muted)) measures 4.30-4.40:1 on
+   these tints — just under AA 4.5 (passes 4.96:1 on white, so this override
+   is scoped to tinted descendants only; --muted itself is untouched
+   elsewhere). Any .text-muted that ends up inside a zone-tinted container —
+   today that's the existing subtitle paragraphs under "Loaded Edge
+   Contracts"/"Contract Export Readiness", now tinted by this PR — switches
+   to --muted-on-tint automatically, including for zone-derived/zone-attn
+   ahead of the PRs that will actually place content in those (matching how
+   the tokens themselves already landed inert ahead of their consumers). */
+body.ux-refresh .uxr-zone-scan .text-muted,
+body.ux-refresh .uxr-zone-ready .text-muted,
+body.ux-refresh .uxr-zone-derived .text-muted,
+body.ux-refresh .uxr-zone-attn .text-muted {
+  color: var(--muted-on-tint);
+}
+
+/* Tinted group headers: the existing heading keeps its layout; tinted
+   state adds inset padding + rounding so the tint reads as an intentional
+   band rather than a full-bleed rectangle touching the card's own padding. */
+body.ux-refresh .step-section-heading.uxr-zone-scan {
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+/* --zone-scan boards: the "Loaded Edge Contracts" / "Contract Export
+   Readiness" table boards (Steps 2 & 5), and the JS-populated card-stack
+   containers that will become the collapse-only triage boards in PR-07/08
+   (Steps 4 & 5). `td` has no background of its own (see base table rules
+   above), so this tint shows through every row except the ones explicitly
+   marked ready below, which set their own opaque background. */
+body.ux-refresh .drawer-table-shell.uxr-zone-scan {
+  padding: 6px;
+  border-radius: 10px;
+}
+
+body.ux-refresh #handoffs-container.uxr-zone-scan,
+body.ux-refresh #interfaces-container.uxr-zone-scan {
+  min-height: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* --zone-ready stat strips: per-row when a row's own state is "ready to
+   export" (Steps 2 & 5's existing readiness tables — the tint marks the
+   ready/complete rows specifically, not the whole table regardless of
+   status), and the small Step 4 summary strip that has no pre-existing
+   readiness table to key off. */
+body.ux-refresh tr.uxr-zone-ready > td {
+  background: var(--zone-ready);
+}
+
+body.ux-refresh .uxr-stat-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-07 Step 5 downstream triage board
+   Rows are rendered server-side from `readiness_view.items_for_step()`;
+   nothing here ever recomputes readiness. PR-24 removed the duplicate legacy
+   table/card presentation and retained `body.ux-refresh` as a CSS namespace.
+   ========================================================================== */
+
+body.ux-refresh .uxr-board {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+body.ux-refresh .uxr-board-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+body.ux-refresh .uxr-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+body.ux-refresh .uxr-chip.is-on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+body.ux-refresh .uxr-chip-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+body.ux-refresh .uxr-board-group {
+  padding: 8px 14px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-on-tint);
+}
+
+/* --danger (#c0392b) on --zone-attn (#fdf0d8) = 4.83:1, independently
+   verified (test_step5_triage_board.py) — this heading and the blocker
+   line below both sit on the zone-attn tint (only blocks_export/
+   needs_action rows get it), so both reuse the same verified pairing. */
+body.ux-refresh .uxr-board-group-attn {
+  background: var(--zone-attn);
+  border-top: 1px solid var(--zone-attn-line);
+  color: var(--danger);
+}
+
+body.ux-refresh .uxr-board-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+body.ux-refresh .uxr-board-row:hover,
+body.ux-refresh .uxr-board-row:focus-within {
+  border-color: var(--primary);
+  box-shadow: inset 3px 0 0 var(--primary), var(--shadow-sm);
+  transform: translateX(2px);
+}
+
+body.ux-refresh .uxr-board-row[data-uxr-row-state="blocks_export"],
+body.ux-refresh .uxr-board-row[data-uxr-row-state="needs_action"] {
+  background: var(--zone-attn);
+}
+
+/* §1.5 locks exactly 5 zone tints; a 6th "selected" background is out of
+   contract for this PR, so the only signal for the expanded row is this
+   left border (background stays whatever the row's own state already set,
+   above). */
+body.ux-refresh .uxr-board-row.is-editing {
+  border-left: 3px solid var(--primary);
+}
+
+body.ux-refresh .uxr-board-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+body.ux-refresh .uxr-board-row-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Same --muted-on-tint pairing already verified >=4.5:1 on every zone tint
+   this row can sit on (test_board_tag_and_cap_text_passes_aa_on_surface_muted
+   covers the token itself; this reuses it, no new pairing to verify). */
+body.ux-refresh .uxr-board-row-meta {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--muted-on-tint);
+}
+
+body.ux-refresh .uxr-board-row-meta code {
+  font-size: 11px;
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+
+body.ux-refresh .uxr-board-row-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+body.ux-refresh .uxr-board-row-blocker {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+/* #8a4b08 is the mock's own inline-warning-text amber (final-mockups/
+   step5-downstream-contract-board.html, .banner b) — measures 5.93:1 on
+   --zone-scan and 6.03:1 on --zone-attn (independently verified). Plain
+   --warn (#b7791f) measures only ~3.2-3.6:1 on those same backgrounds
+   (fails AA 4.5:1), so it is not used directly for this normal-size text
+   run even though the design intent (warn hue, not danger hue) is the
+   same one --warn would have expressed. */
+body.ux-refresh .uxr-board-row-warning {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a4b08;
+}
+
+body.ux-refresh .uxr-board-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+/* --muted-on-tint measures >=4.5:1 on --surface-muted (5.30:1) and on every
+   --zone-* tint (already covered by test_family_zone_skin.py's zone-tint
+   test) — these tags render inside every row regardless of which of those
+   backgrounds the row itself sits on. */
+body.ux-refresh .uxr-board-tag,
+body.ux-refresh .uxr-board-cap {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--muted-on-tint);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+body.ux-refresh .uxr-board-edit-btn {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: #dce8f5;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  /* PR-17a: Edit is an <a href> (was a JS-navigated <button>) so it is
+     dirty-guardable and natively keyboard-navigable. This rule never set
+     font-family or line-height, so the TAG silently supplied them: a <button>
+     took the UA form-control defaults (Arial, line-height:normal); an <a>
+     inherits the page (system stack, line-height:1.5 = 18px) and rendered 4px
+     taller. These three pin the control tag-independently instead of relying
+     on UA defaults. line-height:14px holds the border-box at 14 + 12 padding
+     + 2 border = 28px on any font, matching the previous button exactly.
+     font-family:inherit follows this sheet's own form-control convention (see
+     input/select/textarea) and intentionally drops the UA's Arial, which never
+     matched surrounding page typography and varies by platform -- a sub-pixel
+     (~0.4px) width change, not a box change. */
+  font-family: inherit;
+  line-height: 14px;
+  text-decoration: none;
+}
+
+body.ux-refresh .uxr-board-edit-btn:hover {
+  background: #d1dfef;
+  border-color: #7f9db9;
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-17 desktop split, folded into PR-24
+   Board (left) + focus editor (right) render together whenever the route has
+   a focused item; `.uxr-focus-split` never exists in board-only mode, so this
+   is a template restructure, not a CSS-driven show/hide. The left column's
+   320px reuses the two-column precedent already established by
+   `.shell-body`/`.shell-right-rail` above (studio.css:343-372) rather than
+   inventing a new width.
+
+   The approved implementation-design §7.1 amendment retires PR-18's modal
+   because the PR-12 single-column full-page focus route, with a11y gaps closed
+   in PR-17a, is already the supported and more accessible narrow presentation:
+   standard page semantics, native browser-back, and no focus trap. BELOW the
+   breakpoint this deliberately uses that full-page focus editor: the board is
+   server-rendered on focused routes (Jinja cannot know the viewport), so
+   it is hidden here rather than left to stack above the editor. Narrow
+   therefore renders exactly what it rendered before PR-17.
+
+   1200px matches the design doc's own spec value verbatim
+   (implementation-design.md §2 Phase 2b: "board stays visible left, focus
+   editor right (>= ~1200px)") rather than the unrelated 1180px shell-chrome
+   breakpoint above (studio.css:2884) -- that one resizes the sidebar/right-
+   rail, a separate concern from this authoring layout. Net effect: a
+   deliberate 20px band (1181-1199px) where the shell is already at its
+   narrower desktop chrome but this split hasn't kicked in yet -- a coherent
+   accepted gap, not a bug.
+   ========================================================================== */
+/* Narrow fallback: no board, so the editor keeps its own ambient strip and the
+   page is the single-column focus editor exactly as before PR-17. */
+body.ux-refresh .uxr-focus-split-board {
+  display: none;
+}
+
+/* Contract/handoff names are author-supplied identifiers with NO length cap in
+   the model or the save route, so a valid long unbroken name must not overflow
+   the fixed 320px board column or widen the editor column enough to scroll the
+   page. `anywhere` rather than `break-word` because these are identifiers, not
+   prose -- a 320px column has to be allowed to break mid-token. Scoped to the
+   split: full-width board mode has room and stays byte-identical. min-width:0
+   lets the grid items themselves shrink to their track instead of being floored
+   at max-content. */
+body.ux-refresh .uxr-focus-split-board,
+body.ux-refresh .uxr-focus-split-editor {
+  min-width: 0;
+}
+
+body.ux-refresh .uxr-focus-split .uxr-board-row-name,
+body.ux-refresh .uxr-focus-split .uxr-board-row-meta,
+body.ux-refresh .uxr-focus-split .uxr-board-row-blocker,
+body.ux-refresh .uxr-focus-split .uxr-board-row-warning,
+body.ux-refresh .uxr-focus-split [data-uxr-focus-title],
+body.ux-refresh .uxr-focus-split [data-uxr-editor-banner-copy],
+body.ux-refresh .uxr-focus-split [data-uxr-tab-badges] .badge {
+  overflow-wrap: anywhere;
+}
+
+/* The readiness badges are built client-side from Ref.label, which embeds the
+   item name -- so they carry the same unbounded identifier as the row and
+   title above and need the same containment. .badge is inline-block, so it
+   also needs an explicit max-width to be told what to wrap against; without
+   it the badge sets the editor column's min-content width and scrolls the
+   page at the 1200px activation breakpoint. */
+body.ux-refresh .uxr-focus-split [data-uxr-tab-badges] .badge {
+  max-width: 100%;
+}
+
+@media (min-width: 1200px) {
+  body.ux-refresh .uxr-focus-split {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+  }
+
+  body.ux-refresh .uxr-focus-split-board {
+    display: block;
+  }
+
+  /* The board's richer strip (total/ready/attention/review/blockers) is now
+     visible in the left column, so the editor's 2-stat duplicate is redundant.
+     Hidden here rather than in Jinja because the choice is viewport-dependent:
+     below the breakpoint the editor's strip is the ONLY one. Both stay in the
+     DOM and PR-17a's querySelectorAll stat updaters keep them in sync, so a
+     resize in either direction shows correct counts. */
+  body.ux-refresh .uxr-focus-split-editor .uxr-stat-strip {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-11 rail count/attention chips + Step 2
+   readiness/capability chips + legend. PR-24 made the refreshed shell the
+   only path. Rail chips remain guarded on `nav_step.count`/`.attention`
+   being defined because the base.html error-page fallback carries neither.
+
+   Rail chips are a pure projection of `readiness_view.step_counts()`; the
+   Step 2 chips are a pure projection of `readiness_view.items_for_step()` —
+   neither is ever re-derived here or in the template.
+   ========================================================================== */
+
+/* Rail chip: one small chip per wizard-nav step. Class is `badge uxr-rail-chip`
+   so it is byte-identical to the chip Step 5's save-one live updater creates/
+   updates (step5_downstream.html uxrUpdateAmbientAndRail) — that updater is the
+   single owner of the chip DOM after a save, and it encodes both count and
+   attention purely in the text ("N items" / "N need action"), so this partial
+   is intentionally text-only (never colour-only): a distinct attention colour
+   would go stale on the next save, since the updater only rewrites textContent.
+   The shell-polish override later in this file gives this text-only chip a
+   measured pale treatment on the translucent navigation cards; no semantic
+   colour distinction is added here. */
+body.ux-refresh .uxr-rail-chip {
+  margin-top: 4px;
+  background: var(--surface-muted);
+  color: var(--muted-on-tint);
+  text-transform: none;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Step 2 readiness/capability chips — B1 finding (c): soft-chip text nudged
+   one step darker than the design-system reference so every pairing
+   independently clears WCAG AA (tests/test_rail_step2_chips.py recomputes
+   each live from the hex shipped below). Capability chips reuse the
+   pre-existing `.uxr-board-cap` selector/pairing verbatim (see above) — no
+   new neutral introduced for those.
+   ========================================================================== */
+
+body.ux-refresh .uxr-readiness-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ready: #0f6a32 on #e7f5ec = 5.97:1 (old design-system value #15803d = 4.46:1,
+   below AA — B1 finding c). */
+body.ux-refresh .uxr-chip-ready {
+  background: #e7f5ec;
+  color: #0f6a32;
+}
+
+/* warning: #96450a on #fdf7e8 = 6.23:1. Shared by the `warning` state only —
+   blocks_export/needs_action get their own `.uxr-chip-blocked` below so an
+   export-disabling row never looks identical to a merely-reviewable one. */
+body.ux-refresh .uxr-chip-warning {
+  background: #fdf7e8;
+  color: #96450a;
+}
+
+/* draft: #4f6075 on #eef1f6 = 5.69:1 (old design-system value #68788c = 3.99:1,
+   below AA — B1 finding c). */
+body.ux-refresh .uxr-chip-draft {
+  background: #eef1f6;
+  color: #4f6075;
+}
+
+/* blocks_export / needs_action: reuses the existing --danger/--danger-soft
+   pair (same as .knowledge-status-dot.is-failed and .uxr-rail-chip-attn
+   above) = 4.94:1 — not a new neutral, and correctly reads as more severe
+   than the amber `warning` chip per the §1.2 state precedence (blocks_export
+   > needs_action > warning > draft > ready). */
+body.ux-refresh .uxr-chip-blocked {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ===========================================================================
+   Studio UX Refresh (Action-5) — PR-13 deterministic seed patch.
+
+   The panel uses the role-based derived tint, never a contract-family colour.
+   --derived-ink on --zone-derived measures 5.37:1 (WCAG AA); the live token
+   pairing is independently recomputed in tests/test_step5_seed_patch.py.
+   Every state is also written as text (basis / DERIVED), never colour-only.
+   ========================================================================== */
+
+body.ux-refresh .uxr-seedbox {
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid var(--zone-derived-line);
+  border-radius: 9px;
+  background: var(--zone-derived);
+}
+
+body.ux-refresh .uxr-seedhd {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--zone-derived-line);
+  background: var(--zone-derived);
+}
+
+body.ux-refresh .uxr-seedhd p {
+  margin: 2px 0 0;
+  color: var(--muted-on-tint);
+  font-size: 11px;
+}
+
+body.ux-refresh .uxr-seedrow {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--zone-derived-line);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+body.ux-refresh .uxr-seedrow:first-of-type { border-top: 0; }
+
+body.ux-refresh .uxr-seedrow input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+body.ux-refresh .uxr-seed-source,
+body.ux-refresh .uxr-seed-target {
+  overflow-wrap: anywhere;
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+}
+
+body.ux-refresh .uxr-seed-target { color: var(--muted-on-tint); }
+
+body.ux-refresh .uxr-seed-basis {
+  color: var(--derived-ink);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: right;
+}
+
+body.ux-refresh .uxr-seedrow.blank .uxr-seed-source,
+body.ux-refresh .uxr-seedrow.blank .uxr-seed-basis,
+body.ux-refresh .uxr-seedrow[data-seed-state="collision"] .uxr-seed-basis {
+  color: var(--muted-on-tint);
+}
+
+body.ux-refresh .uxr-seed-actions,
+body.ux-refresh .uxr-seed-empty {
+  margin: 0;
+  padding: 9px 12px;
+  border-top: 1px solid var(--zone-derived-line);
+}
+
+body.ux-refresh .uxr-derived-control {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+body.ux-refresh .uxr-derived-control > input {
+  width: 100%;
+}
+
+body.ux-refresh .uxr-derived-chip {
+  display: inline-flex;
+  align-self: flex-start;
+  width: fit-content;
+  padding: 1px 6px;
+  border: 1px solid var(--zone-derived-line);
+  border-radius: 4px;
+  background: var(--zone-derived);
+  color: var(--derived-ink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 720px) {
+  body.ux-refresh .uxr-seedrow {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  body.ux-refresh .uxr-seed-target,
+  body.ux-refresh .uxr-seed-basis {
+    grid-column: 2;
+    text-align: left;
+  }
+}
+
+/* Legend: pairs every chip colour with its text key (§1.5 "no colour-only
+   signal") — reuses the same --muted-on-tint on --surface-muted pairing as
+   .uxr-board-tag/.uxr-board-cap above. */
+body.ux-refresh .uxr-readiness-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-muted);
+  font-size: 12px;
+  color: var(--muted-on-tint);
+}
+
+body.ux-refresh .uxr-readiness-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* PR-16: tab badges became real <button>s (keyboard-operable deep links to
+   the blocked/warned section+field) instead of inert <span>s. .badge/
+   .badge-warning already cover background/color/padding/radius/font — this
+   only resets the two UA <button> defaults they don't touch, so the pill
+   looks identical to the old <span> (visible :focus keeps the browser
+   default outline, deliberately left alone). */
+body.ux-refresh [data-uxr-tab-badges] .badge {
+  border: 0;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-21 Step 7 Contract Trace Lens
+   Read-only, per-entity grouping of the SAME readiness_view items the
+   Step 2/4/5 boards and Export already read (app/routes/review.py
+   _trace_lens_context and friends) — nothing here recomputes readiness.
+   PR-24 made this the sole Step 7 presentation; `body.ux-refresh` remains its
+   stable CSS namespace.
+
+   Class names mirror the target mock verbatim (docs/studio-ux-refresh/
+   final-mockups/step7-trace-lens.html) rather than the app's usual `uxr-`
+   prefix, per the build packet. Every colour below reuses an EXISTING
+   token/hex already shipped elsewhere in this file (inline notes cite the
+   pairing); none is a new pairing needing independent verification. Contrast
+   ratios noted below were recomputed directly against the exact background
+   used here (not assumed from a different background), via the same WCAG
+   relative-luminance method the tests in this file already use.
+   ========================================================================== */
+
+body.ux-refresh .rsummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+body.ux-refresh .rs {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+body.ux-refresh .rs .n {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Same fg values as .badge-ready/.badge-warning (studio.css ~2096-2103) and
+   --danger, on --surface (white) instead of each badge's own tint. White has
+   the maximum possible luminance, so contrast against it is provably >= the
+   already-shipped tint pairing in every case; recomputed directly here:
+   #065f46 on #fff = 6.78:1, #b45309 on #fff = 6.79:1, --danger on #fff =
+   5.44:1. */
+body.ux-refresh .rs.ok .n { color: #065f46; }
+body.ux-refresh .rs.warn .n { color: #b45309; }
+body.ux-refresh .rs.attn .n { color: var(--danger); }
+
+body.ux-refresh .rs .l {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+body.ux-refresh .tracelens.panel {
+  margin-bottom: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+body.ux-refresh .tracelens .phd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+body.ux-refresh .tracelens .phd h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+body.ux-refresh .tracelens .phd .pd {
+  margin-top: 1px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+body.ux-refresh .tracepick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.ux-refresh .tracepick .tl {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* --primary-dark on --primary-soft = 8.70:1 (recomputed for this pairing). */
+body.ux-refresh .entsel {
+  padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+body.ux-refresh .tracehd {
+  display: grid;
+  grid-template-columns: 1fr 260px 1fr;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+/* --muted-on-tint on --surface-muted = 5.30:1 (recomputed for this pairing;
+   plain --muted measures ~4.44:1 there, just under AA — same reasoning
+   already documented for the PR-06 zone tints above). */
+body.ux-refresh .tracehd div {
+  padding: 9px 16px;
+  color: var(--muted-on-tint);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.ux-refresh .tracehd .mid {
+  color: var(--primary-dark);
+}
+
+body.ux-refresh .trace {
+  display: grid;
+  grid-template-columns: 1fr 260px 1fr;
+  align-items: center;
+}
+
+/* .hidden (studio.css:84, display:none !important) already wins this
+   specificity fight against the `display: grid` above -- no separate
+   `.trace.hidden` override needed. */
+
+body.ux-refresh .trace .col {
+  padding: 16px;
+}
+
+body.ux-refresh .trace .col.up {
+  border-right: 1px dashed var(--border);
+}
+
+body.ux-refresh .trace .col.dn {
+  border-left: 1px dashed var(--border);
+}
+
+body.ux-refresh .trace .center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: 16px;
+  background: var(--surface-muted);
+}
+
+/* Background is --zone-ready (a role tint), not a --fam-* fill: the entity
+   card isn't itself one contract family, and the PR-06 rule above is
+   "family never tints a panel; zone never colours an element accent" — the
+   2px border is a brand accent only, not a fill, so it doesn't need to carry
+   family semantics either. --primary-dark on --zone-ready = 10.69:1
+   (recomputed); --primary border on --zone-ready = 4.53:1, comfortably over
+   the 3:1 SC 1.4.11 non-text contrast minimum. */
+body.ux-refresh .entity {
+  min-width: 180px;
+  padding: 14px 18px;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: var(--zone-ready);
+  text-align: center;
+}
+
+body.ux-refresh .entity .en {
+  color: var(--primary-dark);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+body.ux-refresh .entity .ek {
+  margin-top: 3px;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+}
+
+/* --muted-on-tint on --zone-ready = 5.19:1 (recomputed; same token already
+   proven >=4.5:1 on every --zone-* tint per the PR-06 note above). */
+body.ux-refresh .entity .em {
+  margin-top: 5px;
+  color: var(--muted-on-tint);
+  font-size: 11px;
+}
+
+body.ux-refresh .ref {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+body.ux-refresh .ref .mono {
+  flex-shrink: 0;
+  width: 42px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* Same tile fills already shipped for .uxr-fam-tile (studio.css ~3097),
+   including the darkened rest fill (#0b8277, white text = 4.69:1, kept
+   independent from the locked --fam-rest token per that rule's own note). */
+body.ux-refresh .ref .mono.m-rest { background: #0b8277; }
+body.ux-refresh .ref .mono.m-fixed { background: var(--fam-fixed); }
+body.ux-refresh .ref .mono.m-csv { background: var(--fam-csv); }
+body.ux-refresh .ref .mono.m-xml { background: var(--fam-xml); }
+body.ux-refresh .ref .mono.m-soap { background: var(--fam-soap); }
+body.ux-refresh .ref .mono.m-stg { background: var(--fam-staging); }
+
+body.ux-refresh .ref .rn {
+  flex: 1;
+  min-width: 0;
+}
+
+body.ux-refresh .ref .rt {
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+body.ux-refresh .ref .rp {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+}
+
+/* Same fg/bg pairs as .rs.ok/.rs.warn above (== .badge-ready/.badge-warning
+   verbatim), here on their own tint rather than white. */
+body.ux-refresh .pill {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+body.ux-refresh .pill.ok { background: #d1fae5; color: #065f46; }
+body.ux-refresh .pill.attn { background: #fef3c7; color: #b45309; }
+/* Neutral "provenance source" pill for refs readiness_view does not itemize
+   (REST/OpenAPI). Muted slate #4f6075 on #eef1f6 -- the same draft-chip pair
+   already used elsewhere in this sheet (>= AA), signalling "not a readiness
+   verdict" without borrowing ready/warn colour. */
+body.ux-refresh .pill.source { background: #eef1f6; color: #4f6075; }
+
+/* Blocker reason line under a blocked ref -- the textual state signal that
+   makes the amber border/background non-colour-alone (§1.5). Warn text
+   #96450a is the independently contrast-verified pair used across the refresh. */
+body.ux-refresh .ref .rreason {
+  color: #96450a;
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+body.ux-refresh .ref.blocked {
+  border-color: var(--zone-attn-line);
+  background: #fffdf8;
+}
+
+body.ux-refresh .dirnote {
+  margin-bottom: 8px;
+  color: var(--muted-on-tint);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* --primary on --surface (white) = 5.17:1 (recomputed for this pairing). */
+body.ux-refresh .jump {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+body.ux-refresh .jump:hover {
+  text-decoration: underline;
+}
+
+/* #8a4b08 is the same warning-text colour already independently verified at
+   studio.css ~3328 (.uxr-board-row-warning: 6.03:1 on --zone-attn, 5.93:1 on
+   --zone-scan) — reused verbatim rather than plain --warn, which fails AA on
+   these same light tints for the same reason documented there. */
+body.ux-refresh .otherblk {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 22px 22px;
+  padding: 11px 14px;
+  border: 1px solid var(--zone-attn-line);
+  border-radius: 10px;
+  background: var(--zone-attn);
+  color: #8a4b08;
+  font-size: 12px;
+}
+
+body.ux-refresh .otherblk svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 15px;
+  height: 15px;
+  color: var(--warn);
+}
+
+/* Same #8a4b08 text colour on --surface (white) here instead of --zone-attn
+   — recomputed: 6.79:1, higher than the already-verified 6.03:1 on
+   --zone-attn (white has the higher luminance of the two backgrounds). */
+body.ux-refresh .ob {
+  display: inline-block;
+  margin: 4px 5px 0 0;
+  padding: 2px 8px;
+  border: 1px solid var(--zone-attn-line);
+  border-radius: 5px;
+  background: var(--surface);
+  color: #8a4b08;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+body.ux-refresh .ob:hover {
+  text-decoration: underline;
+}
+
+/* Per-column heading, shown only in the narrow stacked layout below. Wide,
+   the shared .tracehd 3-column header labels the columns; narrow, that header
+   would stack all three labels above all the content (the "Downstream
+   references" heading landing above the upstream rows), so it is hidden and
+   each column carries its own heading instead. */
+body.ux-refresh .colhd {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted-on-tint, var(--muted));
+  padding: 0 0 6px;
+}
+
+/* Read-only lens, not the split-editor (§ build packet) — collapses to a
+   single column rather than adopting the split-editor's 1200px breakpoint. */
+@media (max-width: 900px) {
+  body.ux-refresh .trace {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hide the shared 3-column header entirely (stacking it would put a heading
+     above the wrong column) and surface the per-column headings instead. */
+  body.ux-refresh .tracehd {
+    display: none;
+  }
+
+  body.ux-refresh .colhd {
+    display: block;
+  }
+
+  body.ux-refresh .trace .col.up {
+    border-right: 0;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  body.ux-refresh .trace .col.dn {
+    border-top: 1px dashed var(--border);
+    border-left: 0;
+  }
+}
+
+/* ==========================================================================
+   Studio UX Refresh (Action-5) — PR-23 Step 8 export artifact list
+   CSS-only (build packet §B.1): step8_export.html's server-rendered rows
+   (:108-125) are reproduced character-for-character by renderArtifactRows()
+   in the same file's <script> (:487-502) for the post-/export/write
+   re-render, so any markup change would need to land in both places. Styling only the
+   existing stable hooks -- .s8-artifact-list / .s8-artifact-row /
+   .is-provenance / .s8-artifact-kind / .s8-artifact-summary -- covers both
+   render paths for free; step8_export.html itself is untouched by this PR.
+
+   Zone vocabulary only -- no --fam-* tokens, monogram tiles, or family
+   accents. export.py's EXPORT_ARTIFACTS (export.py:61-87) is a fixed
+   5-entry artifact-TYPE list (Manifest/Provenance/Review/Assessment/Studio
+   Project) unrelated to readiness_view's contract families
+   (fixed/csv/xml/soap/rest/staging), and export.py never imports
+   readiness_view -- inventing a family mapping here would be fabricated
+   data. Owner-approved deviation from the plan's literal "family tokens"
+   line (build packet Scope Reality #3).
+   ========================================================================== */
+
+body.ux-refresh .s8-artifact-list {
+  background: var(--zone-scan);
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* Evidence sidecar keeps a distinct treatment, re-expressed as the existing
+   "derived" role tint (KA-derived/evidenced content -- the same role the
+   PR-13 seedbox uses, studio.css ~3571) instead of its previous bespoke
+   blue (border #bfdbfe / background #f8fbff). Never a family colour --
+   "provenance" is an artifact role here, not a contract family. */
+body.ux-refresh .s8-artifact-row.is-provenance {
+  border-color: var(--zone-derived-line);
+  background: var(--zone-derived);
+}
+
+/* .s8-artifact-name's existing #0f172a clears AA on --zone-derived by a wide
+   margin (15.50:1, recomputed with this file's own WCAG relative-luminance
+   method) so it is left as-is. .s8-artifact-summary's existing #64748b does
+   NOT (4.13:1, below AA 4.5, recomputed the same way) -- swapped to the
+   already-verified --muted-on-tint, which clears every --zone-* tint
+   including zone-derived (5.13:1, recomputed; matches the >=5.1:1 documented
+   at the --muted-on-tint definition near the top of this file). */
+body.ux-refresh .s8-artifact-row.is-provenance .s8-artifact-summary {
+  color: var(--muted-on-tint);
+}
+
+/* Same neutral pill already verified on --surface-muted AND on every
+   --zone-* tint (studio.css ~3350, .uxr-board-tag/.uxr-board-cap: ">=4.5:1
+   on --surface-muted (5.30:1) and on every --zone-* tint") -- reused
+   verbatim rather than deriving a new pairing. One consistent treatment for
+   every artifact kind: colour-coding by kind would just be family tokens
+   under a different name (forbidden, see block comment above), so this
+   replaces the old fixed light-blue pill (#e0ecff / #1d4ed8) with a single
+   neutral pill rather than a per-kind palette. The pill's own opaque
+   background fully covers whichever row it sits in, so this pairing holds
+   regardless of row state. */
+body.ux-refresh .s8-artifact-kind {
+  background: var(--surface-muted);
+  color: var(--muted-on-tint);
+}
+
+/* ==========================================================================
+   Post-refresh visual polish — dark chrome, vivid content
+   Structural chrome owns its dedicated brand tokens. Locked family, zone,
+   status, and Knowledge Assist tokens above remain semantic-only.
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+}
+
+.wizard-nav-marker.is-step-marker {
+  view-transition-name: step-marker;
+}
+
+::selection {
+  background: rgba(37, 99, 235, .22);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+}
+
+.shell-sidebar :focus-visible {
+  outline-color: var(--rail-bar);
+  box-shadow: 0 0 0 4px rgba(125, 184, 255, .18);
+}
+
+.shell-sidebar .wizard-nav-link:focus-visible {
+  outline-color: var(--rail-bar);
+  background: rgba(207, 226, 255, .24);
+  border-color: var(--rail-bar);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(125, 184, 255, .18);
+}
+
+.shell-sidebar .wizard-nav-link.is-active:focus-visible {
+  box-shadow: inset 3px 0 0 var(--rail-bar), 0 0 0 4px rgba(125, 184, 255, .18);
+}
+
+.sidebar-project-file :focus-visible {
+  outline-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+}
+
+body.ux-refresh .workflow-surface-group {
+  background: var(--workflow-group-bg);
+  border: 1px solid var(--workflow-group-border);
+  box-shadow: none;
+}
+
+body.ux-refresh .review-step-surface > .tracelens {
+  background: var(--workflow-subsection-bg);
+  border-color: var(--workflow-subsection-border);
+}
+
+body.ux-refresh .workflow-surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+body.ux-refresh .workflow-surface-subsection {
+  background: var(--workflow-subsection-bg);
+  border: 1px solid var(--workflow-subsection-border);
+  box-shadow: none;
+}
+
+body.ux-refresh .s8-surface-kicker {
+  margin: 0 0 4px;
+  color: var(--muted-on-tint);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.ux-refresh .workflow-surface-detail {
+  background: var(--surface-muted);
+  border: 1px solid var(--workflow-detail-border);
+  box-shadow: none;
+}
+
+body.ux-refresh .workflow-surface-row {
+  background: var(--workflow-row-bg);
+  border: 1px solid var(--workflow-row-border);
+  box-shadow: none;
+}
+
+body.ux-refresh .workflow-surface-row.step-section-card,
+body.ux-refresh .workflow-surface-subsection.step-section-card {
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+body.ux-refresh .mapping-row.workflow-surface-row {
+  margin-bottom: 0;
+  padding: 8px 10px;
+}
+
+body.ux-refresh .kafka-transform-section {
+  padding: 16px;
+}
+
+body.ux-refresh .phase2-interface-panel {
+  background: var(--surface-strong);
+  border-color: var(--workflow-group-border);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+body.ux-refresh .phase2-surface {
+  padding-inline: 20px;
+  padding-bottom: 20px;
+}
+
+body.ux-refresh .router-fields > .disclosure-card + .disclosure-card,
+body.ux-refresh .router-target-transform-card > .disclosure-card {
+  margin-top: 12px;
+}
+
+body.ux-refresh .phase2-operation {
+  padding: 12px 14px;
+  border-radius: 6px;
+}
+
+body.ux-refresh .phase2-mappings {
+  margin-top: 12px;
+  padding: 10px 12px 12px;
+}
+
+body.ux-refresh .saved-file-specs .review-card-stack {
+  display: grid;
+  gap: 12px;
+}
+
+body.ux-refresh .saved-file-specs .review-row-card {
+  padding: 16px 18px;
+  border-radius: 10px;
+}
+
+body.ux-refresh .saved-file-specs .review-row-main {
+  display: grid;
+  grid-template-columns: minmax(180px, .75fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: 18px;
+}
+
+body.ux-refresh .saved-file-specs .review-row-main > div {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  body.ux-refresh .saved-file-specs .review-row-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+body.ux-refresh .s8-artifact-row.is-provenance {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+body.ux-refresh .workflow-surface-group > .kickoff-header,
+body.ux-refresh .workflow-surface-group > .step-surface-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--workflow-group-border);
+}
+
+.step-surface-header .text-muted,
+.kickoff-header .text-muted {
+  color: var(--muted-on-tint);
+}
+
+.wizard-nav-marker,
+body.ux-refresh .uxr-rail-chip,
+.uxr-chip-count,
+.uxr-stat-strip,
+[data-uxr-stat],
+[data-uxr-identity-stat],
+.kickoff-stat-value,
+.s8-chip {
+  font-variant-numeric: tabular-nums;
+}
+
+body.ux-refresh .uxr-rail-chip {
+  align-self: flex-start;
+  margin-top: 1px;
+  border-color: rgba(207, 226, 255, .40);
+  background: rgba(207, 226, 255, .86);
+  color: var(--brand-navy);
+  font-size: 9px;
+  line-height: 11px;
+  padding: 1px 6px;
+}
+
+.shell-panel-close,
+.shell-toggle-btn,
+button[data-suggestion-drawer-close],
+body.ux-refresh .uxr-board-edit-btn {
+  border-color: var(--border-control);
+}
+
+body.ux-refresh .uxr-board-edit-btn {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+body.ux-refresh .uxr-board-edit-btn:hover {
+  background: #e8edf3;
+  border-color: var(--border-control);
+}
+
+body.ux-refresh .uxr-focus-split-editor {
+  padding: 16px;
+  border: 1px solid var(--workflow-subsection-border);
+  background: var(--workflow-subsection-bg);
+}
+
+body.ux-refresh [data-uxr-focus-editor] {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-md);
+  animation: uxr-focus-editor-enter 220ms cubic-bezier(.2, .7, .3, 1) both;
+}
+
+@keyframes uxr-focus-editor-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shell-header-shadow-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@supports (animation-timeline: scroll()) {
+  .shell-header::after {
+    animation: shell-header-shadow-in 1ms linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 64px;
+  }
+}
+
+.shell-bottom-drawer .shell-drawer-panel.active,
+.ka-suggestion-drawer-body,
+.step3-ka-full-review-body,
+.step3-ka-review-table-shell,
+.drawer-table-shell,
+.review-drawer-code,
+.knowledge-snippet,
+.knowledge-document-preview,
+pre,
+.s8-log {
+  --scrollbar-track: var(--surface);
+  scrollbar-color: var(--border-control) var(--scrollbar-track);
+  scrollbar-gutter: stable;
+}
+
+.shell-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.shell-sidebar::-webkit-scrollbar-track {
+  background: var(--brand-navy);
+}
+
+.shell-sidebar::-webkit-scrollbar-thumb {
+  background: var(--rail-bar);
+  border-radius: 4px;
+}
+
+pre,
+.knowledge-snippet,
+.knowledge-document-preview {
+  --scrollbar-track: #10233f;
+}
+
+.s8-log {
+  --scrollbar-track: #0f172a;
+}
+
+.shell-bottom-drawer .shell-drawer-panel.active::-webkit-scrollbar,
+.ka-suggestion-drawer-body::-webkit-scrollbar,
+.step3-ka-full-review-body::-webkit-scrollbar,
+.step3-ka-review-table-shell::-webkit-scrollbar,
+.drawer-table-shell::-webkit-scrollbar,
+.review-drawer-code::-webkit-scrollbar,
+.knowledge-snippet::-webkit-scrollbar,
+.knowledge-document-preview::-webkit-scrollbar,
+pre::-webkit-scrollbar,
+.s8-log::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.shell-bottom-drawer .shell-drawer-panel.active::-webkit-scrollbar-track,
+.ka-suggestion-drawer-body::-webkit-scrollbar-track,
+.step3-ka-full-review-body::-webkit-scrollbar-track,
+.step3-ka-review-table-shell::-webkit-scrollbar-track,
+.drawer-table-shell::-webkit-scrollbar-track,
+.review-drawer-code::-webkit-scrollbar-track,
+.knowledge-snippet::-webkit-scrollbar-track,
+.knowledge-document-preview::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track,
+.s8-log::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.shell-bottom-drawer .shell-drawer-panel.active::-webkit-scrollbar-thumb,
+.ka-suggestion-drawer-body::-webkit-scrollbar-thumb,
+.step3-ka-full-review-body::-webkit-scrollbar-thumb,
+.step3-ka-review-table-shell::-webkit-scrollbar-thumb,
+.drawer-table-shell::-webkit-scrollbar-thumb,
+.review-drawer-code::-webkit-scrollbar-thumb,
+.knowledge-snippet::-webkit-scrollbar-thumb,
+.knowledge-document-preview::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb,
+.s8-log::-webkit-scrollbar-thumb {
+  background: var(--border-control);
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .shell-sidebar {
+    background: linear-gradient(90deg, #24466b, var(--brand-navy));
+    border-bottom-color: var(--rail-line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}

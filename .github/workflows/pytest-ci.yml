@@ -1,0 +1,116 @@
+name: Pytest CI
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    name: pytest unit + L2 smoke
+    runs-on: ubuntu-latest
+    env:
+      EDGEFORGE_STUDIO_SESSION_SECRET: ci-session-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Studio dependencies
+        run: |
+          python -m venv /tmp/studio-ci
+          /tmp/studio-ci/bin/python -m pip install -c constraints.txt pip setuptools wheel
+          /tmp/studio-ci/bin/python scripts/verify-packaging-toolchain.py
+          /tmp/studio-ci/bin/python -m pip install -r requirements.txt -c constraints.txt
+          echo "/tmp/studio-ci/bin" >> "$GITHUB_PATH"
+
+      - name: Verify non-smoke collection is non-empty
+        run: |
+          python - <<'PY'
+          import re
+          import subprocess
+          import sys
+
+          cmd = [sys.executable, "-m", "pytest", "tests", "-q", "-m", "not smoke", "--collect-only"]
+          proc = subprocess.run(cmd, text=True, capture_output=True)
+          print(proc.stdout)
+          print(proc.stderr, file=sys.stderr)
+          text = proc.stdout + proc.stderr
+          match = re.search(r"(\d+)(?:/\d+)? tests? collected", text)
+          if proc.returncode != 0:
+              raise SystemExit(proc.returncode)
+          if not match or int(match.group(1)) <= 0:
+              raise SystemExit("pytest non-smoke collection produced zero tests")
+          PY
+
+      - name: Run non-Engine/JDK unit suite
+        run: python -m pytest tests -q -m "not smoke"
+
+      - name: Verify L2 smoke collection is non-empty
+        run: |
+          python - <<'PY'
+          import re
+          import subprocess
+          import sys
+
+          cmd = [
+              sys.executable,
+              "-m",
+              "pytest",
+              "tests/smoke/test_l2_two_session_smoke.py",
+              "-q",
+              "-m",
+              "smoke and l2",
+              "--collect-only",
+          ]
+          proc = subprocess.run(cmd, text=True, capture_output=True)
+          print(proc.stdout)
+          print(proc.stderr, file=sys.stderr)
+          text = proc.stdout + proc.stderr
+          match = re.search(r"(\d+) tests? collected", text)
+          if proc.returncode != 0:
+              raise SystemExit(proc.returncode)
+          if not match or int(match.group(1)) <= 0:
+              raise SystemExit("pytest L2 smoke collection produced zero tests")
+          PY
+
+      - name: Run L2 in-process smoke
+        run: python -m pytest tests/smoke/test_l2_two_session_smoke.py -q -m "smoke and l2"
+
+      - name: Run dependency audit and license scan
+        run: |
+          python -m venv /tmp/studio-audit-tools
+          /tmp/studio-audit-tools/bin/python -m pip install -c constraints.txt pip
+          /tmp/studio-audit-tools/bin/python -m pip install "pip-audit==2.9.0" "pip-licenses==5.5.5"
+          /tmp/studio-audit-tools/bin/pip-audit -r constraints.txt --no-deps --disable-pip --progress-spinner off --strict
+          /tmp/studio-audit-tools/bin/pip-licenses --python "$(which python)" --format=json > /tmp/studio-dependency-licenses.json
+
+  ruff:
+    name: ruff lint (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: python -m pip install "ruff>=0.8,<1"
+
+      - name: Run ruff
+        run: |
+          set +e
+          ruff check .
+          ruff_status=$?
+          set -e
+          if [ "$ruff_status" -ne 0 ]; then
+            echo "::warning::ruff reported lint findings; advisory only for the handover baseline."
+          fi
+          exit 0

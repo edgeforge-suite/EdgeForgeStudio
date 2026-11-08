@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Kafka Integration Step 3: Transform Mappings{% endblock %}
+
+{% block content %}
+<div class="card workflow-surface-group">
+  <h2>Kafka Integration — Step 3: Transform Mappings</h2>
+  <p class="subtitle">Define fixed-route mappings and router target transform rows without changing route, topic, schema, routing, or NACK config.</p>
+
+  <div id="transform-route-cards" style="display:grid;gap:12px"></div>
+
+  <div id="kafka-transforms-status" class="alert hidden" style="margin-top:16px"></div>
+
+  <div class="step-actions">
+    <button type="button" class="btn btn-primary" onclick="saveKafkaTransforms()">Save &amp; Continue →</button>
+    <a href="/kafka/routes" class="btn btn-secondary">Previous</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const kafkaRouteNames = {{ route_names | tojson }};
+const existingTransforms = {{ existing_route_transforms | tojson }};
+const routeModels = {{ existing_route_models | tojson }};
+const mappingSuggestionBadgesByRoute = {{ mapping_suggestion_badges | tojson }};
+const routerTransformSuggestionBadgesByRoute = {{ router_transform_suggestion_badges | tojson }};
+const existingTransformByName = Object.fromEntries(existingTransforms.map(item => [item.route_name, item]));
+const routeModelByName = Object.fromEntries(routeModels.map(item => [item.route_name, item]));
+
+const esc = window.escapeHtml;
+
+function transformRowTemplate(row = null, rowClass = 'request-mapping-row') {
+  return `
+    <div class="mapping-row ${rowClass} workflow-surface-row">
+      <input type="text" class="source-field" placeholder="source_field" value="${esc(row?.source_field)}">
+      <input type="text" class="target-field" placeholder="target_field" value="${esc(row?.target_field)}">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `;
+}
+
+function routerTransformRowTemplate(row = null, rowClass = 'router-request-transform-row') {
+  const valueMap = row?.value_map && Object.keys(row.value_map).length ? JSON.stringify(row.value_map) : '';
+  const typeCoercion = row?.type_coercion || '';
+  return `
+    <div class="router-transform-row ${rowClass} step-section-card workflow-surface-detail" style="display:grid;gap:8px">
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>Source</label><input type="text" class="router-transform-source" value="${esc(row?.source)}" placeholder="paymentId"></div>
+        <div class="field"><label>Target</label><input type="text" class="router-transform-target" value="${esc(row?.target)}" placeholder="transactionId"></div>
+        <div class="field"><label>Type Coercion</label>
+          <select class="router-transform-type-coercion">
+            <option value="" ${typeCoercion ? '' : 'selected'}>none</option>
+            <option value="major_to_minor_units" ${typeCoercion === 'major_to_minor_units' ? 'selected' : ''}>major_to_minor_units</option>
+            <option value="minor_to_major_units" ${typeCoercion === 'minor_to_major_units' ? 'selected' : ''}>minor_to_major_units</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div class="field"><label>Default Value</label><input type="text" class="router-transform-default-value" value="${esc(row?.default_value)}" placeholder="optional"></div>
+        <div class="field"><label>Constant</label><input type="text" class="router-transform-constant" value="${esc(row?.constant)}" placeholder="optional"></div>
+        <div class="field"><label>Value Map JSON</label><input type="text" class="router-transform-value-map" value="${esc(valueMap)}" placeholder='{"APPROVED":"A"}'></div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.router-transform-row').remove()">Remove row</button>
+    </div>
+  `;
+}
+
+function addMappingRow(container, row = null, rowClass = 'request-mapping-row') {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = transformRowTemplate(row, rowClass);
+  container.appendChild(wrapper.firstElementChild);
+}
+
+function addRouterTransformRow(container, row = null, rowClass = 'router-request-transform-row') {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = routerTransformRowTemplate(row, rowClass);
+  container.appendChild(wrapper.firstElementChild);
+}
+
+function routerTargetTransformTemplate(routeName, target, existingTargetTransform = null) {
+  const requestRows = existingTargetTransform?.request_transform_rows || [];
+  const responseRows = existingTargetTransform?.response_transform_rows || [];
+  const targetBadges = routerTransformSuggestionBadgesByRoute?.[routeName]?.[target.id] || {};
+  const requestBadge = targetBadges.request || null;
+  const responseBadge = targetBadges.response || null;
+  const requestBadgeMarkup = requestBadge ? `
+    <button
+      type="button"
+      class="ka-${'suggestion'}-badge"
+      data-suggestion-drawer-${'open'}
+      data-suggestion-drawer-url="${esc(requestBadge.drawer_url)}"
+    >
+      ${esc(requestBadge.label)}
+    </button>
+  ` : '';
+  const responseBadgeMarkup = responseBadge ? `
+    <button
+      type="button"
+      class="ka-${'suggestion'}-badge"
+      data-suggestion-drawer-${'open'}
+      data-suggestion-drawer-url="${esc(responseBadge.drawer_url)}"
+    >
+      ${esc(responseBadge.label)}
+    </button>
+  ` : '';
+  return `
+    <div class="router-target-transform-card step-section-card workflow-surface-subsection" data-target-id="${esc(target.id)}">
+      <div class="step-section-heading">
+        <div>
+          <h4 style="margin:0">Target: ${esc(target.id)}</h4>
+          <p class="text-muted text-sm">Route Model owns topic, schema, routing, NACK, and target config. This page writes the transform YAML files referenced by router_config.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div class="field"><label>Request Transform File</label><input type="text" value="${esc(target.request_transform?.file)}" readonly></div>
+        <div class="field"><label>Response Transform File</label><input type="text" value="${esc(target.response_transform?.file)}" readonly></div>
+      </div>
+      <details class="disclosure-card workflow-surface-row" open>
+        <summary>
+          <span>Request Transform Rows</span>
+          <span class="step-heading-actions">${requestBadgeMarkup}</span>
+        </summary>
+        <div class="disclosure-card-body">
+          <div class="router-request-transform-rows workflow-row-list" style="display:grid;gap:10px"></div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addRouterTransformRow(this.closest('.disclosure-card-body').querySelector('.router-request-transform-rows'), null, 'router-request-transform-row')">+ Add Request Row</button>
+        </div>
+      </details>
+      <details class="disclosure-card workflow-surface-row">
+        <summary>
+          <span>Response Transform Rows</span>
+          <span class="step-heading-actions">${responseBadgeMarkup}</span>
+        </summary>
+        <div class="disclosure-card-body">
+          <div class="router-response-transform-rows workflow-row-list" style="display:grid;gap:10px"></div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addRouterTransformRow(this.closest('.disclosure-card-body').querySelector('.router-response-transform-rows'), null, 'router-response-transform-row')">+ Add Response Row</button>
+        </div>
+      </details>
+    </div>
+  `;
+}
+
+function routeTransformTemplate(routeName) {
+  const existing = existingTransformByName[routeName] || {mappings: [], response_mappings: [], router_target_transforms: []};
+  const model = routeModelByName[routeName] || {pattern: 'fire-and-forget'};
+  const mappingBadge = mappingSuggestionBadgesByRoute[routeName] || null;
+  const mappingBadgeMarkup = mappingBadge ? `
+    <button
+      type="button"
+      class="ka-${'suggestion'}-badge"
+      data-suggestion-drawer-${'open'}
+      data-suggestion-drawer-url="${esc(mappingBadge.drawer_url)}"
+    >
+      ${esc(mappingBadge.label)}
+    </button>
+  ` : '';
+  if (model.pattern === 'router') {
+    const targets = model.router_config?.targets || [];
+    return `
+      <div class="card kafka-transform-card workflow-surface-card" data-route-name="${esc(routeName)}" data-pattern="router">
+        <h3 style="margin-top:0">${esc(routeName)}</h3>
+        <p class="text-muted text-sm">Router target transforms are grouped by target and written to the exact files configured in Route Model.</p>
+        <div class="router-target-transform-list" style="display:grid;gap:12px">
+          ${targets.map(target => {
+            const existingTarget = (existing.router_target_transforms || []).find(item => item.target_id === target.id);
+            return routerTargetTransformTemplate(routeName, target, existingTarget);
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+  return `
+    <div class="card kafka-transform-card workflow-surface-card" data-route-name="${esc(routeName)}" data-pattern="${esc(model.pattern)}">
+      <div class="step-section-heading">
+        <div>
+          <h3 style="margin:0">${esc(routeName)}</h3>
+          <p class="text-muted text-sm" style="margin:4px 0 0">Fixed-route transform mappings remain manually authored; Knowledge Assist suggestions are read-only in this slice.</p>
+        </div>
+        <div class="step-heading-actions">${mappingBadgeMarkup}</div>
+      </div>
+      <div class="kafka-transform-section workflow-surface-subsection">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <strong>Request Mappings</strong>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addMappingRow(this.closest('.kafka-transform-card').querySelector('.request-mappings'))">+ Add Mapping</button>
+        </div>
+        <div class="request-mappings workflow-row-list" style="display:grid;gap:8px;margin-top:12px"></div>
+      </div>
+      <div class="response-mapping-block kafka-transform-section workflow-surface-subsection ${model.pattern === 'request-reply' ? '' : 'hidden'}" style="margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <strong>Response Mappings</strong>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addMappingRow(this.closest('.kafka-transform-card').querySelector('.response-mappings'), null, 'response-mapping-row')">+ Add Response Mapping</button>
+        </div>
+        <div class="response-mappings workflow-row-list" style="display:grid;gap:8px;margin-top:12px"></div>
+      </div>
+    </div>
+  `;
+}
+
+function collectMappingRows(container) {
+  return Array.from(container.querySelectorAll('.mapping-row')).map(row => ({
+    source_field: row.querySelector('.source-field').value.trim(),
+    target_field: row.querySelector('.target-field').value.trim(),
+  })).filter(row => row.source_field || row.target_field);
+}
+
+function collectRouterTransformRows(container) {
+  return Array.from(container.querySelectorAll('.router-transform-row')).map(row => ({
+    source: row.querySelector('.router-transform-source').value.trim(),
+    target: row.querySelector('.router-transform-target').value.trim(),
+    default_value: row.querySelector('.router-transform-default-value').value.trim(),
+    constant: row.querySelector('.router-transform-constant').value.trim(),
+    value_map: row.querySelector('.router-transform-value-map').value.trim(),
+    type_coercion: row.querySelector('.router-transform-type-coercion').value,
+  })).filter(row => row.source || row.target || row.default_value || row.constant || row.value_map || row.type_coercion);
+}
+
+function collectRouterTargetTransforms(card) {
+  return Array.from(card.querySelectorAll('.router-target-transform-card')).map(targetCard => ({
+    target_id: targetCard.dataset.targetId,
+    request_transform_rows: collectRouterTransformRows(targetCard.querySelector('.router-request-transform-rows')),
+    response_transform_rows: collectRouterTransformRows(targetCard.querySelector('.router-response-transform-rows')),
+  }));
+}
+
+function collectTransforms() {
+  return Array.from(document.querySelectorAll('.kafka-transform-card')).map(card => {
+    const routeName = card.dataset.routeName;
+    const pattern = card.dataset.pattern || 'fire-and-forget';
+    if (pattern === 'router') {
+      return {
+        route_name: routeName,
+        mappings: [],
+        response_mappings: [],
+        router_target_transforms: collectRouterTargetTransforms(card),
+      };
+    }
+    return {
+      route_name: routeName,
+      mappings: collectMappingRows(card.querySelector('.request-mappings')),
+      response_mappings: collectMappingRows(card.querySelector('.response-mappings')),
+      router_target_transforms: [],
+    };
+  });
+}
+
+async function saveKafkaTransforms() {
+  hideStatus('kafka-transforms-status');
+  const response = await fetch('/kafka/transforms/save', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({transforms: collectTransforms()}),
+  });
+  const data = await response.json();
+  if (!data.ok) {
+    showStatus('kafka-transforms-status', data.error || 'Unable to save transform mappings.', 'warn');
+    return;
+  }
+  window.location.href = '/rules';
+}
+
+const transformsContainer = document.getElementById('transform-route-cards');
+kafkaRouteNames.forEach(routeName => {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = routeTransformTemplate(routeName);
+  const card = wrapper.firstElementChild;
+  transformsContainer.appendChild(card);
+
+  const existing = existingTransformByName[routeName] || {mappings: [], response_mappings: [], router_target_transforms: []};
+  if (card.dataset.pattern === 'router') {
+    card.querySelectorAll('.router-target-transform-card').forEach(targetCard => {
+      const targetId = targetCard.dataset.targetId;
+      const existingTarget = (existing.router_target_transforms || []).find(item => item.target_id === targetId) || {request_transform_rows: [], response_transform_rows: []};
+      const requestContainer = targetCard.querySelector('.router-request-transform-rows');
+      existingTarget.request_transform_rows.forEach(row => addRouterTransformRow(requestContainer, row, 'router-request-transform-row'));
+      const responseContainer = targetCard.querySelector('.router-response-transform-rows');
+      existingTarget.response_transform_rows.forEach(row => addRouterTransformRow(responseContainer, row, 'router-response-transform-row'));
+    });
+    return;
+  }
+
+  const requestContainer = card.querySelector('.request-mappings');
+  if (existing.mappings.length) {
+    existing.mappings.forEach(row => addMappingRow(requestContainer, row));
+  } else {
+    addMappingRow(requestContainer);
+  }
+
+  const responseContainer = card.querySelector('.response-mappings');
+  if (existing.response_mappings.length) {
+    existing.response_mappings.forEach(row => addMappingRow(responseContainer, row, 'response-mapping-row'));
+  } else if (card.dataset.pattern === 'request-reply') {
+    addMappingRow(responseContainer, null, 'response-mapping-row');
+  }
+});
+</script>
+{% endblock %}

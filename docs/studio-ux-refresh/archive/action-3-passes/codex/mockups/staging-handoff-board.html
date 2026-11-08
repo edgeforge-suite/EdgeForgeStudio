@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeForge Studio Mockup - Handoff Board</title>
+  <style>
+    :root {
+      --bg: #dce8f5;
+      --surface: #fff;
+      --surface-muted: #edf3fa;
+      --border: #b8ccde;
+      --border-strong: #8eaac6;
+      --primary: #2563eb;
+      --primary-dark: #1a3465;
+      --primary-soft: #c7dcf5;
+      --text: #10233f;
+      --muted: #5e718f;
+      --success: #16814a;
+      --success-soft: #ecfdf3;
+      --warn: #b7791f;
+      --warn-soft: #fff7e8;
+      --shadow-sm: 0 8px 18px rgba(16, 35, 63, .08);
+      --shadow-md: 0 18px 40px rgba(16, 35, 63, .14);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #edf3fa 0%, #dce8f5 45%, #f8fbff 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1220px; margin: 0 auto; padding: 32px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-top: 18px;
+    }
+    .notice {
+      margin-top: 18px;
+      padding: 13px 15px;
+      border: 1px solid #fde68a;
+      background: var(--warn-soft);
+      color: #7a4e00;
+      border-radius: 13px;
+    }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(420px, .9fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .board-head, .editor-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .btn {
+      border: 1px solid var(--primary-dark);
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .btn.secondary { background: #fff; color: var(--primary-dark); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #d6e2ef;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      background: var(--surface-muted);
+    }
+    tbody tr.active { box-shadow: inset 5px 0 0 var(--primary); background: #f8fbff; }
+    .chip {
+      display: inline-flex;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--surface-muted);
+      color: var(--primary-dark);
+      border: 1px solid var(--border);
+    }
+    .chip.ready { color: var(--success); background: var(--success-soft); border-color: #bbf7d0; }
+    .editor-body { padding: 18px 20px; display: grid; gap: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: grid; gap: 6px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    textarea { min-height: 142px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .panel h3 { margin: 0 0 10px; font-size: 15px; }
+    .column-row {
+      display: grid;
+      grid-template-columns: 1fr 90px 70px;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .map-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    @media (max-width: 1000px) {
+      .workspace, .split { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Step 4: Data Handoff Board</h1>
+    <p>Staging table specs stay separate from downstream file/XML/SOAP contracts. The page starts with readiness and table identity, then edits one handoff at a time.</p>
+
+    <div class="notice">This is staging-table authoring. File, XML, and SOAP artifact transforms belong in Step 5.</div>
+
+    <div class="workspace">
+      <section class="card">
+        <div class="board-head">
+          <div>
+            <h2 style="margin:0 0 5px;font-size:18px">Loaded data handoffs</h2>
+            <p style="font-size:13px">Compact review for staging specs, DDL mode, and canonical mappings.</p>
+          </div>
+          <button class="btn">+ Add Handoff</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Handoff</th><th>Table</th><th>Entity</th><th>Columns</th><th>Mappings</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr class="active">
+              <td><strong>Account staging</strong><br><span style="color:var(--muted)">batch/ETL consumer</span></td>
+              <td>ACCOUNT_STG</td>
+              <td>Account</td>
+              <td>4</td>
+              <td>3</td>
+              <td><span class="chip ready">Ready</span></td>
+            </tr>
+            <tr>
+              <td><strong>Customer staging</strong><br><span style="color:var(--muted)">batch/ETL consumer</span></td>
+              <td>CUSTOMER_STG</td>
+              <td>Customer</td>
+              <td>5</td>
+              <td>4</td>
+              <td><span class="chip ready">Ready</span></td>
+            </tr>
+            <tr>
+              <td><strong>Payment staging</strong><br><span style="color:var(--muted)">manual DDL override</span></td>
+              <td>PAYMENT_STG</td>
+              <td>Payment</td>
+              <td>6</td>
+              <td>5</td>
+              <td><span class="chip">Review DDL</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <aside class="card">
+        <div class="editor-head">
+          <div>
+            <h2 style="margin:0 0 5px;font-size:18px">Edit: Account staging</h2>
+            <p style="font-size:13px">A focused handoff editor replaces the repeated full-page card stack.</p>
+          </div>
+          <span class="chip ready">Generated DDL</span>
+        </div>
+        <div class="editor-body">
+          <div class="grid">
+            <label>Handoff name<input value="Account staging"></label>
+            <label>Table name<input value="ACCOUNT_STG"></label>
+            <label>Mapped entity<input value="Account"></label>
+            <label>Owner<input value="batch/ETL"></label>
+          </div>
+          <div class="split">
+            <div class="panel">
+              <h3>Staging columns</h3>
+              <div class="column-row"><input value="ACCOUNT_ID"><input value="VARCHAR"><input value="36"></div>
+              <div class="column-row"><input value="STATUS"><input value="VARCHAR"><input value="16"></div>
+              <div class="column-row"><input value="BALANCE_MINOR"><input value="BIGINT"><input value=""></div>
+              <div class="column-row"><input value="RUN_ID"><input value="VARCHAR"><input value="36"></div>
+            </div>
+            <div class="panel">
+              <h3>DDL preview</h3>
+              <textarea>CREATE TABLE ACCOUNT_STG (
+  ACCOUNT_ID VARCHAR(36) NOT NULL,
+  STATUS VARCHAR(16),
+  BALANCE_MINOR BIGINT,
+  RUN_ID VARCHAR(36)
+);</textarea>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Canonical to staging mappings</h3>
+            <div class="map-row"><input value="Account.accountId"><input value="ACCOUNT_ID"></div>
+            <div class="map-row"><input value="Account.status"><input value="STATUS"></div>
+            <div class="map-row"><input value="Account.balanceMinor"><input value="BALANCE_MINOR"></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button class="btn secondary">Cancel</button>
+            <button class="btn">Save Handoff</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

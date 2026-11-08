@@ -1,0 +1,75 @@
+# Independently authored parser regression, not an upstream API extract.
+openapi: 3.0.3
+info:
+  title: Synthetic Parcel Notes
+  version: "1.0"
+paths:
+  /parcel-notes:
+    post:
+      operationId: createParcel
+      responses:
+        "201":
+          $ref: "#/components/responses/ParcelCreated"
+  /parcel-notes/{parcelId}:
+    get:
+      operationId: getParcel
+      parameters:
+        - name: parcelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/ParcelFound"
+components:
+  responses:
+    ParcelCreated:
+      description: Synthetic note created
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: "#/components/schemas/ParcelResponse"
+    ParcelFound:
+      description: Synthetic note retrieved
+      content:
+        application/json; profile=synthetic:
+          schema:
+            $ref: "#/components/schemas/ParcelResponse"
+  schemas:
+    ParcelResponse:
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            parcelId:
+              type: string
+            label:
+              type: string
+            priority:
+              $ref: "#/components/schemas/Priority"
+            dimensions:
+              $ref: "#/components/schemas/Dimensions"
+        Links:
+          $ref: "#/components/schemas/Links"
+        Meta:
+          $ref: "#/components/schemas/Meta"
+    Priority:
+      type: string
+      enum: [NORMAL, URGENT]
+    Dimensions:
+      type: object
+      properties:
+        width:
+          type: integer
+    Links:
+      type: object
+      properties:
+        Self:
+          type: string
+    Meta:
+      type: object
+      properties:
+        TotalPages:
+          type: integer

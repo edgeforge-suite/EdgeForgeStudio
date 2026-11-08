@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Step 6 — Rules Board (review-pass sketch, G2)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--ka:#0d7490;--kabg:#e3f3f7;
+  /* B1 functional-zone tints — tint by ROLE, never by family */
+  --zone-scan:#f4f7fb;--zone-editor:#ffffff;
+  --zone-derived:#f8f5fd;--zone-derived-line:#e6ddf6;
+  --zone-attn:#fdf8ee;--zone-attn-line:#f0e2c3;
+  --zone-ready:#f4f6f9;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a .cnt{float:right;font-size:11px;color:var(--mut2)}.nav a .cnt b{color:var(--warn)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.adv{background:var(--zone-attn);border-color:var(--zone-attn-line)} .stat.adv .n{color:var(--warn)}
+.split{display:grid;grid-template-columns:.78fr 1.22fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel.zone-board{background:var(--zone-scan)}
+.panel.zone-editor{background:var(--zone-editor);box-shadow:0 4px 16px rgba(16,35,63,.08)}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.phd h2{font-size:13.5px;font-weight:700}.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+/* board rows: one row per ENTITY rule-set (rules are edited per entity, because
+   cross-entity rules depend on same-entity prerequisites) */
+.erow{padding:12px 15px;border-top:1px solid #e8edf4;cursor:default;position:relative}
+.erow.sel{background:var(--selbg)}
+.erow.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.erow .en{font-weight:700;font-size:13.5px;color:var(--navy);display:flex;justify-content:space-between;align-items:center}
+.erow .em{font-size:11.5px;color:var(--mut);margin-top:2px}
+.provchips{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.pc{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+.pc.spec{background:var(--okbg);color:#0b6e3f}
+.pc.man{background:#eef1f6;color:#5a6b7e}
+.pc.ka{background:var(--kabg);color:var(--ka)}
+.pc.adv{background:var(--warnbg);color:#8a4b08}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}
+/* editor */
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.ehd h2{font-size:15px;font-weight:800;color:var(--navy)}
+.ehd .et{font-size:11.5px;color:var(--mut);margin-top:1px}
+.kaoff{font-size:10.5px;font-weight:700;color:#3b5566;background:#e7edf2;border:1px solid #cfdae2;padding:3px 9px;border-radius:20px}
+.ebody{padding:14px 15px}
+/* advisory strip — read-only, visually distinct from editable rules: dashed border,
+   "read-only" label, deep-link. Advisory = export still allowed (P6 warning state). */
+.advisory{border:1px dashed #d8b271;background:var(--zone-attn);border-radius:9px;padding:9px 12px;margin-bottom:13px;display:flex;gap:9px;align-items:flex-start}
+.advisory svg{width:14px;height:14px;color:var(--warn);flex-shrink:0;margin-top:2px}
+.advisory .at{font-size:12px;color:#7a531a}
+.advisory .at b{color:#8a4b08}
+.advisory .ro{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:#8a4b08;background:#f6e8c8;padding:1px 6px;border-radius:4px;margin-left:6px}
+.advisory .jump{font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff;margin-left:auto;flex-shrink:0}
+/* field groups: rules grouped by FIELD, not one flat stack */
+.fgroup{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden;background:#fff}
+.fghd{background:#f7f9fc;padding:7px 12px;border-bottom:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--navy);font-family:ui-monospace,Menlo,monospace;display:flex;align-items:center;gap:8px}
+.fghd .ft{font-weight:400;color:var(--mut);font-family:-apple-system,sans-serif}
+.rrow{display:flex;align-items:center;gap:9px;padding:8px 12px;border-top:1px solid #f0f3f8;font-size:12.5px}
+.rrow:first-of-type{border-top:none}
+.rtype{font-size:10.5px;font-weight:700;color:var(--navy);background:#e9eefb;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.rval{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.act{font-size:11px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;background:#fff;border-radius:5px;padding:2px 9px;white-space:nowrap}
+.rrow.genid{background:var(--zone-attn)}
+.rrow.genid .gnote{font-size:10.5px;color:#8a4b08}
+/* cross-entity block: separate, shows the prerequisite dependency explicitly */
+.xent{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden;background:#fff}
+.xhd{background:#f7f9fc;padding:7px 12px;border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--navy)}
+.dep{font-size:10px;font-weight:700;color:#0b6e64;background:#e2f4f2;padding:1px 6px;border-radius:4px}
+.dep.miss{color:var(--danger);background:var(--dangerbg)}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;flex:1}
+.btns{display:flex;gap:8px}.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut)}
+.matnote{margin-top:12px;font-size:11.5px;color:var(--mut);background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 13px}
+</style></head>
+<body><div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#">3 · Entity Model</a>
+    <a href="#">4 · Data Handoffs</a>
+    <a href="#">5 · Downstream</a>
+    <a href="#" class="on">6 · Rules &amp; Mappings <span class="cnt"><b>2</b> advisories</span></a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 6 · Rules &amp; Mappings — Rules Board <span style="font-size:11px;font-weight:700;color:var(--mut2);vertical-align:middle">(review-pass sketch — G2)</span></div>
+  <div class="sub">One row per entity rule-set. Edit one entity at a time; rules group by field, advisories stay read-only and clearly separate.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Entities</div></div>
+    <div class="stat"><div class="n">14</div><div class="l">Rules</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">Spec-derived</div></div>
+    <div class="stat adv"><div class="n">2</div><div class="l">Advisories (non-blocking)</div></div>
+  </div>
+
+  <div class="split">
+    <!-- BOARD (zone: scan) — one row per entity rule-set -->
+    <section class="panel zone-board">
+      <div class="phd"><h2>Entity rule-sets</h2><div class="pd">Needs-attention first · counts by provenance · advisories never block export</div></div>
+
+      <div class="erow sel">
+        <div class="en">Account <span class="pill attn">2 advisories</span></div>
+        <div class="em">6 rules · 4 fields covered</div>
+        <div class="provchips"><span class="pc spec">4 spec-derived</span><span class="pc man">1 manual</span><span class="pc ka">1 KA-applied</span><span class="pc adv">2 advisory</span></div>
+      </div>
+      <div class="erow">
+        <div class="en">Transaction <span class="pill ok">Clean</span></div>
+        <div class="em">5 rules · 3 fields covered · 1 cross-entity</div>
+        <div class="provchips"><span class="pc spec">4 spec-derived</span><span class="pc man">1 manual</span></div>
+      </div>
+      <div class="erow">
+        <div class="en">Customer <span class="pill ok">Clean</span></div>
+        <div class="em">3 rules · 2 fields covered</div>
+        <div class="provchips"><span class="pc spec">1 spec-derived</span><span class="pc man">2 manual</span></div>
+      </div>
+
+      <div class="phd" style="border-top:1px solid var(--line);border-bottom:none"><h2>Legacy notes</h2><div class="pd">Unchanged — stays a single quiet section, edited inline below the board.</div></div>
+    </section>
+
+    <!-- EDITOR (zone: editor — brightest) — one entity's rule-set -->
+    <section class="panel zone-editor">
+      <div class="ehd">
+        <div><h2>Account rules</h2><div class="et">Grouped by field. Advisory conflicts are read-only signals — they never block rules authoring or export.</div></div>
+        <span class="kaoff">● Knowledge Assist: Off</span>
+      </div>
+      <div class="ebody">
+
+        <div class="advisory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+          <div class="at"><b>2 advisory conflicts</b> on <code>status</code>, <code>currencyCode</code> — KA field guidance differs from the current model.<span class="ro">READ-ONLY</span></div>
+          <span class="jump">Review ↗</span>
+        </div>
+
+        <div class="fgroup">
+          <div class="fghd">status <span class="ft">string · required</span></div>
+          <div class="rrow"><span class="rtype">Allowed values</span><span class="rval">OPEN, CLOSED, FROZEN</span><span class="pc spec">SPEC-DERIVED</span><span class="act">Edit</span></div>
+          <div class="rrow"><span class="rtype">Not null</span><span class="rval">—</span><span class="pc man">MANUAL</span><span class="act">Edit</span></div>
+        </div>
+
+        <div class="fgroup">
+          <div class="fghd">currencyCode <span class="ft">string</span></div>
+          <div class="rrow"><span class="rtype">Pattern</span><span class="rval">^[A-Z]{3}$</span><span class="pc spec">SPEC-DERIVED</span><span class="act">Edit</span></div>
+          <div class="rrow"><span class="rtype">ISO-4217</span><span class="rval">currency whitelist</span><span class="pc ka">KA-APPLIED</span><span class="act">Edit</span></div>
+        </div>
+
+        <div class="fgroup">
+          <div class="fghd">accountId <span class="ft">string · persistence_id</span></div>
+          <div class="rrow genid"><span class="rtype">Max length</span><span class="rval">36</span><span class="pc spec">SPEC-DERIVED</span><span class="gnote">⚠ looks server-generated — rule may be ignored</span><span class="act">Edit</span></div>
+        </div>
+
+        <div class="xent">
+          <div class="xhd">Cross-entity rules</div>
+          <div class="rrow"><span class="rtype">Cross-entity exists</span><span class="rval">customerId → Customer</span><span class="dep">prerequisite</span><span class="pc man">MANUAL</span><span class="act">Edit</span></div>
+          <div class="rrow"><span class="rtype">X-entity field check</span><span class="rval">Customer.segment == RETAIL</span><span class="dep">via customerId ✓</span><span class="pc man">MANUAL</span><span class="act">Edit</span></div>
+        </div>
+
+        <div class="matnote"><b>Bulk authoring:</b> Matrix Lite is <b>out of v1</b> — deferred to Phase 3, and only for single-field scalar rule types (allowed-values · lengths · pattern · range · default · not-null). Cross-entity rules stay form-shaped. v1 keeps one bulk affordance: paste a comma/newline list into <i>Allowed values</i> with preview-before-apply.</div>
+      </div>
+      <div class="efoot">
+        <div class="note">Writes the same <code>entity_rules</code> Studio saves today (provenance stays project-side, never in the Engine manifest).</div>
+        <div class="btns"><span class="btn">Cancel</span><span class="btn pri">Save rule-set</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">Editable rules = solid cards with an <b>Edit</b> action · advisories = dashed amber, READ-ONLY, deep-link to review · generated-ID cautions wash the single affected row. Zone tints per the B1 palette; family accents are unused here (rules have no contract family) — provenance chips are the colour axis.</div>
+</main>
+</div></body></html>

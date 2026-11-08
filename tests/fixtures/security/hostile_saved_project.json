@@ -1,0 +1,18 @@
+{
+  "kafka_topic_pair": {
+    "route_name": "route\"><img src=x onerror=\"globalThis.__storedXss=4\">",
+    "upstream_topic": "upstream' autofocus onfocus='globalThis.__storedXss=5",
+    "upstream_system": "Payments & <Core>",
+    "upstream_schema_content": "</textarea><script>globalThis.__storedXss=6</script>",
+    "downstream_topic": "downstream\"><svg onload=\"globalThis.__storedXss=7\">",
+    "downstream_system": "Ledger \"Primary\"",
+    "downstream_schema_content": "</textarea><img src=x onerror=\"globalThis.__storedXss=8\">"
+  },
+  "passthrough_target": {
+    "name": "target\"><img src=x onerror=\"globalThis.__storedXss=9\">",
+    "system": "SCT' autofocus onfocus='globalThis.__storedXss=10",
+    "source_mode": "text",
+    "spec_url": "https://example.invalid/spec?name=\"><svg onload=\"globalThis.__storedXss=11\">",
+    "spec_content": "</textarea><script>globalThis.__storedXss=12</script>"
+  }
+}

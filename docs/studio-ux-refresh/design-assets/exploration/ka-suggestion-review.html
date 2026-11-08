@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Knowledge Assist — Suggestion Review (EXPLORATORY, B2)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--ka:#0d7490;--kabg:#e3f3f7;--kaline:#bfe0ea;
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.explore-badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.main{flex:1;padding:22px 26px;min-width:0}
+.crumb{font-size:11px;color:var(--mut2);font-weight:600;margin-bottom:4px}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.gate{display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:11px 14px;background:var(--kabg);border:1.5px dashed var(--ka);border-radius:10px}
+.gate svg{width:16px;height:16px;color:var(--ka);flex-shrink:0;margin-top:1px}
+.gate .gt{font-size:12px;color:#0b5163}
+.gate b{color:#083d4a}
+.stats{display:flex;gap:12px;margin:0 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.ka{background:var(--kabg);border-color:var(--kaline)} .stat.ka .n{color:var(--ka)}
+.split{display:grid;grid-template-columns:.82fr 1.18fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel.zone-board{background:var(--zone-scan)}
+.panel.zone-editor{background:var(--zone-editor);box-shadow:0 4px 16px rgba(16,35,63,.08)}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.phd h2{font-size:13.5px;font-weight:700}.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.grouphd{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;padding:9px 15px 5px;color:var(--mut)}
+.srow{display:flex;align-items:flex-start;gap:10px;padding:10px 15px;border-top:1px solid #e8edf4;position:relative}
+.srow.sel{background:var(--selbg)}
+.srow.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.stype{font-size:9.5px;font-weight:800;color:var(--ka);background:var(--kabg);border:1px solid var(--kaline);padding:2px 7px;border-radius:5px;letter-spacing:.3px;white-space:nowrap;margin-top:2px}
+.smain{flex:1;min-width:0}
+.starget{font-weight:700;font-size:12.5px;font-family:ui-monospace,Menlo,monospace}
+.sprop{font-size:11.5px;color:var(--mut);margin-top:2px}
+.sev{font-size:10.5px;color:var(--ka);margin-top:4px;font-weight:600}
+.stage{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.stage.new{background:#eef1f6;color:var(--mut)}
+.stage.acc{background:var(--okbg);color:var(--ok)}
+.stage.rej{background:var(--dangerbg);color:var(--danger)}
+.stage.edi{background:var(--warnbg);color:var(--warn)}
+/* editor */
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.eribbon{display:inline-flex;align-items:center;gap:7px}
+.etype{font-size:10px;font-weight:800;color:#fff;background:var(--ka);padding:3px 8px;border-radius:5px;letter-spacing:.4px}
+.ename{font-weight:800;font-size:15px;color:var(--navy);font-family:ui-monospace,Menlo,monospace}
+.ebody{padding:14px 15px}
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.dcol{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.dcol .dl{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;font-weight:800;padding:6px 11px;border-bottom:1px solid var(--line)}
+.dcol.cur .dl{background:#f4f6f9;color:var(--mut)}
+.dcol.prop .dl{background:var(--kabg);color:var(--ka)}
+.dcol.prop{border-color:var(--kaline)}
+.dcol pre{padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.6;white-space:pre-wrap;color:var(--ink)}
+.dcol.prop pre .add{color:#0b6e64;font-weight:700}
+.evbox{border:1px solid var(--kaline);border-radius:10px;background:var(--kabg);overflow:hidden;margin-bottom:13px}
+.evhd{padding:8px 12px;border-bottom:1px solid var(--kaline);font-size:11px;font-weight:800;color:#0b5163;text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between;align-items:center}
+.evrow{display:flex;gap:9px;align-items:center;padding:8px 12px;border-top:1px solid var(--kaline);font-size:12px;background:#eef7fa}
+.evrow:first-of-type{border-top:none}
+.evdoc{font-weight:700}
+.evsec{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--mut)}
+.evopen{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff;white-space:nowrap}
+.conf{font-size:10.5px;font-weight:700;color:#0b5163;background:#cbe7ef;padding:2px 8px;border-radius:20px}
+.editnote{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:13px}
+.editnote .fl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;margin-bottom:5px}
+.editnote textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px;font-family:ui-monospace,Menlo,monospace;resize:none;color:var(--ink)}
+.decide{display:flex;gap:8px}
+.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.rej{color:var(--danger);border-color:#ecc9c9}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.staged{font-size:12px;color:var(--mut)}
+.staged b{color:var(--ink)}
+.legend{margin-top:14px;font-size:11.5px;color:var(--mut);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pc{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+.pc.spec{background:var(--okbg);color:#0b6e3f}.pc.man{background:#eef1f6;color:#5a6b7e}
+.pc.derv{background:var(--derivedbg);color:var(--derived)}.pc.ka{background:var(--kabg);color:var(--ka)}
+.foot{margin-top:8px;font-size:11.5px;color:var(--mut2)}
+</style></head>
+<body>
+<div class="explore-badge">⚠ EXPLORATORY — not the current build contract</div>
+<div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#">3 · Entity Model</a>
+    <a href="#">4 · Data Handoffs</a>
+    <a href="#">5 · Downstream</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="crumb">Knowledge Workspace ▸ Suggestion review</div>
+  <div class="h1">Knowledge Assist — Suggestion Review</div>
+  <div class="sub">Every suggestion is a reviewable patch with an evidence basis. Decisions stage (accept · edit · reject) and save as one batch — the same 3-way lifecycle Studio persists today.</div>
+
+  <div class="gate">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <div class="gt"><b>Knowledge Assist is opt-in and OFF by default.</b> This surface exists only when KA is enabled for the session. With KA off there is no KS UI, no drawer state, no live KS calls. <b>KA build remains gated on the production-readiness / data-handling decision</b> — this design is exploratory and does not unblock it.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat ka"><div class="n">6</div><div class="l">Open suggestions</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Staged decisions</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">Evidence documents</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">Applied without review</div></div>
+  </div>
+
+  <div class="split">
+    <!-- QUEUE (zone: scan) -->
+    <section class="panel zone-board">
+      <div class="phd"><h2>Suggestion queue</h2><div class="pd">Grouped by entity · applies-generated-change first</div></div>
+
+      <div class="grouphd">▾ Account · 3</div>
+      <div class="srow sel">
+        <span class="stype">VALIDATION</span>
+        <div class="smain">
+          <div class="starget">Account.status</div>
+          <div class="sprop">Add allowed values <b>A, C, F</b> (replaces free text)</div>
+          <div class="sev">◆ 2 evidence citations · applies generated change</div>
+        </div>
+        <span class="stage new">REVIEWING</span>
+      </div>
+      <div class="srow">
+        <span class="stype">FIELD</span>
+        <div class="smain">
+          <div class="starget">Account.currencyCode</div>
+          <div class="sprop">Add ISO-4217 whitelist rule</div>
+          <div class="sev">◆ 1 citation</div>
+        </div>
+        <span class="stage acc">STAGED · ACCEPT</span>
+      </div>
+      <div class="srow">
+        <span class="stype">IDENTITY</span>
+        <div class="smain">
+          <div class="starget">Account.externalAccountNumber</div>
+          <div class="sprop">Suggest role <b>business_key</b> (metadata-only)</div>
+          <div class="sev">◆ 1 citation</div>
+        </div>
+        <span class="stage edi">STAGED · EDITED</span>
+      </div>
+
+      <div class="grouphd">▾ Transaction · 2</div>
+      <div class="srow">
+        <span class="stype">MAPPING</span>
+        <div class="smain">
+          <div class="starget">txnType → transaction_type</div>
+          <div class="sprop">Map to staging column (exact name basis)</div>
+          <div class="sev">◆ 1 citation</div>
+        </div>
+        <span class="stage new">NEW</span>
+      </div>
+      <div class="srow">
+        <span class="stype">VALIDATION</span>
+        <div class="smain">
+          <div class="starget">Transaction.amount</div>
+          <div class="sprop">Range rule 0.01 – 250,000.00</div>
+          <div class="sev">◆ 2 citations</div>
+        </div>
+        <span class="stage new">NEW</span>
+      </div>
+
+      <div class="grouphd">▾ Customer · 1</div>
+      <div class="srow">
+        <span class="stype">FIELD</span>
+        <div class="smain">
+          <div class="starget">Customer.segment</div>
+          <div class="sprop">Allowed values RETAIL, BUSINESS, PRIVATE</div>
+          <div class="sev">◆ 1 citation</div>
+        </div>
+        <span class="stage new">NEW</span>
+      </div>
+    </section>
+
+    <!-- FOCUSED REVIEW (zone: editor) -->
+    <section class="panel zone-editor">
+      <div class="ehd">
+        <div class="eribbon"><span class="etype">KA · VALIDATION</span><span class="ename">Account.status</span></div>
+        <div style="font-size:11px;color:var(--mut);margin-top:4px">Suggestion <span style="font-family:ui-monospace,Menlo,monospace">sug_9f42</span> · applies a generated change (validation behavior) · <span class="conf">consistency 0.94 · 2 sources</span></div>
+      </div>
+      <div class="ebody">
+
+        <div class="diff">
+          <div class="dcol cur"><div class="dl">Current — manual, free text</div><pre>field: status
+type: string
+rules: (none)</pre></div>
+          <div class="dcol prop"><div class="dl">Proposed — KA suggestion</div><pre>field: status
+type: string
+<span class="add">+ rule: allowed-values [A, C, F]</span>
+<span class="add">+ error: "status must be A, C or F"</span></pre></div>
+        </div>
+
+        <div class="evbox">
+          <div class="evhd"><span>Evidence basis — why KA proposes this</span><span style="font-weight:600;text-transform:none;letter-spacing:0">citations open in the Workspace detail pane</span></div>
+          <div class="evrow"><span class="evdoc">Account_Status_Policy.pdf</span><span class="evsec">§2.1 “Status codes A/C/F”</span><span class="evopen">Open in Workspace ↗</span></div>
+          <div class="evrow"><span class="evdoc">core-banking-data-dictionary.xlsx</span><span class="evsec">sheet ACCT · row 14</span><span class="evopen">Open in Workspace ↗</span></div>
+        </div>
+
+        <div class="editnote">
+          <div class="fl">Edit before accepting (optional) — saved as <span style="font-family:ui-monospace,Menlo,monospace;text-transform:none">studio_edited_payload</span></div>
+          <textarea rows="2">allowed_values: [A, C, F]   # keep F (frozen) — confirmed with ops 2026-07-01</textarea>
+        </div>
+
+        <div class="decide">
+          <span class="btn pri">Apply</span>
+          <span class="btn">Apply edited</span>
+          <span class="btn rej">Reject</span>
+          <span style="margin-left:auto;font-size:11px;color:var(--mut);align-self:center">Applied rules render in Step 6 with a <span class="pc ka">KA-APPLIED</span> chip</span>
+        </div>
+
+      </div>
+      <div class="efoot">
+        <div class="staged"><b>2 staged decisions.</b> Nothing changes the project until you save the batch — and nothing is ever applied without review.</div>
+        <span class="btn pri">Save suggestion review (2)</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="legend">
+    <span style="font-weight:700;color:var(--mut)">One provenance legend, two colour families:</span>
+    <span class="pc spec">SPEC-DERIVED</span><span class="pc man">MANUAL</span>
+    <span class="pc derv">DERIVED · deterministic</span><span class="pc ka">KA-APPLIED · evidence-backed</span>
+    <span style="color:var(--mut2)">deterministic lilac vs KA teal — same patch anatomy, different basis + lifecycle</span>
+  </div>
+  <div class="foot">Assumptions to confirm in the blind capture pass (needs a real ingested evidence doc): queue grouping/sort · confidence display · the standalone-queue framing vs today's per-step drawers · staged-batch footer semantics at scale.</div>
+</main>
+</div></body></html>

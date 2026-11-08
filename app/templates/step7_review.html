@@ -1,0 +1,1117 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 7: Review{% endblock %}
+
+{% macro decision_attrs(entry) -%}
+class="review-history-row"
+data-decision-history-row
+data-decision-entity="{{ entry.decision_entity|default('') }}"
+data-decision-entities="{{ entry.decision_entities|default([])|join('||') }}"
+data-decision-type="{{ entry.decision_type|default('') }}"
+data-decision-group="{{ entry.decision_group|default('') }}"
+data-decision-semantic="{{ entry.decision_semantic|default('') }}"
+{%- endmacro %}
+
+{% macro ka_provenance_badge(entry) -%}
+{% if entry.provenance_class == 'ai-accepted' %}
+<span class="ka-card-category ka-category-generated ka-taxonomy-change" title="Accepted from KA: Knowledge Assist suggested this item and a user accepted it. This can affect generated artifact inputs.">{{ entry.provenance_label }}</span>
+{% elif entry.provenance_class == 'ai-edited' %}
+<span class="ka-card-category ka-category-generated ka-taxonomy-change" title="Edited from KA: Knowledge Assist suggested this item and a user applied an edited version. This can affect generated artifact inputs.">{{ entry.provenance_label }}</span>
+{% else %}
+<span class="ka-card-category ka-category-review ka-taxonomy-attention" title="Rejected suggestions are recorded in Decision History but are not linked as generated evidence.">{{ entry.provenance_label }}</span>
+{% endif %}
+{%- endmacro %}
+
+{# PR-21 Trace Lens: renders one trace_lens_entities[*].upstream/handoffs/
+   downstream entry. `ref.readiness` is the joined readiness_view.ReadinessItem
+   (or None -- e.g. a REST/OpenAPI interface readiness_view doesn't itemize),
+   computed once in review.py._interface_trace_ref/_handoff_trace_ref -- this
+   macro only branches display on the fields already there, it never re-derives
+   state. Mono-tile text abbreviations mirror step5_downstream.html's shipped
+   uxr_family_mono map (:6-8) verbatim for cross-app consistency, rather than
+   the standalone mock's own literal tile text (which says "FIXED", not "FIX"). #}
+{% macro trace_ref_row(ref) -%}
+{% set uxr_trace_mono = {'rest': 'REST', 'fixed': 'FIX', 'csv': 'CSV', 'xml': 'XML', 'soap': 'SOAP', 'staging': 'STG'} %}
+{% set uxr_trace_mono_class = {'staging': 'stg'} %}
+{% set r = ref.readiness %}
+{% set uxr_trace_state_label = {'blocks_export': 'Blocks export', 'needs_action': 'Needs action', 'warning': 'Review', 'ready': 'Ready', 'draft': 'Draft'} %}
+{% if r and r.state in ['blocks_export', 'needs_action'] and r.blockers %}
+{# Blocked row carries a TEXTUAL state pill AND the blocker reason(s) -- state
+   is never colour/border alone (§1.5). The Fix link gets a contextual
+   accessible name so it is not a bare repeated "Fix". #}
+<div class="ref blocked" data-trace-ref="{{ ref.name }}" data-trace-ref-state="{{ r.state }}">
+  <div class="mono m-{{ uxr_trace_mono_class.get(ref.family, ref.family) }}">{{ uxr_trace_mono.get(ref.family, ref.family) }}</div>
+  <div class="rn">
+    <div class="rt">{{ ref.name }}</div>
+    <div class="rp">{{ ref.provenance_detail }}</div>
+    <div class="rreason">{% for b in r.blockers %}{{ b.label }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</div>
+  </div>
+  <span class="pill attn">{{ uxr_trace_state_label[r.state] }}</span>
+  <a class="jump" href="{{ r.blockers[0].deep_link }}" data-trace-fix-link aria-label="Fix {{ ref.name }}: {{ r.blockers[0].label }}">Fix &#8599;</a>
+</div>
+{% elif r %}
+<div class="ref" data-trace-ref="{{ ref.name }}" data-trace-ref-state="{{ r.state }}">
+  <div class="mono m-{{ uxr_trace_mono_class.get(ref.family, ref.family) }}">{{ uxr_trace_mono.get(ref.family, ref.family) }}</div>
+  <div class="rn"><div class="rt">{{ ref.name }}</div><div class="rp">{{ ref.provenance_detail }}</div></div>
+  <span class="pill {{ 'ok' if r.state in ['ready', 'draft'] else 'attn' }}">{{ uxr_trace_state_label.get(r.state, 'Review') }}</span>
+</div>
+{% elif ref.entity_readiness %}
+{# readiness_view does not itemize this interface (a REST/OpenAPI upstream, the
+   bulk CRUD ingestion source), but the ENTITY it populates IS itemized. Per
+   the "one truth" rule and the mock ("populates Account" + a readiness pill),
+   the row carries the populated entity's readiness FROM THE SAME P6 MODEL --
+   a pill only (state); the entity's Fix affordance belongs to the entity, not
+   the source row. #}
+{% set er = ref.entity_readiness %}
+<div class="ref" data-trace-ref="{{ ref.name }}" data-trace-ref-state="{{ er.state }}" data-trace-ref-via="entity">
+  <div class="mono m-{{ uxr_trace_mono_class.get(ref.family, ref.family) }}">{{ uxr_trace_mono.get(ref.family, ref.family) }}</div>
+  <div class="rn"><div class="rt">{{ ref.name }}</div><div class="rp">{{ ref.provenance_detail }}</div></div>
+  <span class="pill {{ 'ok' if er.state in ['ready', 'draft'] else 'attn' }}" title="Readiness of the entity this source populates">{{ uxr_trace_state_label.get(er.state, 'Review') }}</span>
+</div>
+{% else %}
+{# Neither the interface nor a populated entity is itemized (e.g. a REST source
+   whose entity_name resolves to no classified entity). Label it EXPLICITLY as
+   a source reference rather than leaving a silent unlabeled row. #}
+<div class="ref" data-trace-ref="{{ ref.name }}" data-trace-ref-state="source">
+  <div class="mono m-{{ uxr_trace_mono_class.get(ref.family, ref.family) }}">{{ uxr_trace_mono.get(ref.family, ref.family) }}</div>
+  <div class="rn"><div class="rt">{{ ref.name }}</div><div class="rp">{{ ref.provenance_detail }}</div></div>
+  <span class="pill source" title="Provenance source — export-readiness is tracked on its entity and downstream references">Source</span>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% block content %}
+<div class="card step-surface review-step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 7: Review Checkpoint</h2>
+      <p class="subtitle">
+        Confirm readiness, provenance posture, and non-blocking advisories before continuing to export. Dense review detail now lives in the bottom drawer so the main pane stays focused on the decision to move forward.
+      </p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Review Mode</span>
+      <div class="step-surface-kicker-title">Soft approval, no export gate</div>
+      <div class="text-muted text-sm">Marked reviewed records your review checkpoint. Export is still allowed during Studio preview mode.</div>
+    </div>
+  </div>
+
+
+  {# PR-21 Contract Trace Lens; PR-23 reconciled the summary strips into one,
+     and PR-24 removed the retired legacy strip. Every count/pill/state/blocker below is read from
+     trace_lens_summary/trace_lens_entities (app/routes/review.py
+     _trace_lens_context and friends), which themselves only group
+     readiness_view.ReadinessItem objects -- nothing here recomputes
+     readiness. This is the sole summary and counts readiness_view items over
+     Steps 2-5, while detailed project-level export-blocker text remains
+     carried by the completeness drawer
+     + completeness_deep_links (PR-16) below, which are unconditional and
+     unaffected by this gate.
+
+     The last cell is deliberately NOT readiness_view-sourced. The first
+     three count readiness items for Steps 2-5; the thing that actually
+     blocks export is the completeness report (`/export` gates on
+     `report.is_exportable()`), and project-level blockers such as a missing
+     target_profile never become readiness items. As the sole
+     summary, this strip would otherwise render all-zero and green while
+     Step 8 refuses to export -- so `export_gate` (app/routes/review.py
+     _export_gate) carries the authoritative signal, and the zone tint
+     reacts to it too. The third label is scoped to "Contract blockers"
+     rather than the old package-wide-sounding "Blocks export" so the two
+     cells cannot be read as the same number. #}
+  <div class="rsummary uxr-stat-strip {{ 'uxr-zone-attn' if (trace_lens_summary.blocks_export or trace_lens_summary.warnings or not export_gate.exportable) else 'uxr-zone-ready' }}" data-trace-lens-summary>
+    <div class="rs ok"><span class="n">{{ trace_lens_summary.ready }}</span><span class="l">Ready</span></div>
+    <div class="rs warn"><span class="n">{{ trace_lens_summary.warnings }}</span><span class="l">Warnings</span></div>
+    <div class="rs attn"><span class="n">{{ trace_lens_summary.blocks_export }}</span><span class="l">Contract blockers</span></div>
+    <div class="rs {{ 'attn' if not export_gate.exportable else 'ok' }}" data-export-gate aria-label="{{ 'Export blocked by %s completeness item(s)'|format(export_gate.blocker_count) if not export_gate.exportable else 'Export not blocked' }}"><span class="n">{{ export_gate.blocker_count }}</span><span class="l">Export blockers</span></div>
+  </div>
+
+  {% if trace_lens_entities %}
+  <section class="panel tracelens workflow-surface-group" data-trace-lens aria-label="Contract Trace Lens">
+    <div class="phd">
+      <div>
+        <h2>Contract Trace Lens</h2>
+        <div class="pd">Read-only. Highlights connections; never dims away an unrelated blocker.</div>
+      </div>
+      <div class="tracepick">
+        <label class="tl" for="trace-lens-picker">Trace by entity</label>
+        <select class="entsel" id="trace-lens-picker" data-trace-lens-picker>
+          {% for trace_entity in trace_lens_entities %}
+          <option value="{{ trace_entity.entity }}">{{ trace_entity.entity }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="tracehd"><div>Upstream references</div><div class="mid">Canonical entity</div><div>Downstream references</div></div>
+
+    {% for trace_entity in trace_lens_entities %}
+    <div class="trace{{ '' if loop.first else ' hidden' }}" data-trace-lens-block="{{ trace_entity.entity }}">
+      <div class="col up workflow-surface-detail">
+        <div class="colhd">Upstream references</div>
+        <div class="dirnote">FEEDS &rarr;</div>
+        {% for ref in trace_entity.upstream %}
+        {{ trace_ref_row(ref) }}
+        {% else %}
+        <p class="text-muted text-sm">No upstream references for this entity.</p>
+        {% endfor %}
+      </div>
+      <div class="center workflow-surface-detail">
+        <div class="colhd">Canonical entity</div>
+        <div class="entity workflow-surface-card">
+          <div class="en">{{ trace_entity.entity }}</div>
+          {% if trace_entity.card.key %}<div class="ek">&#128273; {{ trace_entity.card.key }}</div>{% endif %}
+          <div class="em">{{ trace_entity.card.field_count }} field{{ '' if trace_entity.card.field_count == 1 else 's' }} &middot; {{ trace_entity.card.role_count }} role{{ '' if trace_entity.card.role_count == 1 else 's' }} &middot; {{ trace_entity.card.contract_count }} contract{{ '' if trace_entity.card.contract_count == 1 else 's' }}</div>
+        </div>
+      </div>
+      <div class="col dn workflow-surface-detail">
+        <div class="colhd">Downstream references</div>
+        <div class="dirnote">&rarr; EMITS</div>
+        {% for ref in trace_entity.handoffs %}
+        {{ trace_ref_row(ref) }}
+        {% endfor %}
+        {% for ref in trace_entity.downstream %}
+        {{ trace_ref_row(ref) }}
+        {% endfor %}
+        {% if not trace_entity.handoffs and not trace_entity.downstream %}
+        <p class="text-muted text-sm">No downstream references for this entity.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="otherblk{{ '' if loop.first else ' hidden' }}" data-trace-lens-unrelated="{{ trace_entity.entity }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+      <div>
+        <b>Other represented contract/handoff blockers not connected to {{ trace_entity.entity }}</b> — kept visible so tracing one entity cannot hide another represented contract or handoff:
+        {% if trace_entity.unrelated_blockers %}
+        {% for blocker in trace_entity.unrelated_blockers %}
+        <a class="ob" href="{{ blocker.deep_link }}">{{ blocker.label }}</a>
+        {% endfor %}
+        {% else %}
+        <span class="text-muted text-sm">None in this represented set.</span>
+        {% endif %}
+        <span class="text-muted text-sm">Package-wide export blockers are summarized above and detailed in Completeness.</span>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <div class="review-main-grid">
+    <section class="step-section-card review-posture-card workflow-surface-card">
+      <div class="step-section-heading">
+        <div>
+          <h3>Review Posture</h3>
+          <p class="text-muted text-sm">
+            This slice adds only a soft review posture. It does not block export, and it does not replace the existing governed workflow.
+          </p>
+        </div>
+        <span class="badge {{ 'badge-ready' if session.review_approved else 'badge-warning' }}">
+          {{ 'Reviewed' if session.review_approved else 'Review pending' }}
+        </span>
+      </div>
+
+      <div id="review-posture-status" class="alert hidden" role="status" aria-live="polite"></div>
+
+      {% if conflict_resolution_badge %}
+      <div class="ka-suggestion-badge-row" aria-label="Knowledge Assist conflict suggestions">
+        <button
+          type="button"
+          class="ka-suggestion-badge"
+          data-suggestion-drawer-open
+          data-suggestion-drawer-url="{{ conflict_resolution_badge.drawer_url }}"
+        >
+          {{ conflict_resolution_badge.label }}
+        </button>
+      </div>
+      {% endif %}
+
+      {% if portfolio_reuse_badge %}
+      <div class="ka-suggestion-badge-row" aria-label="Knowledge Assist portfolio reuse suggestions">
+        <button
+          type="button"
+          class="ka-suggestion-badge"
+          data-suggestion-drawer-open
+          data-suggestion-drawer-url="{{ portfolio_reuse_badge.drawer_url }}"
+        >
+          {{ portfolio_reuse_badge.label }}
+        </button>
+      </div>
+      {% endif %}
+
+      {% if knowledge_assist_enabled and conflict_resolution_badge %}
+      <p class="text-muted text-sm">
+        Step 3 suggestion reviews can update Studio field or validation inputs after review. Step 7 conflict-resolution reviews are advisory source-alignment checks only.
+      </p>
+      {% endif %}
+
+      <div class="review-posture-grid">
+        <div class="review-posture-item workflow-surface-detail">
+          <span class="review-posture-item-label">Review posture</span>
+          <strong id="review-posture-label">{{ 'Marked reviewed' if session.review_approved else 'Not marked reviewed' }}</strong>
+          <span class="text-muted text-sm">Marked reviewed records your review checkpoint. Export is still allowed during Studio preview mode.</span>
+        </div>
+        {% if advisory_conflicts.enabled %}
+        <div class="review-posture-item workflow-surface-detail">
+          <span class="review-posture-item-label">Advisory issues</span>
+          {% if advisory_conflicts.degraded %}
+          <strong>Unavailable</strong>
+          <span class="text-muted text-sm">{{ advisory_conflicts.warning }}</span>
+          {% elif advisory_conflicts.available %}
+          <strong>{{ advisory_conflicts.count }}</strong>
+          <span class="text-muted text-sm">
+            {{ 'Non-blocking CRUD advisory signal' if advisory_conflicts.count == 1 else 'Non-blocking CRUD advisory signals' }}
+            {% if advisory_conflicts.count %}
+            · <a href="/rules">Review in Step 6</a>
+            {% endif %}
+          </span>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if knowledge_assist_enabled %}
+        <div class="review-posture-item workflow-surface-detail">
+          <span class="review-posture-item-label">Exported evidence links</span>
+          <strong>{{ evidence_coverage.linked }} evidence-backed generated decisions</strong>
+          <span class="text-muted text-sm">Evidence-backed counts are export evidence counts for <code>evidence-trail.json</code>, not a count of every KA review action.</span>
+        </div>
+        {% endif %}
+    </div>
+
+      <div class="review-posture-actions">
+        <button
+          id="review-approved-btn"
+          type="button"
+          class="btn {{ 'btn-secondary' if session.review_approved else 'btn-primary' }}"
+          onclick="toggleReviewApproved()"
+        >
+          {{ 'Mark review pending' if session.review_approved else 'Mark reviewed' }}
+        </button>
+        <a href="/export" class="btn btn-primary">Proceed to Export →</a>
+        <a href="{{ '/passthrough' if session.app_archetype == 'passthrough-router' else '/rules' }}" class="btn btn-secondary">Previous</a>
+      </div>
+    </section>
+
+    {% if knowledge_assist_enabled %}
+    <section class="step-section-card workflow-surface-card">
+      <div class="step-section-heading">
+        <div>
+          <h3>Evidence Trail Links / Exported Evidence</h3>
+          <p class="text-muted text-sm">Evidence-backed accepted/edited generated-artifact decisions can appear in <code>evidence-trail.json</code> when a current artifact and citation evidence are available. Rejected suggestions and advisory reviews are review history only.</p>
+        </div>
+        <span class="step-section-chip">Export evidence</span>
+      </div>
+
+      <div class="review-summary-strip review-summary-strip-compact">
+        <div class="review-summary-card is-accent">
+          <div class="review-summary-value">{{ evidence_coverage.linked }}</div>
+          <div class="review-summary-label">EVIDENCE-BACKED</div>
+        </div>
+        <div class="review-summary-card is-warning">
+          <div class="review-summary-value">{{ evidence_coverage.without_evidence }}</div>
+          <div class="review-summary-label">STALE / MISSING</div>
+        </div>
+        <div class="review-summary-card is-info">
+          <div class="review-summary-value">{{ evidence_coverage.accepted }}</div>
+          <div class="review-summary-label">ACCEPTED CANDIDATES</div>
+        </div>
+        <div class="review-summary-card is-success">
+          <div class="review-summary-value">{{ evidence_coverage.edited }}</div>
+          <div class="review-summary-label">EDITED CANDIDATES</div>
+        </div>
+      </div>
+
+      {% if ks_provenance.warnings %}
+      <div class="alert alert-warn" style="margin-top:12px;margin-bottom:0">
+        {% for warning in ks_provenance.warnings %}
+        <div>{{ warning }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+  </div>
+
+  <section class="step-section-card review-project-summary-card workflow-surface-card">
+    <div class="step-section-heading">
+      <div>
+        <h3>Project Snapshot</h3>
+        <p class="text-muted text-sm">A lightweight summary of the current authored project before export.</p>
+      </div>
+      <span class="step-section-chip">Current session</span>
+    </div>
+
+    <div class="review-kv-grid">
+      {% for item in project_summary %}
+      <div class="review-kv-item workflow-surface-detail">
+        <span class="review-kv-label">{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block rail_header %}
+<div>
+  <h3>Step 7 Context</h3>
+  <p>Decision context is consolidated in the Review Drawer so the rail stays quiet until there is an active selection.</p>
+</div>
+{% endblock %}
+
+{% block rail_panels %}
+<section class="shell-scaffold-panel review-context-empty-panel" data-rail-panel="review-context">
+  <h4>Decision Context</h4>
+  <p>Use the Decision History filters in the Review Drawer to browse saved generated-artifact decisions, advisory reviews, and current Step 6 rules.</p>
+</section>
+<div id="rail-chat-panel" data-rail-panel="chat" hidden></div>
+{% endblock %}
+
+{% block drawer_header %}
+<div>
+  <h3>Review Drawer</h3>
+  <p>Manifest preview, decision history, completeness detail, and evidence coverage live here for Step 7.</p>
+</div>
+{% endblock %}
+
+{% block drawer_tabs %}
+<div class="tabs shell-drawer-tabs">
+  <button type="button" class="tab-btn">Manifest Diff</button>
+  <button type="button" class="tab-btn">Decision History</button>
+  <button type="button" class="tab-btn">Completeness</button>
+  {% if knowledge_assist_enabled %}
+  <button type="button" class="tab-btn">Evidence Trail Links</button>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block drawer_panels %}
+<div class="tab-panel shell-drawer-panel review-drawer-panel">
+  <div class="review-drawer-heading">
+    <h4>{{ manifest_drawer.title }}</h4>
+    <p>{{ manifest_drawer.note }}</p>
+  </div>
+  <pre id="manifest-preview" class="review-drawer-code">{{ manifest_drawer.content }}</pre>
+
+  <section class="review-drawer-section">
+    <div class="review-drawer-heading">
+      <h4>Generated Rule Files</h4>
+      <p>Current-session `rules/*.yaml` preview blocks are shown here before export. This is review visibility only, not a new editor.</p>
+    </div>
+
+    {% if rule_yaml_previews.empty %}
+    <div class="alert alert-info" style="margin-bottom:0">No current rule files are generated in this session yet.</div>
+    {% else %}
+    <div class="review-rule-preview-stack">
+      {% for preview in rule_yaml_previews.previews %}
+      <section class="shell-scaffold-panel">
+        <div class="shell-rail-panel-title-row">
+          <div>
+            <h5 style="margin:0">{{ preview.entity_name }}</h5>
+            <p class="text-muted text-sm" style="margin:4px 0 0 0"><code>{{ preview.file_path }}</code></p>
+          </div>
+          <span class="badge badge-manual">rules.yaml</span>
+        </div>
+        <pre class="review-drawer-code">{{ preview.content }}</pre>
+      </section>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+</div>
+
+<div class="tab-panel shell-drawer-panel review-drawer-panel">
+  <div class="review-drawer-heading" data-decision-history>
+    <h4>Decision History</h4>
+    <p>Decision History shows a mix of current/latest collapsed sections where Studio stores only the latest state and saved review rows where the current data model retains multiple entries. It is not an append-only audit timeline, and it does not claim full manifest-wide provenance coverage.</p>
+    {% if decision_history_filters.total %}
+    <div class="decision-history-filter-bar" aria-label="Decision History filters">
+      <button type="button" class="decision-history-filter is-active" data-decision-history-filter="all">
+        All <span>{{ decision_history_filters.total }}</span>
+      </button>
+      {% for item in decision_history_filters.filters %}
+      <button type="button" class="decision-history-filter" data-decision-history-filter="{{ item.value }}">
+        {{ item.label }} <span>{{ item.count }}</span>
+      </button>
+      {% endfor %}
+    </div>
+    <div class="alert alert-info decision-history-filter-empty" data-decision-history-empty hidden>
+      No Decision History entries match this filter.
+    </div>
+    {% endif %}
+  </div>
+
+  {% if knowledge_assist_enabled %}
+  {% if ka_decision_history_empty %}
+  <div class="alert alert-info" style="margin-bottom:16px">
+    No Knowledge Assist decisions have been saved yet. Accept, edit, or reject suggestions in earlier steps to populate this history.
+  </div>
+  {% else %}
+  {% if ka_generated_history_has_entries %}
+  <section class="review-drawer-section" data-decision-history-group-header data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Generated Artifact Decisions</h5>
+      <p>These Knowledge Assist decisions relate to Studio inputs that can affect generated manifests, mappings, rules, validations, or transforms. Section copy notes whether rows are current/latest collapsed state or saved review rows. Accepted/edited entries can become exported evidence links; rejected entries are review history only.</p>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ks_provenance.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Field Review</h5>
+      <p>Current/latest field decisions. Evidence status below reflects whether the current decision has citation evidence available for export.</p>
+    </div>
+
+  <div class="drawer-table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:34%">Manifest Path</th>
+          <th style="width:12%">Status</th>
+          <th style="width:16%">Provenance</th>
+          <th style="width:16%">Evidence</th>
+          <th style="width:22%">Reviewed At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in ks_provenance.entries %}
+        <tr {{ decision_attrs(entry) }}>
+          <td><code>{{ entry.manifest_path }}</code></td>
+          <td><code>{{ entry.status }}</code></td>
+          <td>
+            {% if entry.provenance_class == 'ai-accepted' %}
+            {{ ka_provenance_badge(entry) }}
+            {% elif entry.provenance_class == 'ai-edited' %}
+            {{ ka_provenance_badge(entry) }}
+            {% elif entry.provenance_class == 'superseded' %}
+            <span class="ka-card-category ka-category-satisfied ka-taxonomy-satisfied">superseded</span>
+            {% elif entry.provenance_class == 'rejected' %}
+            {{ ka_provenance_badge(entry) }}
+            {% else %}
+            <span class="ka-card-category ka-category-review ka-taxonomy-attention" title="Review needed: this accepted or edited decision does not currently have citation evidence linked from the Knowledge Workspace.">Evidence stale or missing</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if entry.has_evidence %}
+            <span class="ka-card-category ka-category-evidence ka-taxonomy-evidence" title="Evidence-backed: This accepted/edited decision has citation evidence from the Knowledge Workspace and will be included in evidence-trail.json.">Evidence-backed</span>
+            {% elif entry.is_superseded %}
+            <span class="text-muted text-sm">Superseded by newer linked review</span>
+            {% elif entry.status == 'rejected' %}
+            <span class="text-muted text-sm">Review only, not exported</span>
+            {% else %}
+            <span class="ka-card-category ka-category-review ka-taxonomy-attention" title="Review needed: this accepted or edited decision does not currently have citation evidence linked from the Knowledge Workspace.">Evidence stale or missing</span>
+            {% endif %}
+          </td>
+          <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if ks_provenance.summary.no_evidence_count %}
+  <p class="text-muted text-sm review-drawer-note">
+    {{ ks_provenance.summary.no_evidence_count }} current/latest accepted or edited field review entries have evidence stale or missing.
+  </p>
+  {% endif %}
+  </section>
+  {% endif %}
+  {% if not ka_validation_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Validation Review</h5>
+      <p>Current/latest Step 3 validation hint decisions. Accepted/edited validation decisions may materialize Step 6 rules; rejected suggestions are review history only and are not exported as generated evidence.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%">Validation Path</th>
+            <th style="width:14%">Status</th>
+            <th style="width:18%">Provenance</th>
+            <th style="width:28%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_validation_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td><code>{{ entry.manifest_path }}</code></td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'ai-accepted' %}
+              {{ ka_provenance_badge(entry) }}
+              {% elif entry.provenance_class == 'ai-edited' %}
+              {{ ka_provenance_badge(entry) }}
+              {% else %}
+              {{ ka_provenance_badge(entry) }}
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ka_rule_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Rule Review</h5>
+      <p>Saved Step 6 rule suggestion decisions. Compare these with Current Step 6 Rules below to see what is still present in the active rule set.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%">Manifest Path</th>
+            <th style="width:14%">Type</th>
+            <th style="width:12%">Status</th>
+            <th style="width:18%">Provenance</th>
+            <th style="width:22%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_rule_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td><code>{{ entry.manifest_path }}</code></td>
+            <td><code>{{ entry.type }}</code></td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'ai-accepted' %}
+              {{ ka_provenance_badge(entry) }}
+              {% elif entry.provenance_class == 'ai-edited' %}
+              {{ ka_provenance_badge(entry) }}
+              {% else %}
+              {{ ka_provenance_badge(entry) }}
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ka_mapping_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Mapping Review</h5>
+      <p>Saved mapping suggestion decisions. Accepted/edited entries can affect generated transform inputs when the corresponding row is still present; rejected entries are review history only.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%">Mapping Path</th>
+            <th style="width:14%">Status</th>
+            <th style="width:18%">Provenance</th>
+            <th style="width:28%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_mapping_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td><code>{{ entry.manifest_path }}</code></td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'ai-accepted' %}
+              {{ ka_provenance_badge(entry) }}
+              {% elif entry.provenance_class == 'ai-edited' %}
+              {{ ka_provenance_badge(entry) }}
+              {% else %}
+              {{ ka_provenance_badge(entry) }}
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ka_transform_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="generated">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Transform Review</h5>
+      <p>Saved Kafka router transform suggestion decisions. Evidence/export status depends on the current transform row still existing.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%">Transform Path</th>
+            <th style="width:12%">Status</th>
+            <th style="width:18%">Provenance</th>
+            <th style="width:18%">Context</th>
+            <th style="width:18%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_transform_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td><code>{{ entry.manifest_path }}</code></td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'ai-accepted' %}
+              {{ ka_provenance_badge(entry) }}
+              {% elif entry.provenance_class == 'ai-edited' %}
+              {{ ka_provenance_badge(entry) }}
+              {% else %}
+              {{ ka_provenance_badge(entry) }}
+              {% endif %}
+              {% if entry.status in ['accepted', 'edited'] and not entry.has_evidence %}
+              <div class="text-muted text-sm" style="margin-top:4px">Evidence stale or missing. Applied row is no longer present.</div>
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">
+              {% if entry.route_name %}<code>{{ entry.route_name }}</code>{% endif %}
+              {% if entry.target_id %}<br>Target: <code>{{ entry.target_id }}</code>{% endif %}
+              {% if entry.direction %}<br>{{ entry.direction }}{% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% if ka_advisory_history_has_entries %}
+  <section class="review-drawer-section" data-decision-history-group-header data-decision-group="advisory">
+    <div class="review-drawer-heading">
+      <h5>Advisory Reviews</h5>
+      <p>These reviews record source-alignment or portfolio-reuse decisions only. They do not create generated-app rules, do not block export, and are excluded from generated-manifest evidence links.</p>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ka_conflict_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="advisory">
+    <div class="review-drawer-heading">
+      <h5>Advisory Conflict Reviews</h5>
+      <p>Conflict-resolution findings are advisory source-alignment checks. Acknowledging or dismissing them records governance state only.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%">Conflict</th>
+            <th style="width:12%">Status</th>
+            <th style="width:20%">Review</th>
+            <th style="width:18%">Resolution</th>
+            <th style="width:18%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_conflict_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td>
+              {% if entry.conflict_summary %}
+              <strong>{{ entry.conflict_summary }}</strong>
+              {% else %}
+              <code>{{ entry.manifest_path }}</code>
+              {% endif %}
+              <div class="text-muted text-sm" style="margin-top:4px">
+                {% if entry.entity %}Entity: <code>{{ entry.entity }}</code>{% endif %}
+                {% if entry.field %}{% if entry.entity %}<br>{% endif %}Field: <code>{{ entry.field }}</code>{% endif %}
+                {% if entry.difference_category %}<br>Difference: {{ entry.difference_category }}{% endif %}
+                {% if entry.normalized_field_mapping %}<br>Mapping: <code>{{ entry.normalized_field_mapping }}</code>{% endif %}
+              </div>
+            </td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'acknowledged' %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">acknowledged</span>
+              {% elif entry.provenance_class == 'resolution-note' %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">resolution-note</span>
+              {% else %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">{{ entry.provenance_class }}</span>
+              {% endif %}
+              {% if entry.preferred_document_label or entry.preferred_document_id %}
+              <div class="text-muted text-sm" style="margin-top:4px">
+                Preferred source: {{ entry.preferred_document_label or entry.preferred_document_id }}
+              </div>
+              {% elif entry.document_labels %}
+              <div class="text-muted text-sm" style="margin-top:4px">Docs: {{ entry.document_labels|join(', ') }}</div>
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ entry.resolution_note or '—' }}</td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% if not ka_portfolio_review_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="advisory">
+    <div class="review-drawer-heading">
+      <h5>Knowledge Assist Portfolio Review</h5>
+      <p>Accepted, edited, and rejected portfolio reuse candidates are review notes only. Nothing is imported, copied, or treated as generated-artifact evidence.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:24%">Portfolio Candidate</th>
+            <th style="width:12%">Status</th>
+            <th style="width:18%">Review</th>
+            <th style="width:28%">Reuse Note</th>
+            <th style="width:18%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in ka_portfolio_review_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td>
+              <code>{{ entry.manifest_path }}</code>
+              {% if entry.matched_project_id %}
+              <div class="text-muted text-sm" style="margin-top:4px">Source project: <code>{{ entry.matched_project_id }}</code></div>
+              {% endif %}
+              {% if entry.document_labels %}
+              <div class="text-muted text-sm" style="margin-top:4px">Docs: {{ entry.document_labels|join(', ') }}</div>
+              {% endif %}
+            </td>
+            <td><code>{{ entry.status }}</code></td>
+            <td>
+              {% if entry.provenance_class == 'useful' %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">useful</span>
+              {% elif entry.provenance_class == 'reuse-note' %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">reuse-note</span>
+              {% else %}
+              <span class="ka-card-category ka-category-advisory ka-taxonomy-advisory" title="Advisory only: Does not change generated app.">{{ entry.provenance_class }}</span>
+              {% endif %}
+              {% if entry.target_step or entry.target_manifest_path %}
+              <div class="text-muted text-sm" style="margin-top:4px">
+                {% if entry.target_step %}Target step: <code>{{ entry.target_step }}</code>{% endif %}
+                {% if entry.target_manifest_path %}<br>Target path: <code>{{ entry.target_manifest_path }}</code>{% endif %}
+              </div>
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">
+              {{ entry.reuse_note or entry.rationale or '—' }}
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+  {% endif %}
+  {% endif %}
+
+  {% if not identity_role_history.empty %}
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="manual_identity">
+    <div class="review-drawer-heading">
+      <h5>Identity Role Decisions</h5>
+      <p>Current identity classifications for CRUD fields. Rows can be human-authored or accepted from Knowledge Assist. <code>persistence_id</code> decisions export to <code>identity_overrides</code> and affect generated persistence identity; non-persistence roles export to <code>identity_roles</code> as <code>metadata_only</code> and do not change generated app behavior. Identity-role reviews are excluded from evidence-trail.json.</p>
+    </div>
+
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:14%">Entity</th>
+            <th style="width:14%">Field</th>
+            <th style="width:14%">Role</th>
+            <th style="width:14%">Provenance</th>
+            <th style="width:10%">Status</th>
+            <th style="width:22%">Export / Generation Impact</th>
+            <th style="width:12%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in identity_role_history.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td><code>{{ entry.entity }}</code></td>
+            <td><code>{{ entry.field }}</code></td>
+            <td><span class="badge badge-entity">{{ entry.role }}</span></td>
+            <td><span class="ka-card-category {{ 'ka-category-generated ka-taxonomy-change' if entry.provenance == 'Knowledge Assist' else 'ka-category-satisfied ka-taxonomy-satisfied' }}">{{ entry.provenance }}</span></td>
+            <td class="text-muted text-sm">{{ entry.status|default('active') }}</td>
+            <td class="text-muted text-sm">
+              <span class="badge {{ 'badge-ready' if entry.affects_engine else 'badge-manual' }}">{{ entry.impact_badge }}</span>
+              <div style="margin-top:4px">{{ entry.export_impact }}</div>
+              {% if entry.generation_impact %}<div>{{ entry.generation_impact }}</div>{% endif %}
+              {% if entry.api_impact %}<div>{{ entry.api_impact }}</div>{% endif %}
+              <div>{{ entry.evidence_trail_impact }}</div>
+            </td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="review-drawer-section" data-decision-history-section data-decision-group="current_rules">
+    <div class="review-drawer-heading">
+      <h5>Current Step 6 Rules</h5>
+      <p>Current Step 6 rules are surfaced here as the current Studio rule set for review before export. This includes untouched spec-derived rules and manually added rules, and it does not imply KS evidence-backed provenance.</p>
+    </div>
+
+    {% if step6_rule_artifacts.empty %}
+    <div class="alert alert-info" style="margin-bottom:0">No current Step 6 rules are available yet.</div>
+    {% else %}
+    <div class="drawer-table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%">Source Path</th>
+            <th style="width:24%">Rule</th>
+            <th style="width:16%">Provenance</th>
+            <th style="width:14%">Evidence</th>
+            <th style="width:12%">Reviewed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in step6_rule_artifacts.entries %}
+          <tr {{ decision_attrs(entry) }}>
+            <td>
+              <code>{{ entry.manifest_path }}</code>
+              <div class="text-muted text-sm" style="margin-top:4px"><code>{{ entry.file_path }}</code></div>
+            </td>
+            <td>
+              <strong><code>{{ entry.field_name }}</code></strong>
+              <div class="text-muted text-sm">{{ entry.rule_type }}</div>
+              <div class="text-muted text-sm">{{ entry.summary }}</div>
+            </td>
+            <td>
+              <span
+                class="ka-card-category {{ 'ka-category-generated ka-taxonomy-change' if entry.decision_semantic == 'ka-applied-rule' else 'ka-category-satisfied ka-taxonomy-satisfied' }}"
+                data-provenance-class="{{ entry.legacy_provenance_class|default(entry.provenance_class) }}"
+              >{{ entry.provenance_class }}</span>
+              {% if entry.suggestion_id %}
+              <div class="text-muted text-sm" style="margin-top:4px">
+                Suggestion: <code>{{ entry.suggestion_id }}</code>
+                {% if entry.ka_review_status %}<br>Status: <code>{{ entry.ka_review_status }}</code>{% endif %}
+              </div>
+              {% endif %}
+            </td>
+            <td><span class="text-muted text-sm">{{ entry.evidence_label }}</span></td>
+            <td class="text-muted text-sm">{{ entry.reviewed_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </section>
+</div>
+
+<div class="tab-panel shell-drawer-panel review-drawer-panel">
+  <div class="review-drawer-heading">
+    <h4>Completeness</h4>
+    <p>Detailed completeness items move here to keep the main pane focused on posture and summary.</p>
+  </div>
+
+  {% if report.manual() %}
+  <section class="review-drawer-section">
+    <h5>Manual Follow-Up</h5>
+    {% for item in report.manual() %}
+    <div class="alert alert-error" style="margin-bottom:6px">
+      <strong>[{{ item.category }}]</strong> {{ item.message }}
+      {% set uxr_deep_link = completeness_deep_links.get((item.category, item.message)) %}
+      {% if uxr_deep_link %}<a class="text-sm" href="{{ uxr_deep_link }}" style="margin-left:8px" data-completeness-deep-link>Open &#8599;</a>{% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if report.warnings() %}
+  <section class="review-drawer-section">
+    <h5>Warnings</h5>
+    {% for item in report.warnings() %}
+    <div class="alert alert-warn" style="margin-bottom:6px">
+      <strong>[{{ item.category }}]</strong> {{ item.message }}
+      {% set uxr_deep_link = completeness_deep_links.get((item.category, item.message)) %}
+      {% if uxr_deep_link %}<a class="text-sm" href="{{ uxr_deep_link }}" style="margin-left:8px" data-completeness-deep-link>Open &#8599;</a>{% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if report.ready() %}
+  <section class="review-drawer-section">
+    <h5>Ready</h5>
+    {% for item in report.ready() %}
+    <div class="alert alert-success" style="margin-bottom:6px">
+      <strong>[{{ item.category }}]</strong> {{ item.message }}
+      {% set uxr_deep_link = completeness_deep_links.get((item.category, item.message)) %}
+      {% if uxr_deep_link %}<a class="text-sm" href="{{ uxr_deep_link }}" style="margin-left:8px" data-completeness-deep-link>Open &#8599;</a>{% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+</div>
+
+{% if knowledge_assist_enabled %}
+<div class="tab-panel shell-drawer-panel review-drawer-panel">
+  <div class="review-drawer-heading">
+    <h4>Evidence Trail Links / Exported Evidence</h4>
+    <p>Only the Evidence-backed count represents links that can be written to <code>evidence-trail.json</code>. Accepted/edited/rejected counts below are supporting generated-artifact review-state counts, not all KA review actions. Conflict and portfolio advisory reviews are counted in Decision History, not generated-manifest evidence links.</p>
+  </div>
+
+  <div class="review-kv-grid">
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Evidence-backed</span>
+      <strong>{{ evidence_coverage.linked }}</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Without evidence</span>
+      <strong>{{ evidence_coverage.without_evidence }}</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Accepted</span>
+      <strong>{{ evidence_coverage.accepted }}</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Edited</span>
+      <strong>{{ evidence_coverage.edited }}</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Rejected (review only)</span>
+      <strong>{{ evidence_coverage.rejected }}</strong>
+    </div>
+    <div class="review-kv-item workflow-surface-detail">
+      <span class="review-kv-label">Reviewed entries</span>
+      <strong>{{ evidence_coverage.total_reviewed }}</strong>
+    </div>
+  </div>
+
+  <p class="text-muted text-sm review-drawer-note">
+    Zero evidence-backed decisions does not mean no reviews were saved. Rejected suggestions are review history only, advisory reviews never become generated evidence, and stale or missing citation evidence remains visible in Decision History.
+  </p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function toggleReviewApproved() {
+  const button = document.getElementById('review-approved-btn');
+  const label = document.getElementById('review-posture-label');
+  const currentlyApproved = button.classList.contains('btn-secondary');
+  const nextApproved = !currentlyApproved;
+
+  const result = await postJSON('/review/approve', { approved: nextApproved });
+  if (!result.ok) {
+    showStatus('review-posture-status', 'Review posture could not be updated.', 'warn');
+    return;
+  }
+
+  if (nextApproved) {
+    button.classList.remove('btn-primary');
+    button.classList.add('btn-secondary');
+    button.textContent = 'Mark review pending';
+    label.textContent = 'Marked reviewed';
+    showStatus('review-posture-status', 'Review posture saved. Export remains available without a hard gate.', 'success');
+  } else {
+    button.classList.remove('btn-secondary');
+    button.classList.add('btn-primary');
+    button.textContent = 'Mark reviewed';
+    label.textContent = 'Not marked reviewed';
+    showStatus('review-posture-status', 'Review posture reset. Export remains available.', 'info');
+  }
+}
+
+(function initDecisionHistoryFilters() {
+  const filterButtons = Array.from(document.querySelectorAll('[data-decision-history-filter]'));
+  const rows = Array.from(document.querySelectorAll('[data-decision-history-row]'));
+  if (!filterButtons.length || !rows.length) return;
+
+  const emptyState = document.querySelector('[data-decision-history-empty]');
+  const sections = Array.from(document.querySelectorAll('[data-decision-history-section]'));
+  const groupHeaders = Array.from(document.querySelectorAll('[data-decision-history-group-header]'));
+
+  function rowMatches(row, filterValue) {
+    if (filterValue === 'all') return true;
+    const separator = filterValue.indexOf(':');
+    if (separator === -1) return true;
+    const kind = filterValue.slice(0, separator);
+    const expected = filterValue.slice(separator + 1);
+    if (kind === 'entity') {
+      const entities = (row.dataset.decisionEntities || row.dataset.decisionEntity || '')
+        .split('||')
+        .filter(Boolean);
+      return entities.includes(expected);
+    }
+    if (kind === 'type') return row.dataset.decisionType === expected;
+    if (kind === 'group') return row.dataset.decisionGroup === expected;
+    if (kind === 'semantic') return row.dataset.decisionSemantic === expected;
+    return true;
+  }
+
+  function sectionHasVisibleRows(section) {
+    return Array.from(section.querySelectorAll('[data-decision-history-row]')).some(
+      (row) => !row.hidden
+    );
+  }
+
+  function applyFilter(filterValue) {
+    let visibleCount = 0;
+    rows.forEach((row) => {
+      const visible = rowMatches(row, filterValue);
+      row.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+
+    sections.forEach((section) => {
+      section.hidden = !sectionHasVisibleRows(section);
+    });
+    groupHeaders.forEach((header) => {
+      const group = header.dataset.decisionGroup || '';
+      header.hidden = !sections.some(
+        (section) => section.dataset.decisionGroup === group && !section.hidden
+      );
+    });
+    filterButtons.forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.decisionHistoryFilter === filterValue);
+    });
+    if (emptyState) emptyState.hidden = visibleCount > 0;
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      applyFilter(button.dataset.decisionHistoryFilter || 'all');
+    });
+  });
+})();
+
+// PR-21 Trace Lens entity picker: progressive enhancement only. Every
+// .trace/.otherblk block for every entity is already server-rendered (only
+// visibility toggles) -- no re-fetch, no readiness recompute. Uses the
+// existing .hidden utility class (display:none !important, studio.css:84,
+// the same convention step2/4/5's own show/hide JS already uses) rather than
+// the native `hidden` property/attribute, since `.trace` needs its own
+// `display: grid` when shown and a plain `hidden` attribute would lose that
+// specificity fight.
+(function initTraceLensPicker() {
+  const picker = document.querySelector('[data-trace-lens-picker]');
+  if (!picker) return;
+  const traceBlocks = Array.from(document.querySelectorAll('[data-trace-lens-block]'));
+  const unrelatedBlocks = Array.from(document.querySelectorAll('[data-trace-lens-unrelated]'));
+
+  function showTraceLensEntity(entityName) {
+    traceBlocks.forEach((block) => {
+      block.classList.toggle('hidden', block.dataset.traceLensBlock !== entityName);
+    });
+    unrelatedBlocks.forEach((block) => {
+      block.classList.toggle('hidden', block.dataset.traceLensUnrelated !== entityName);
+    });
+  }
+
+  picker.addEventListener('change', () => {
+    showTraceLensEntity(picker.value);
+  });
+})();
+</script>
+{% endblock %}

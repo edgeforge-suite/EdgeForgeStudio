@@ -1,0 +1,246 @@
+{
+  "studio_project_schema_version": "1.4",
+  "project_revision": 1,
+  "app_name": "Synthetic Authorization Status",
+  "bounded_context": "authorization-status",
+  "app_archetype": "crud",
+  "target_profile": "springboot-legacy-compatible",
+  "output_path": "",
+  "appbuilder_repo_path": "",
+  "project_id": "hc-authorization-status",
+  "ks_active": false,
+  "capabilities": {
+    "knowledge_assist_enabled": false
+  },
+  "classified_entities": [
+    {
+      "name": "Authorization",
+      "canonical_name": "AuthorizationRecord",
+      "fields": [
+        {
+          "name": "authorizationId",
+          "type": "string",
+          "required": true,
+          "is_id": true,
+          "max_length": 12
+        },
+        {
+          "name": "memberId",
+          "type": "string",
+          "required": true,
+          "max_length": 12
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum_values": [
+            "APPROVED",
+            "PENDED",
+            "DENIED"
+          ]
+        },
+        {
+          "name": "serviceUnits",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "submittedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "classification": "entity",
+      "confidence": "confirmed",
+      "source_schema": "Authorization"
+    }
+  ],
+  "classified_operations": [
+    {
+      "name": "getAuthorization",
+      "method": "GET",
+      "path": "/authorizations/{authorizationId}",
+      "resource": "Authorization",
+      "response_schema": "Authorization",
+      "entity_candidates": [
+        "AuthorizationRecord"
+      ],
+      "is_draft": false
+    },
+    {
+      "name": "createAuthorization",
+      "method": "POST",
+      "path": "/authorizations",
+      "resource": "Authorization",
+      "request_schema": "Authorization",
+      "response_schema": "Authorization",
+      "entity_candidates": [
+        "AuthorizationRecord"
+      ],
+      "is_draft": false
+    },
+    {
+      "name": "listAuthorizations",
+      "method": "GET",
+      "path": "/authorizations",
+      "resource": "Authorization",
+      "response_schema": "Authorization",
+      "entity_candidates": [
+        "AuthorizationRecord"
+      ],
+      "is_draft": false
+    }
+  ],
+  "selected_entity_names": [
+    "Authorization"
+  ],
+  "selected_operation_names": [
+    "createAuthorization"
+  ],
+  "identity_role_decisions": [
+    {
+      "entity": "AuthorizationRecord",
+      "field": "authorizationId",
+      "role": "persistence_id",
+      "provenance": "human-authored"
+    }
+  ],
+  "upstream_interfaces": [
+    {
+      "name": "authorization-api",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Authorization Status API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/authorizations/{authorizationId}\": {\n      \"get\": {\n        \"operationId\": \"getAuthorization\",\n        \"parameters\": [\n          {\n            \"name\": \"authorizationId\",\n            \"in\": \"path\",\n            \"required\": true,\n            \"schema\": {\n              \"type\": \"string\",\n              \"maxLength\": 12\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic authorization\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Authorization\"\n                },\n                \"example\": {\n                  \"authorizationId\": \"AUTH-0002\",\n                  \"memberId\": \"MBR-0002\",\n                  \"status\": \"PENDED\",\n                  \"serviceUnits\": 6.0,\n                  \"submittedAt\": \"2026-02-11\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/authorizations\": {\n      \"post\": {\n        \"operationId\": \"createAuthorization\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/Authorization\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"201\": {\n            \"description\": \"Synthetic authorization created\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Authorization\"\n                }\n              }\n            }\n          }\n        }\n      },\n      \"get\": {\n        \"operationId\": \"listAuthorizations\",\n        \"parameters\": [\n          {\n            \"name\": \"status\",\n            \"in\": \"query\",\n            \"required\": false,\n            \"schema\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"APPROVED\",\n                \"PENDED\",\n                \"DENIED\"\n              ]\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic authorization list\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Authorization\"\n                  }\n                },\n                \"example\": [\n                  {\n                    \"authorizationId\": \"AUTH-0001\",\n                    \"memberId\": \"MBR-0001\",\n                    \"status\": \"APPROVED\",\n                    \"serviceUnits\": 4.0,\n                    \"submittedAt\": \"2026-02-10\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0002\",\n                    \"memberId\": \"MBR-0002\",\n                    \"status\": \"PENDED\",\n                    \"serviceUnits\": 6.0,\n                    \"submittedAt\": \"2026-02-11\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0003\",\n                    \"memberId\": \"MBR-0003\",\n                    \"status\": \"DENIED\",\n                    \"serviceUnits\": 2.0,\n                    \"submittedAt\": \"2026-02-12\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0004\",\n                    \"memberId\": \"MBR-0004\",\n                    \"status\": \"APPROVED\",\n                    \"serviceUnits\": 8.0,\n                    \"submittedAt\": \"2026-02-13\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0005\",\n                    \"memberId\": \"MBR-0005\",\n                    \"status\": \"PENDED\",\n                    \"serviceUnits\": 3.0,\n                    \"submittedAt\": \"2026-02-14\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"Authorization\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"authorizationId\",\n          \"memberId\",\n          \"status\",\n          \"serviceUnits\",\n          \"submittedAt\"\n        ],\n        \"properties\": {\n          \"authorizationId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"memberId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"status\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"APPROVED\",\n              \"PENDED\",\n              \"DENIED\"\n            ]\n          },\n          \"serviceUnits\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"submittedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "operations": [
+        {
+          "name": "createAuthorization",
+          "request_sample_path": "upstream/sample-createauthorization-request.json",
+          "response_sample_path": "upstream/sample-createauthorization-response.json",
+          "request_sample_content": "{\n  \"authorizationId\": \"AUTH-0001\",\n  \"memberId\": \"MBR-0001\",\n  \"status\": \"APPROVED\",\n  \"serviceUnits\": 4.0,\n  \"submittedAt\": \"2026-02-10\"\n}\n",
+          "response_sample_content": "{\n  \"authorizationId\": \"AUTH-0001\",\n  \"memberId\": \"MBR-0001\",\n  \"status\": \"APPROVED\",\n  \"serviceUnits\": 4.0,\n  \"submittedAt\": \"2026-02-10\"\n}\n"
+        }
+      ],
+      "operation_mappings": [
+        {
+          "name": "createAuthorization",
+          "request_mappings": [
+            {
+              "source": "authorizationId",
+              "target": "AuthorizationRecord.authorizationId"
+            },
+            {
+              "source": "memberId",
+              "target": "AuthorizationRecord.memberId"
+            },
+            {
+              "source": "status",
+              "target": "AuthorizationRecord.status"
+            },
+            {
+              "source": "serviceUnits",
+              "target": "AuthorizationRecord.serviceUnits"
+            },
+            {
+              "source": "submittedAt",
+              "target": "AuthorizationRecord.submittedAt"
+            }
+          ],
+          "response_mappings": [
+            {
+              "source": "authorizationId",
+              "target": "AuthorizationRecord.authorizationId"
+            },
+            {
+              "source": "memberId",
+              "target": "AuthorizationRecord.memberId"
+            },
+            {
+              "source": "status",
+              "target": "AuthorizationRecord.status"
+            },
+            {
+              "source": "serviceUnits",
+              "target": "AuthorizationRecord.serviceUnits"
+            },
+            {
+              "source": "submittedAt",
+              "target": "AuthorizationRecord.submittedAt"
+            }
+          ]
+        }
+      ],
+      "entity_name": "AuthorizationRecord",
+      "is_draft": false
+    }
+  ],
+  "downstream_interfaces": [
+    {
+      "name": "authorization",
+      "type": "xml-xsd",
+      "version": "1.0",
+      "entity_name": "AuthorizationRecord",
+      "xsd_content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Generated review copy. Edit the canonical project JSON, then regenerate this file. -->\n<xs:schema\n    xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n    xmlns:tns=\"urn:edgeforge:samples:authorization:v1\"\n    targetNamespace=\"urn:edgeforge:samples:authorization:v1\"\n    elementFormDefault=\"qualified\">\n  <xs:element name=\"Authorization\" type=\"tns:AuthorizationType\"/>\n  <xs:complexType name=\"AuthorizationType\">\n    <xs:sequence>\n      <xs:element name=\"authorizationId\" type=\"xs:string\"/>\n      <xs:element name=\"status\" type=\"xs:string\"/>\n      <xs:element name=\"serviceUnits\" type=\"xs:decimal\"/>\n    </xs:sequence>\n  </xs:complexType>\n</xs:schema>\n",
+      "root_element": "Authorization",
+      "namespace": "urn:edgeforge:samples:authorization:v1",
+      "namespace_alias": "tns",
+      "field_mappings": [
+        {
+          "source": "AuthorizationRecord.authorizationId",
+          "target": "authorizationId"
+        },
+        {
+          "source": "AuthorizationRecord.status",
+          "target": "status"
+        },
+        {
+          "source": "AuthorizationRecord.serviceUnits",
+          "target": "serviceUnits"
+        }
+      ]
+    }
+  ],
+  "data_handoffs": [
+    {
+      "name": "authorization-staging-table",
+      "type": "staging-table",
+      "version": "1.0",
+      "ddl_content": "-- Generated review copy. Edit the canonical project JSON, then regenerate this file.\nCREATE TABLE authorization_staging (\n    staging_row_id   VARCHAR(36)   NOT NULL PRIMARY KEY,\n    run_id           VARCHAR(64)   NOT NULL,\n    business_date    DATE          NOT NULL,\n    staging_status   VARCHAR(16)   NOT NULL,\n    created_at       TIMESTAMP     NOT NULL,\n    authorization_id VARCHAR(36)   NOT NULL,\n    member_id        VARCHAR(36)   NOT NULL,\n    service_units    DECIMAL(13,2) NOT NULL\n);\n",
+      "table_name": "authorization_staging",
+      "entity_name": "AuthorizationRecord",
+      "field_mappings": [
+        {
+          "source": "AuthorizationRecord.authorizationId",
+          "target": "authorization_id"
+        },
+        {
+          "source": "AuthorizationRecord.memberId",
+          "target": "member_id"
+        },
+        {
+          "source": "AuthorizationRecord.serviceUnits",
+          "target": "service_units"
+        }
+      ]
+    }
+  ],
+  "entity_rules": [
+    {
+      "entity_name": "AuthorizationRecord",
+      "rules": [
+        {
+          "field": "status",
+          "type": "allowed-values",
+          "values": [
+            "APPROVED",
+            "PENDED",
+            "DENIED"
+          ]
+        }
+      ]
+    }
+  ],
+  "raw_spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Authorization Status API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/authorizations/{authorizationId}\": {\n      \"get\": {\n        \"operationId\": \"getAuthorization\",\n        \"parameters\": [\n          {\n            \"name\": \"authorizationId\",\n            \"in\": \"path\",\n            \"required\": true,\n            \"schema\": {\n              \"type\": \"string\",\n              \"maxLength\": 12\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic authorization\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Authorization\"\n                },\n                \"example\": {\n                  \"authorizationId\": \"AUTH-0002\",\n                  \"memberId\": \"MBR-0002\",\n                  \"status\": \"PENDED\",\n                  \"serviceUnits\": 6.0,\n                  \"submittedAt\": \"2026-02-11\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/authorizations\": {\n      \"post\": {\n        \"operationId\": \"createAuthorization\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/Authorization\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"201\": {\n            \"description\": \"Synthetic authorization created\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Authorization\"\n                }\n              }\n            }\n          }\n        }\n      },\n      \"get\": {\n        \"operationId\": \"listAuthorizations\",\n        \"parameters\": [\n          {\n            \"name\": \"status\",\n            \"in\": \"query\",\n            \"required\": false,\n            \"schema\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"APPROVED\",\n                \"PENDED\",\n                \"DENIED\"\n              ]\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic authorization list\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Authorization\"\n                  }\n                },\n                \"example\": [\n                  {\n                    \"authorizationId\": \"AUTH-0001\",\n                    \"memberId\": \"MBR-0001\",\n                    \"status\": \"APPROVED\",\n                    \"serviceUnits\": 4.0,\n                    \"submittedAt\": \"2026-02-10\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0002\",\n                    \"memberId\": \"MBR-0002\",\n                    \"status\": \"PENDED\",\n                    \"serviceUnits\": 6.0,\n                    \"submittedAt\": \"2026-02-11\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0003\",\n                    \"memberId\": \"MBR-0003\",\n                    \"status\": \"DENIED\",\n                    \"serviceUnits\": 2.0,\n                    \"submittedAt\": \"2026-02-12\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0004\",\n                    \"memberId\": \"MBR-0004\",\n                    \"status\": \"APPROVED\",\n                    \"serviceUnits\": 8.0,\n                    \"submittedAt\": \"2026-02-13\"\n                  },\n                  {\n                    \"authorizationId\": \"AUTH-0005\",\n                    \"memberId\": \"MBR-0005\",\n                    \"status\": \"PENDED\",\n                    \"serviceUnits\": 3.0,\n                    \"submittedAt\": \"2026-02-14\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"Authorization\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"authorizationId\",\n          \"memberId\",\n          \"status\",\n          \"serviceUnits\",\n          \"submittedAt\"\n        ],\n        \"properties\": {\n          \"authorizationId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"memberId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"status\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"APPROVED\",\n              \"PENDED\",\n              \"DENIED\"\n            ]\n          },\n          \"serviceUnits\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"submittedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+  "raw_spec_url": null,
+  "raw_spec_filename": "authorization-api-spec.json"
+}

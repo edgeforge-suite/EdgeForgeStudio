@@ -1,0 +1,13 @@
+# gitleaks configuration for the EdgeForge Studio repo.
+#
+# Extends gitleaks' default ruleset (all built-in secret rules stay active).
+# There are NO allowlist entries today: the committed tree is synthetic-only by
+# policy, and no confirmed false positives exist.
+#
+# Discipline: if a future CI run surfaces a CONFIRMED non-credential false
+# positive, add a justified `[allowlist]` block with a specific `regexes` / `paths`
+# / `stopwords` entry (gitleaks rejects an *empty* allowlist block). No real or
+# real-looking secret is ever silenced.
+
+[extend]
+useDefault = true

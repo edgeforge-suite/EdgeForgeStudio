@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mock 1 — Step 5 Registry</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#fff; --line:#dde3ec; --ink:#1c2733; --mut:#68788c; --navy:#1e3a5f;
+  --t-rest:#0d9488; --t-fw:#4f46e5; --t-csv:#16a34a; --t-xml:#d97706; --t-soap:#7c3aed; --t-tbl:#475569; --t-kafka:#ea580c;
+  --ok:#0f9d6e; --warn:#c47f17; --err:#c03434;
+}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.mockbar{background:#101828;color:#cdd6e4;font-size:11px;padding:6px 16px;display:flex;justify-content:space-between}
+.mockbar b{color:#fff}
+.shell{display:grid;grid-template-columns:212px 1fr;gap:16px;padding:16px;max-width:1560px;margin:0 auto}
+/* sidebar */
+.side{display:flex;flex-direction:column;gap:12px}
+.logo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.logo h1{font-size:16px}.logo h1 span{color:#4467c4}.logo p{font-size:10.5px;color:var(--mut)}
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.step .n{width:20px;height:20px;border-radius:50%;border:1.5px solid #9aa8bc;color:#5b6b80;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.step small{display:block;color:var(--mut);font-size:10.5px}
+.step.done{background:#f2f5fa}.step.done .n{background:#e7edf6;border-color:#b9c6d9}
+.step.cur{border-color:#1e3a5f;box-shadow:0 1px 4px rgba(20,40,80,.12)}
+.step.cur .n{background:var(--navy);border-color:var(--navy);color:#fff}
+.step .cnt{margin-left:auto;font-size:10.5px;color:var(--mut);background:#eef2f8;border-radius:8px;padding:1px 7px}
+.step .cnt.warn{color:var(--warn);background:#fdf3e2}
+/* main */
+.main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tophdr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.tophdr .crumb{font-size:10px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
+.tophdr h2{font-size:17px}
+.chip{border:1px solid var(--line);border-radius:14px;padding:3px 10px;font-size:11px;color:#44536a;background:#fff}
+.chip.dark{background:#e8eef7;border-color:#c6d3e6;font-weight:600}
+.spacer{flex:1}
+.page{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 90px}
+.page-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.page-h h3{font-size:16px;margin-bottom:2px}
+.page-h p{color:var(--mut);font-size:12px;max-width:640px}
+.addrow{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none}
+.addrow span{font-size:11px;color:var(--mut);margin-right:2px}
+.addbtn{border:1px dashed #b9c6d9;background:#f8fafd;border-radius:8px;padding:5px 10px;font-size:11.5px;font-weight:600;color:#3d4f68;cursor:pointer}
+.addbtn i{font-style:normal;font-weight:700;margin-right:5px;font-size:10px;padding:1px 5px;border-radius:5px;color:#fff}
+/* groups + rows */
+.grp{margin-top:14px}
+.grp-h{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.grp-h .n{font-weight:600;opacity:.75}
+.row{display:grid;grid-template-columns:34px minmax(210px,1.3fr) minmax(130px,.8fr) minmax(190px,1.1fr) 150px 92px 118px 84px;gap:12px;align-items:center;
+  padding:7px 10px;border:1px solid var(--line);border-left-width:3px;border-radius:9px;margin-top:6px;background:#fff;min-height:46px}
+.row:hover{box-shadow:0 1px 5px rgba(20,40,80,.08)}
+.tile{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff}
+.name b{display:block;font-size:12.5px}
+.name code{font:10.5px ui-monospace,Menlo,monospace;color:var(--mut)}
+.sys{font-size:11.5px;color:#44536a}.sys small{display:block;color:var(--mut);font-size:10.5px}
+.fact{font-size:11.5px;color:#374a63}
+.cap{font-size:9px;font-weight:700;letter-spacing:.05em;border-radius:9px;padding:2px 8px;text-align:center;white-space:nowrap}
+.cap.ref{color:#5b6b80;background:#eef2f7;border:1px solid #d8e0eb}
+.dots{display:flex;gap:3px;align-items:center;font-size:10.5px;color:var(--mut)}
+.dot{width:7px;height:7px;border-radius:2px;background:#20b184}.dot.off{background:#d7dfe9}.dot.bad{background:var(--err)}
+.pill{font-size:10px;font-weight:700;border-radius:10px;padding:3px 9px;text-align:center;white-space:nowrap}
+.pill.ok{color:#0b7c56;background:#e2f6ee}.pill.warn{color:#9a6511;background:#fdf3e2}.pill.draft{color:#5b6b80;background:#edf1f6}
+.act{display:flex;gap:6px;justify-content:flex-end}
+.act button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:4px 10px;font-size:11px;color:#33455e;cursor:pointer}
+/* SOAP */ .g-soap .grp-h{background:#f3edfd;color:#5b21b6}.g-soap .row{border-left-color:var(--t-soap)}.g-soap .tile{background:var(--t-soap)}
+/* FILES */ .g-fw .grp-h{background:#edeffd;color:#3730a3}.r-fw{border-left-color:var(--t-fw)}.r-fw .tile{background:var(--t-fw)}
+.r-csv{border-left-color:var(--t-csv)!important}.r-csv .tile{background:var(--t-csv)}
+/* XML */ .g-xml .grp-h{background:#fdf3e2;color:#92510a}.g-xml .row{border-left-color:var(--t-xml)}.g-xml .tile{background:var(--t-xml)}
+.footerbar{position:fixed;left:244px;right:32px;bottom:14px;background:var(--navy);color:#fff;border-radius:12px;display:flex;align-items:center;gap:14px;padding:9px 16px;box-shadow:0 4px 14px rgba(15,30,60,.25)}
+.footerbar .ghost{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:8px;padding:5px 12px;font-size:12px}
+.footerbar .go{background:#fff;color:var(--navy);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700}
+.footerbar .sum{font-size:11.5px;color:#c3d0e2}
+.legend{margin-top:22px;border-top:1px dashed var(--line);padding-top:10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.legend .t{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);font-weight:700}
+.lg{display:flex;align-items:center;gap:5px;font-size:11px;color:#44536a}
+.sw{width:14px;height:14px;border-radius:4px}
+</style></head><body>
+<div class="mockbar"><span><b>STUDIO UX REFRESH — TARGET-STATE MOCK 1/5</b> · Step 5 “Downstream Interfaces” as a typed registry (Phase 2 pattern)</span><span>Today: 3 interfaces ≈ 85 scroll-ticks → Target: 6 interfaces, one screen</span></div>
+<div class="shell">
+  <aside class="side">
+    <div class="logo"><h1><span>EdgeForge</span> Studio</h1><p>Governed App Modernization Workflow</p></div>
+    <div class="steps">
+      <div class="step done"><span class="n">1</span><div>Project Setup<small>Complete</small></div></div>
+      <div class="step done"><span class="n">2</span><div>Upstream Contract<small>Complete</small></div><span class="cnt">5</span></div>
+      <div class="step done"><span class="n">3</span><div>Entity Model<small>Complete</small></div><span class="cnt">2</span></div>
+      <div class="step done"><span class="n">4</span><div>Data Handoffs<small>Complete</small></div><span class="cnt">4</span></div>
+      <div class="step cur"><span class="n">5</span><div>Downstream Interfaces<small>Current</small></div><span class="cnt warn">6 · 1!</span></div>
+      <div class="step"><span class="n">6</span><div>Rules &amp; Mappings<small>Open</small></div></div>
+      <div class="step"><span class="n">7</span><div>Review<small>Open</small></div></div>
+      <div class="step"><span class="n">8</span><div>Export &amp; Build<small>Open</small></div></div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="tophdr"><div><div class="crumb">Studio v2 frame</div><h2>Account Service</h2></div><span class="chip">accounts</span><div class="spacer"></div><span class="chip">CRUD</span><span class="chip dark">Step 5 of 8</span><span class="chip">Toggle Right Rail</span></div>
+    <div class="page">
+      <div class="page-h">
+        <div><h3>Step 5: Downstream Interfaces</h3>
+        <p>All saved interfaces at a glance — one row per contract. Editing opens a focused editor; nothing on this page renders as a full form.</p></div>
+        <div class="addrow"><span>Add:</span>
+          <button class="addbtn"><i style="background:var(--t-fw)">FW</i>Fixed-width</button>
+          <button class="addbtn"><i style="background:var(--t-csv)">CSV</i>CSV</button>
+          <button class="addbtn"><i style="background:var(--t-xml)">XML</i>XML/XSD</button>
+          <button class="addbtn"><i style="background:var(--t-soap)">SOAP</i>SOAP</button>
+        </div>
+      </div>
+
+      <div class="grp g-soap">
+        <div class="grp-h">SOAP / WSDL <span class="n">(2)</span></div>
+        <div class="row">
+          <div class="tile">SOAP</div>
+          <div class="name"><b>payment-notify-soap-out ↑</b><code>downstream/payment-notify.wsdl</code></div>
+          <div class="sys">PARTNER_GATEWAY<small>v1</small></div>
+          <div class="fact">PaymentNotifyService · op <b>PaymentNotify</b> · invoke-by-id</div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span> 4/4</div>
+          <div class="pill ok">Ready to export</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+        <div class="row">
+          <div class="tile">SOAP</div>
+          <div class="name"><b>account-status-soap-out ↑</b><code>downstream/account-status.wsdl</code></div>
+          <div class="sys">PARTNER_GATEWAY<small>v1</small></div>
+          <div class="fact">AccountStatusService · <b>no operation selected</b></div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot bad"></span><span class="dot off"></span> 2/4</div>
+          <div class="pill warn">Needs operation</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+      </div>
+
+      <div class="grp g-fw">
+        <div class="grp-h">Files — Fixed-width &amp; CSV <span class="n">(2)</span></div>
+        <div class="row r-fw">
+          <div class="tile">FW</div>
+          <div class="name"><b>account-fixed-file ↑</b><code>downstream/account-layout.yaml</code></div>
+          <div class="sys">target<small>v1.0</small></div>
+          <div class="fact">14 layout fields · <b>12/14 mapped</b></div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot bad"></span><span class="dot"></span> 3/4</div>
+          <div class="pill warn">Needs mapping</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+        <div class="row r-fw r-csv">
+          <div class="tile">CSV</div>
+          <div class="name"><b>transaction-csv ↑</b><code>downstream/transaction-layout.yaml</code></div>
+          <div class="sys">target<small>v1.0</small></div>
+          <div class="fact">pipe (|) · header row · 8 cols · 8/8 mapped</div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span> 4/4</div>
+          <div class="pill ok">Ready to export</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+      </div>
+
+      <div class="grp g-xml">
+        <div class="grp-h">XML / XSD <span class="n">(2)</span></div>
+        <div class="row">
+          <div class="tile">XML</div>
+          <div class="name"><b>account-xml ↑</b><code>downstream/account.xsd</code></div>
+          <div class="sys">target<small>v1.0</small></div>
+          <div class="fact">AccountMessage @ urn:edgeforge:account:v1 · 6/6 mapped</div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span> 4/4</div>
+          <div class="pill ok">Ready to export</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+        <div class="row">
+          <div class="tile">XML</div>
+          <div class="name"><b>audit-events-xml ↑</b><code>downstream/audit-events.xsd</code></div>
+          <div class="sys">AUDIT_VAULT<small>v2</small></div>
+          <div class="fact">AuditEvent @ urn:edgeforge:audit:v2 · 0 mappings</div>
+          <div class="cap ref">MANIFEST REFERENCE</div>
+          <div class="dots"><span class="dot"></span><span class="dot off"></span><span class="dot off"></span><span class="dot off"></span> 1/4</div>
+          <div class="pill draft">Draft</div>
+          <div class="act"><button>Edit</button><button>⋮</button></div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span class="t">Type tokens</span>
+        <span class="lg"><span class="sw" style="background:var(--t-rest)"></span>REST/OpenAPI</span>
+        <span class="lg"><span class="sw" style="background:var(--t-fw)"></span>Fixed-width</span>
+        <span class="lg"><span class="sw" style="background:var(--t-csv)"></span>CSV</span>
+        <span class="lg"><span class="sw" style="background:var(--t-xml)"></span>XML/XSD</span>
+        <span class="lg"><span class="sw" style="background:var(--t-soap)"></span>SOAP/WSDL</span>
+        <span class="lg"><span class="sw" style="background:var(--t-tbl)"></span>Staging table</span>
+        <span class="t" style="margin-left:14px">Axes</span>
+        <span class="lg">type = hue · state = pill · provenance = DERIVED chip</span>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="footerbar"><span class="sum"><b>6 interfaces</b> · 4 ready · 1 needs mapping · 1 needs operation</span><div class="spacer" style="flex:1"></div><button class="ghost">← Previous</button><button class="go">Continue to Rules &amp; Mappings →</button></div>
+</body></html>

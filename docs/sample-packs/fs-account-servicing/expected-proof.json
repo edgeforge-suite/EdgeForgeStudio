@@ -1,0 +1,31 @@
+{
+  "pack_id": "fs-account-servicing",
+  "archetype": "crud",
+  "target_profile": "springboot-standard-enterprise",
+  "expected_entities": [
+    "Account"
+  ],
+  "expected_manifest_schema_version": "2.0",
+  "expected_export_warnings": [],
+  "expected_generation_warnings": [],
+  "expected_harness_warnings": [],
+  "harness_applies": true,
+  "min_studio_project_schema_version": "1.4",
+  "expected_export_dir": "account-servicing",
+  "expected_exported_artifacts": [
+    "app-definition.yaml",
+    "assessment-report.json",
+    "completeness-report.md",
+    "contracts/account-api-spec.json",
+    "data-handoffs/account-staging-table-mapping.yaml",
+    "data-handoffs/account-staging-table.sql",
+    "downstream/account-eod-layout.yaml",
+    "downstream/account-eod-mapping.yaml",
+    "evidence-trail.json",
+    "rules/account-business-rules.yaml",
+    "studio-project.json",
+    "upstream/account-api-mapping.yaml",
+    "upstream/sample-createaccount-request.json",
+    "upstream/sample-createaccount-response.json"
+  ]
+}

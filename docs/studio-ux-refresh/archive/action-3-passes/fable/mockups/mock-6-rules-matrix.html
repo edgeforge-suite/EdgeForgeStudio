@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mock 6 — Rules & Mappings: Bulk/Matrix mode</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#fff; --line:#dde3ec; --ink:#1c2733; --mut:#68788c; --navy:#1e3a5f;
+  --acct:#0d9488; --txn:#4f46e5; --derived:#7c5cd6; --ok:#0f9d6e; --warn:#c47f17; --sel:#2563eb;
+}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.mockbar{background:#101828;color:#cdd6e4;font-size:11px;padding:6px 16px;display:flex;justify-content:space-between}
+.mockbar b{color:#fff}
+.shell{display:grid;grid-template-columns:212px 1fr;gap:16px;padding:16px;max-width:1560px;margin:0 auto}
+.side{display:flex;flex-direction:column;gap:12px}
+.logo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.logo h1{font-size:16px}.logo h1 span{color:#4467c4}.logo p{font-size:10.5px;color:var(--mut)}
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.step .n{width:20px;height:20px;border-radius:50%;border:1.5px solid #9aa8bc;color:#5b6b80;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.step small{display:block;color:var(--mut);font-size:10.5px}
+.step.done{background:#f2f5fa}.step.done .n{background:#e7edf6;border-color:#b9c6d9}
+.step.cur{border-color:#1e3a5f;box-shadow:0 1px 4px rgba(20,40,80,.12)}
+.step.cur .n{background:var(--navy);border-color:var(--navy);color:#fff}
+.step .cnt{margin-left:auto;font-size:10.5px;color:var(--mut);background:#eef2f8;border-radius:8px;padding:1px 7px}
+.main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tophdr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.tophdr .crumb{font-size:10px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
+.tophdr h2{font-size:17px}
+.chip{border:1px solid var(--line);border-radius:14px;padding:3px 10px;font-size:11px;color:#44536a;background:#fff}
+.chip.dark{background:#e8eef7;border-color:#c6d3e6;font-weight:600}
+.spacer{flex:1}
+.page{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.page-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.page-h h3{font-size:16px}.page-h p{color:var(--mut);font-size:12px;max-width:560px;margin-top:2px}
+/* mode toggle */
+.modes{margin-left:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid #c9d3e0;border-radius:9px;overflow:hidden}
+.seg button{border:none;background:#fff;padding:6px 14px;font-size:12px;color:#44536a;cursor:pointer;font-weight:600}
+.seg button.on{background:var(--navy);color:#fff}
+.seg small{display:block;font-weight:400;font-size:9px;opacity:.8}
+.modes .hint{font-size:10.5px;color:var(--mut)}
+/* tabs + toolbar */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.tabs a{padding:8px 14px;font-size:12.5px;font-weight:600;color:#54637a;text-decoration:none;border-bottom:2.5px solid transparent}
+.tabs a.on{color:var(--navy);border-color:var(--navy)}
+.tabs .rt{margin-left:auto;font-size:11px;color:var(--mut);align-self:center}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.toolbar input{border:1px solid #c9d3e0;border-radius:8px;padding:6px 10px;font-size:12px;width:210px;background:#fff}
+.toolbar select{border:1px solid #c9d3e0;border-radius:8px;padding:6px 9px;font-size:12px;background:#fff}
+.tbtn{border:1px solid #c9d3e0;background:#fff;border-radius:8px;padding:6px 11px;font-size:12px;color:#33455e;cursor:pointer}
+.tbtn.p{background:#eef2fa;border-color:#c6d3e6;font-weight:600}
+.toolbar .count{margin-left:auto;font-size:11.5px;color:var(--mut)}
+/* grid */
+.grid{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.gh,.gr{display:grid;grid-template-columns:30px 130px 150px 168px 1fr 138px 34px;align-items:center}
+.gh{background:#f2f5fa;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#54637a;font-weight:700}
+.gh div,.gr div{padding:8px 10px;border-right:1px solid #eef1f6}
+.gr{border-top:1px solid #edf1f6;font-size:12.5px}
+.gr:hover{background:#f8fbff}
+.gr .cb{color:#9db1c9}
+.ent{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:11.5px}
+.ent .d{width:8px;height:8px;border-radius:2px}
+.ent.acct .d{background:var(--acct)}.ent.txn .d{background:var(--txn)}
+.gr code{font:11.5px ui-monospace,Menlo,monospace}
+.val{font:11.5px ui-monospace,Menlo,monospace;color:#243244}
+.cell-edit{background:#fbfdff;border:1px solid #e2e8f2;border-radius:6px;padding:3px 7px;display:inline-block;min-width:70%}
+.cell-sel{outline:2px solid var(--sel);outline-offset:-1px;background:#fff}
+.filldown{position:relative}
+.filldown::after{content:"⌄ fill down";position:absolute;left:10px;bottom:-1px;font-size:9px;color:var(--sel);background:#eaf1ff;border:1px solid #c7dbff;border-radius:0 0 6px 6px;padding:0 6px}
+.dchip{font-size:9px;font-weight:800;letter-spacing:.04em;color:#6d28d9;background:#f1eafd;border:1px solid #ddd0f6;border-radius:7px;padding:1.5px 7px}
+.mchip{font-size:9px;font-weight:800;letter-spacing:.04em;color:#5b6b80;background:#eef2f7;border:1px solid #d8e0eb;border-radius:7px;padding:1.5px 7px}
+.xrow{color:#a33b3b;font-weight:700}
+.addrow{grid-template-columns:1fr;color:#4467c4;font-size:12px;cursor:pointer}
+.addrow div{border-right:none;padding:9px 12px}
+.kbd{margin-top:10px;background:#f6f9fd;border:1px solid #e3ebf5;border-radius:9px;padding:8px 12px;font-size:11.5px;color:#44536a;display:flex;gap:14px;flex-wrap:wrap}
+.kbd b{color:#2b3a52}.kbd kbd{font:10.5px ui-monospace,Menlo,monospace;background:#e7edf6;border:1px solid #c9d3e0;border-radius:5px;padding:1px 6px}
+.foot{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:11.5px;color:var(--mut)}
+.foot b{color:#33455e}
+</style></head><body>
+<div class="mockbar"><span><b>STUDIO UX REFRESH — TARGET-STATE MOCK 6/6</b> · Rules &amp; Mappings in <b>Bulk/Matrix mode</b> (Pattern P8, adopted from the parallel ChatGPT pass)</span><span>registry = scan · inspector = single edit · matrix = bulk power-edit</span></div>
+<div class="shell">
+  <aside class="side">
+    <div class="logo"><h1><span>EdgeForge</span> Studio</h1><p>Governed App Modernization Workflow</p></div>
+    <div class="steps">
+      <div class="step done"><span class="n">1</span><div>Project Setup<small>Complete</small></div></div>
+      <div class="step done"><span class="n">2</span><div>Upstream Contract<small>Complete</small></div></div>
+      <div class="step done"><span class="n">3</span><div>Entity Model<small>Complete</small></div></div>
+      <div class="step done"><span class="n">4</span><div>Data Handoffs<small>Complete</small></div></div>
+      <div class="step done"><span class="n">5</span><div>Downstream Interfaces<small>Complete</small></div></div>
+      <div class="step cur"><span class="n">6</span><div>Rules &amp; Mappings<small>Current</small></div><span class="cnt">11</span></div>
+      <div class="step"><span class="n">7</span><div>Review<small>Open</small></div></div>
+      <div class="step"><span class="n">8</span><div>Export &amp; Build<small>Open</small></div></div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="tophdr"><div><div class="crumb">Studio v2 frame</div><h2>Account Service</h2></div><span class="chip">accounts</span><div class="spacer"></div><span class="chip">CRUD</span><span class="chip dark">Step 6 of 8</span><span class="chip">Toggle Right Rail</span></div>
+    <div class="page">
+      <div class="page-h">
+        <div><h3>Step 6: Rules &amp; Mappings</h3>
+        <p>Grid-shaped work — many rules across entities. Matrix mode edits them all at once; the inspector is one row at a time. Same manifest fields either way.</p></div>
+        <div class="modes">
+          <div class="seg"><button>Cards<small>one at a time</small></button><button class="on">Matrix<small>bulk edit</small></button></div>
+          <span class="hint">Switch anytime — same underlying data</span>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a class="on" href="#">Business Rules <span style="color:var(--mut);font-weight:400">· 11</span></a>
+        <a href="#">Field Mappings <span style="color:var(--mut);font-weight:400">· 13</span></a>
+        <span class="rt">Rules auto-extracted from spec; add cross-entity rules manually. Edit or remove any row.</span>
+      </div>
+
+      <div class="toolbar">
+        <input placeholder="Filter rules…">
+        <select><option>Entity: All</option><option>Account</option><option>Transaction</option></select>
+        <select><option>Type: All</option><option>Spec-derived</option><option>Manual</option></select>
+        <button class="tbtn p">＋ Add rule</button>
+        <button class="tbtn">⌄ Fill down</button>
+        <span class="count"><b>11 rules</b> · 8 spec-derived · 3 manual · 0 conflicts</span>
+      </div>
+
+      <div class="grid">
+        <div class="gh"><div class="cb"></div><div>Entity</div><div>Field</div><div>Rule type</div><div>Value / params</div><div>Source</div><div></div></div>
+
+        <div class="gr"><div class="cb">☐</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>status</code></div><div>Allowed values</div><div><span class="cell-edit val">OPEN, CLOSED, FROZEN</span></div><div><span class="mchip">MANUAL</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>accountId</code></div><div>Max length</div><div><span class="cell-edit val">36</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>customerId</code></div><div>Max length</div><div><span class="cell-edit val">36</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☑</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>balance</code></div><div>Range</div><div class="filldown"><span class="cell-edit cell-sel val">0.00 – 999999.99</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>currencyCode</code></div><div>Max length</div><div><span class="cell-edit val">3</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent acct"><span class="d"></span>Account</span></div><div><code>currencyCode</code></div><div>Pattern</div><div><span class="cell-edit val">^[A-Z]{3}$</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent txn"><span class="d"></span>Transaction</span></div><div><code>transactionId</code></div><div>Max length</div><div><span class="cell-edit val">36</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent txn"><span class="d"></span>Transaction</span></div><div><code>amount</code></div><div>Range</div><div><span class="cell-edit val">0.00 – 1000000.00</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent txn"><span class="d"></span>Transaction</span></div><div><code>status</code></div><div>Allowed values</div><div><span class="cell-edit val">POSTED, PENDING, REVERSED</span></div><div><span class="mchip">MANUAL</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent txn"><span class="d"></span>Transaction</span></div><div><code>postedAt</code></div><div>Not null</div><div><span class="cell-edit val">true</span></div><div><span class="dchip">SPEC-DERIVED</span></div><div>⋮</div></div>
+        <div class="gr"><div class="cb">☐</div><div><span class="ent txn"><span class="d"></span>Transaction</span></div><div><code>accountId</code></div><div class="xrow">Cross-entity exists</div><div><span class="cell-edit val">Account.accountId</span></div><div><span class="mchip">MANUAL</span></div><div>⋮</div></div>
+        <div class="gr addrow"><div>＋ New rule — pick entity + field, or paste a column of values</div></div>
+      </div>
+
+      <div class="kbd">
+        <span><b>Matrix editing:</b></span>
+        <span><kbd>Tab</kbd> across cells</span>
+        <span><kbd>Cmd</kbd><kbd>↓</kbd> fill down (selected → below)</span>
+        <span><kbd>Cmd</kbd><kbd>V</kbd> paste a column</span>
+        <span><kbd>Enter</kbd> new row</span>
+        <span><kbd>Space</kbd> select for bulk action</span>
+      </div>
+      <div class="foot"><b>Guardrail:</b> Matrix mode edits the same manifest fields as Cards mode — nothing new is exported. Spec-derived values keep their <span class="dchip">SPEC-DERIVED</span> provenance until you change them; cross-entity and enum rules are authored manually; no value is ever guessed. <b>Field Mappings</b> tab is the same grid for canonical → contract rows (exact-name matches pre-seeded <span class="dchip">SPEC-DERIVED</span>, non-matches left blank).</div>
+    </div>
+  </main>
+</div>
+</body></html>

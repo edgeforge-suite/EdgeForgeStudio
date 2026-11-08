@@ -1,0 +1,290 @@
+{
+  "studio_project_schema_version": "1.4",
+  "project_revision": 1,
+  "app_name": "Synthetic Account Servicing",
+  "bounded_context": "account-servicing",
+  "app_archetype": "crud",
+  "target_profile": "springboot-standard-enterprise",
+  "output_path": "",
+  "appbuilder_repo_path": "",
+  "project_id": "fs-account-servicing",
+  "ks_active": false,
+  "capabilities": {
+    "knowledge_assist_enabled": false
+  },
+  "classified_entities": [
+    {
+      "name": "Account",
+      "fields": [
+        {
+          "name": "accountId",
+          "type": "string",
+          "required": true,
+          "is_id": true,
+          "max_length": 12
+        },
+        {
+          "name": "customerId",
+          "type": "string",
+          "required": true,
+          "max_length": 12
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum_values": [
+            "OPEN",
+            "CLOSED",
+            "FROZEN"
+          ]
+        },
+        {
+          "name": "balance",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "currencyCode",
+          "type": "string",
+          "format": "iso-4217",
+          "max_length": 3
+        },
+        {
+          "name": "openedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "classification": "entity",
+      "confidence": "confirmed",
+      "source_schema": "Account"
+    }
+  ],
+  "classified_operations": [
+    {
+      "name": "getAccount",
+      "method": "GET",
+      "path": "/accounts/{accountId}",
+      "resource": "Account",
+      "response_schema": "Account",
+      "entity_candidates": [
+        "Account"
+      ],
+      "is_draft": false
+    },
+    {
+      "name": "createAccount",
+      "method": "POST",
+      "path": "/accounts",
+      "resource": "Account",
+      "request_schema": "Account",
+      "response_schema": "Account",
+      "entity_candidates": [
+        "Account"
+      ],
+      "is_draft": false
+    },
+    {
+      "name": "listAccounts",
+      "method": "GET",
+      "path": "/accounts",
+      "resource": "Account",
+      "response_schema": "Account",
+      "entity_candidates": [
+        "Account"
+      ],
+      "is_draft": false
+    }
+  ],
+  "selected_entity_names": [
+    "Account"
+  ],
+  "selected_operation_names": [
+    "createAccount"
+  ],
+  "identity_role_decisions": [
+    {
+      "entity": "Account",
+      "field": "accountId",
+      "role": "persistence_id",
+      "provenance": "human-authored"
+    }
+  ],
+  "upstream_interfaces": [
+    {
+      "name": "account-api",
+      "type": "rest-json",
+      "version": "1.0",
+      "spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Account Servicing API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/accounts/{accountId}\": {\n      \"get\": {\n        \"operationId\": \"getAccount\",\n        \"parameters\": [\n          {\n            \"name\": \"accountId\",\n            \"in\": \"path\",\n            \"required\": true,\n            \"schema\": {\n              \"type\": \"string\",\n              \"maxLength\": 12\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic account\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Account\"\n                },\n                \"example\": {\n                  \"accountId\": \"ACCT-0002\",\n                  \"customerId\": \"CUST-0002\",\n                  \"status\": \"FROZEN\",\n                  \"balance\": 875.5,\n                  \"currencyCode\": \"USD\",\n                  \"openedAt\": \"2026-01-16\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/accounts\": {\n      \"post\": {\n        \"operationId\": \"createAccount\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/Account\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"201\": {\n            \"description\": \"Synthetic account created\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Account\"\n                }\n              }\n            }\n          }\n        }\n      },\n      \"get\": {\n        \"operationId\": \"listAccounts\",\n        \"parameters\": [\n          {\n            \"name\": \"status\",\n            \"in\": \"query\",\n            \"required\": false,\n            \"schema\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"OPEN\",\n                \"CLOSED\",\n                \"FROZEN\"\n              ]\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic account list\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Account\"\n                  }\n                },\n                \"example\": [\n                  {\n                    \"accountId\": \"ACCT-0001\",\n                    \"customerId\": \"CUST-0001\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 1250.0,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-15\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0002\",\n                    \"customerId\": \"CUST-0002\",\n                    \"status\": \"FROZEN\",\n                    \"balance\": 875.5,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-16\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0003\",\n                    \"customerId\": \"CUST-0003\",\n                    \"status\": \"CLOSED\",\n                    \"balance\": 0.0,\n                    \"currencyCode\": \"EUR\",\n                    \"openedAt\": \"2026-01-17\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0004\",\n                    \"customerId\": \"CUST-0004\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 3200.75,\n                    \"currencyCode\": \"GBP\",\n                    \"openedAt\": \"2026-01-18\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0005\",\n                    \"customerId\": \"CUST-0005\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 640.25,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-19\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"Account\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"accountId\",\n          \"customerId\",\n          \"status\",\n          \"balance\",\n          \"openedAt\"\n        ],\n        \"properties\": {\n          \"accountId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"customerId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"status\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"OPEN\",\n              \"CLOSED\",\n              \"FROZEN\"\n            ]\n          },\n          \"balance\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"currencyCode\": {\n            \"type\": \"string\",\n            \"maxLength\": 3,\n            \"format\": \"iso-4217\"\n          },\n          \"openedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+      "operations": [
+        {
+          "name": "createAccount",
+          "request_sample_path": "upstream/sample-createaccount-request.json",
+          "response_sample_path": "upstream/sample-createaccount-response.json",
+          "request_sample_content": "{\n  \"accountId\": \"ACCT-0001\",\n  \"customerId\": \"CUST-0001\",\n  \"status\": \"OPEN\",\n  \"balance\": 1250.0,\n  \"currencyCode\": \"USD\",\n  \"openedAt\": \"2026-01-15\"\n}\n",
+          "response_sample_content": "{\n  \"accountId\": \"ACCT-0001\",\n  \"customerId\": \"CUST-0001\",\n  \"status\": \"OPEN\",\n  \"balance\": 1250.0,\n  \"currencyCode\": \"USD\",\n  \"openedAt\": \"2026-01-15\"\n}\n"
+        }
+      ],
+      "operation_mappings": [
+        {
+          "name": "createAccount",
+          "request_mappings": [
+            {
+              "source": "accountId",
+              "target": "Account.accountId"
+            },
+            {
+              "source": "customerId",
+              "target": "Account.customerId"
+            },
+            {
+              "source": "status",
+              "target": "Account.status"
+            },
+            {
+              "source": "balance",
+              "target": "Account.balance"
+            },
+            {
+              "source": "currencyCode",
+              "target": "Account.currencyCode"
+            },
+            {
+              "source": "openedAt",
+              "target": "Account.openedAt"
+            }
+          ],
+          "response_mappings": [
+            {
+              "source": "accountId",
+              "target": "Account.accountId"
+            },
+            {
+              "source": "customerId",
+              "target": "Account.customerId"
+            },
+            {
+              "source": "status",
+              "target": "Account.status"
+            },
+            {
+              "source": "balance",
+              "target": "Account.balance"
+            },
+            {
+              "source": "currencyCode",
+              "target": "Account.currencyCode"
+            },
+            {
+              "source": "openedAt",
+              "target": "Account.openedAt"
+            }
+          ]
+        }
+      ],
+      "entity_name": "Account",
+      "is_draft": false
+    }
+  ],
+  "downstream_interfaces": [
+    {
+      "name": "account-eod",
+      "type": "file-fixed-width",
+      "version": "1.0",
+      "entity_name": "Account",
+      "layout_fields": [
+        {
+          "name": "account_id",
+          "start": 1,
+          "length": 12
+        },
+        {
+          "name": "customer_id",
+          "start": 13,
+          "length": 12
+        },
+        {
+          "name": "status",
+          "start": 25,
+          "length": 10
+        },
+        {
+          "name": "balance",
+          "start": 35,
+          "length": 15
+        },
+        {
+          "name": "opened_at",
+          "start": 50,
+          "length": 8
+        }
+      ],
+      "field_mappings": [
+        {
+          "source": "Account.accountId",
+          "target": "account_id"
+        },
+        {
+          "source": "Account.customerId",
+          "target": "customer_id"
+        },
+        {
+          "source": "Account.status",
+          "target": "status"
+        },
+        {
+          "source": "Account.balance",
+          "target": "balance"
+        },
+        {
+          "source": "Account.openedAt",
+          "target": "opened_at"
+        }
+      ]
+    }
+  ],
+  "data_handoffs": [
+    {
+      "name": "account-staging-table",
+      "type": "staging-table",
+      "version": "1.0",
+      "ddl_content": "-- Generated review copy. Edit the canonical project JSON, then regenerate this file.\nCREATE TABLE account_staging (\n    staging_row_id  VARCHAR(36)   NOT NULL PRIMARY KEY,\n    run_id          VARCHAR(64)   NOT NULL,\n    business_date   DATE          NOT NULL,\n    staging_status  VARCHAR(16)   NOT NULL,\n    created_at      TIMESTAMP     NOT NULL,\n    account_id      VARCHAR(36)   NOT NULL,\n    customer_id     VARCHAR(36)   NOT NULL,\n    balance         DECIMAL(15,2) NOT NULL\n);\n",
+      "table_name": "account_staging",
+      "entity_name": "Account",
+      "field_mappings": [
+        {
+          "source": "Account.accountId",
+          "target": "account_id"
+        },
+        {
+          "source": "Account.customerId",
+          "target": "customer_id"
+        },
+        {
+          "source": "Account.balance",
+          "target": "balance"
+        }
+      ]
+    }
+  ],
+  "entity_rules": [
+    {
+      "entity_name": "Account",
+      "rules": [
+        {
+          "field": "status",
+          "type": "allowed-values",
+          "values": [
+            "OPEN",
+            "CLOSED",
+            "FROZEN"
+          ]
+        }
+      ]
+    }
+  ],
+  "raw_spec_content": "{\n  \"openapi\": \"3.0.3\",\n  \"info\": {\n    \"title\": \"Synthetic Account Servicing API\",\n    \"version\": \"1.0.0\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.example.com\"\n    }\n  ],\n  \"paths\": {\n    \"/accounts/{accountId}\": {\n      \"get\": {\n        \"operationId\": \"getAccount\",\n        \"parameters\": [\n          {\n            \"name\": \"accountId\",\n            \"in\": \"path\",\n            \"required\": true,\n            \"schema\": {\n              \"type\": \"string\",\n              \"maxLength\": 12\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic account\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Account\"\n                },\n                \"example\": {\n                  \"accountId\": \"ACCT-0002\",\n                  \"customerId\": \"CUST-0002\",\n                  \"status\": \"FROZEN\",\n                  \"balance\": 875.5,\n                  \"currencyCode\": \"USD\",\n                  \"openedAt\": \"2026-01-16\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/accounts\": {\n      \"post\": {\n        \"operationId\": \"createAccount\",\n        \"requestBody\": {\n          \"required\": true,\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"$ref\": \"#/components/schemas/Account\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"201\": {\n            \"description\": \"Synthetic account created\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Account\"\n                }\n              }\n            }\n          }\n        }\n      },\n      \"get\": {\n        \"operationId\": \"listAccounts\",\n        \"parameters\": [\n          {\n            \"name\": \"status\",\n            \"in\": \"query\",\n            \"required\": false,\n            \"schema\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"OPEN\",\n                \"CLOSED\",\n                \"FROZEN\"\n              ]\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Synthetic account list\",\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Account\"\n                  }\n                },\n                \"example\": [\n                  {\n                    \"accountId\": \"ACCT-0001\",\n                    \"customerId\": \"CUST-0001\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 1250.0,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-15\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0002\",\n                    \"customerId\": \"CUST-0002\",\n                    \"status\": \"FROZEN\",\n                    \"balance\": 875.5,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-16\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0003\",\n                    \"customerId\": \"CUST-0003\",\n                    \"status\": \"CLOSED\",\n                    \"balance\": 0.0,\n                    \"currencyCode\": \"EUR\",\n                    \"openedAt\": \"2026-01-17\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0004\",\n                    \"customerId\": \"CUST-0004\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 3200.75,\n                    \"currencyCode\": \"GBP\",\n                    \"openedAt\": \"2026-01-18\"\n                  },\n                  {\n                    \"accountId\": \"ACCT-0005\",\n                    \"customerId\": \"CUST-0005\",\n                    \"status\": \"OPEN\",\n                    \"balance\": 640.25,\n                    \"currencyCode\": \"USD\",\n                    \"openedAt\": \"2026-01-19\"\n                  }\n                ]\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"Account\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"accountId\",\n          \"customerId\",\n          \"status\",\n          \"balance\",\n          \"openedAt\"\n        ],\n        \"properties\": {\n          \"accountId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"customerId\": {\n            \"type\": \"string\",\n            \"maxLength\": 12\n          },\n          \"status\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"OPEN\",\n              \"CLOSED\",\n              \"FROZEN\"\n            ]\n          },\n          \"balance\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          },\n          \"currencyCode\": {\n            \"type\": \"string\",\n            \"maxLength\": 3,\n            \"format\": \"iso-4217\"\n          },\n          \"openedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date\"\n          }\n        }\n      }\n    }\n  }\n}\n",
+  "raw_spec_url": null,
+  "raw_spec_filename": "account-api-spec.json"
+}

@@ -1,0 +1,76 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Synthetic Property Claims API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com"
+    }
+  ],
+  "paths": {
+    "/claims": {
+      "post": {
+        "operationId": "submitPropertyClaim",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              },
+              "example": {
+                "claimId": "CLM-0002",
+                "policyId": "POL-0002",
+                "claimAmount": 5400.5,
+                "reportedDate": "2026-03-02",
+                "lineOfBusiness": "PROP"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Synthetic claim accepted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClaimRequest": {
+        "type": "object",
+        "required": [
+          "claimId",
+          "policyId",
+          "claimAmount",
+          "reportedDate",
+          "lineOfBusiness"
+        ],
+        "properties": {
+          "claimId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "policyId": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "claimAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "reportedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lineOfBusiness": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

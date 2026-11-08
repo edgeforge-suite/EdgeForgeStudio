@@ -1,0 +1,44 @@
+{
+  "baseline_config": "sha256:e3bfed1436ccb3d73b8a442262e2b0f98932eafac7a9d5aeb07c0426a2a9a9b9",
+  "candidate_config": "sha256:ec452cf2a3bb7d80b61751105cf284a43ee8e1715476c3ae76d35a344f59c882",
+  "copied_jdk_regular_bytes_match": true,
+  "grype_active": 1008,
+  "grype_ignored": 2471,
+  "inventory_added": [
+    [
+      "python",
+      "mcp",
+      "1.30.0"
+    ]
+  ],
+  "inventory_removed": [
+    [
+      "python",
+      "mcp",
+      "1.28.1"
+    ]
+  ],
+  "observation_streams_unchanged": true,
+  "os_package_versions_changed": false,
+  "private_python_and_seed_copy_bytes_match": true,
+  "remaining_disposition": "All inherited whole-image OPEN findings and exclusions remain OPEN; no risk accepted",
+  "same_frozen_databases": {
+    "grype-db/6/vulnerability.db": "94ed64a2513f6aa07db03735341df6137ebd45859e25cb553b86739869779c37",
+    "trivy-cache/db/trivy.db": "e149e60746d0b26ba2e92e27c96eb60d219c220a2183bb307679b8e09da681e5",
+    "trivy-cache/java-db/trivy-java.db": "f30b41953f15675caf7fd8e9ffc3676593e9bb03fbe81d0e7bcc968cbeb1ef58"
+  },
+  "schema_version": 1,
+  "targeted_advisory": {
+    "alias": "CVE-2026-59951",
+    "dependency_disposition": "remediated by upstream patched SDK",
+    "evidence": "Official advisory range, actual wheel-byte match and current complete strict audits; frozen image scanners did not match this advisory on either artifact",
+    "id": "GHSA-84m7-p3x7-pcfv",
+    "new_mcp": "1.30.0",
+    "old_mcp": "1.28.1",
+    "usage_applicability": "Studio uses stdio, not the affected stateful Streamable HTTP server path"
+  },
+  "trivy": {
+    "debian": 3520,
+    "inventory_unresolved_python": 6
+  }
+}

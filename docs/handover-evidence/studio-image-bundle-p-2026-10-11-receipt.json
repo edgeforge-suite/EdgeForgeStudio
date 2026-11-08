@@ -1,0 +1,1081 @@
+{
+  "apt_sources": "Types: deb\n# http://snapshot.debian.org/archive/debian/20261005T000000Z\nURIs: http://deb.debian.org/debian\nSuites: bookworm bookworm-updates\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n\nTypes: deb\n# http://snapshot.debian.org/archive/debian-security/20261005T000000Z\nURIs: http://deb.debian.org/debian-security\nSuites: bookworm-security\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n",
+  "bases": [
+    {
+      "config_digest": "sha256:4143a73d5a9804c1bb2f93cc823a7c173dbc62964d4a5ccabcb1167229b0e2b9",
+      "index_digest": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "platform_descriptor": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:a4672c0cb26fbdde88e38fa2dfb6c681942306680e41e4378b28770b6e79ee91",
+          "org.opencontainers.image.base.name": "debian:bookworm-slim",
+          "org.opencontainers.image.created": "2026-10-06T01:55:45Z",
+          "org.opencontainers.image.revision": "d2a898cb88e46203577eabc62cdcf6e92aaee176",
+          "org.opencontainers.image.source": "https://github.com/docker-library/python.git#d2a898cb88e46203577eabc62cdcf6e92aaee176:3.13/slim-bookworm",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+          "org.opencontainers.image.version": "3.13.16-slim-bookworm"
+        },
+        "digest": "sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 1752
+      },
+      "repository": "python",
+      "requested": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+    },
+    {
+      "config_digest": "sha256:a4ab626836123d37d64448578f511211694b118a22936d328d870f8ac0f70825",
+      "index_digest": "sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "platform_descriptor": {
+        "annotations": {
+          "com.docker.official-images.bashbrew.arch": "amd64",
+          "org.opencontainers.image.base.digest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+          "org.opencontainers.image.base.name": "ubuntu:26.04",
+          "org.opencontainers.image.created": "2026-10-02T01:18:30Z",
+          "org.opencontainers.image.revision": "511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07",
+          "org.opencontainers.image.source": "https://github.com/adoptium/containers.git#511f9356dc4d50932a0a5f8cfb0f87ed1aef4f07:21/jdk/ubuntu/resolute",
+          "org.opencontainers.image.url": "https://hub.docker.com/_/eclipse-temurin",
+          "org.opencontainers.image.version": "21.0.12.1_1-jdk-resolute"
+        },
+        "digest": "sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        "size": 2137
+      },
+      "repository": "eclipse-temurin",
+      "requested": "21-jdk"
+    }
+  ],
+  "bootstrap_proof": {
+    "built_wheel_sha256": "a3c526115e0b1c0b162083aac0e4aca97399352ed2ed8f7ca5031ee62653d9da",
+    "commands": [
+      {
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--without-pip",
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-m",
+          "ensurepip",
+          "--upgrade"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "Looking in links: /tmp/tmpaxl3cves\nProcessing /tmp/tmpaxl3cves/pip-26.2.1-py3-none-any.whl\nInstalling collected packages: pip\nSuccessfully installed pip-26.2.1\n"
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-c",
+          "import importlib.metadata as m,json; print(json.dumps({d.metadata['Name']:d.version for d in m.distributions()}))"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "{\"pip\": \"26.2.1\"}\n"
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/tmp/wheelhouse/packaging-26.2-py3-none-any.whl",
+          "/tmp/wheelhouse/pip-26.2.1-py3-none-any.whl",
+          "/tmp/wheelhouse/setuptools-83.0.0-py3-none-any.whl",
+          "/tmp/wheelhouse/wheel-0.48.0-py3-none-any.whl"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "Processing /tmp/wheelhouse/packaging-26.2-py3-none-any.whl\nProcessing /tmp/wheelhouse/pip-26.2.1-py3-none-any.whl\nProcessing /tmp/wheelhouse/setuptools-83.0.0-py3-none-any.whl\nProcessing /tmp/wheelhouse/wheel-0.48.0-py3-none-any.whl\npip is already installed with the same version as the provided wheel. Use --force-reinstall to force an installation of the wheel.\nInstalling collected packages: wheel, setuptools, packaging\n\nSuccessfully installed packaging-26.2 setuptools-83.0.0 wheel-0.48.0\n"
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-c",
+          "import importlib.metadata as m,json; print(json.dumps({n:m.version(n) for n in ('pip','setuptools','wheel','packaging')}))"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "{\"pip\": \"26.2.1\", \"setuptools\": \"83.0.0\", \"wheel\": \"0.48.0\", \"packaging\": \"26.2\"}\n"
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-m",
+          "pip",
+          "check"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "No broken requirements found.\n"
+      },
+      {
+        "argv": [
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/venv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/built",
+          "/tmp/bundle-p-bootstrap-y6vt4p5r/synthetic-package"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "Processing /tmp/bundle-p-bootstrap-y6vt4p5r/synthetic-package\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nBuilding wheels for collected packages: synthetic-bootstrap-proof\n  Building wheel for synthetic-bootstrap-proof (pyproject.toml): started\n  Building wheel for synthetic-bootstrap-proof (pyproject.toml): finished with status 'done'\n  Created wheel for synthetic-bootstrap-proof: filename=synthetic_bootstrap_proof-0.0.0-py3-none-any.whl size=1311 sha256=a3c526115e0b1c0b162083aac0e4aca97399352ed2ed8f7ca5031ee62653d9da\n  Stored in directory: /tmp/pip-ephem-wheel-cache-jtj9trh6/wheels/16/25/90/cfdb2a61644be280b010ee6d7bb182783b88a052bd69acbf05\nSuccessfully built synthetic-bootstrap-proof\n"
+      }
+    ],
+    "explicit_toolchain": {
+      "packaging": "26.2",
+      "pip": "26.2.1",
+      "setuptools": "83.0.0",
+      "wheel": "0.48.0"
+    },
+    "python": "3.13.16 (main, Oct  6 2026, 02:04:05) [GCC 12.2.0]",
+    "result": "pass",
+    "seed": {
+      "pip": "26.2.1"
+    },
+    "uid": 1000,
+    "wheelhouse_sha256": {
+      "packaging-26.2-py3-none-any.whl": "5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e",
+      "pip-26.2.1-py3-none-any.whl": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "setuptools-83.0.0-py3-none-any.whl": "29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3",
+      "wheel-0.48.0-py3-none-any.whl": "3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab"
+    }
+  },
+  "build_run": {
+    "application_requests": {
+      "create_response": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "create_status": 201,
+      "missing_id_status": 404,
+      "read_response": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      },
+      "read_status": 200,
+      "request": {
+        "accountId": "ACCT-IMG-01",
+        "balance": 1250.0,
+        "currencyCode": "USD",
+        "customerId": "CUST-IMG-01",
+        "openedAt": "2026-01-15",
+        "status": "OPEN"
+      }
+    },
+    "build_command": [
+      "mvn",
+      "clean",
+      "package",
+      "-DskipTests"
+    ],
+    "cache_writable": true,
+    "generated_app": "/workspace/data/bundle-p-proof/account-servicing/generated-app",
+    "health": {
+      "groups": [
+        "liveness",
+        "readiness"
+      ],
+      "status": "UP"
+    },
+    "health_http_status": 200,
+    "jar_built": true,
+    "jobless": true,
+    "ka_enabled": false,
+    "maven": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)\nMaven home: /opt/maven\nJava version: 21.0.12.1, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en_US, platform encoding: UTF-8\nOS name: \"linux\", version: \"6.12.76-linuxkit\", arch: \"amd64\", family: \"unix\"",
+    "maven_test_reports": [
+      {
+        "name": "TEST-com.appbuilder.account_servicing.AccountServicingApplicationTest.xml",
+        "sha256": "ea9d92ab3f748b85f5b763a0327ebc31010d5b6154cae9fcda8741f7f69d536a"
+      }
+    ],
+    "maven_tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 1
+    },
+    "profile": "springboot-legacy-compatible",
+    "python_optimization": 0,
+    "result": "pass",
+    "uid": 1000
+  },
+  "candidate": "EF-V5-M2-STUDIO-IMAGE-BUNDLE-P",
+  "databases_sha256": {
+    "grype-db/6/vulnerability.db": "724811097a1661b62fe10b2d13c5f5e504f86a5d537854ddad7c873399f79072",
+    "trivy-cache/db/trivy.db": "80395a349960522ea33bb01e35ff87d3a59ce9ecff0a1a8793e1383566d1ee29",
+    "trivy-cache/java-db/trivy-java.db": "567bcd59a1e268eaa716e64dfccfa70196f7d7233b3710542d6161835d0060cd"
+  },
+  "engine": "30d25d055c48001e6478493c8993d1e029d4df8f",
+  "entry_sources": [
+    {
+      "bytes": 228494,
+      "file": "pip-current.json",
+      "retrieved_utc": "2026-10-11T17:04:16.002736+00:00",
+      "sha256": "6e11a831a6a7c5aac56ee8634c4041a4d86b19380f43879a76a1903dcde9d814",
+      "url": "https://pypi.org/pypi/pip/json"
+    },
+    {
+      "bytes": 6683,
+      "file": "pip-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:16.059182+00:00",
+      "sha256": "4f5abeb5acacd5eaaad5e6982f5721dee3592795e59fc5a4067fcca92eed70e1",
+      "url": "https://pypi.org/pypi/pip/26.2.1/json"
+    },
+    {
+      "bytes": 8163,
+      "file": "setuptools-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:16.165143+00:00",
+      "sha256": "ec6fb3ae8cd5054d89efca6fce7d2e88f58c8b61236bee0bac429fcb79de38fe",
+      "url": "https://pypi.org/pypi/setuptools/83.0.0/json"
+    },
+    {
+      "bytes": 4390,
+      "file": "wheel-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:16.256968+00:00",
+      "sha256": "03f655da3a6dd010d9ac41d4771d5d973109cb662a1e10eb9d967535ffd145f8",
+      "url": "https://pypi.org/pypi/wheel/0.48.0/json"
+    },
+    {
+      "bytes": 6546,
+      "file": "python-index.json",
+      "registry_digest": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "retrieved_utc": "2026-10-11T17:04:16.663840+00:00",
+      "sha256": "a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "url": "https://registry-1.docker.io/v2/library/python/manifests/sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+    },
+    {
+      "bytes": 1752,
+      "file": "python-amd64-manifest.json",
+      "registry_digest": "sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+      "retrieved_utc": "2026-10-11T17:04:16.972168+00:00",
+      "sha256": "f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+      "url": "https://registry-1.docker.io/v2/library/python/manifests/sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a"
+    },
+    {
+      "bytes": 5538,
+      "file": "python-amd64-config.json",
+      "retrieved_utc": "2026-10-11T17:04:17.245890+00:00",
+      "sha256": "4143a73d5a9804c1bb2f93cc823a7c173dbc62964d4a5ccabcb1167229b0e2b9",
+      "url": "https://registry-1.docker.io/v2/library/python/blobs/sha256:4143a73d5a9804c1bb2f93cc823a7c173dbc62964d4a5ccabcb1167229b0e2b9"
+    },
+    {
+      "bytes": 6683,
+      "file": "pip-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:32.017732+00:00",
+      "sha256": "4f5abeb5acacd5eaaad5e6982f5721dee3592795e59fc5a4067fcca92eed70e1",
+      "url": "https://pypi.org/pypi/pip/26.2.1/json"
+    },
+    {
+      "bytes": 8163,
+      "file": "setuptools-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:32.184991+00:00",
+      "sha256": "ec6fb3ae8cd5054d89efca6fce7d2e88f58c8b61236bee0bac429fcb79de38fe",
+      "url": "https://pypi.org/pypi/setuptools/83.0.0/json"
+    },
+    {
+      "bytes": 4390,
+      "file": "wheel-approved.json",
+      "retrieved_utc": "2026-10-11T17:04:32.320789+00:00",
+      "sha256": "03f655da3a6dd010d9ac41d4771d5d973109cb662a1e10eb9d967535ffd145f8",
+      "url": "https://pypi.org/pypi/wheel/0.48.0/json"
+    },
+    {
+      "bytes": 6546,
+      "file": "python-index.json",
+      "registry_digest": "sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "retrieved_utc": "2026-10-11T17:04:32.747397+00:00",
+      "sha256": "a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641",
+      "url": "https://registry-1.docker.io/v2/library/python/manifests/sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641"
+    },
+    {
+      "bytes": 1752,
+      "file": "python-amd64-manifest.json",
+      "registry_digest": "sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+      "retrieved_utc": "2026-10-11T17:04:33.164450+00:00",
+      "sha256": "f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a",
+      "url": "https://registry-1.docker.io/v2/library/python/manifests/sha256:f040863673aea2570c3ff6a5c3fb4c673a016cbc5375005ad145915922b6b78a"
+    },
+    {
+      "bytes": 5538,
+      "file": "python-amd64-config.json",
+      "retrieved_utc": "2026-10-11T17:04:33.527516+00:00",
+      "sha256": "4143a73d5a9804c1bb2f93cc823a7c173dbc62964d4a5ccabcb1167229b0e2b9",
+      "url": "https://registry-1.docker.io/v2/library/python/blobs/sha256:4143a73d5a9804c1bb2f93cc823a7c173dbc62964d4a5ccabcb1167229b0e2b9"
+    },
+    {
+      "bytes": 5926,
+      "file": "eclipse-temurin-index.json",
+      "registry_digest": "sha256:3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "retrieved_utc": "2026-10-11T17:04:34.024728+00:00",
+      "sha256": "3e3c176ffed168beb42c607be9bc1639b466cf00261a0fb04425562c9d0c5c2b",
+      "url": "https://registry-1.docker.io/v2/library/eclipse-temurin/manifests/21-jdk"
+    },
+    {
+      "bytes": 2137,
+      "file": "eclipse-temurin-amd64-manifest.json",
+      "registry_digest": "sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+      "retrieved_utc": "2026-10-11T17:04:34.405074+00:00",
+      "sha256": "442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d",
+      "url": "https://registry-1.docker.io/v2/library/eclipse-temurin/manifests/sha256:442a743d9272be15c9872915eab0f7a1b6bb45b7c16c613acf172e2d7483061d"
+    },
+    {
+      "bytes": 9131,
+      "file": "eclipse-temurin-amd64-config.json",
+      "retrieved_utc": "2026-10-11T17:04:34.625161+00:00",
+      "sha256": "a4ab626836123d37d64448578f511211694b118a22936d328d870f8ac0f70825",
+      "url": "https://registry-1.docker.io/v2/library/eclipse-temurin/blobs/sha256:a4ab626836123d37d64448578f511211694b118a22936d328d870f8ac0f70825"
+    }
+  ],
+  "grype_database": {
+    "built_utc": "2026-10-11T06:30:42Z",
+    "schema": "v6.1.10"
+  },
+  "historical_sha256": {
+    "studio-image-refresh-2026-10-04-ledger.json": "98f55b4d799118b5ca660c8798e0459533cb806e6b070b6544f71cbca8aa2155",
+    "studio-image-runtime-2026-10-08-inputs.json": "7082d83bd99cc0f32673f84aae821fbb76d7d670b1accbc36303bbc36f151246",
+    "studio-image-runtime-2026-10-08-results.json": "d5e7728a2aac773b854eafd62d7d409ac4b3758ef0533c01801a4e15d68d3bdf"
+  },
+  "image": {
+    "config_digest": "sha256:145242491c522c875bd74a765724cbdb6d38b308c47920a5bbbaf899dc95f8dd",
+    "config_user": "appuser",
+    "created": "2026-10-11T17:07:55.89864021Z",
+    "index_digest": "sha256:1a2a15d0adb3437c9c12afc42022cc2ba560c541e65b0287eb3eef0100bfb567",
+    "layers": [
+      {
+        "compressed_bytes": 28249323,
+        "compressed_digest": "sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39",
+        "filesystem_diff_id": "sha256:e58989146fcec76699871403b9897b5c014af1ccd85f5a9300a215e7975525d7"
+      },
+      {
+        "compressed_bytes": 3342349,
+        "compressed_digest": "sha256:29a6e787b2e07b2b8a2c88b600812f9f7588374cf74e6f17d696695c8984d900",
+        "filesystem_diff_id": "sha256:ba0f973ad05d82f20d8dd8dc79a9d1b71e9d90ab48380d8c0912fad39dda5ced"
+      },
+      {
+        "compressed_bytes": 14892797,
+        "compressed_digest": "sha256:aded561bdc17f79b65ec824282d38146fac0eb9d8951b9a7a4ca462bbea8c21d",
+        "filesystem_diff_id": "sha256:8664c9b18215e1141ccc8fa3cbc7483f4cd16fb5230b570fa7c744da58251da3"
+      },
+      {
+        "compressed_bytes": 250,
+        "compressed_digest": "sha256:29d8700fe216d98a8d918ecf891265355e2ca697f9c11e8290d00813caaed60d",
+        "filesystem_diff_id": "sha256:c167899be569aee196241ae0905aeed34708881d5a8784be3de0ed9bf9db7200"
+      },
+      {
+        "compressed_bytes": 158117534,
+        "compressed_digest": "sha256:f6b3c91443f348493bc521eeefb08e2a98e3f0e1b354c61ce6de59885423ed7d",
+        "filesystem_diff_id": "sha256:52ca360c37a71034b3180203da7b59575c77956ac3515fc164f68502bb3ef56c"
+      },
+      {
+        "compressed_bytes": 9359432,
+        "compressed_digest": "sha256:554998eaecd1acdb761609f75dda97e5f59c17657b72a089c1aa7bc2c2d5fb67",
+        "filesystem_diff_id": "sha256:f17138a3b198b8b1429d6fdf6906503f8b458e3295d332b180472d864da0b966"
+      },
+      {
+        "compressed_bytes": 115508103,
+        "compressed_digest": "sha256:11072ee00e309ddd1600c494e81971e1f77adc3e180c3effbbd8522868af6568",
+        "filesystem_diff_id": "sha256:bfd1a542baa34481ac4d17bff2e3cc7b569a7c68f9e1297a0be8f0a09fe60579"
+      },
+      {
+        "compressed_bytes": 3310,
+        "compressed_digest": "sha256:a7027bcedd7c85d23e42dd18da9baefdbe58427abf20fb28c734a88f8d868c54",
+        "filesystem_diff_id": "sha256:b3ab29313db8b1aff4d2734988e717ef9ef862655a0a6dc9b78440ffcaf747aa"
+      },
+      {
+        "compressed_bytes": 131,
+        "compressed_digest": "sha256:ded8c4f69ac5728ea4341b8775139bc10fd8702ffd8ea33492d199b5a5673867",
+        "filesystem_diff_id": "sha256:32c7d492be01650c43026ed4d5782a866626a0d21a73a537864e9ee6f4f5dad9"
+      },
+      {
+        "compressed_bytes": 1384,
+        "compressed_digest": "sha256:e62ff2b5df4930e19c9a1c5528306ccc1731daa725b2f7f031a73e59af1efca6",
+        "filesystem_diff_id": "sha256:f0bea7494031bd91c00b3b7b383a91e86f9fa9db5fab46d1f9c390b152693b21"
+      },
+      {
+        "compressed_bytes": 977,
+        "compressed_digest": "sha256:f7116883db615f49cc93a502b7abd22a3e38bbada39ce3250ee16c809e75c739",
+        "filesystem_diff_id": "sha256:884b2e9da1a213b60ab19b1f45465e3ef6a00054037b14932082457951ec16e5"
+      },
+      {
+        "compressed_bytes": 61881978,
+        "compressed_digest": "sha256:59af93e0c6747bf7ce18314de2404792f10c0b44d2471d43129cce71fe3a5acd",
+        "filesystem_diff_id": "sha256:1644c7ec373068a79e331fc13421695a5195d8de14800b037d13759357d9d2a2"
+      },
+      {
+        "compressed_bytes": 484877,
+        "compressed_digest": "sha256:d026b8eaa1feba6ed8c33d99f33b8f15e880fe7d5404e29c03aa58bb9534510a",
+        "filesystem_diff_id": "sha256:1662d6c7d7214cb2c6e9c858c55a3b196a2d81bc8c247792903038954e95a2df"
+      },
+      {
+        "compressed_bytes": 172,
+        "compressed_digest": "sha256:250ea08f98590a6aeaaf0fd0d88ddc3e7c77a3d7dcd2c4b76d5fb7b918e0c311",
+        "filesystem_diff_id": "sha256:f5be9a7de7aceef8d976416b5ddbeee67b5b13097d04bc943ab368c22ee2225f"
+      },
+      {
+        "compressed_bytes": 311338,
+        "compressed_digest": "sha256:85fb053436a9b1cd60c3358b91c56d2a836d37afa6870cbf589bd5a524ef0095",
+        "filesystem_diff_id": "sha256:bcd937b92bdb4bd20920b7390b90a7fa894a9c033fe3c0b87a52a4bde0b227ce"
+      },
+      {
+        "compressed_bytes": 798113,
+        "compressed_digest": "sha256:97c08b7bb31c7175b03e0923a77c7c64af9fc922e36911b2509a87e53203a896",
+        "filesystem_diff_id": "sha256:c9759d9e048366f4176d8e1e206aedbe51a55b7d0c353195866409989f682899"
+      }
+    ],
+    "platform": "linux/amd64",
+    "platform_manifest_digest": "sha256:c83ba4ef967059339bdf5b8079a800686f19c18d25bfd26cfab890f6d1d6b3e7",
+    "verified": true
+  },
+  "image_regressions": {
+    "failed": [
+      "tests/test_dom_xss.py::test_one_audited_encoder_owns_text_and_quoted_attribute_encoding",
+      "tests/test_dom_xss.py::test_hostile_saved_kafka_project_cannot_break_out_of_card_markup",
+      "tests/test_dom_xss.py::test_hostile_openapi_descriptor_cannot_break_passthrough_markup",
+      "tests/test_dom_xss.py::test_hostile_operation_name_completes_step3_sample_and_mapping_collection"
+    ],
+    "limitation": "Node-dependent DOM tests require host/CI validation; Node is not an image runtime dependency. Original three path-guard failures passed with guard intact.",
+    "passed": 487,
+    "skipped": 4,
+    "state": "environment-limited, not all-green"
+  },
+  "image_tested_studio": "98a50bf0204976043f1d69580113a30c390e1b31",
+  "installed_debian_packages": [
+    "adduser\t3.134",
+    "apt\t2.6.1",
+    "base-files\t12.4+deb12u15",
+    "base-passwd\t3.6.1",
+    "bash\t5.2.15-2+b13",
+    "binutils\t2.40-2",
+    "binutils-common:amd64\t2.40-2",
+    "binutils-x86-64-linux-gnu\t2.40-2",
+    "bsdutils\t1:2.38.1-5+deb12u3",
+    "build-essential\t12.9",
+    "bzip2\t1.0.8-5+b1",
+    "ca-certificates\t20250419~deb12u1",
+    "coreutils\t9.1-1",
+    "cpp\t4:12.2.0-3",
+    "cpp-12\t12.2.0-14+deb12u1",
+    "curl\t7.88.1-10+deb12u15",
+    "dash\t0.5.12-2",
+    "debconf\t1.5.82",
+    "debian-archive-keyring\t2023.3+deb12u2",
+    "debianutils\t5.7-0.5~deb12u1",
+    "diffutils\t1:3.8-4",
+    "dpkg\t1.21.23",
+    "dpkg-dev\t1.21.23",
+    "e2fsprogs\t1.47.0-2+b2",
+    "findutils\t4.9.0-4",
+    "g++\t4:12.2.0-3",
+    "g++-12\t12.2.0-14+deb12u1",
+    "gcc\t4:12.2.0-3",
+    "gcc-12\t12.2.0-14+deb12u1",
+    "gcc-12-base:amd64\t12.2.0-14+deb12u1",
+    "git\t1:2.39.5-0+deb12u3",
+    "git-man\t1:2.39.5-0+deb12u3",
+    "gpgv\t2.2.40-1.1+deb12u2",
+    "grep\t3.8-5",
+    "gzip\t1.12-1",
+    "hostname\t3.23+nmu1",
+    "init-system-helpers\t1.65.2+deb12u1",
+    "libacl1:amd64\t2.3.1-3",
+    "libapt-pkg6.0:amd64\t2.6.1",
+    "libasan8:amd64\t12.2.0-14+deb12u1",
+    "libatomic1:amd64\t12.2.0-14+deb12u1",
+    "libattr1:amd64\t1:2.5.1-4",
+    "libaudit-common\t1:3.0.9-1",
+    "libaudit1:amd64\t1:3.0.9-1",
+    "libbinutils:amd64\t2.40-2",
+    "libblkid1:amd64\t2.38.1-5+deb12u3",
+    "libbrotli1:amd64\t1.0.9-2+b6",
+    "libbz2-1.0:amd64\t1.0.8-5+b1",
+    "libc-bin\t2.36-9+deb12u14",
+    "libc-dev-bin\t2.36-9+deb12u14",
+    "libc6-dev:amd64\t2.36-9+deb12u14",
+    "libc6:amd64\t2.36-9+deb12u14",
+    "libcap-ng0:amd64\t0.8.3-1+b3",
+    "libcap2:amd64\t1:2.66-4+deb12u3+b1",
+    "libcc1-0:amd64\t12.2.0-14+deb12u1",
+    "libcom-err2:amd64\t1.47.0-2+b2",
+    "libcrypt-dev:amd64\t1:4.4.33-2",
+    "libcrypt1:amd64\t1:4.4.33-2",
+    "libctf-nobfd0:amd64\t2.40-2",
+    "libctf0:amd64\t2.40-2",
+    "libcurl3-gnutls:amd64\t7.88.1-10+deb12u15",
+    "libcurl4:amd64\t7.88.1-10+deb12u15",
+    "libdb5.3:amd64\t5.3.28+dfsg2-1",
+    "libdebconfclient0:amd64\t0.270",
+    "libdpkg-perl\t1.21.23",
+    "liberror-perl\t0.17029-2",
+    "libexpat1:amd64\t2.5.0-1+deb12u4",
+    "libext2fs2:amd64\t1.47.0-2+b2",
+    "libffi8:amd64\t3.4.4-1",
+    "libgcc-12-dev:amd64\t12.2.0-14+deb12u1",
+    "libgcc-s1:amd64\t12.2.0-14+deb12u1",
+    "libgcrypt20:amd64\t1.10.1-3+deb12u1",
+    "libgdbm-compat4:amd64\t1.23-3",
+    "libgdbm6:amd64\t1.23-3",
+    "libgmp10:amd64\t2:6.2.1+dfsg1-1.1",
+    "libgnutls30:amd64\t3.7.9-2+deb12u7",
+    "libgomp1:amd64\t12.2.0-14+deb12u1",
+    "libgpg-error0:amd64\t1.46-1",
+    "libgprofng0:amd64\t2.40-2",
+    "libgssapi-krb5-2:amd64\t1.20.1-2+deb12u5",
+    "libhogweed6:amd64\t3.8.1-2",
+    "libidn2-0:amd64\t2.3.3-1+b1",
+    "libisl23:amd64\t0.25-1.1",
+    "libitm1:amd64\t12.2.0-14+deb12u1",
+    "libjansson4:amd64\t2.14-2",
+    "libk5crypto3:amd64\t1.20.1-2+deb12u5",
+    "libkeyutils1:amd64\t1.6.3-2",
+    "libkrb5-3:amd64\t1.20.1-2+deb12u5",
+    "libkrb5support0:amd64\t1.20.1-2+deb12u5",
+    "libldap-2.5-0:amd64\t2.5.13+dfsg-5",
+    "liblsan0:amd64\t12.2.0-14+deb12u1",
+    "liblz4-1:amd64\t1.9.4-1",
+    "liblzma5:amd64\t5.4.1-1+deb12u2",
+    "libmd0:amd64\t1.0.4-2",
+    "libmount1:amd64\t2.38.1-5+deb12u3",
+    "libmpc3:amd64\t1.3.1-1",
+    "libmpfr6:amd64\t4.2.0-1",
+    "libncursesw6:amd64\t6.4-4",
+    "libnettle8:amd64\t3.8.1-2",
+    "libnghttp2-14:amd64\t1.52.0-1+deb12u3",
+    "libnsl-dev:amd64\t1.3.0-2",
+    "libnsl2:amd64\t1.3.0-2",
+    "libp11-kit0:amd64\t0.24.1-2",
+    "libpam-modules-bin\t1.5.2-6+deb12u2",
+    "libpam-modules:amd64\t1.5.2-6+deb12u2",
+    "libpam-runtime\t1.5.2-6+deb12u2",
+    "libpam0g:amd64\t1.5.2-6+deb12u2",
+    "libpcre2-8-0:amd64\t10.42-1+deb12u2",
+    "libperl5.36:amd64\t5.36.0-7+deb12u4",
+    "libpsl5:amd64\t0.21.2-1",
+    "libquadmath0:amd64\t12.2.0-14+deb12u1",
+    "libreadline8:amd64\t8.2-1.3",
+    "librtmp1:amd64\t2.4+20151223.gitfa8646d.1-2+b2",
+    "libsasl2-2:amd64\t2.1.28+dfsg-10",
+    "libsasl2-modules-db:amd64\t2.1.28+dfsg-10",
+    "libseccomp2:amd64\t2.5.4-1+deb12u1",
+    "libselinux1:amd64\t3.4-1+b6",
+    "libsemanage-common\t3.4-1",
+    "libsemanage2:amd64\t3.4-1+b5",
+    "libsepol2:amd64\t3.4-2.1",
+    "libsmartcols1:amd64\t2.38.1-5+deb12u3",
+    "libsqlite3-0:amd64\t3.40.1-2+deb12u2",
+    "libss2:amd64\t1.47.0-2+b2",
+    "libssh2-1:amd64\t1.10.0-3+deb12u1",
+    "libssl3:amd64\t3.0.22-1~deb12u1",
+    "libstdc++-12-dev:amd64\t12.2.0-14+deb12u1",
+    "libstdc++6:amd64\t12.2.0-14+deb12u1",
+    "libsystemd0:amd64\t252.39-1~deb12u2",
+    "libtasn1-6:amd64\t4.19.0-2+deb12u1",
+    "libtinfo6:amd64\t6.4-4",
+    "libtirpc-common\t1.3.3+ds-1",
+    "libtirpc-dev:amd64\t1.3.3+ds-1",
+    "libtirpc3:amd64\t1.3.3+ds-1",
+    "libtsan2:amd64\t12.2.0-14+deb12u1",
+    "libubsan1:amd64\t12.2.0-14+deb12u1",
+    "libudev1:amd64\t252.39-1~deb12u2",
+    "libunistring2:amd64\t1.0-2",
+    "libuuid1:amd64\t2.38.1-5+deb12u3",
+    "libxxhash0:amd64\t0.8.1-1",
+    "libzstd1:amd64\t1.5.4+dfsg2-5",
+    "linux-libc-dev:amd64\t6.1.187-1",
+    "login\t1:4.13+dfsg1-1+deb12u2",
+    "logsave\t1.47.0-2+b2",
+    "make\t4.3-4.1",
+    "mawk\t1.3.4.20200120-3.1",
+    "mount\t2.38.1-5+deb12u3",
+    "ncurses-base\t6.4-4",
+    "ncurses-bin\t6.4-4",
+    "netbase\t6.4",
+    "openssl\t3.0.22-1~deb12u1",
+    "passwd\t1:4.13+dfsg1-1+deb12u2",
+    "patch\t2.7.6-7",
+    "perl\t5.36.0-7+deb12u4",
+    "perl-base\t5.36.0-7+deb12u4",
+    "perl-modules-5.36\t5.36.0-7+deb12u4",
+    "readline-common\t8.2-1.3",
+    "rpcsvc-proto\t1.4.3-1",
+    "sed\t4.9-1+deb12u1",
+    "sysvinit-utils\t3.06-4",
+    "tar\t1.34+dfsg-1.2+deb12u1",
+    "tzdata\t2026c-0+deb12u1",
+    "usr-is-merged\t37~deb12u1",
+    "util-linux\t2.38.1-5+deb12u3",
+    "util-linux-extra\t2.38.1-5+deb12u3",
+    "xz-utils\t5.4.1-1+deb12u2",
+    "zlib1g:amd64\t1:1.2.13.dfsg-1"
+  ],
+  "local_full_builds_used": 1,
+  "m2_cleared": false,
+  "official_comparison": {
+    "active_and_bootstrap_vendor_bytes_equal": true,
+    "jdk_file_records_sha256": "c02ab4d97e07c04706e4e29a9efe25d41848d0a6aa701cf9701b304ebc6b3ae8",
+    "jdk_regular_file_count": 248,
+    "jdk_regular_files_equal_to_311": true,
+    "pip_vendor_bytes_equal_to_311_active": {
+      "msgpack": true,
+      "pkg_resources": true,
+      "urllib3": true
+    },
+    "python_source_sha256": "f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d",
+    "release_news_mentions": [],
+    "stdlib_module_sha256": {
+      "base64": "a80fc2454f7a0ad644f02259184de5b52084392ddb8b41c1ce372e50a09f3993",
+      "encodings.idna": "ea8d7f01422af0ad138e4bf58d4ae63112f3ceb68833c486d6c4d18252610fd8",
+      "http.cookies": "511f50cae03307f7a883fbc21bf1669766a0e92470c5e990f3d45bf467dfa101",
+      "imaplib": "e0d90e196ef8d7bffb4e8e8a1f042137d2d702a905cc279d003020740cb9d971",
+      "pkgutil": "44300bc77f6f52ef2ad74d26e5053309c04f49eaa91c099356eb61426cde504f",
+      "poplib": "527e714523264093910a0a0b1a55c6583f952835c89061537fc40ad98c347056",
+      "stringprep": "fc42fedb2a828a34a70cb0ff1b9a17039ca148b4f561fa7db98ce49bb2141c7a",
+      "tarfile": "0fd87b49826f745c16e3ee68b2390a206b2dfcfe9a0b1118bd7fcd7c06deaff1",
+      "tempfile": "7350d7f75ca8d6e4752c377777a315dc26eb4ecd3b6c9c0951bffddc576f030f",
+      "urllib.request": "e3bf4446c45300c800f62e869ce1ee89fa745fa073c03e6655f4f4e20fde6eb2",
+      "zipfile": "4067e573036149c17b2a80c288c392e1f574a9566c1d94332b2576b0c2b0a0d4"
+    },
+    "upstream_bootstrap_wheel_sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e"
+  },
+  "official_downloads": [
+    {
+      "bytes": 1816632,
+      "filename": "pip-26.2.1-py3-none-any.whl",
+      "retrieved_utc": "2026-10-11T17:15:55.170369+00:00",
+      "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "url": "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl"
+    },
+    {
+      "bytes": 1008090,
+      "filename": "setuptools-83.0.0-py3-none-any.whl",
+      "retrieved_utc": "2026-10-11T17:15:55.256738+00:00",
+      "sha256": "29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3",
+      "url": "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl"
+    },
+    {
+      "bytes": 33320,
+      "filename": "wheel-0.48.0-py3-none-any.whl",
+      "retrieved_utc": "2026-10-11T17:15:55.333484+00:00",
+      "sha256": "3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab",
+      "url": "https://files.pythonhosted.org/packages/2e/29/69cfbb602cd91690c55d38ba9fe53e6a7e76a6fa647bf38f19c138d25449/wheel-0.48.0-py3-none-any.whl"
+    },
+    {
+      "bytes": 100195,
+      "filename": "packaging-26.2-py3-none-any.whl",
+      "retrieved_utc": "2026-10-11T17:15:55.436165+00:00",
+      "sha256": "5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e",
+      "url": "https://files.pythonhosted.org/packages/df/b2/87e62e8c3e2f4b32e5fe99e0b86d576da1312593b39f47d8ceef365e95ed/packaging-26.2-py3-none-any.whl"
+    },
+    {
+      "bytes": 23225704,
+      "filename": "Python-3.13.16.tar.xz",
+      "retrieved_utc": "2026-10-11T17:15:56.043819+00:00",
+      "sha256": "f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d",
+      "url": "https://www.python.org/ftp/python/3.13.16/Python-3.13.16.tar.xz"
+    },
+    {
+      "bytes": 9278065,
+      "filename": "apache-maven-3.9.16-bin.tar.gz",
+      "retrieved_utc": "2026-10-11T17:15:58.326308+00:00",
+      "sha512": "831a8591fe20c8243b1dbe7d71e3244f31d1665b0804b2e825e38cbbe5ce0cafb8338851f90780735568773e0a6cd07bbec107cda0b896b008b861075358b6f6",
+      "url": "https://archive.apache.org/dist/maven/maven-3/3.9.16/binaries/apache-maven-3.9.16-bin.tar.gz"
+    }
+  ],
+  "pairing": "provisional, not final release selection",
+  "proof_tools_sha256": {
+    "image_bootstrap_proof.py": "7a247e004897a14ae47f60da59a780dcd6785c716f18ef00d23b386495b5df95",
+    "image_bundle_p_probe.py": "00f3672983d4b92a63f1af5670ee54cca30da6b7ba85609b3073de4d5d3f2106",
+    "maven_image_build_run_proof.py": "aaec27eb581cd307d8ef79950546e1ec6543b92abfb0f4d1441f159082526b0f",
+    "verify_image_oci.py": "6c287b4bdb5b7f803e63b601190a407760b1d9f264a7361c4ee01b494493cdfc"
+  },
+  "raw_retention": "Private EdgeForge Open-Source Artifacts / Studio-Bundle-P-2026-10-11",
+  "raw_sha256": {
+    "apt-sources.txt": "fe24486ac3b549c68a75a5243ed09f60008c4c8c81e27680f82759df8790b503",
+    "bootstrap-proof.json": "0c256fa8e322e4e5ab0908529d1ff8789ffe5f587ff27f6fbd417763186e198b",
+    "build-1.log": "b1f3f168ebe0fff53d51145d542023c83a49b6db3affb1be98fe24eeffcf2499",
+    "build-metadata.json": "e29c145d352d8a2a6cdf04505d3e5de07f2b25c03adb34cc91112eea2a66c7a6",
+    "buildrun/result.json": "6d37645b43fe1de284852939a988ba3e113e545b0c22dfaca94b7e4b1284c5dc",
+    "dpkg-packages.txt": "d321f58a64f896639723e6029b1d3b54931979bc1054fd116ef298532d26a0d0",
+    "engine.tar": "7707466ff0d256f0bc6b7d0797e0c1f37a5818bd68d03b911dd3807fdbe671fc",
+    "entry/selected-bases.json": "6d7abf3825a518401a4f468874fa062d3dc6ccba59eeb8e3dff6e2a4745bfc98",
+    "grype-1.json": "f85de84876908ed32afd32c16b0268b0ce847f36928ad7f2bdd925b361893ade",
+    "grype-2.json": "8e69c4a442470cee550ed464cc7aba078fb4b88b5678503963f83c71fce9e21e",
+    "image-launch-smoke.log": "9b521cdc2997c0efe230bc5c6e03bdf737c092e58bf1154eeb4a188aa2d89d0c",
+    "image-regressions-resume-executed.log": "d331dd7e43a61bc65ad6f2ce3f864fd95ec1fe3235c979a0fc48170118bfe63b",
+    "image-regressions-resume.log": "f1956510a644a2a91d277edb1d419652bac6cd47b4c48ed1a585a87d394c8e2d",
+    "image-regressions-retry.log": "1651b0b008d6e53323d29229e83b776005b96884d31efcf32101293aefe3eb6e",
+    "image-regressions.log": "8de44044d4a83f43611d524c5291bb716ed63bf8595a9e880c89eec154b1b05f",
+    "image.tar": "818ed00611cd118d364d7fb2a8c87cb525ba00340bf90a396c1f88b69f414cd9",
+    "proof-container-before-stop.json": "1ccd01c7a67e64535166dc292a6b57df277f4cd49b4d66f6b098bf7bf2832358",
+    "runtime-probe-final-retry.stderr": "4c7a0dd9acb509cbd8248dea88457252ae6cdac050ce09744a4ac7d906c8bdd4",
+    "runtime-probe-final.stderr": "ce39107781abf76544d6aaf399a8ba1c881837167093a0c5ebcd33145da5f1f7",
+    "runtime-probe-resume.json": "7d98cfd4439a8418a8283c04f444d31c12ca318c293992ab83b85214d8b60dc4",
+    "sbom.cdx.json": "30fe7adc84fc129d4411ca5147f12cf39ca98c7e1c2a6a9f4f22cd4d9d36472c",
+    "syft-1.json": "31cf5962d3408bbb022eb0129d3c3c3def525879bf1622418cfd413bd286786b",
+    "syft-2.json": "31cf5962d3408bbb022eb0129d3c3c3def525879bf1622418cfd413bd286786b",
+    "trivy-1.json": "20021f38dc1743955e3819d175bc70c8d94da0c619a96b40ae7b451d8907b42a",
+    "trivy-2.json": "125b316a7b3f08b250bdc08f31f41e83dee4612cafd6aaafc12c3ddac5dea079"
+  },
+  "repeat": {
+    "complete_syft_artifacts_identical": true,
+    "db_hashes_unchanged": {
+      "grype-db/6/vulnerability.db": "724811097a1661b62fe10b2d13c5f5e504f86a5d537854ddad7c873399f79072",
+      "trivy-cache/db/trivy.db": "80395a349960522ea33bb01e35ff87d3a59ce9ecff0a1a8793e1383566d1ee29",
+      "trivy-cache/java-db/trivy-java.db": "567bcd59a1e268eaa716e64dfccfa70196f7d7233b3710542d6161835d0060cd"
+    },
+    "finished_utc": "2026-10-11T17:22:20.197161+00:00",
+    "normalized_ledger_identical": true,
+    "result": "pass",
+    "same_image": "edgeforge-studio-bundle-p:20261011",
+    "summary_byte_identical": true
+  },
+  "revision": 1,
+  "risk_accepted": false,
+  "runtime": {
+    "behavior_regressions": {
+      "imap_newline_error": "NUL, CR and LF not allowed in commands",
+      "imap_sent_bytes_hex": [],
+      "morsel_js_output": "\n        <script type=\"text/javascript\">\n        <!-- begin hiding\n        document.cookie = decodeURIComponent(\"synthetic%3D%3C%2Fscript%3E%27%22%5C\");\n        // end hiding -->\n        </script>\n        ",
+      "morsel_rejects_control_characters": true,
+      "strict_base64_caller_applicability": "not established; remains OPEN",
+      "strict_base64_rejects_trailing_data": true,
+      "temporary_directory": {
+        "avoids_symlink_attacks": true,
+        "file_flags_api_available": false,
+        "file_flags_behavior": "not established; remains OPEN",
+        "outside_contents_unchanged": true,
+        "outside_mode_after": 256,
+        "outside_mode_before": 256
+      }
+    },
+    "bootstrap_wheels": {
+      "/usr/local/lib/python3.13/ensurepip/_bundled/pip-26.2.1-py3-none-any.whl": {
+        "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+        "vendor_declarations": {
+          "pip/_vendor/vendor.txt": "CacheControl==0.14.4\ndistlib==0.4.2\ndistro==1.9.0\nmsgpack==1.1.2\npackaging==26.2\nplatformdirs==4.10.0\npyproject-hooks==1.2.0\nrequests==2.34.2\n    certifi==2026.6.17\n    idna==3.18\n    urllib3==2.7.0\nrich==14.2.0\n    pygments==2.20.0\nresolvelib==1.2.1\nsetuptools==70.3.0\ntomli==2.4.1\ntomli-w==1.2.0\ntruststore==0.10.4\n"
+        }
+      }
+    },
+    "copies": {
+      "/usr/local/lib/python3.13/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/msgpack": {
+        "file_count": 1,
+        "file_records_sha256": "69efc4ef15431211a535b3c75698ab9af13cdf2090bc5bd088b237b92f188b6c",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/pkg_resources": {
+        "file_count": 1,
+        "file_records_sha256": "77a8b2595b7a3adde9ed28d5142f89cb78008a5e9cc2b04c952b76302f1c2a8c",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/pip-26.2.1.dist-info/licenses/src/pip/_vendor/urllib3": {
+        "file_count": 1,
+        "file_records_sha256": "64dbd5afcdb57818f71667de4ecd4c23407f272837ded04cc8c82850137dc8ff",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/pip/_vendor/msgpack": {
+        "file_count": 5,
+        "file_records_sha256": "aa314bd1354df75632843839d2c2c173b23ea0afc0fcb78bfedabae43313f4e4",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/pip/_vendor/pkg_resources": {
+        "file_count": 2,
+        "file_records_sha256": "86d838eeac9c2b52c75eca83c46e0c2247183b0af5f4271912efe04af2fbb1d4",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/pip/_vendor/urllib3": {
+        "file_count": 39,
+        "file_records_sha256": "f8235432ae5a65d5e48647961b157f4c91d4e2ce02825357a357c8a4c0abd3b3",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/setuptools": {
+        "file_count": 432,
+        "file_records_sha256": "b448d48dc16551eca0fa89a98e45593193d0ceac35f86828ed91df6471407767",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/setuptools/_vendor/wheel": {
+        "file_count": 14,
+        "file_records_sha256": "c0f12f7fb7a1bc88f73677aaeda077d7750e6081834cd0775c6041669f41488e",
+        "native_files": []
+      },
+      "/usr/local/lib/python3.13/site-packages/wheel": {
+        "file_count": 15,
+        "file_records_sha256": "4894786d24d268507ad184ba51b38add1f23e548455b37d2546119db187f513e",
+        "native_files": []
+      }
+    },
+    "copy_search_errors": [],
+    "distribution_copies": [
+      {
+        "name": "pip",
+        "root": "/usr/local/lib/python3.13/site-packages",
+        "version": "26.2.1"
+      },
+      {
+        "name": "setuptools",
+        "root": "/usr/local/lib/python3.13/site-packages",
+        "version": "83.0.0"
+      },
+      {
+        "name": "wheel",
+        "root": "/usr/local/lib/python3.13/site-packages",
+        "version": "0.48.0"
+      },
+      {
+        "name": "wheel",
+        "root": "/usr/local/lib/python3.13/site-packages/setuptools/_vendor",
+        "version": "0.46.3"
+      }
+    ],
+    "distributions": {
+      "pip": "26.2.1",
+      "setuptools": "83.0.0",
+      "wheel": "0.48.0"
+    },
+    "embedded_expat": "expat_2.8.5",
+    "expat_ldd": {
+      "argv": [
+        "ldd",
+        "/usr/local/lib/python3.13/lib-dynload/pyexpat.cpython-313-x86_64-linux-gnu.so"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff5ad000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007ffffffcb000)\n"
+    },
+    "functions": {
+      "Morsel.js_output": {
+        "module": "http.cookies",
+        "source_sha256": "422af7dd720e14784a1d70684ee2f02dfe50d7383fa23d345887b9f057a4c6ab"
+      },
+      "TemporaryDirectory._rmtree": {
+        "module": "tempfile",
+        "source_sha256": "3aa590d746ea32adcc21e6b5f08cfa3a0e26cec73fdbcd851b498a049fc7e1b9"
+      },
+      "msgpack.Unpacker": {
+        "module": "pip._vendor.msgpack.fallback",
+        "source_sha256": "f13ac474a5132abde83b7dbf25c74de1b219ccbcbceba6a3ed9497363ae89b28"
+      },
+      "pip.urllib3.chunk": {
+        "module": "pip._vendor.urllib3.response",
+        "source_sha256": "a2d35c2b74cee25a4fc0a84540ea3fdd27442715ecd2a39eb2d3b485e2cea97c"
+      },
+      "pip.urllib3.proxy": {
+        "module": "pip._vendor.urllib3.connectionpool",
+        "source_sha256": "905ee19370068d43aff887859b7ffd6cb071f16c03ba56d9b9ab866b4091a56f"
+      }
+    },
+    "gid": 1000,
+    "java_version": {
+      "argv": [
+        "/opt/java/openjdk/bin/java",
+        "-version"
+      ],
+      "exit_code": 0,
+      "stderr": "openjdk version \"21.0.12.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)\n",
+      "stdout": ""
+    },
+    "jdk_release": "IMPLEMENTOR=\"Eclipse Adoptium\"\nIMPLEMENTOR_VERSION=\"Temurin-21.0.12.1+1\"\nJAVA_RUNTIME_VERSION=\"21.0.12.1+1-LTS\"\nJAVA_VERSION=\"21.0.12.1\"\nJAVA_VERSION_DATE=\"2026-08-18\"\nLIBC=\"gnu\"\nMODULES=\"java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.ec jdk.crypto.cryptoki jdk.dynalink jdk.internal.ed jdk.editpad jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.vm.ci jdk.internal.vm.compiler jdk.internal.vm.compiler.management jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jsobject jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.random jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom\"\nOS_ARCH=\"x86_64\"\nOS_NAME=\"Linux\"\nSOURCE=\".:git:1c417fbfc2f7\"\nBUILD_SOURCE=\"git:e6ba7dec3d07654074559310376a3ae89da5f4ac\"\nBUILD_SOURCE_REPO=\"https://github.com/adoptium/temurin-build.git\"\nSOURCE_REPO=\"https://github.com/adoptium/jdk21u.git\"\nFULL_VERSION=\"21.0.12.1+1-LTS\"\nSEMANTIC_VERSION=\"21.0.12.1+1\"\nBUILD_INFO=\"OS: Linux Version: 6.8.0-1064-azure\"\nJVM_VARIANT=\"Hotspot\"\nJVM_VERSION=\"21.0.12.1+1-LTS\"\nIMAGE_TYPE=\"JDK\"\n",
+    "modules": {
+      "base64": {
+        "path": "/usr/local/lib/python3.13/base64.py",
+        "sha256": "a80fc2454f7a0ad644f02259184de5b52084392ddb8b41c1ce372e50a09f3993",
+        "version": ""
+      },
+      "encodings.idna": {
+        "path": "/usr/local/lib/python3.13/encodings/idna.py",
+        "sha256": "ea8d7f01422af0ad138e4bf58d4ae63112f3ceb68833c486d6c4d18252610fd8",
+        "version": ""
+      },
+      "http.cookies": {
+        "path": "/usr/local/lib/python3.13/http/cookies.py",
+        "sha256": "511f50cae03307f7a883fbc21bf1669766a0e92470c5e990f3d45bf467dfa101",
+        "version": ""
+      },
+      "imaplib": {
+        "path": "/usr/local/lib/python3.13/imaplib.py",
+        "sha256": "e0d90e196ef8d7bffb4e8e8a1f042137d2d702a905cc279d003020740cb9d971",
+        "version": "2.58"
+      },
+      "pip": {
+        "path": "/usr/local/lib/python3.13/site-packages/pip/__init__.py",
+        "sha256": "04aa76ceab0f4341e292daae35637f2f8718b183313cc2fb588d1304cb9c0443",
+        "version": "26.2.1"
+      },
+      "pip._vendor.msgpack": {
+        "path": "/usr/local/lib/python3.13/site-packages/pip/_vendor/msgpack/__init__.py",
+        "sha256": "440f2072a2b5ed8a64c419cdc172556b5a1ad8bca058381f1759c0d4d3f0de6a",
+        "version": "1.1.2"
+      },
+      "pip._vendor.pkg_resources": {
+        "path": "/usr/local/lib/python3.13/site-packages/pip/_vendor/pkg_resources/__init__.py",
+        "sha256": "bdb4c9d3faee5201b1423944aacaee16688d3d5ca1dadf6afb3c930d3d39df12",
+        "version": ""
+      },
+      "pip._vendor.urllib3": {
+        "path": "/usr/local/lib/python3.13/site-packages/pip/_vendor/urllib3/__init__.py",
+        "sha256": "24ca35b60d67215d40789daf10d0bf4f17e5d1ee61e86ce5f43195935ad645ba",
+        "version": "2.7.0"
+      },
+      "pkgutil": {
+        "path": "/usr/local/lib/python3.13/pkgutil.py",
+        "sha256": "44300bc77f6f52ef2ad74d26e5053309c04f49eaa91c099356eb61426cde504f",
+        "version": ""
+      },
+      "poplib": {
+        "path": "/usr/local/lib/python3.13/poplib.py",
+        "sha256": "527e714523264093910a0a0b1a55c6583f952835c89061537fc40ad98c347056",
+        "version": ""
+      },
+      "pyexpat": {
+        "path": "/usr/local/lib/python3.13/lib-dynload/pyexpat.cpython-313-x86_64-linux-gnu.so",
+        "sha256": "1a9c3528df9093ab65c3ed1b12f03b0ccaab655bcd2534e4f641c788f93960c1",
+        "version": ""
+      },
+      "setuptools": {
+        "path": "/usr/local/lib/python3.13/site-packages/setuptools/__init__.py",
+        "sha256": "f94b531bda5d7846646222054faf51724302ab151d5482e38f6e20dea789feb7",
+        "version": "83.0.0"
+      },
+      "stringprep": {
+        "path": "/usr/local/lib/python3.13/stringprep.py",
+        "sha256": "fc42fedb2a828a34a70cb0ff1b9a17039ca148b4f561fa7db98ce49bb2141c7a",
+        "version": ""
+      },
+      "tarfile": {
+        "path": "/usr/local/lib/python3.13/tarfile.py",
+        "sha256": "0fd87b49826f745c16e3ee68b2390a206b2dfcfe9a0b1118bd7fcd7c06deaff1",
+        "version": ""
+      },
+      "tempfile": {
+        "path": "/usr/local/lib/python3.13/tempfile.py",
+        "sha256": "7350d7f75ca8d6e4752c377777a315dc26eb4ecd3b6c9c0951bffddc576f030f",
+        "version": ""
+      },
+      "urllib.request": {
+        "path": "/usr/local/lib/python3.13/urllib/request.py",
+        "sha256": "e3bf4446c45300c800f62e869ce1ee89fa745fa073c03e6655f4f4e20fde6eb2",
+        "version": "3.13"
+      },
+      "urllib3": {
+        "import_error": "ModuleNotFoundError"
+      },
+      "zipfile": {
+        "path": "/usr/local/lib/python3.13/zipfile/__init__.py",
+        "sha256": "4067e573036149c17b2a80c288c392e1f574a9566c1d94332b2576b0c2b0a0d4",
+        "version": ""
+      }
+    },
+    "msgpack_implementation": "pip._vendor.msgpack.fallback",
+    "pip_check": {
+      "argv": [
+        "/usr/local/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "No broken requirements found.\n"
+    },
+    "platform": "x86_64",
+    "pointer_bits": 64,
+    "python": "3.13.16 (main, Oct  6 2026, 02:04:05) [GCC 12.2.0]",
+    "python_optimization": 0,
+    "setuptools_normalization_regression": {
+      "remaining_files": [
+        "public.txt"
+      ]
+    },
+    "system_expat": {
+      "argv": [
+        "dpkg-query",
+        "-W",
+        "-f=${Version}",
+        "libexpat1"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "2.5.0-1+deb12u4"
+    },
+    "tar_directory_regression": {
+      "member_extracted_inside": true,
+      "outside_directory_created": false
+    },
+    "uid": 1000,
+    "vendor_declarations": "CacheControl==0.14.4\ndistlib==0.4.2\ndistro==1.9.0\nmsgpack==1.1.2\npackaging==26.2\nplatformdirs==4.10.0\npyproject-hooks==1.2.0\nrequests==2.34.2\n    certifi==2026.6.17\n    idna==3.18\n    urllib3==2.7.0\nrich==14.2.0\n    pygments==2.20.0\nresolvelib==1.2.1\nsetuptools==70.3.0\ntomli==2.4.1\ntomli-w==1.2.0\ntruststore==0.10.4\n"
+  },
+  "studio_base": "260af2983eb74c8f0eb38fe757120086a3228528",
+  "tools": [
+    {
+      "archive": "syft_1.52.0_darwin_arm64.tar.gz",
+      "archive_sha256": "014d561b6d13059124155f74a6c5a9a99501f5e209313638dd884f39eb418ee6",
+      "archive_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_checksums.txt",
+      "executable_sha256": "17e4215af72264e186a843269d0b797697d643f53841d9598f73614bbcbe9022",
+      "name": "syft",
+      "retrieved_utc": "2026-10-11T17:06:49.734025+00:00",
+      "version": "1.52.0"
+    },
+    {
+      "archive": "grype_0.119.0_darwin_arm64.tar.gz",
+      "archive_sha256": "500c9b2b6c089d21481815f57a553fabbd441ec7d1e79d95e3aaf40c3bfc7e36",
+      "archive_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_darwin_arm64.tar.gz",
+      "checksum_url": "https://github.com/anchore/grype/releases/download/v0.119.0/grype_0.119.0_checksums.txt",
+      "executable_sha256": "f8486425f232aea78fc932249ca0923672d88be36c9661e25e82ea1fa8cd0cae",
+      "name": "grype",
+      "retrieved_utc": "2026-10-11T17:06:51.456243+00:00",
+      "version": "0.119.0"
+    },
+    {
+      "archive": "trivy_0.74.0_macOS-ARM64.tar.gz",
+      "archive_sha256": "1caada5e0e2091909357c7525d3aa76f4b660b13821bc143b190c7483e31cc11",
+      "archive_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_macOS-ARM64.tar.gz",
+      "checksum_url": "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_checksums.txt",
+      "executable_sha256": "0ed07c205ca9ecc1065dc57b9f9f77adc79393bb469d9d1de9ec90c8c94ffc2f",
+      "name": "trivy",
+      "retrieved_utc": "2026-10-11T17:06:53.968002+00:00",
+      "version": "0.74.0"
+    }
+  ],
+  "trivy_database": {
+    "DownloadedAt": "2026-10-11T17:07:53.716439Z",
+    "NextUpdate": "2026-10-12T13:06:05.155543797Z",
+    "UpdatedAt": "2026-10-11T13:06:05.155544028Z",
+    "Version": 2
+  },
+  "trivy_java_database": {
+    "DownloadedAt": "2026-10-11T17:08:17.83579Z",
+    "NextUpdate": "2026-10-14T01:21:46.168041376Z",
+    "UpdatedAt": "2026-10-11T01:21:46.168041573Z",
+    "Version": 1
+  }
+}

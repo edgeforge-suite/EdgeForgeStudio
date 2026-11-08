@@ -1,0 +1,708 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Step 8: Export Package & Run Generated App{% endblock %}
+
+{% block content %}
+<div class="card workflow-surface-group">
+  <h2>Step 8: Export Package &amp; Run Generated App</h2>
+  <p class="subtitle">Two finishing stages: package the manifest, then generate, build, and run the generated app locally.</p>
+  <div class="step-actions" style="margin-top:12px">
+    <a href="/review" class="btn btn-secondary">Previous</a>
+  </div>
+
+  <div id="export-status" class="alert hidden"></div>
+
+  {% if export_disabled %}
+  <div class="alert alert-error">
+    <strong>Export blocked.</strong>
+    Resolve these required issues before exporting:
+    <ul style="margin:8px 0 0 20px">
+      {% for blocker in export_blockers %}
+      <li>{{ blocker }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- ── 8a: Manifest Package ──────────────────────────────────────── -->
+  <section class="s8-box workflow-surface-card">
+    <div class="s8-box-header">
+      <span class="s8-chip">8a</span>
+      <h3 class="s8-title">Manifest Package</h3>
+    </div>
+
+    <p class="text-muted text-sm" style="margin:0 0 14px">Create and validate the Engine input package.</p>
+    <p class="text-muted text-sm" style="margin:0 0 14px">
+      Studio also writes an additive <code>evidence-trail.json</code> sidecar alongside <code>app-definition.yaml</code>.
+    </p>
+
+    <div class="s8-action-row">
+      <button class="btn btn-secondary btn-sm" onclick="exportWrite()" {% if export_disabled %}disabled{% endif %}>
+        <span id="write-spinner" class="spinner hidden"></span>
+        💾 Write to Disk
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="runValidate()">
+        <span id="validate-spinner" class="spinner hidden"></span>
+        ✅ Validate Package
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="runAssess()">
+        <span id="assess-spinner" class="spinner hidden"></span>
+        🔍 Assess Source APIs
+      </button>
+      {% if export_disabled %}
+      <button class="btn btn-secondary btn-sm" disabled title="Resolve blockers before downloading a ZIP">
+        📦 Download ZIP
+      </button>
+      {% else %}
+      <button class="btn btn-secondary btn-sm" onclick="downloadZipAfterWrite()">
+        📦 Download ZIP
+      </button>
+      {% endif %}
+    </div>
+
+    <div class="s8-divider"></div>
+
+    <p class="text-sm" style="margin:0 0 8px;font-weight:600;color:#374151">Export &amp; Validate Pipeline</p>
+    <p class="text-muted text-sm" style="margin:0 0 10px">Run all three package steps in sequence: write, validate, and assess.</p>
+
+    <div class="s8-action-row">
+      <button id="btn-run-all" class="btn btn-primary" onclick="runAll()" {% if export_disabled %}disabled{% endif %}>
+        <span id="run-all-spinner" class="spinner hidden"></span>
+        🚀 Export &amp; Validate
+      </button>
+    </div>
+
+    <div id="pipeline" class="hidden">
+      <div class="pipeline-track">
+        <div id="step-write"    class="pipeline-step" data-label="1. Write">⏳ Write</div>
+        <div id="step-validate" class="pipeline-step" data-label="2. Validate">⏳ Validate</div>
+        <div id="step-assess"   class="pipeline-step" data-label="3. Assess">⏳ Assess</div>
+      </div>
+    </div>
+
+    <div id="pipeline-log" class="hidden" style="margin-top:10px">
+      <pre id="pipeline-pre" class="s8-log"></pre>
+    </div>
+
+    <div class="s8-visibility-grid">
+      <section class="s8-surface-card workflow-surface-subsection" aria-labelledby="package-artifacts-heading">
+        <div class="s8-surface-header">
+          <div>
+            <p class="s8-surface-kicker">Package output</p>
+            <h4 id="package-artifacts-heading" class="s8-surface-title">Package artifacts</h4>
+          </div>
+          <span class="status-badge ok">Local files</span>
+        </div>
+        <p class="text-muted text-sm s8-surface-copy">
+          The exported package stays local on disk. <code>evidence-trail.json</code> includes accepted/edited Knowledge Assist evidence for supported field, validation, rule, cross-entity rule, mapping, and transform suggestions.
+        </p>
+
+        <div id="artifact-empty-state" class="s8-empty-state workflow-surface-detail {{ 'hidden' if export_artifacts else '' }}">
+          Write the package to surface the local output directory, <code>app-definition.yaml</code>, and <code>evidence-trail.json</code> here.
+        </div>
+
+        <div id="artifact-populated-state" class="{{ '' if export_artifacts else 'hidden' }}">
+          <div class="s8-path-summary workflow-surface-detail">
+            <span class="s8-inline-label">Output directory</span>
+            <code id="artifact-output-dir">{{ export_artifacts.output_dir if export_artifacts else '' }}</code>
+          </div>
+          <div id="artifact-list" class="s8-artifact-list workflow-row-list">
+            {% if export_artifacts %}
+              {% for artifact in export_artifacts.artifacts %}
+              <article class="s8-artifact-row workflow-surface-row{% if artifact.is_evidence %} is-provenance{% endif %}">
+                <div class="s8-artifact-main">
+                  <div class="s8-artifact-topline">
+                    <span class="s8-artifact-kind">{{ artifact.kind }}</span>
+                    <code class="s8-artifact-name">{{ artifact.name }}</code>
+                  </div>
+                  <p class="s8-artifact-summary">{{ artifact.summary }}</p>
+                </div>
+                <div class="s8-artifact-actions">
+                  <a class="btn btn-secondary btn-sm" href="{{ artifact.download_url }}" download>Download</a>
+                </div>
+              </article>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </section>
+
+      <section class="s8-surface-card workflow-surface-subsection" aria-labelledby="revision-checkpoint-heading">
+        <div class="s8-surface-header">
+          <div>
+            <p class="s8-surface-kicker">Audit checkpoint</p>
+            <h4 id="revision-checkpoint-heading" class="s8-surface-title">Revision checkpoint</h4>
+          </div>
+          <span class="status-badge running">Manifest revision</span>
+        </div>
+        <p class="text-muted text-sm s8-surface-copy">
+          Each successful write stamps the current manifest revision so later provenance and review flows have a concrete checkpoint to reference.
+        </p>
+
+        <div id="revision-empty-state" class="s8-empty-state workflow-surface-detail {{ 'hidden' if latest_revision else '' }}">
+          No manifest revision has been stamped yet. Write the package to create the current checkpoint.
+        </div>
+
+        <div id="revision-populated-state" class="{{ '' if latest_revision else 'hidden' }}">
+          <dl class="s8-checkpoint-grid workflow-row-list">
+            <div class="s8-checkpoint-item workflow-surface-row">
+              <dt>Revision ID</dt>
+              <dd id="revision-id">{{ latest_revision.revision_id if latest_revision else '' }}</dd>
+            </div>
+            <div class="s8-checkpoint-item workflow-surface-row">
+              <dt>Exported At</dt>
+              <dd id="revision-exported-at">{{ latest_revision.exported_at if latest_revision else '' }}</dd>
+            </div>
+            <div class="s8-checkpoint-item workflow-surface-row">
+              <dt>Manifest Hash</dt>
+              <dd id="revision-manifest-hash">{{ latest_revision.manifest_hash if latest_revision else '' }}</dd>
+            </div>
+            <div class="s8-checkpoint-item workflow-surface-row">
+              <dt>Export Path</dt>
+              <dd><code id="revision-export-path">{{ latest_revision.export_path if latest_revision else '' }}</code></dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ── 8b: Engine Actions ────────────────────────────────────────── -->
+  <section class="s8-box workflow-surface-card">
+    <div class="s8-box-header">
+      <span class="s8-chip">8b</span>
+      <h3 class="s8-title">Engine Actions</h3>
+    </div>
+
+    <p class="text-muted text-sm" style="margin:0 0 14px">Generate, build, and run the application from the exported package.</p>
+
+    <div class="s8-meta workflow-row-list">
+      <div class="s8-meta-item workflow-surface-row">
+        <div class="text-muted text-sm">EdgeForge Engine repo</div>
+        <code>{{ engine_repo_path }}</code>
+      </div>
+      {% if session.last_export_path %}
+      <div class="s8-meta-item workflow-surface-row">
+        <div class="text-muted text-sm">Last export</div>
+        <code>{{ session.last_export_path }}</code>
+      </div>
+      {% endif %}
+    </div>
+    {% if engine_repo_path_warning %}
+    <div class="alert alert-warn" style="margin-bottom:10px">
+      {{ engine_repo_path_warning }}
+    </div>
+    {% endif %}
+
+    <div class="alert alert-warn" style="margin-bottom:10px">
+      Runs <code>appbuilder generate</code> — requires a valid exported package.
+    </div>
+    <div class="s8-action-row" style="margin-bottom:14px">
+      <button class="btn btn-secondary btn-sm" onclick="runGenerate()">
+        <span id="generate-spinner" class="spinner hidden"></span>
+        ⚙️ Generate App
+      </button>
+    </div>
+
+    <div id="integration-output" class="hidden" style="margin-top:0">
+      <pre id="integration-pre" class="s8-log" style="max-height:240px"></pre>
+    </div>
+
+    <div class="s8-divider"></div>
+
+    <!-- Build & Run panel (shown once generated app exists) -->
+    <div id="build-run-panel" class="{{ '' if build_run_enabled else 'hidden' }}">
+      <div class="s8-meta workflow-row-list">
+        <div class="s8-meta-item workflow-surface-row">
+          <div class="text-muted text-sm">Generated app path</div>
+          <code id="build-run-app-path">{{ build_run_data.generated_app_path if build_run_data else '' }}</code>
+        </div>
+        <div class="s8-meta-item workflow-surface-row">
+          <div class="text-muted text-sm">Current state</div>
+          <div class="flex gap-2">
+            <span id="build-status-badge" class="status-badge">Build: idle</span>
+            <span id="run-status-badge" class="status-badge">Run: idle</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="s8-action-row">
+        <button id="btn-build-app" class="btn btn-secondary btn-sm" onclick="buildGeneratedApp()">
+          <span id="build-app-spinner" class="spinner hidden"></span>
+          🛠️ Build
+        </button>
+        <button id="btn-run-app" class="btn btn-secondary btn-sm" onclick="runGeneratedApp()" disabled>
+          <span id="run-app-spinner" class="spinner hidden"></span>
+          ▶️ Run
+        </button>
+        <button id="btn-stop-app" class="btn btn-danger btn-sm" onclick="stopGeneratedApp()" disabled>
+          ⏹️ Stop
+        </button>
+        <button id="btn-refresh-app" class="btn btn-secondary btn-sm" onclick="refreshBuildRunStatus()">
+          🔄 Refresh Status
+        </button>
+      </div>
+
+      <p class="text-muted text-sm" style="margin:8px 0 14px">
+        Studio local runs enable demo/test endpoints via a runtime flag. This is not written to generated source.
+      </p>
+
+      <div id="build-run-summary" class="alert alert-info hidden"></div>
+
+      <div class="s8-meta workflow-row-list">
+        <div class="s8-meta-item workflow-surface-row">
+          <div class="text-muted text-sm">Local app base URL</div>
+          <div id="app-url-wrap" class="text-sm text-muted">Not running</div>
+        </div>
+        <div class="s8-meta-item workflow-surface-row">
+          <div class="text-muted text-sm">Health URL</div>
+          <div id="health-url-wrap" class="text-sm text-muted">Not running</div>
+        </div>
+      </div>
+
+      <details class="s8-routes-details">
+        <summary>Discovered API routes</summary>
+        <div id="route-summary" class="text-sm text-muted" style="margin-top:6px">No route summary yet.</div>
+      </details>
+
+      <div class="s8-divider"></div>
+      <p class="text-sm" style="margin:0 0 8px;font-weight:600;color:#374151">Runtime logs</p>
+      <pre id="build-run-log" class="s8-log">No logs yet.</pre>
+    </div>
+  </section>
+
+  <!-- ── Start Over ────────────────────────────────────────────────── -->
+  <div class="s8-reset">
+    <h3 style="margin:0 0 6px">Start Over</h3>
+    <p class="text-muted text-sm">Reset all session data and start a new project.</p>
+    <button class="btn btn-danger btn-sm" onclick="resetSession()">Reset Session</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const initialBuildRun = {{ (build_run_data or {}) | tojson }};
+let buildRunPollHandle = null;
+
+// -----------------------------------------------------------------------
+// One-click Export & Validate pipeline
+// -----------------------------------------------------------------------
+async function runAll() {
+  const btn = document.getElementById('btn-run-all');
+  const spinner = document.getElementById('run-all-spinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+
+  document.getElementById('pipeline').classList.remove('hidden');
+  document.getElementById('pipeline-log').classList.remove('hidden');
+  const pre = document.getElementById('pipeline-pre');
+  pre.textContent = '';
+
+  function log(msg) {
+    pre.textContent += msg + '\n';
+    pre.scrollTop = pre.scrollHeight;
+  }
+
+  function setStep(id, state, label) {
+    const el = document.getElementById(id);
+    el.className = 'pipeline-step ' + state;
+    el.textContent = label;
+  }
+
+  // --- Step 1: Write ---
+  setStep('step-write', 'running', '⏳ Writing…');
+  log('▶ Writing package to disk…');
+  const writeData = await postJSON('/export/write', {});
+  if (!writeData.ok) {
+    setStep('step-write', 'fail', '❌ Write failed');
+    log('✗ Write failed: ' + (writeData.error || JSON.stringify(writeData)));
+    if (writeData.blockers) writeData.blockers.forEach(b => log('  • ' + b));
+    showStatus('export-status', '❌ Export failed — fix blockers and try again.', 'error');
+    btn.disabled = false; spinner.classList.add('hidden');
+    return;
+  }
+  setStep('step-write', 'ok', '✅ Written');
+  log('✓ Written: ' + writeData.output_dir + ' (' + writeData.files.length + ' files)');
+  if (Array.isArray(writeData.warnings) && writeData.warnings.length > 0) {
+    log('⚠ Export warnings:');
+    writeData.warnings.forEach(w => log('  • ' + w));
+  }
+  renderExportCheckpoint(writeData);
+
+  // --- Step 2: Validate manifest ---
+  setStep('step-validate', 'running', '⏳ Validating…');
+  log('\n▶ Validating manifest against EdgeForge Engine…');
+  const valData = await postJSON('/export/validate', {});
+  if (!valData.ok) {
+    setStep('step-validate', 'fail', '❌ Invalid');
+    if (valData.summary) {
+      log('✗ Validation failed: ' + valData.summary);
+    }
+    log('✗ Validation failed:\n' + (valData.message || valData.error));
+    const msg = valData.summary
+      ? `❌ Manifest validation failed: ${valData.summary}`
+      : '❌ Manifest validation failed — see log below.';
+    showStatus('export-status', msg, 'error');
+    btn.disabled = false; spinner.classList.add('hidden');
+    return;
+  }
+  setStep('step-validate', 'ok', '✅ Valid');
+  log('✓ ' + valData.message);
+
+  // --- Step 3: Assess (URL-backed upstreams only, non-blocking) ---
+  setStep('step-assess', 'running', '⏳ Assessing…');
+  log('\n▶ Running appbuilder assess…');
+  const assessData = await postJSON('/export/assess', {});
+  if (!assessData.ok && assessData.error && assessData.error.includes('No spec_url')) {
+    setStep('step-assess', 'warn', '⚠️ Skipped');
+    log('⚠ No URL-backed upstreams — assess skipped.');
+  } else if (!assessData.ok) {
+    setStep('step-assess', 'warn', '⚠️ Warning');
+    log('⚠ Assess issue:\n' + (assessData.error || JSON.stringify(assessData)));
+  } else {
+    setStep('step-assess', 'ok', '✅ Assessed');
+    if (assessData.results) {
+      assessData.results.forEach(r => {
+        log((r.ok ? '✓' : '⚠') + ' [' + r.interface + ']\n' + r.output);
+      });
+    }
+  }
+
+  // All done
+  showStatus('export-status', '✅ Package exported and validated. Ready for EdgeForge Engine.', 'success');
+  log('\n✔ Done. Download the ZIP or run Generate App below.');
+  btn.disabled = false;
+  spinner.classList.add('hidden');
+}
+
+// -----------------------------------------------------------------------
+// Individual action functions
+// -----------------------------------------------------------------------
+async function exportWrite() {
+  const spinner = document.getElementById('write-spinner');
+  spinner.classList.remove('hidden');
+  const data = await postJSON('/export/write', {});
+  spinner.classList.add('hidden');
+  if (data.ok) {
+    renderExportCheckpoint(data);
+    const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+    if (warnings.length > 0) {
+      renderStructuredOutput('integration-output', {
+        warnings,
+        message: 'Package was written with edge-contract reference-only warnings.',
+      });
+      showStatus('export-status', `Package written to: ${data.output_dir} (${data.files.length} files) with ${warnings.length} warning(s).`, 'warn');
+    } else {
+      showStatus('export-status', `Package written to: ${data.output_dir} (${data.files.length} files)`, 'success');
+    }
+  } else {
+    const msg = data.blockers ? data.error + '\n• ' + data.blockers.join('\n• ') : (data.error || 'Unknown error');
+    showStatus('export-status', 'Error: ' + msg, 'error');
+  }
+}
+
+async function downloadZipAfterWrite() {
+  const data = await postJSON('/export/write', {});
+  if (!data.ok) {
+    const msg = data.blockers ? data.error + '\n• ' + data.blockers.join('\n• ') : (data.error || 'Unknown error');
+    showStatus('export-status', 'Error: ' + msg, 'error');
+    return;
+  }
+
+  renderExportCheckpoint(data);
+  const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+  if (warnings.length > 0) {
+    renderStructuredOutput('integration-output', {
+      warnings,
+      message: 'Package was written with edge-contract reference-only warnings.',
+    });
+    showStatus(
+      'export-status',
+      `Package written with ${warnings.length} warning(s). Review them, then download the ZIP.`,
+      'warn',
+    );
+    const status = document.getElementById('export-status');
+    const zipPath = '/export/' + 'download' + '-zip';
+    status.insertAdjacentHTML(
+      'beforeend',
+      `<div style="margin-top:8px"><a href="${zipPath}" class="btn btn-secondary btn-sm" download>Download ZIP after reviewing warnings</a></div>`,
+    );
+    return;
+  }
+
+  window.location.href = '/export/' + 'download' + '-zip';
+}
+
+async function runValidate() {
+  const spinner = document.getElementById('validate-spinner');
+  spinner.classList.remove('hidden');
+  const data = await postJSON('/export/validate', {});
+  spinner.classList.add('hidden');
+  renderStructuredOutput('integration-output', data);
+  if (data.ok) {
+    showStatus('export-status', '✅ Manifest validation passed.', 'success');
+  } else {
+    const msg = data.summary ? `❌ Validation failed: ${data.summary}` : '❌ Validation failed. See output below.';
+    showStatus('export-status', msg, 'error');
+  }
+}
+
+async function runAssess() {
+  const spinner = document.getElementById('assess-spinner');
+  spinner.classList.remove('hidden');
+  const data = await postJSON('/export/assess', {});
+  spinner.classList.add('hidden');
+  if (data.ok && data.results) {
+    const out = data.results.map(r => `[${r.interface}]\n${r.output}`).join('\n\n');
+    showIntegrationOutput(out);
+    showStatus('export-status', 'Assessment complete. See output below.', 'success');
+  } else {
+    showIntegrationOutput(data.error || JSON.stringify(data));
+    showStatus('export-status', '⚠️ Assessment issue. See output below.', 'warn');
+  }
+}
+
+async function runGenerate() {
+  const spinner = document.getElementById('generate-spinner');
+  spinner.classList.remove('hidden');
+  const data = await postJSON('/export/generate', {});
+  spinner.classList.add('hidden');
+  renderStructuredOutput('integration-output', data);
+  if (data.ok) {
+    showStatus('export-status', `✅ Generated to: ${data.output_dir}`, 'success');
+    showBuildRunPanel(data.output_dir);
+    await refreshBuildRunStatus();
+  } else {
+    const msg = data.summary ? `❌ Generation failed: ${data.summary}` : '❌ Generation failed. See output below.';
+    showStatus('export-status', msg, 'error');
+  }
+}
+
+async function resetSession() {
+  if (!confirm('This will clear all session data. Continue?')) return;
+  const data = await postJSON('/export/reset', {});
+  if (data.ok) location.href = '/';
+}
+
+function renderArtifactRows(artifacts) {
+  return artifacts.map(artifact => `
+    <article class="s8-artifact-row workflow-surface-row${artifact.is_evidence ? ' is-provenance' : ''}">
+      <div class="s8-artifact-main">
+        <div class="s8-artifact-topline">
+          <span class="s8-artifact-kind">${escapeHtml(artifact.kind)}</span>
+          <code class="s8-artifact-name">${escapeHtml(artifact.name)}</code>
+        </div>
+        <p class="s8-artifact-summary">${escapeHtml(artifact.summary)}</p>
+      </div>
+      <div class="s8-artifact-actions">
+        ${artifact.download_url ? `<a class="btn btn-secondary btn-sm" href="${escapeHtml(artifact.download_url)}" download>Download</a>` : ''}
+      </div>
+    </article>
+  `).join('');
+}
+
+function renderExportCheckpoint(data) {
+  if (data.export_artifacts) {
+    document.getElementById('artifact-empty-state').classList.add('hidden');
+    document.getElementById('artifact-populated-state').classList.remove('hidden');
+    document.getElementById('artifact-output-dir').textContent = data.export_artifacts.output_dir || '';
+    document.getElementById('artifact-list').innerHTML = renderArtifactRows(data.export_artifacts.artifacts || []);
+  }
+
+  if (data.latest_revision) {
+    document.getElementById('revision-empty-state').classList.add('hidden');
+    document.getElementById('revision-populated-state').classList.remove('hidden');
+    document.getElementById('revision-id').textContent = data.latest_revision.revision_id || '';
+    document.getElementById('revision-exported-at').textContent = data.latest_revision.exported_at || '';
+    document.getElementById('revision-manifest-hash').textContent = data.latest_revision.manifest_hash || '';
+    document.getElementById('revision-export-path').textContent = data.latest_revision.export_path || '';
+  }
+}
+
+function renderStructuredOutput(containerId, data) {
+  const container = document.getElementById(containerId);
+  container.classList.remove('hidden');
+
+  const rawText = data.message || data.error || '';
+  const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+  const errors = Array.isArray(data.errors) ? data.errors : [];
+  const summary = data.summary || '';
+
+  let html = '';
+
+  if (summary) {
+    html += `<div class="alert alert-error" style="margin-bottom:8px"><strong>Actionable Error</strong><div style="margin-top:6px">${escapeHtml(summary)}</div></div>`;
+  }
+
+  if (errors.length > 0 && !(errors.length === 1 && summary && errors[0] === summary)) {
+    const items = errors.map(e => `<li>${escapeHtml(e)}</li>`).join('');
+    html += `<div class="alert alert-error" style="margin-bottom:8px"><strong>Errors</strong><ul style="margin:6px 0 0 20px">${items}</ul></div>`;
+  }
+
+  if (warnings.length > 0) {
+    const items = warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('');
+    html += `<details style="margin-bottom:8px"><summary class="alert alert-warn" style="cursor:pointer">&#x26A0;&#xFE0F; ${warnings.length} warning(s)</summary><ul style="margin:6px 0 0 20px;padding-bottom:8px">${items}</ul></details>`;
+  }
+
+  html += `<details><summary style="cursor:pointer;font-size:0.85rem;color:#6b7280">Full output</summary><pre style="max-height:240px;overflow-y:auto;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:6px;font-size:0.8rem;margin-top:6px">${escapeHtml(rawText)}</pre></details>`;
+
+  container.innerHTML = html;
+}
+
+function showIntegrationOutput(text) {
+  const out = document.getElementById('integration-output');
+  out.classList.remove('hidden');
+  let pre = document.getElementById('integration-pre');
+  if (!pre) {
+    pre = document.createElement('pre');
+    pre.id = 'integration-pre';
+    pre.style = 'max-height:240px;overflow-y:auto;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:6px;font-size:0.8rem';
+    out.innerHTML = '';
+    out.appendChild(pre);
+  }
+  pre.textContent = text;
+}
+
+function showBuildRunPanel(appPath) {
+  const panel = document.getElementById('build-run-panel');
+  panel.classList.remove('hidden');
+  if (appPath) {
+    document.getElementById('build-run-app-path').textContent = appPath;
+  }
+}
+
+function setBadge(elId, label, status) {
+  const el = document.getElementById(elId);
+  el.textContent = label;
+  el.className = 'status-badge';
+  if (status === 'build_succeeded' || status === 'running') {
+    el.classList.add('ok');
+  } else if (status === 'building' || status === 'starting') {
+    el.classList.add('running');
+  } else if (status === 'build_failed' || status === 'run_failed') {
+    el.classList.add('fail');
+  } else if (status === 'stopped') {
+    el.classList.add('warn');
+  }
+}
+
+function renderRouteSummary(routes) {
+  const wrap = document.getElementById('route-summary');
+  if (!routes || routes.length === 0) {
+    wrap.textContent = 'No route summary yet.';
+    return;
+  }
+  wrap.innerHTML = routes.map(r =>
+    `<div><code>${escapeHtml(r.method)}</code> <code>${escapeHtml(r.path)}</code>` +
+    `${r.controller ? ` <span class="text-muted">(${escapeHtml(r.controller)})</span>` : ''}</div>`
+  ).join('');
+}
+
+function renderBuildRunStatus(data) {
+  if (!data || !data.generated_app_path) return;
+
+  showBuildRunPanel(data.generated_app_path);
+  document.getElementById('build-run-app-path').textContent = data.generated_app_path || '';
+
+  setBadge('build-status-badge', `Build: ${data.build_status || 'idle'}`, data.build_status || 'idle');
+  setBadge('run-status-badge', `Run: ${data.run_status || 'idle'}`, data.run_status || 'idle');
+
+  const buildOk = data.build_status === 'build_succeeded';
+  const running = data.run_status === 'running' || data.run_status === 'starting';
+  const hasUiSurface = data.has_ui_surface === true;
+  document.getElementById('btn-run-app').disabled = !buildOk || running;
+  document.getElementById('btn-stop-app').disabled = !running;
+
+  const summaryEl = document.getElementById('build-run-summary');
+  const summary = data.run_summary || data.build_summary;
+  if (summary) {
+    summaryEl.classList.remove('hidden');
+    summaryEl.textContent = summary;
+    summaryEl.className = 'alert ' + ((data.run_status === 'run_failed' || data.build_status === 'build_failed') ? 'alert-error' : 'alert-info');
+  } else {
+    summaryEl.classList.add('hidden');
+  }
+
+  const appWrap = document.getElementById('app-url-wrap');
+  if (!data.app_url) {
+    appWrap.textContent = 'Not running';
+  } else if (data.run_status === 'run_failed') {
+    appWrap.innerHTML = `<div>Last attempted base URL: <code>${escapeHtml(data.app_url)}</code></div>`;
+  } else if (data.run_status === 'running') {
+    const apiOnlyNote = hasUiSurface
+      ? ''
+      : '<div class="text-muted text-sm">API-only app. <code>/</code> may return 404; use the discovered routes below.</div>';
+    appWrap.innerHTML = `<a href="${escapeHtml(data.app_url)}" target="_blank">${escapeHtml(data.app_url)}</a>${apiOnlyNote}`;
+  } else if (data.run_status === 'starting') {
+    const startupNote = hasUiSurface
+      ? '<div class="text-muted text-sm">Startup in progress.</div>'
+      : '<div class="text-muted text-sm">Startup in progress. This app may not expose a homepage at <code>/</code>.</div>';
+    appWrap.innerHTML = `<code>${escapeHtml(data.app_url)}</code>${startupNote}`;
+  } else {
+    appWrap.innerHTML = `<div>Last base URL: <code>${escapeHtml(data.app_url)}</code></div>`;
+  }
+
+  const healthWrap = document.getElementById('health-url-wrap');
+  if (data.health_url) {
+    const suffix = data.health_ok ? ' <span class="text-muted">(UP)</span>' : '';
+    healthWrap.innerHTML = `<a href="${escapeHtml(data.health_url)}" target="_blank">${escapeHtml(data.health_url)}</a>${suffix}`;
+  } else {
+    healthWrap.textContent = 'Not running';
+  }
+
+  renderRouteSummary(data.route_summary || []);
+  document.getElementById('build-run-log').textContent = data.log_tail || 'No logs yet.';
+
+  if (running) {
+    startBuildRunPolling();
+  } else {
+    stopBuildRunPolling();
+  }
+}
+
+function startBuildRunPolling() {
+  if (buildRunPollHandle) return;
+  buildRunPollHandle = setInterval(refreshBuildRunStatus, 2000);
+}
+
+function stopBuildRunPolling() {
+  if (!buildRunPollHandle) return;
+  clearInterval(buildRunPollHandle);
+  buildRunPollHandle = null;
+}
+
+async function buildGeneratedApp() {
+  const spinner = document.getElementById('build-app-spinner');
+  spinner.classList.remove('hidden');
+  document.getElementById('btn-build-app').disabled = true;
+  const data = await postJSON('/export/build', {});
+  spinner.classList.add('hidden');
+  document.getElementById('btn-build-app').disabled = false;
+  renderBuildRunStatus(data);
+}
+
+async function runGeneratedApp() {
+  const spinner = document.getElementById('run-app-spinner');
+  spinner.classList.remove('hidden');
+  document.getElementById('btn-run-app').disabled = true;
+  const data = await postJSON('/export/run', {});
+  spinner.classList.add('hidden');
+  renderBuildRunStatus(data);
+}
+
+async function refreshBuildRunStatus() {
+  const response = await fetch('/export/run-status');
+  const data = await response.json();
+  renderBuildRunStatus(data);
+}
+
+async function stopGeneratedApp() {
+  const data = await postJSON('/export/stop', {});
+  renderBuildRunStatus(data);
+}
+
+if (initialBuildRun && initialBuildRun.generated_app_path) {
+  renderBuildRunStatus(initialBuildRun);
+}
+</script>
+{% endblock %}

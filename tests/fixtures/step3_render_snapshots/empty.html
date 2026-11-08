@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="edgeforge-csrf-token"
+    content="<CSRF>"
+  >
+  <title>EdgeForge Studio — Step 3: Entity Selection</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/studio.css">
+
+</head>
+<body
+  class="ux-refresh"
+  data-shell-rail="collapsed"
+  data-shell-drawer="collapsed"
+  data-shell-rail-default="collapsed"
+  data-shell-drawer-default="collapsed"
+>
+
+
+
+
+
+
+
+
+
+
+
+<div class="app-shell">
+  <aside class="shell-sidebar">
+    <div class="sidebar-brand">
+      <h1 class="sidebar-brand-title"><span class="sidebar-brand-ef">EdgeForge</span> <span class="sidebar-brand-studio">Studio</span></h1>
+      <p class="sidebar-brand-tagline">Governed App Modernization Workflow</p>
+    </div>
+
+    <nav class="wizard-nav" aria-label="Wizard steps">
+
+
+        <a
+          href="/"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">1</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Project Setup</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/upstream"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">2</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Upstream Contract</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/entities"
+          class="wizard-nav-link is-active"
+          data-step-state="active"
+          aria-current="step"
+        >
+          <span class="wizard-nav-marker is-step-marker">3</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Entity Model</span>
+            <span class="wizard-nav-meta">
+
+              Current
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/handoffs"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">4</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Data Handoffs</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/downstream"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">5</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Downstream Contract</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/rules"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">6</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Rules &amp; Mappings</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/review"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">7</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Review</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+
+        <a
+          href="/export"
+          class="wizard-nav-link is-open"
+          data-step-state="open"
+          aria-current="false"
+        >
+          <span class="wizard-nav-marker">8</span>
+          <span class="wizard-nav-copy">
+            <span class="wizard-nav-label">Export &amp; Build</span>
+            <span class="wizard-nav-meta">
+
+              Open
+
+            </span>
+          </span>
+        </a>
+
+
+    </nav>
+
+    <div class="sidebar-project-file">
+      <p class="sidebar-section-label">Project File</p>
+
+      <form method="post" action="/project/save" style="margin-bottom: 8px;">
+        <input type="hidden" name="_edgeforge_csrf_token" value="<CSRF>">
+        <button type="submit" class="btn btn-secondary sidebar-file-btn" aria-label="Save Project">
+          <span class="sidebar-file-icon" aria-hidden="true">&#8681;</span> <span class="sidebar-file-btn-label">Save Project</span>
+        </button>
+      </form>
+
+      <form method="post" action="/project/open" enctype="multipart/form-data">
+        <input type="hidden" name="_edgeforge_csrf_token" value="<CSRF>">
+        <label
+          for="project-file-input"
+          class="btn btn-secondary sidebar-file-btn"
+          title="Upload a previously saved Studio project JSON file"
+          aria-label="Open Project"
+          aria-describedby="studio-data-handling-note"
+        ><span class="sidebar-file-icon" aria-hidden="true">&#8679;</span> <span class="sidebar-file-btn-label">Open Project</span></label>
+        <input
+          id="project-file-input"
+          type="file"
+          name="project_file"
+          accept=".json,application/json"
+          aria-describedby="studio-data-handling-note"
+          style="display:none"
+          onchange="this.form.submit()"
+        >
+      </form>
+    </div>
+  </aside>
+
+  <div class="shell-workspace">
+    <header class="shell-header">
+      <div class="shell-header-title-group">
+        <div class="shell-kicker">Governed authoring workspace</div>
+        <h2 class="shell-project-title">Step3 Empty</h2>
+
+        <div class="shell-project-context">snapshot-empty</div>
+
+      </div>
+
+      <div class="shell-header-meta">
+        <span class="shell-pill">CRUD</span>
+        <span class="shell-pill shell-step-indicator">Step 3 of 8</span>
+        <details class="shell-data-handling">
+          <summary class="shell-pill shell-data-handling-toggle">Data handling</summary>
+          <div
+            class="data-handling-notice shell-data-handling-panel"
+            id="studio-data-handling-note"
+            role="note"
+          >
+            Use synthetic or approved content only. Studio does not sanitize uploaded or pasted content. Depending on the workflow, it may be retained in project state, Knowledge Workspace storage, and exported packages.
+          </div>
+        </details>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm shell-toggle-btn"
+          data-shell-toggle="rail"
+          aria-controls="shell-right-rail"
+          aria-expanded="false"
+        >
+          Toggle Right Rail
+        </button>
+
+      </div>
+    </header>
+
+    <div class="shell-body">
+      <main class="shell-main" id="shell-main-pane">
+
+<div class="card step-surface workflow-surface-group">
+  <div class="step-surface-header">
+    <div>
+      <h2>Step 3: Entity Model</h2>
+      <p class="subtitle">
+        Confirm the CRUD entities and operations in scope for <strong>snapshot-empty</strong>, then fill samples and upstream mappings in the main pane.
+
+        The main pane stays focused on manual entity selection, samples, and upstream mappings.
+
+      </p>
+    </div>
+    <div class="step-surface-kicker">
+      <span class="kickoff-section-label">Authoring Focus</span>
+      <div class="step-surface-kicker-title">Main pane: selection + samples</div>
+      <div class="text-muted text-sm">
+
+        Right rail: collapsed for this step
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+  <div class="alert alert-warn">No entities classified yet. Use <a href="/upstream">Previous</a> to ingest an API spec.</div>
+
+
+</div>
+
+      </main>
+
+      <aside class="shell-right-rail" id="shell-right-rail" aria-label="Context panels">
+        <div class="shell-panel-header">
+
+
+<div>
+  <h3>Step 3 Context</h3>
+  <p>The main pane contains the current entity selection, samples, and upstream mappings for this step.</p>
+</div>
+
+
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm shell-panel-close"
+            data-shell-toggle="rail"
+            aria-controls="shell-right-rail"
+            aria-expanded="false"
+          >
+            Close
+          </button>
+        </div>
+        <div class="shell-panel-body">
+
+
+<section class="shell-scaffold-panel shell-rail-panel shell-rail-panel-active" id="rail-step3-context-panel" data-rail-panel="context">
+  <h4>Main authoring</h4>
+  <p>Use the main pane to select entities, assign operations, and provide sample payloads.</p>
+</section>
+<div id="rail-chat-panel" data-rail-panel="chat" hidden></div>
+
+
+        </div>
+      </aside>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+<script src="/static/js/studio.js"></script>
+
+<script>
+window.STEP3_ENTITIES_BOOTSTRAP = {
+  paginationWrapperKeys: ["content", "totalElements", "totalPages", "pageable", "last", "first", "size", "number", "sort", "empty", "numberOfElements"],
+  initialPhase2Interfaces: [],
+  kaEnabled: false,
+  initialKsSelectedEntities: [],
+  initialIdentityReviewEntities: [],
+  identityRoleOptions: [{"affects_engine": false, "api_behavior": "No generated API behavior.", "current_engine_behavior": "No identity-role behavior is generated.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "No identity-role export.", "exports": false, "future_policy_note": "Choose a role only when the field\u0027s identity intent is known.", "help": "Clears any reviewed identity role metadata for this field.", "impact_badge": "No role", "label": "No identity role", "meaning": "No reviewed identity role for this field.", "value": ""}, {"affects_engine": true, "api_behavior": "May affect generated API ID behavior where CRUD routes use the persistence ID.", "current_engine_behavior": "Affects generated persistence identity: Java @Id, DB primary key, and repository identity.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to Engine identity_overrides.", "exports": true, "future_policy_note": "Current Engine-supported role.", "help": "Exports to Engine identity_overrides. Affects generated persistence identity: Java @Id, DB primary key, and repository identity.", "impact_badge": "Engine-active", "label": "persistence_id", "meaning": "Persistence row identity for this entity.", "value": "persistence_id"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit relationship or rule policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "parent_reference", "meaning": "Reference to another entity\u0027s identity, not this entity\u0027s row identity.", "value": "parent_reference"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit uniqueness or lookup policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "business_key", "meaning": "Natural/domain identifier such as account number or order reference.", "value": "business_key"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit event/deduplication policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "event_id", "meaning": "Upstream event or transaction identifier.", "value": "event_id"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit operation, retention, replay, and storage policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "idempotency_key", "meaning": "Replay/duplicate protection key for an operation.", "value": "idempotency_key"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit tracing/logging policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "correlation_id", "meaning": "Workflow, request, or trace correlation identifier.", "value": "correlation_id"}, {"affects_engine": false, "api_behavior": "Does not change Java, DDL, rules, APIs, or runtime behavior.", "current_engine_behavior": "Exported as metadata only; no generated app behavior yet.", "evidence_trail_behavior": "Not an Evidence Trail v1.1 entry.", "export_behavior": "Exports to identity_roles with mode: metadata_only.", "exports": true, "future_policy_note": "Future behavior requires explicit external-reference lookup/index policy.", "help": "Exports to identity_roles with mode: metadata_only. Exported as metadata only; no generated app behavior yet.", "impact_badge": "Metadata-only", "label": "external_reference", "meaning": "Identifier assigned by an external provider or integration partner.", "value": "external_reference"}],
+  initialKaSummaryReviewStatuses: {},
+};
+</script>
+<script src="/static/js/step3_entities.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request limit reached | EdgeForge Studio</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; background: #edf1f6; color: #172033; font-family: Georgia, serif; }
+    main { box-sizing: border-box; display: grid; min-height: 100vh; place-items: center; padding: 2rem; }
+    section { max-width: 34rem; border: 1px solid #74899f; border-radius: 10px; background: #fff; box-shadow: 0 10px 28px rgba(19, 39, 67, .16); padding: 2rem; }
+    h1 { color: #1e3a5f; font-size: 1.6rem; margin: 0 0 1rem; }
+    p { line-height: 1.5; margin: .75rem 0; }
+    a { color: #0f4fa8; font-weight: 700; }
+    a:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section aria-labelledby="rate-limited-heading">
+      <h1 id="rate-limited-heading">{{ "Request limit reached" if status_code == 429 else "Request unavailable" }}</h1>
+      <p>{{ message }}</p>
+      {% if retry_after_seconds is not none %}
+      <p>Please try again in {{ retry_after_seconds }} second{{ "s" if retry_after_seconds != 1 else "" }}.</p>
+      {% endif %}
+      <p><a href="{{ back_href }}">Return to {{ back_label }}</a></p>
+    </section>
+  </main>
+</body>
+</html>

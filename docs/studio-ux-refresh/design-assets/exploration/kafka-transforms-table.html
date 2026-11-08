@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Kafka — Transform Mappings (EXPLORATORY, B2)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--ka:#0d7490;--kabg:#e3f3f7;
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+  --pat-fnf:#0e7490;--pat-rr:#6d28d9;--pat-rtr:#1e3a5f;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.explore-badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a.na{color:#c1cad6;font-style:italic}
+.main{flex:1;padding:22px 26px;min-width:0}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.split{display:grid;grid-template-columns:.72fr 1.28fr;gap:16px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel.zone-board{background:var(--zone-scan)}
+.panel.zone-editor{background:var(--zone-editor);box-shadow:0 4px 16px rgba(16,35,63,.08)}
+.phd{padding:13px 15px;border-bottom:1px solid var(--line)}
+.phd h2{font-size:13.5px;font-weight:700}.phd .pd{font-size:11.5px;color:var(--mut);margin-top:1px;font-weight:400}
+.row{display:flex;align-items:center;gap:10px;padding:11px 15px;border-top:1px solid #e8edf4;position:relative}
+.row.sel{background:var(--selbg)}
+.row.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sel)}
+.mono{width:42px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff;flex-shrink:0}
+.m-fnf{background:var(--pat-fnf)}.m-rr{background:var(--pat-rr)}.m-rtr{background:var(--pat-rtr)}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:700;font-size:12.5px}
+.rmeta{font-size:11px;color:var(--mut);margin-top:1px}
+.kabadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--ka);background:var(--kabg);border:1px solid #bfe0ea;padding:2px 8px;border-radius:20px;margin-top:4px}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}
+.ehd{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.ehd h2{font-size:15px;font-weight:800;color:var(--navy)}
+.ehd .et{font-size:11.5px;color:var(--mut);margin-top:1px}
+.ebody{padding:14px 15px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;padding:8px 11px;border-bottom:1px solid var(--line);background:#fbfcfe}
+td{padding:8px 11px;border-bottom:1px solid #f0f3f8;font-size:12px;vertical-align:middle}
+td.src,td.tgt{font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.coer{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;background:#e9eefb;color:#3b4da6;white-space:nowrap}
+.coer.none{background:#eef1f6;color:var(--mut2);font-weight:600}
+.vmap{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--mut)}
+.chipx{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.chipx.derv{color:var(--derived);background:var(--derivedbg)}
+.chipx.man{color:#5a6b7e;background:#eef1f6}
+.chipx.ka{color:var(--ka);background:var(--kabg)}
+.seedbox{border:1px solid var(--zone-derived-line);border-radius:10px;overflow:hidden;margin-top:13px;background:var(--zone-derived)}
+.seedhd{background:#f3edfb;padding:8px 12px;border-bottom:1px solid var(--zone-derived-line);display:flex;justify-content:space-between;align-items:center}
+.seedhd b{font-size:12px}.seedhd .st{font-size:11px;color:var(--mut);margin-top:1px}
+.seedrow{display:grid;grid-template-columns:15px 1fr 1fr auto;gap:9px;align-items:center;padding:7px 12px;border-top:1px solid var(--zone-derived-line);font-size:12px}
+.seedrow input{width:14px;height:14px;accent-color:var(--sel)}
+.seedrow .s{font-family:ui-monospace,Menlo,monospace}
+.seedrow .t{font-family:ui-monospace,Menlo,monospace;color:var(--mut)}
+.seedrow .b{font-size:10px;color:var(--derived);font-weight:700;text-align:right}
+.kastrip{border:1px dashed #7fb7c9;border-radius:10px;background:var(--kabg);padding:10px 13px;margin-top:13px;display:flex;gap:10px;align-items:flex-start}
+.kastrip svg{width:15px;height:15px;color:var(--ka);flex-shrink:0;margin-top:1px}
+.kastrip .kt{font-size:12px;color:#0b5163}
+.kastrip .ro{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:#0b5163;background:#cbe7ef;padding:1px 6px;border-radius:4px;margin-left:6px}
+.kastrip .open{margin-left:auto;flex-shrink:0;font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff}
+.efoot{padding:11px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;flex:1}
+.btns{display:flex;gap:8px}.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.foot{margin-top:14px;font-size:11.5px;color:var(--mut2)}
+</style></head>
+<body>
+<div class="explore-badge">⚠ EXPLORATORY — not the current build contract</div>
+<div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Topic Ingest</a>
+    <a href="#">3 · Route Model</a>
+    <a href="#" class="on">4 · Transform Mappings</a>
+    <a href="#" class="na">5 · Downstream — n/a</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 4 · Transform Mappings <span style="font-size:11px;font-weight:700;color:var(--mut2)">(kafka-integration archetype)</span></div>
+  <div class="sub">Field mappings per route, as one compact table — with deterministic seeds from the pasted schema pair and KA suggestions kept clearly opt-in.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">5</div><div class="l">Routes</div></div>
+    <div class="stat"><div class="n">21</div><div class="l">Mapping rows</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">Seeded (kept)</div></div>
+    <div class="stat" style="background:var(--kabg);border-color:#bfe0ea"><div class="n" style="color:var(--ka)">2</div><div class="l">KA suggestions (opt-in)</div></div>
+  </div>
+
+  <div class="split">
+    <section class="panel zone-board">
+      <div class="phd"><h2>Routes</h2><div class="pd">Transform coverage per route</div></div>
+      <div class="row sel">
+        <div class="mono m-rtr" aria-label="request-path router">RTR</div>
+        <div class="rmain"><div class="rname">payment-posted</div><div class="rmeta">request-path router · 2 targets · 8 request + 3 response rows</div>
+          <div class="kabadge">◆ 2 KA mapping suggestions</div></div>
+        <span class="pill attn">2 unmapped</span>
+      </div>
+      <div class="row">
+        <div class="mono m-fnf" aria-label="fire-and-forget">FNF</div>
+        <div class="rmain"><div class="rname">ledger-sync</div><div class="rmeta">fire-and-forget · 4 rows · all mapped</div></div>
+        <span class="pill ok">Ready</span>
+      </div>
+      <div class="row">
+        <div class="mono m-rr" aria-label="request-reply">R·R</div>
+        <div class="rmain"><div class="rname">balance-inquiry</div><div class="rmeta">request-reply · 3 request + 2 reply rows</div></div>
+        <span class="pill ok">Ready</span>
+      </div>
+      <div class="row">
+        <div class="mono m-fnf" aria-label="fire-and-forget">FNF</div>
+        <div class="rmain"><div class="rname">statement-generated</div><div class="rmeta">fire-and-forget · 6 rows · all mapped</div></div>
+        <span class="pill ok">Ready</span>
+      </div>
+    </section>
+
+    <section class="panel zone-editor">
+      <div class="ehd">
+        <div><h2>payment-posted · ledger-target · request transform</h2><div class="et">Source → target rows with coercion — the grid-shaped surface, kept a native table.</div></div>
+        <span class="pill attn">2 unmapped</span>
+      </div>
+      <div class="ebody">
+        <table>
+          <thead><tr><th>Source</th><th>Target</th><th>Coercion</th><th>Default / const / value map</th><th>Origin</th></tr></thead>
+          <tbody>
+            <tr><td class="src">paymentId</td><td class="tgt">transactionId</td><td><span class="coer none">none</span></td><td class="vmap">—</td><td><span class="chipx derv">SEEDED · kept</span></td></tr>
+            <tr><td class="src">amount</td><td class="tgt">amountMinor</td><td><span class="coer">major_to_minor_units</span></td><td class="vmap">—</td><td><span class="chipx man">MANUAL</span></td></tr>
+            <tr><td class="src">currency</td><td class="tgt">currencyCode</td><td><span class="coer none">none</span></td><td class="vmap">—</td><td><span class="chipx derv">SEEDED · kept</span></td></tr>
+            <tr><td class="src">status</td><td class="tgt">ledgerStatus</td><td><span class="coer none">none</span></td><td class="vmap">{"APPROVED":"A","DECLINED":"D"}</td><td><span class="chipx man">MANUAL</span></td></tr>
+            <tr style="background:var(--zone-attn)"><td class="src">postingDate</td><td class="tgt" style="color:var(--danger);font-weight:700">— unmapped</td><td><span class="coer none">none</span></td><td class="vmap">—</td><td><span class="chipx man">—</span></td></tr>
+            <tr style="background:var(--zone-attn)"><td class="src">channel</td><td class="tgt" style="color:var(--danger);font-weight:700">— unmapped</td><td><span class="coer none">none</span></td><td class="vmap">default "ONLINE"?</td><td><span class="chipx man">—</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="seedbox">
+          <div class="seedhd"><div><b>Deterministic seeds — from the pasted upstream/downstream schema pair</b><div class="st">Exact + case/snake↔camel matches only · never overwrites a non-empty row · nothing applied until kept.</div></div></div>
+          <div class="seedrow"><input type="checkbox" checked><span class="s">postingDate</span><span class="t">posting_date</span><span class="b">snake↔camel</span></div>
+          <div class="seedrow"><input type="checkbox"><span class="s">channel</span><span class="t">— no match in target schema</span><span class="b">left blank</span></div>
+        </div>
+
+        <div class="kastrip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>
+          <div class="kt"><b>2 KA mapping suggestions</b> for this route (evidence-backed, from the Knowledge Workspace).<span class="ro">OPT-IN · KA IS OFF BY DEFAULT</span></div>
+          <span class="open">Review ↗</span>
+        </div>
+      </div>
+      <div class="efoot">
+        <div class="note">Writes the same per-route transform rows Studio saves today (<code>/kafka/transforms/save</code>). Seeds are deterministic; KA stays a separate, opt-in review.</div>
+        <div class="btns"><span class="btn">Cancel</span><span class="btn pri">Save transforms</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">Assumptions to confirm in the blind capture pass: schema-pair seeding as a deterministic helper (exact/normalized matches only — schemas are already pasted in Topic Ingest) · per-target transform tabs for router routes · "unmapped source field" as a warning (not an export blocker).</div>
+</main>
+</div></body></html>

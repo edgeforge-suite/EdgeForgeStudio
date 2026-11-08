@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeForge Studio Mockup - Identity Role Lens</title>
+  <style>
+    :root {
+      --bg: #dce8f5;
+      --surface: #fff;
+      --surface-muted: #edf3fa;
+      --border: #b8ccde;
+      --border-strong: #8eaac6;
+      --primary: #2563eb;
+      --primary-dark: #1a3465;
+      --primary-soft: #c7dcf5;
+      --text: #10233f;
+      --muted: #5e718f;
+      --success: #16814a;
+      --success-soft: #ecfdf3;
+      --warn: #b7791f;
+      --warn-soft: #fff7e8;
+      --shadow-sm: 0 8px 18px rgba(16, 35, 63, .08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #f8fbff 0, #dce8f5 42%, #eaf2fb 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-top: 18px;
+    }
+    .header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .badge {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid var(--border-strong);
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary div {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-muted);
+      padding: 13px;
+    }
+    .summary strong { display: block; font-size: 24px; }
+    .summary span { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; font-weight: 800; }
+    .lens {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 18px;
+      padding: 18px 20px 20px;
+    }
+    .entity-list { display: grid; gap: 10px; }
+    .entity {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 14px;
+      background: #fff;
+      cursor: default;
+    }
+    .entity.active { border-color: var(--primary); box-shadow: inset 4px 0 0 var(--primary); }
+    .entity strong { display: block; margin-bottom: 5px; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .chip {
+      display: inline-flex;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--surface-muted);
+      color: var(--primary-dark);
+      border: 1px solid var(--border);
+    }
+    .chip.ready { color: var(--success); background: var(--success-soft); border-color: #bbf7d0; }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 1px solid #d6e2ef;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      background: var(--surface-muted);
+    }
+    .role {
+      display: inline-flex;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--primary-dark);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .metadata { background: var(--warn-soft); color: #7a4e00; }
+    .btn {
+      border: 1px solid var(--primary-dark);
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .btn.secondary { background: #fff; color: var(--primary-dark); }
+    .spotlight {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px;
+      background: var(--surface-muted);
+      border-top: 1px solid var(--border);
+    }
+    .spotlight-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .spotlight-card strong { display: block; margin-bottom: 4px; }
+    @media (max-width: 900px) {
+      .lens { grid-template-columns: 1fr; }
+      .summary, .spotlight { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Step 3: Identity Role Lens</h1>
+    <p>Default "No role" fields are quiet. The page starts with assigned roles and deterministic filters, then lets users reveal the full table only when needed.</p>
+
+    <section class="card">
+      <div class="header">
+        <div>
+          <h2 style="margin:0 0 6px">Manual Identity Role Review</h2>
+          <p>This still writes the same Studio project state. It only changes what gets visual priority.</p>
+        </div>
+        <span class="badge">KA OFF clean</span>
+      </div>
+      <div class="summary">
+        <div><strong>3</strong><span>Entities</span></div>
+        <div><strong>2</strong><span>Persistence IDs</span></div>
+        <div><strong>3</strong><span>Metadata Roles</span></div>
+        <div><strong>41</strong><span>No Role Hidden</span></div>
+      </div>
+
+      <div class="lens">
+        <aside class="entity-list">
+          <div class="entity active">
+            <strong>Account</strong>
+            <p>12 fields, 2 assigned roles</p>
+            <div class="chips"><span class="chip ready">persistence_id</span><span class="chip">business_key</span></div>
+          </div>
+          <div class="entity">
+            <strong>Customer</strong>
+            <p>9 fields, 1 assigned role</p>
+            <div class="chips"><span class="chip ready">persistence_id</span></div>
+          </div>
+          <div class="entity">
+            <strong>Transaction</strong>
+            <p>23 fields, 2 assigned roles</p>
+            <div class="chips"><span class="chip">parent_reference</span><span class="chip">event_id</span></div>
+          </div>
+        </aside>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3 style="margin:0 0 4px">Account roles</h3>
+              <p style="font-size:13px">Only non-default roles are shown first. "No role" is still preserved for every other field.</p>
+            </div>
+            <button class="btn secondary">Show all fields</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr><th>Field</th><th>Role</th><th>Current Engine Behavior</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>accountId</strong><br><span style="color:var(--muted)">string, required</span></td>
+                <td><span class="role">persistence_id</span></td>
+                <td>Affects Java, DB, API identity via identity_overrides.</td>
+                <td><button class="btn secondary">Change</button></td>
+              </tr>
+              <tr>
+                <td><strong>externalAccountNumber</strong><br><span style="color:var(--muted)">string</span></td>
+                <td><span class="role metadata">business_key</span></td>
+                <td>Metadata-only export. No generated app behavior yet.</td>
+                <td><button class="btn secondary">Change</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="spotlight">
+            <div class="spotlight-card">
+              <strong>ID-looking fields</strong>
+              <p>3 deterministic matches by field name/type. Review manually.</p>
+            </div>
+            <div class="spotlight-card">
+              <strong>Required fields</strong>
+              <p>5 fields can be reviewed without opening all optional fields.</p>
+            </div>
+            <div class="spotlight-card">
+              <strong>Metadata-only reminder</strong>
+              <p>Non-persistence roles do not change generated Java/DDL/runtime.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

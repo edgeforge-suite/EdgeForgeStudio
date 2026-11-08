@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Passthrough — Route &amp; Transform (EXPLORATORY, B2)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f6;--card:#fff;--line:#dde3ec;--ink:#1c2733;--mut:#68788c;--mut2:#8a97a8;
+  --navy:#1e3a5f;--sel:#2563eb;--selbg:#eef4fe;
+  --ok:#15803d;--okbg:#e7f5ec;--warn:#b45309;--warnbg:#fbf1e3;--danger:#b91c1c;--dangerbg:#fdecec;
+  --derived:#6d47c9;--derivedbg:#f1ecfb;--rest:#0d9488;
+  --zone-scan:#eaf0f8;--zone-editor:#ffffff;--zone-derived:#f3ecfd;--zone-derived-line:#ddd0f2;
+  --zone-attn:#fdf0d8;--zone-attn-line:#eccf97;--zone-ready:#e8f2f2;
+}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.explore-badge{position:fixed;top:12px;right:14px;z-index:50;background:#fff7e0;border:2px dashed #d59b22;color:#6f4100;font-size:11px;font-weight:800;letter-spacing:.5px;padding:7px 13px;border-radius:9px;box-shadow:0 3px 10px rgba(16,35,63,.12)}
+.rail{width:196px;background:#fff;border-right:1px solid var(--line);padding:18px 0;flex-shrink:0}
+.brand{font-weight:800;font-size:15px;padding:0 20px 16px;color:var(--navy);letter-spacing:-.2px}
+.nav a{display:block;padding:8px 20px;color:var(--mut);text-decoration:none;font-size:12.5px;border-left:3px solid transparent}
+.nav a.on{background:var(--selbg);color:var(--navy);font-weight:700;border-left-color:var(--sel)}
+.nav a.na{color:#c1cad6;font-style:italic}
+.main{flex:1;padding:22px 26px;min-width:0;max-width:1080px}
+.h1{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.sub{color:var(--mut);margin-top:2px;font-size:12.5px}
+.stats{display:flex;gap:12px;margin:16px 0 14px}
+.stat{background:var(--zone-ready);border:1px solid var(--line);border-radius:10px;padding:11px 14px;flex:1}
+.stat .n{font-size:22px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-top:5px;font-weight:600}
+.stat.warn{background:var(--zone-attn);border-color:var(--zone-attn-line)} .stat.warn .n{color:var(--warn)}
+.sec{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.shd{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#f7f9fc}
+.shd h2{font-size:13px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+.shd .n{width:18px;height:18px;border-radius:50%;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px}
+.shd .stt{font-size:10.5px;font-weight:700}
+.sbody{padding:13px 15px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fld .fl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between}
+.inp{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:12.5px;background:#fff;font-family:ui-monospace,Menlo,monospace}
+.derv{color:var(--derived);background:var(--derivedbg);padding:1px 6px;border-radius:4px;font-size:9.5px;font-weight:700}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.attn{background:var(--warnbg);color:var(--warn)}
+.seedbox{border:1px solid var(--zone-derived-line);border-radius:10px;overflow:hidden;margin-top:12px;background:var(--zone-derived)}
+.seedhd{background:#f3edfb;padding:8px 12px;border-bottom:1px solid var(--zone-derived-line)}
+.seedhd b{font-size:12px}.seedhd .st{font-size:11px;color:var(--mut);margin-top:1px}
+.oprow{display:grid;grid-template-columns:15px auto 1fr auto;gap:9px;align-items:center;padding:7px 12px;border-top:1px solid var(--zone-derived-line);font-size:12px}
+.oprow input{width:14px;height:14px;accent-color:var(--sel)}
+.verb{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:#fff;background:var(--rest);font-family:ui-monospace,Menlo,monospace}
+.oprow .p{font-family:ui-monospace,Menlo,monospace}
+.oprow .b{font-size:10px;color:var(--derived);font-weight:700}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700;padding:7px 11px;border-bottom:1px solid var(--line);background:#fbfcfe}
+td{padding:8px 11px;border-bottom:1px solid #f0f3f8;font-size:12px}
+td.mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.tagx{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:#eef1f6;color:#5a6b7e}
+.arrow{color:var(--mut2)}
+.attn-row{background:var(--zone-attn)}
+.attn-row .miss{color:var(--danger);font-weight:700}
+.fix{font-size:10.5px;font-weight:600;color:var(--sel);border:1px solid #cdd9ee;border-radius:5px;padding:2px 8px;background:#fff;white-space:nowrap}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.btn{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:7px;border:1px solid var(--line);background:#fff}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.note{font-size:11px;color:#7a6a3a;background:#fdf7e8;border:1px solid #ecdcb2;border-radius:7px;padding:7px 10px;margin-top:10px}
+.foot{margin-top:12px;font-size:11.5px;color:var(--mut2)}
+</style></head>
+<body>
+<div class="explore-badge">⚠ EXPLORATORY — not the current build contract</div>
+<div class="app">
+<aside class="rail">
+  <div class="brand">EdgeForge Studio</div>
+  <nav class="nav">
+    <a href="#">1 · Project Setup</a>
+    <a href="#">2 · Upstream Contract</a>
+    <a href="#" class="on">3 · Route &amp; Transform</a>
+    <a href="#" class="na">4 · Data Handoffs — n/a</a>
+    <a href="#" class="na">5 · Downstream — n/a</a>
+    <a href="#">6 · Rules &amp; Mappings</a>
+    <a href="#">7 · Review</a>
+    <a href="#">8 · Export &amp; Build</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="h1">Step 3 · Route &amp; Transform <span style="font-size:11px;font-weight:700;color:var(--mut2)">(passthrough-router archetype)</span></div>
+  <div class="sub">Deliberately NOT a board — this page is section-shaped and stays one page. The tune: a readiness strip, zone tints, compact rows, and deterministic seeds surfaced as reviewable patches. (Source note: the inbound operation list comes from the <b>Step-2 upstream OpenAPI already in session</b>; <code>/passthrough/describe-spec</code> is used for <b>downstream target</b> specs.)</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">1</div><div class="l">Inbound operation</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Targets</div></div>
+    <div class="stat warn"><div class="n">3<span style="font-size:13px;color:var(--warn)">/4</span></div><div class="l">Route rows covered</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">Transforms</div></div>
+  </div>
+
+  <!-- 1 · INBOUND -->
+  <section class="sec">
+    <div class="shd"><h2><span class="n">1</span>Inbound Operation</h2><span class="pill ok">Ready</span></div>
+    <div class="sbody">
+      <div class="grid3">
+        <div class="fld"><div class="fl">Interface name</div><div class="inp">payments-passthrough</div></div>
+        <div class="fld"><div class="fl">System</div><div class="inp">CHANNEL_GATEWAY</div></div>
+        <div class="fld"><div class="fl">Inbound operation <span class="derv">FROM STEP-2 UPSTREAM OPENAPI</span></div><div class="inp">createPayment ▾</div></div>
+      </div>
+      <div class="seedbox">
+        <div class="seedhd"><b>Operations from the Step-2 upstream OpenAPI (already in session) — deterministic</b><div class="st">Pick inbound operations to expose; route rows below are seeded from your picks. Nothing is applied until kept. (Downstream target specs are described separately via <code>/passthrough/describe-spec</code>.)</div></div>
+        <div class="oprow"><input type="checkbox" checked><span class="verb">POST</span><span class="p">/payments · createPayment</span><span class="b">seeded row ✓</span></div>
+        <div class="oprow"><input type="checkbox" checked><span class="verb">GET</span><span class="p">/payments/{paymentId} · getPayment</span><span class="b">seeded row ✓</span></div>
+        <div class="oprow"><input type="checkbox" checked><span class="verb">GET</span><span class="p">/payments · listPayments</span><span class="b">seeded row ✓</span></div>
+        <div class="oprow"><input type="checkbox"><span class="verb">POST</span><span class="p">/payments/{paymentId}/cancel · cancelPayment</span><span class="b" style="color:var(--warn)">not routed yet</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · TARGETS -->
+  <section class="sec">
+    <div class="shd"><h2><span class="n">2</span>Downstream Targets</h2><span style="font-size:11px;color:var(--mut)">compact rows — not stacked cards</span></div>
+    <table>
+      <thead><tr><th>Target</th><th>System</th><th>Base reference</th><th>Ops routed</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>core-payments</b></td><td>CORE_BANKING</td><td class="mono">targets/core-payments.yaml</td><td><span class="tagx">3 ops</span></td><td><span class="fix">Edit</span></td></tr>
+        <tr><td class="mono"><b>payments-archive</b></td><td>ARCHIVE</td><td class="mono">targets/payments-archive.yaml</td><td><span class="tagx">1 op</span></td><td><span class="fix">Edit</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3 · ROUTING -->
+  <section class="sec">
+    <div class="shd"><h2><span class="n">3</span>Routing</h2><span class="pill attn">1 operation unrouted</span></div>
+    <table>
+      <thead><tr><th>Inbound operation</th><th></th><th>Target</th><th>Origin</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono">POST /payments</td><td class="arrow">→</td><td class="mono">core-payments</td><td><span class="derv">SEEDED · kept</span></td><td></td></tr>
+        <tr><td class="mono">GET /payments/{paymentId}</td><td class="arrow">→</td><td class="mono">core-payments</td><td><span class="derv">SEEDED · kept</span></td><td></td></tr>
+        <tr><td class="mono">GET /payments</td><td class="arrow">→</td><td class="mono">core-payments + payments-archive</td><td><span class="tagx">MANUAL</span></td><td></td></tr>
+        <tr class="attn-row"><td class="mono">POST /payments/{paymentId}/cancel</td><td class="arrow">→</td><td class="mono miss">— no route row</td><td></td><td><span class="fix">Route it</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4 · TRANSFORMS -->
+  <section class="sec">
+    <div class="shd"><h2><span class="n">4</span>Transforms</h2><span class="pill ok">5 rows · all valid</span></div>
+    <table>
+      <thead><tr><th>Where</th><th>Source</th><th></th><th>Target</th><th>Kind</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tagx">request · core-payments</span></td><td class="mono">channelRef</td><td class="arrow">→</td><td class="mono">externalReference</td><td><span class="tagx">rename</span></td></tr>
+        <tr><td><span class="tagx">request · core-payments</span></td><td class="mono">amount</td><td class="arrow">→</td><td class="mono">amountMinor</td><td><span class="tagx">units</span></td></tr>
+        <tr><td><span class="tagx">response · all</span></td><td class="mono">coreStatus</td><td class="arrow">→</td><td class="mono">status</td><td><span class="tagx">value map</span></td></tr>
+      </tbody>
+    </table>
+    <div class="sbody" style="padding-top:8px">
+      <div class="note">Preserves the upstream contract while the target moves — transforms stay thin; heavy remapping belongs in a different archetype.</div>
+      <div class="actions"><span class="btn">Cancel</span><span class="btn pri">Save &amp; Continue →</span></div>
+    </div>
+  </section>
+
+  <div class="foot">Assumptions to confirm in the blind capture pass: target-row fields (system / base reference) · "unrouted selected operation" as needs-action · multi-target fan-out row rendering · whether transforms need per-target grouping at real scale.</div>
+</main>
+</div></body></html>
