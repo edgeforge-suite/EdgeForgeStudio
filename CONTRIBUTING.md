@@ -126,14 +126,15 @@ Do not sign on behalf of another person, remove third-party notices, or submit
 material you cannot license under the project terms. The DCO does not transfer
 copyright. Maintainer publication authorization remains a separate pending gate.
 
-The selected contribution destination is
-[edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio);
-its activation/public availability is not established by this private PR.
+The current private v5 release-preparation repository is
+[edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
+Contributions require authorized access until public launch; publication
+authorization and verified reporting routes remain separate gates.
 CODEOWNERS remains a commented template, not enforced ownership. The
 [publication record](docs/publication-preparation.md) holds the remaining gates
 and two unpublished starter drafts. Existing private pre-v5 issue #302
-tracks A11y-01; it is accessible only to authorized repository readers while
-Studio remains private. Contributor help does not transfer Studio's ownership.
+tracks A11y-01 in the private pre-v5 development archive, accessible only to
+authorized archive readers. Contributor help does not transfer Studio's ownership.
 
 ### Preparing and reviewing a PR
 

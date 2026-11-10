@@ -58,6 +58,6 @@ def test_confirm_replace_seed_handlers_are_removed() -> None:
     assert "populateFixedWidthLayoutRowsFromInspection(" not in downstream
 
 
-def test_pr24_bumps_only_the_unreleased_studio_minor_version() -> None:
-    assert app.version == "4.2.0"
-    assert 'version = "4.2.0"' in _source(ROOT / "pyproject.toml")
+def test_runtime_and_package_versions_match_v5_preparation() -> None:
+    assert app.version == "5.0.0"
+    assert 'version = "5.0.0"' in _source(ROOT / "pyproject.toml")

@@ -1,6 +1,6 @@
 # One local journey: author, run, change and regenerate
 
-This S8/XR-4 exercise uses the maintained [synthetic Account sample](sample-packs/fs-account-servicing/README.md).
+This journey uses the maintained [synthetic Account sample](sample-packs/fs-account-servicing/README.md).
 It keeps Knowledge Assist **OFF**; Knowledge Server is not needed. Studio authors
 manifest **2.0** and invokes Engine; saved Studio project **1.4** is a separate
 contract. Use synthetic or approved content only: Studio does not sanitize
@@ -8,10 +8,26 @@ uploads, and project state and exports may retain them.
 
 ## Reference and prerequisites
 
-Use a clean Studio checkout containing `scripts/newcomer_journey.py`, Python 3.11,
-JDK 17, Maven 3.9+, and a separate clean Engine checkout at merged revision
-`64f51d0bac92b4c70f26c8f5f067888717df7b14`. Engine #327 is **not** part of this
-exercise. The reference is local macOS/ARM64 with H2 in memory, not a deployment
+For v5, use the Engine, Studio and Knowledge Server source revisions identified
+by Suite's coordinated release selection. Before publication, the release
+operator uses those exact selected clean checkouts with `edgeforge-suite`
+origins. After verified tags exist, clone each actual repository
+([Engine](https://github.com/edgeforge-suite/EdgeForge),
+[Studio](https://github.com/edgeforge-suite/EdgeForgeStudio),
+[Knowledge Server](https://github.com/edgeforge-suite/EdgeForgeKnowledgeServer))
+and check out its actual `v5.0.0` tag. Final source SHAs are a later Suite
+selection; this guide does not choose them.
+
+Use Python 3.11, JDK 17 and Maven 3.9+. The
+[earlier S8 receipt](test-results/newcomer-journey-2026-10-09.md) and
+`scripts/newcomer_journey.py` describe their historical pair, including fixed
+Engine `64f51d0bac92b4c70f26c8f5f067888717df7b14`; they do not validate arbitrary
+new refs or final v5 sources. Final acceptance repeats the browser
+author/generate/run/change/regenerate journey below and records its actual
+selected sources, environment and outcomes. No runtime proof is repeated by this
+documentation update.
+
+The historical reference is local macOS/ARM64 with H2 in memory, not a deployment
 or an all-platform promise. Select `springboot-legacy-compatible` explicitly in
 Step 1 instead of this pack's enterprise/PostgreSQL default. This is a supported
 profile choice in your working project, not a change to the maintained sample.
@@ -22,18 +38,26 @@ Install each repository in its **own** virtual environment; do not borrow
 another task's environment. In Studio:
 
 ```sh
-python3.11 -m venv .venv
+python3.11 -m venv --copies .venv
 .venv/bin/python -m pip install -c constraints.txt pip setuptools wheel
 .venv/bin/python scripts/verify-packaging-toolchain.py
 .venv/bin/python -m pip install -r requirements.txt -c constraints.txt
+.venv/bin/python -m pip check
 ```
 
-In the pinned Engine checkout, follow its setup:
+In the selected Engine checkout, follow its constrained setup:
 
 ```sh
-python3.11 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+python3.11 -m venv --copies .venv
+.venv/bin/python -m pip install -c requirements-lock.txt -r requirements.txt
+.venv/bin/python -m pip check
 ```
+
+Create environments only when `.venv` is absent. Keep Engine, Studio and optional
+KS dependencies in separate environments with no global-package fallback. KS is
+not launched for this KA-OFF journey; any coordinated KS setup follows that
+selected checkout's own constraints. Copied environments support the later Suite
+launch checks; creation alone does not prove interpreter provenance or acceptance.
 
 Check `java -version` and `mvn --version`: **both must use Java 17**. Set
 `JAVA_HOME` and `PATH` to the same installed JDK if they disagree. The receipt
@@ -55,7 +79,7 @@ The regeneration flag is preview/opt-in; this exercise does not change defaults.
 Open `http://127.0.0.1:8080` in one browser session. **Open Project** with
 `docs/sample-packs/fs-account-servicing/project/fs-account-servicing.edgeforge-project.json`.
 Review Step 1, choose `springboot-legacy-compatible`, and set the Engine path to
-your pinned checkout. Keep KA off.
+your selected Engine checkout. Keep KA off.
 
 For this preview flow, output must be inside the session workspace. In a second
 terminal, set `EDGEFORGE_STUDIO_STATE_DIR` to the path printed above; environment
@@ -126,7 +150,7 @@ before preview/apply. H2 is in memory, so every process starts with a fresh data
    Save both. Add `nickname` to `Account.nickname` in **both** mapping directions
    and save mappings.
 4. In Step 6 add a **Default** rule for `nickname`, value `UNNAMED`, preserving
-   the existing rules. Save the rule set. This frozen Engine emits a **nullable**
+   the existing rules. Save the rule set. The historical reference Engine emitted a **nullable**
    `nickname VARCHAR(255) DEFAULT 'UNNAMED'` column and a Java field initializer.
    Keep the explicit default: the journey below verifies that a client omitting
    the new field receives and persists `UNNAMED`. Do not infer a non-null constraint
@@ -160,7 +184,11 @@ delivery, authorization policies or persistent-database upgrade continuity.
 
 ## Repeatable proof and cleanup
 
-From a clean Studio checkout with the installed environment and JDK 17 selected:
+The unchanged helper is for historical S8 reproduction with its recorded Studio
+source and fixed Engine pair, available to authorized private-archive readers.
+It enforces the Engine pin, not an arbitrary v5 selection, and records the Studio
+SHA it actually runs. It is not the final browser acceptance driver. From that
+clean historical Studio checkout with its own installed environment and JDK 17:
 
 ```sh
 .venv/bin/python scripts/newcomer_journey.py \
@@ -178,7 +206,7 @@ executed test counts and preservation hashes. Missing prerequisites, skipped
 tests or an incomplete journey do not produce a pass. Raw logs and HTML may
 contain local paths/session tokens: retain them locally, not in a public issue.
 
-Troubleshooting: check pinned Engine `.venv`, Java/Maven agreement, the selected
+Troubleshooting: check the applicable Engine `.venv`, Java/Maven agreement, the selected
 profile, output-under-workspace and the latest managed reference. A refused plan
 is a safety result, not success. Preserve its diagnostics; do not bypass it.
 Flyway may warn that this H2 minor is newer than its verified range; retain the
