@@ -580,6 +580,13 @@ def write_package_result(session: ProjectSession, root: Path) -> PackageWriteRes
         )
     )
     project_snapshot = snapshot_session_for_save(working)
+    # Exported provenance cannot resolve the author's local directories after
+    # transfer. Keep revision identities, but require a fresh export for paths.
+    project_snapshot.last_export_path = None
+    project_snapshot.manifest_revisions = [
+        revision.model_copy(update={"export_path": ""})
+        for revision in project_snapshot.manifest_revisions
+    ]
     write("studio-project.json", serialize_project(project_snapshot))
 
     # ------------------------------------------------------------------
