@@ -9,13 +9,15 @@ README.md for the wizard flow and how to run Studio.
 
 ## Why
 
-<!-- Why is this change needed? Link the roadmap item / issue if any. -->
+<!-- What problem does this solve? -->
+
+Linked issue: <!-- Link the owning issue and confirmed scope, or explain if none applies. -->
 
 ## Validation
 
-<!-- Commands run and their results (e.g. pytest tests/, a manual wizard run via
-     uvicorn). Note if integration tests needing a local Engine / JDK+Maven were
-     run or skipped. Paste real output where it matters. -->
+<!-- Record commands actually run, results and untested limitations, including
+     Engine/JDK/Maven prerequisites and skipped integration tests. Prose-only
+     changes need content/link checks, not new tests that merely assert wording. -->
 
 <!-- Use minimal synthetic examples and redact diagnostics. Suspected undisclosed
      vulnerabilities belong in the private process in SECURITY.md, not this PR.
@@ -38,5 +40,8 @@ README.md for the wizard flow and how to run Studio.
 - [ ] No new auth / shared-mode / multi-user behavior without an approved design gate
 - [ ] Applicable checks passed; behavior changes have regression coverage (record skips and Engine/Maven prerequisites)
 - [ ] Review identifies the exact head SHA; fixes require applicable CI and review again
-- [ ] Apache-2.0 and third-party notices preserved; contributors provide their own DCO 1.1 sign-offs (no CLA)
-- [ ] No secrets, real/production data, or domain-specific/third-party names in committed content
+- [ ] Apache-2.0 and third-party notices preserved; contribution commits carry the contributor's DCO 1.1 sign-off (`git commit -s`; no CLA)
+- [ ] No secrets, private employer/customer material or real/production data; fixtures are synthetic
+
+<!-- Necessary public dependency names, upstream references and attribution are
+     permitted under CONTRIBUTING.md; preserve applicable permissions and notices. -->
