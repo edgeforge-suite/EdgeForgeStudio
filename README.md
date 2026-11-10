@@ -1,6 +1,6 @@
 # EdgeForge Studio
 
-> **Current implementation (4.2.0, unreleased):** Studio is the human-facing FastAPI
+> **Current implementation (5.0.0, release preparation):** Studio is the human-facing FastAPI
 > companion app for the EdgeForge suite. The current baseline includes CRUD,
 > passthrough-router, Kafka integration, file/XML/SOAP edge-contract authoring,
 > Evidence Trail metadata, shared-mode session isolation, root-constrained Engine
@@ -20,8 +20,8 @@ itself; the Engine owns generation.
 > claim of complete or verified accessibility is made. To reproduce, use native Safari with VoiceOver
 > and its Caption Panel in the desktop Step 5 downstream editor, then save a valid interface. The
 > save may succeed without a spoken outcome. [Studio issue #302](https://github.com/santosh-sh/EdgeForgeStudio/issues/302)
-> records the limitation and is publication-ready, but Studio is private and the issue is accessible
-> only to authorized readers. See the [native observation record](docs/studio-ux-refresh/pr24a-a11y-walkthrough.md#a11y-01-v5-deferral-evidence).
+> records the limitation. The pre-v5 issue and PR links refer to the private development archive,
+> accessible only to authorized readers. See the [native observation record](docs/studio-ux-refresh/pr24a-a11y-walkthrough.md#a11y-01-v5-deferral-evidence).
 > The coordinated policy merged in [Studio PR #299](https://github.com/santosh-sh/EdgeForgeStudio/pull/299)
 > and [Engine/Suite PR #313](https://github.com/santosh-sh/EdgeForge/pull/313) makes A11y-01 alone
 > non-blocking for publication, tags, releases, and promoted demos. An authorized release or demo
@@ -29,10 +29,11 @@ itself; the Engine owns generation.
 > remain required for closeout; other acceptance gates remain binding.
 
 Studio source is licensed under [Apache-2.0](LICENSE), copyright Santosh Hommaradi;
-see [NOTICE](NOTICE) and the DCO 1.1 contribution guidance. The selected source
-destination is [edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
-Maintainer publication authorization remains pending;
-this private preparation does not activate that destination or publish a release.
+see [NOTICE](NOTICE) and the DCO 1.1 contribution guidance. This is the private v5
+release-preparation repository under
+[edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
+Public launch remains subject to the recorded publication gates, including
+maintainer publication authorization and verified reporting routes.
 See [publication preparation](docs/publication-preparation.md) for the remaining decisions,
 [CONTRIBUTING.md](CONTRIBUTING.md) for contribution/review guidance, and
 [SECURITY.md](SECURITY.md) before reporting a suspected vulnerability.
@@ -57,12 +58,19 @@ service commitments.
 
 Start with the [documentation](docs/README.md). Use
 [project issues](https://github.com/edgeforge-suite/EdgeForgeStudio/issues) for
-ordinary questions, bugs and suggestions once the public destination is activated;
-its availability is not asserted here. See [CONTRIBUTING](CONTRIBUTING.md) for
+ordinary questions, bugs and suggestions with authorized repository access;
+public availability remains pending. See [CONTRIBUTING](CONTRIBUTING.md) for
 contributions and [SECURITY](SECURITY.md) for private vulnerability reporting.
 Share only synthetic examples and redacted diagnostics.
 
 ## Baseline Tags
+
+These milestones belong to the private pre-v5 development archive; their tags
+were not imported into this new repository. The 5.0.0 preparation is not a tag or
+release. Before publication, use the exact clean Engine/Studio/Knowledge Server
+checkouts selected by Suite. After verified tags exist, use each repository's
+actual `v5.0.0` tag and the coordinated release record for accepted revisions,
+validation and limitations. No final source selection is established here.
 
 | Baseline | Meaning |
 |---|---|

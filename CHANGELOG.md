@@ -1,6 +1,13 @@
 # Changelog
 
-## v4.2.0 — Unreleased
+## v5.0.0 — Release preparation (unreleased)
+
+- Align Studio package/runtime metadata at 5.0.0 and prepare current private Org
+  repository and newcomer instructions. Python 3.11 support, Studio snapshot 1.4,
+  Engine manifest 2.0, dependencies, fonts and product behavior are unchanged.
+  The entries below are promoted from the former v4.2.0 Unreleased section;
+  their historical results do not establish final v5 acceptance. No release
+  date, tag, publication or completed acceptance is asserted.
 
 - Clarify independent community maintenance and optional self-managed enterprise
   adoption; use neutral publication-authorization wording in preparation

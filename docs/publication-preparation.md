@@ -1,5 +1,34 @@
 # Studio publication preparation
 
+## Private Org Release Preparation — 2026-11-07
+
+This is the actual private v5 release-preparation repository,
+[edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio),
+imported at `db71604c8ba4fbdc8b1c4d4588094933e4a8181c`. The earlier destination
+selection and import-pending descriptions below are dated preparation accounts.
+The original `santosh-sh` repository, issues, PRs and runs remain the private
+pre-v5 development archive; their authentic links are retained, with no issue
+migration or promise of public archive access.
+
+Package/runtime metadata is prepared as **5.0.0**, without a release date, tag or
+completed acceptance. Python 3.11 support, Studio snapshot 1.4, Engine manifest
+2.0 and dependency/runtime inputs remain unchanged. Distribution remains source
+and later verified tags, with self-managed builds; no managed deployment or SLA
+is offered. The [project-intent statement](../README.md#project-intent-and-community),
+two runtime modes and adopter responsibilities remain binding.
+
+Before publication, Suite identifies the exact selected clean Engine/Studio/KS
+checkouts for later coordinated acceptance. After verified tags exist, public
+instructions use each repository's actual `v5.0.0` tag. The
+[newcomer guide](newcomer-journey.md) separates that browser acceptance journey
+from the historical fixed-Engine helper and S8 receipt. No future source SHA is
+selected here. Final selected Studio/Engine image proof is later work.
+
+Maintainer publication authorization, tested email reporting and PVR verification
+at public cutover remain separate gates. This preparation does not enable or
+verify those routes. A11y-01, deferred fonts and disclosed M2 residuals remain
+OPEN; no image rebuild, accessibility closure, tag or public launch is approved.
+
 ## Public-Tree Cleanup - 2026-11-02
 
 [Public-content preparation](public-content-preparation.md) records the bounded
@@ -128,7 +157,7 @@ publication/release work, rather than assumed from a green documentation PR.
 | Private security activation — public project maintainer | Before public launch, activate and delivery-test security@edgeforgesuite.com, and enable and verify GitHub PVR's private-reporting path. Both are mandatory; neither is represented as verified by this PR. Keep undisclosed details out of public issues and unverified routes. No SLA is promised. |
 | Third-party redistribution/license questions — project maintainer/legal; adopter separately reviews intended use | Resolve dated `caio` UNKNOWN and `certifi` MPL-2.0 flags as applicable, plus OS/JDK/Maven/vendor copies and distributed notices for any selected artifacts. Python declared-license summaries do not cover all image contents or decide generated-app rights. |
 | Image limitations and coverage — Studio maintainer/security owners | Carry exact findings, ignored matches and gaps forward as OPEN known limitations under the source-release gate. Reopen on advisory, copy/runtime/recipe, deployment or selected-pair changes. No suppression, risk acceptance or M2 clearance. Preserve fonts and the distinct historical #318/#319 pairings. |
-| Final release metadata/refs and acceptance — Suite/repository maintainers | Select exact new-repository revisions and perform applicable paired proof under the approved reset scope. No release bump, tag, visibility change, full L5 or final newcomer acceptance occurs here. #311 is not a corrected-image delivery; #312 is not final selected-release acceptance. |
+| Final release refs and acceptance — Suite/repository maintainers | Metadata is prepared as 5.0.0; select exact new-repository revisions and perform applicable paired proof under the approved reset scope. Tags, visibility change, full L5 and final browser newcomer acceptance remain later work. #311 is not a corrected-image delivery; #312 is not final selected-release acceptance. |
 | Deployment and internal support — adopter / deployment operator | These are adopter responsibilities, not an offered maintainer service. Authenticated team deployment requires real identity integration; operators own IdP/gateway/access policy, retention, backups, approved imports, confidential-data handling, internal support and application business/object/tenant/row authorization. The [project-intent statement](../README.md#project-intent-and-community) defines the maintainer's boundaries; no service, SLA or universal compliance claim is adopted. |
 
 ## Open limitations to carry forward
@@ -140,8 +169,8 @@ publication/release work, rather than assumed from a green documentation PR.
   The policy merged through Studio #299 and Engine #313 makes A11y-01 alone
   non-blocking; authorized public releases/demos still require an audience-accessible
   impact/reproduction notice. [Issue #302](https://github.com/santosh-sh/EdgeForgeStudio/issues/302)
-  is publication-ready but private-access-only today; it becomes a public
-  contribution path only when publicly accessible. This is not accessibility certification.
+  belongs to the private pre-v5 development archive; it is not a public
+  contribution path in this repository. This is not accessibility certification.
 - **Image:** the lean image lacks Java font-rendering support by default. Text
   measurement/report/PDF/spreadsheet consumers may need an explicitly extended
   and assessed image. Open findings and coverage exclusions remain visible in

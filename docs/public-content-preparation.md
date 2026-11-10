@@ -127,8 +127,10 @@ cannot recreate those historical observations from committed prose alone.
 
 Claude's initial independent review at
 `5efaf59cfb16c23538d52140ea4e0323ffff0216` requested changes. This is repair/
-re-review round **1 of 2**, not a new review allowance; one further repair round
-remains. Approval of the new exact head is still required.
+re-review round **1 of 2**. **Dated clarification (2026-11-07):** independent
+re-review approved `47d4aab5f50e39eb6e4bdc683fbb794fa2646254`;
+[original PR #323](https://github.com/santosh-sh/EdgeForgeStudio/pull/323) was
+subsequently merged. That review covers the bounded cleanup, not release acceptance.
 
 - `ParcelResponse` now uses `/parcel-notes` and its detail route, yielding
   path-derived `ParcelNote`, not schema-normalized `Parcel`. Parser/display,
@@ -136,11 +138,15 @@ remains. Approval of the new exact head is still required.
   asserted; raw browser selection remains `ParcelResponse`. Component-response
   references, parameterized media, nested Data, enum and wrapper/object guards
   remain intact. Production naming code is unchanged.
-- Affected parser/upload/selection checks pass **122 tests, no skips**, on each
-  of Python 3.11.15 and 3.13.16. In disposable tracked-tree copies, ignoring both
-  path-derived canonical overrides (M1), or disabling hyphen splitting (M2),
-  produces **4 targeted assertion failures and 102 passes**, with no errors or
-  skips, on each Python. The unmutated worktree is never altered by the controls.
+- The three-file parser/upload/selection set passed **122 tests, no skips**, on
+  Python 3.11.15 and 3.13.16. The builder's M1/M2 mutation runs used a two-file,
+  **106-test** subset: each produced **4 failures / 102 passes**. Independent
+  three-file mutation selections produced **4 failures / 118 passes**. M1
+  ignored both path-derived canonical overrides; M2 disabled hyphen splitting.
+  In those main M1/M2 runs, Step 3 stopped at an earlier page-text assertion;
+  separate reviewer controls established the later canonical-selection assertion.
+  These are distinct selections and observations, not one 122-test result.
+  Controls used disposable tracked-tree copies, leaving the worktree unmutated.
 - The [March summary](test-results/durable-crud-proof-2026-03-31.md) again records
   Studio's merged-through-PR20 baseline and Engine `c37d4d2`, advanced from
   `e4baebe` through merged Engine PR #54. The later private recovery revision is

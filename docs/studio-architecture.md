@@ -4,7 +4,7 @@
 
 ## Studio Responsibilities
 
-EdgeForge Studio is the human-facing intake, review, package export, and local execution surface for the EdgeForge suite. The current package is **4.2.0, unreleased**; the dated v4.1.0 baseline below is historical. It:
+EdgeForge Studio is the human-facing intake, review, package export, and local execution surface for the EdgeForge suite. The current package is **5.0.0, release preparation** (metadata updated 2026-11-07); the dated v4.1.0 baseline below is historical. It:
 
 1. collects project setup and archetype selection
 2. ingests and classifies OpenAPI specs
