@@ -103,6 +103,7 @@ paths:
     post:
       operationId: create{entity_name}
       requestBody:
+        required: true
         content:
           application/json:
             schema:
