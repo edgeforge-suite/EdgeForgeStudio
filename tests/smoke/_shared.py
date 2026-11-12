@@ -103,6 +103,7 @@ paths:
     post:
       operationId: create{entity_name}
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -524,7 +525,7 @@ def upload_openapi(client: TestClient, csrf_token: str, *, filename: str, entity
 
 def export_package(client: TestClient, csrf_token: str) -> dict:
     response = client.post("/export/write", headers=csrf_headers(csrf_token))
-    assert response.status_code == 200
+    assert response.status_code == 200, response.text
     payload = response.json()
     assert payload["ok"] is True
     assert_no_ka_noise(payload)

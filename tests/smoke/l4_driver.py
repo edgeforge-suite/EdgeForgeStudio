@@ -16,6 +16,7 @@ from app.services.ks_lifecycle import (
 from app.services.ks_lifecycle import (
     reset_ks_lifecycle_for_testing,
 )
+from app.services.request_resource_limits import reset_request_resource_limiter_for_testing
 from app.services.session_context import _SQLITE_STORES
 from tests.smoke._shared import (
     assert_no_ka_noise,
@@ -394,6 +395,7 @@ def _shared_mode_environment(root: Path) -> Iterator[None]:
                 os.environ[key] = value
         _SQLITE_STORES.clear()
         reset_ks_lifecycle_for_testing()
+        reset_request_resource_limiter_for_testing()
 
 
 def _configure_shared_mode(root: Path) -> None:
@@ -406,6 +408,7 @@ def _configure_shared_mode(root: Path) -> None:
     os.environ.pop("EDGEFORGE_STUDIO_BUILD_RUN_ENABLED", None)
     _SQLITE_STORES.clear()
     reset_ks_lifecycle_for_testing()
+    reset_request_resource_limiter_for_testing()
 
 
 @contextmanager

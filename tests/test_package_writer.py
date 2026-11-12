@@ -34,7 +34,12 @@ from app.models.project import (
 )
 from app.services.edge_contracts import INCOMPLETE, edge_contract_readiness
 from app.services.package_writer import PackageWriteError, write_package, write_package_result
-from app.services.project_file_service import deserialize_project, restore_session
+from app.services.project_file_service import (
+    deserialize_project,
+    restore_session,
+    serialize_project,
+    snapshot_session_for_save,
+)
 
 
 def _csv_layout(*, delimiter: str = ",", has_header_row: bool = False) -> str:
@@ -228,10 +233,11 @@ def test_package_includes_openable_studio_project_snapshot():
         assert restored.app_name == "Synthetic Records"
         assert restored.bounded_context == "records"
         assert restored.selected_entity_names == ["Account"]
-        assert restored.last_export_path == str(project_dir)
+        assert restored.last_export_path is None
         assert revision.revision_id
         assert revision.manifest_hash
-        assert revision.export_path == str(project_dir)
+        assert revision.export_path == ""
+        assert str(root) not in raw
 
 
 def test_package_writes_edge_contract_artifacts():
@@ -2009,3 +2015,29 @@ def test_source_switch_to_manual_clears_all_spec_fields():
     assert iface.spec is None
     assert iface.spec_url is None
     assert iface.spec_content is None
+
+
+def test_export_revision_paths_are_portable_without_mutating_saved_authoring(tmp_path):
+    from app.models.project import KSManifestRevision
+
+    session = _full_session()
+    prior_path = str(tmp_path / "private-prior-export")
+    session.last_export_path = prior_path
+    session.ks_workspace_state.manifest_revisions.append(KSManifestRevision(
+        revision_id="prior-revision", exported_at="2026-11-10T00:00:00Z",
+        manifest_hash="prior-hash", archetype="crud",
+        target_profile=session.target_profile, export_path=prior_path,
+    ))
+    write_package(session, tmp_path / "package")
+    exported = deserialize_project(
+        (tmp_path / "package/records/studio-project.json").read_text()
+    )
+    assert exported.last_export_path is None
+    assert all(revision.export_path == "" for revision in exported.manifest_revisions)
+    assert exported.manifest_revisions[0].revision_id == "prior-revision"
+    assert exported.manifest_revisions[0].manifest_hash == "prior-hash"
+    assert str(tmp_path) not in serialize_project(exported)
+    saved = snapshot_session_for_save(session)
+    assert saved.last_export_path == prior_path
+    assert saved.manifest_revisions[0].export_path == prior_path
+    assert session.ks_workspace_state.manifest_revisions[0].export_path == prior_path
