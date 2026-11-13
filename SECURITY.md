@@ -1,28 +1,23 @@
 # Security Policy
 
-> **Selected routes; activation and verification pending.** The maintainer selected
-> GitHub Private Vulnerability Reporting (PVR) for `edgeforge-suite/EdgeForgeStudio`
-> and `security@edgeforgesuite.com`. This private preparation does not establish
-> repository enablement, mailbox delivery, DNS configuration or a tested contact.
-
 ## Reporting a vulnerability
 
 - **Do not** open a public issue or pull request for an undisclosed
   vulnerability.
-- Selected PVR destination:
+- Use GitHub Private Vulnerability Reporting (PVR)
+  **when available**:
   [Report a vulnerability](https://github.com/edgeforge-suite/EdgeForgeStudio/security/advisories/new).
-  Use it only when the destination is available and visibly opens a private report.
-- Selected email: **`security@edgeforgesuite.com`**. Reachability has not been
-  verified; do not assume sending sensitive details there is currently safe.
-- Otherwise, use an already verified private channel to the maintainer if you
-  have one. If you have none, retain the details privately until a route is
-  provided. Do not put vulnerability details, exploit steps or sensitive logs
-  in public issues, feature requests, discussions or pull requests.
+  Confirm that the destination visibly opens a private report.
+- The designated security email is **`security@edgeforgesuite.com`**.
+- If neither route is available, request a private maintainer channel without
+  including vulnerability details in a public issue or PR. Share technical
+  details and sensitive logs only through an available private route.
 - Include: affected component (a route/endpoint, a service, the upload path, the
   Engine/KS integration), version/baseline or commit, reproduction steps, and impact.
 
-After activation the maintainer must privately test the routes and document
-acknowledgement, triage and coordinated disclosure. No response-time commitment
+Reporting-route delivery/reply checks and PVR verification are part of the
+public-cutover requirements in the decision record below; listing a route does
+not establish that those checks have run. No response-time commitment
 or support SLA is set here. Old pre-v5 private issue links are not reporting routes.
 See the [single decision record](docs/publication-preparation.md#remaining-maintainer-decisions).
 
