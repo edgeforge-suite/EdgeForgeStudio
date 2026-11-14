@@ -1,6 +1,6 @@
 # EdgeForge Studio
 
-> **Current implementation (5.0.0, release preparation):** Studio is the human-facing FastAPI
+> **Current implementation (5.0.0 source baseline):** Studio is the human-facing FastAPI
 > companion app for the EdgeForge suite. The current baseline includes CRUD,
 > passthrough-router, Kafka integration, file/XML/SOAP edge-contract authoring,
 > Evidence Trail metadata, shared-mode session isolation, root-constrained Engine
@@ -29,12 +29,11 @@ itself; the Engine owns generation.
 > remain required for closeout; other acceptance gates remain binding.
 
 Studio source is licensed under [Apache-2.0](LICENSE), copyright Santosh Hommaradi;
-see [NOTICE](NOTICE) and the DCO 1.1 contribution guidance. This is the private v5
-release-preparation repository under
+see [NOTICE](NOTICE) and the DCO 1.1 contribution guidance. The source repository is
 [edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
-Public launch remains subject to the recorded publication gates, including
+Source-and-tags publication requires the recorded publication checks, including
 maintainer publication authorization and verified reporting routes.
-See [publication preparation](docs/publication-preparation.md) for the remaining decisions,
+See [publication preparation](docs/publication-preparation.md) for the release requirements,
 [CONTRIBUTING.md](CONTRIBUTING.md) for contribution/review guidance, and
 [SECURITY.md](SECURITY.md) before reporting a suspected vulnerability.
 
@@ -58,19 +57,20 @@ service commitments.
 
 Start with the [documentation](docs/README.md). Use
 [project issues](https://github.com/edgeforge-suite/EdgeForgeStudio/issues) for
-ordinary questions, bugs and suggestions with authorized repository access;
-public availability remains pending. See [CONTRIBUTING](CONTRIBUTING.md) for
+ordinary questions, bugs and suggestions. See [CONTRIBUTING](CONTRIBUTING.md) for
 contributions and [SECURITY](SECURITY.md) for private vulnerability reporting.
 Share only synthetic examples and redacted diagnostics.
 
 ## Baseline Tags
 
 These milestones belong to the private pre-v5 development archive; their tags
-were not imported into this new repository. The 5.0.0 preparation is not a tag or
-release. Before publication, use the exact clean Engine/Studio/Knowledge Server
-checkouts selected by Suite. After verified tags exist, use each repository's
-actual `v5.0.0` tag and the coordinated release record for accepted revisions,
-validation and limitations. No final source selection is established here.
+were not imported into this repository. The selected v5 sources and completed
+technical acceptance are recorded in the
+[coordinated acceptance results](https://github.com/edgeforge-suite/EdgeForge/blob/92d0de224d127525b3b3db1365cf931188ccfffb/docs/handover-evidence/v5-acceptance-2026-11-10.md).
+Use those exact sources for v5; documentation successors on main do not replace
+them. Tags and public Releases require separate authorization. When verified
+`v5.0.0` tags and Release records are available, use them for the published
+selection, validation and limitations; a package version alone is not a release.
 
 | Baseline | Meaning |
 |---|---|
@@ -136,8 +136,8 @@ migration/cutover, or universal enforcement of every OpenAPI constraint.
 Regeneration preserves designated developer-owned extension seams, not arbitrary
 edits to generated files. The [newcomer journey](docs/newcomer-journey.md) proves
 one executable service hook and additive change at its recorded revisions. Its
-managed-copy/build-path and database limitations still apply; final selected
-release revisions require relevant re-proof.
+managed-copy/build-path and database limitations still apply; selected-release
+acceptance is recorded separately in the coordinated acceptance results above.
 
 Generated applications need an authenticated TLS gateway with direct application
 ports inaccessible to untrusted clients, plus adopter-owned business, object,

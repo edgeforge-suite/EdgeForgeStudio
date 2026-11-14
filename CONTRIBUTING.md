@@ -124,14 +124,14 @@ not a CLA. Contributors must certify their own right to submit each contribution
 by adding a `Signed-off-by: Your Name <your-email>` trailer (`git commit -s`).
 Do not sign on behalf of another person, remove third-party notices, or submit
 material you cannot license under the project terms. The DCO does not transfer
-copyright. Maintainer publication authorization remains a separate pending gate.
+copyright. Public exposure requires separate maintainer publication authorization.
 
-The current private v5 release-preparation repository is
+The source repository is
 [edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
-Contributions require authorized access until public launch; publication
-authorization and verified reporting routes remain separate gates.
+Repository access follows its GitHub visibility and permissions. Publication
+authorization and verified reporting routes are separate release requirements.
 CODEOWNERS remains a commented template, not enforced ownership. The
-[publication record](docs/publication-preparation.md) holds the remaining gates
+[publication record](docs/publication-preparation.md) holds those requirements
 and two unpublished starter drafts. Existing private pre-v5 issue #302
 tracks A11y-01 in the private pre-v5 development archive, accessible only to
 authorized archive readers. Contributor help does not transfer Studio's ownership.
