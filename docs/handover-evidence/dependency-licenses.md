@@ -4,7 +4,7 @@
 > dependencies plus a resolved transitive scan. See [`dependencies.md`](dependencies.md)
 > for scope and tooling.
 >
-> **Generated:** 2026-11-02, with **pip-licenses 5.5.5**.
+> **Generated:** 2026-11-13, with **pip-licenses 5.5.5**.
 
 ## Notable licenses — summary
 
