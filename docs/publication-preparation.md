@@ -4,9 +4,12 @@
 
 The source repository is
 [edgeforge-suite/EdgeForgeStudio](https://github.com/edgeforge-suite/EdgeForgeStudio).
-The selected v5 Engine/Studio/KS sources and completed technical acceptance are
-recorded in the
-[coordinated acceptance results](https://github.com/edgeforge-suite/EdgeForge/blob/92d0de224d127525b3b3db1365cf931188ccfffb/docs/handover-evidence/v5-acceptance-2026-11-10.md).
+The selected v5 successor sources, execution and justified reuse are recorded in
+the [November 14 results](https://github.com/edgeforge-suite/EdgeForge/blob/e33869e6ba595e280a4631dbf11e451fb33fe2a6/docs/handover-evidence/v5-dependency-acceptance-2026-11-14.md)
+and [pairing guide](https://github.com/edgeforge-suite/EdgeForge/blob/e33869e6ba595e280a4631dbf11e451fb33fe2a6/docs/suite-release-pairing.md).
+Later independent approval is recorded separately. The
+[November 10 results](https://github.com/edgeforge-suite/EdgeForge/blob/92d0de224d127525b3b3db1365cf931188ccfffb/docs/handover-evidence/v5-acceptance-2026-11-10.md)
+retain the preceding selection's scope.
 Documentation successors on main do not replace the selected sources or restart
 acceptance. Distribution is source and separately authorized, verified tags, with
 self-managed builds; no managed service or support SLA is offered.
@@ -179,7 +182,7 @@ a green documentation PR does not establish completion.
 | Private security activation — public project maintainer | Verify security@edgeforgesuite.com receipt and replies before public exposure. At public cutover, enable PVR and verify its administrator configuration and ordinary reporter path before Release publication or announcement. Keep undisclosed details in available private routes; no SLA is promised. These instructions do not establish that the checks have run. |
 | Third-party redistribution/license questions — project maintainer/legal; adopter separately reviews intended use | Resolve dated `caio` UNKNOWN and `certifi` MPL-2.0 flags as applicable, plus OS/JDK/Maven/vendor copies and distributed notices for any selected artifacts. Python declared-license summaries do not cover all image contents or decide generated-app rights. |
 | Image limitations and coverage — Studio maintainer/security owners | Carry exact findings, ignored matches and gaps forward as OPEN known limitations under the source-release gate. Reopen on advisory, copy/runtime/recipe, deployment or selected-pair changes. No suppression, risk acceptance or M2 clearance. Preserve fonts and the distinct historical #318/#319 pairings. |
-| Final release refs and acceptance — Suite/repository maintainers | Use the exact selected E/S/K and P/R in the coordinated acceptance results linked above. Technical acceptance is complete; tags, visibility and Releases require separate authorization. Documentation successors do not become tag targets or require another acceptance cycle. #311 is not a corrected-image delivery; #312 is not final selected-release acceptance. |
+| Final release refs and acceptance — Suite/repository maintainers | Use the exact successor E/S/K and P named in the November 14 results linked above, and the Engine results commit R that those links pin. Technical acceptance is complete; tags, visibility and Releases require separate authorization. Documentation successors do not become tag targets or require another acceptance cycle. #311 is not a corrected-image delivery; #312 is not final selected-release acceptance. |
 | Deployment and internal support — adopter / deployment operator | These are adopter responsibilities, not an offered maintainer service. Authenticated team deployment requires real identity integration; operators own IdP/gateway/access policy, retention, backups, approved imports, confidential-data handling, internal support and application business/object/tenant/row authorization. The [project-intent statement](../README.md#project-intent-and-community) defines the maintainer's boundaries; no service, SLA or universal compliance claim is adopted. |
 
 ## Open limitations to carry forward

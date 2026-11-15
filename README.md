@@ -64,10 +64,14 @@ Share only synthetic examples and redacted diagnostics.
 ## Baseline Tags
 
 These milestones belong to the private pre-v5 development archive; their tags
-were not imported into this repository. The selected v5 sources and completed
-technical acceptance are recorded in the
-[coordinated acceptance results](https://github.com/edgeforge-suite/EdgeForge/blob/92d0de224d127525b3b3db1365cf931188ccfffb/docs/handover-evidence/v5-acceptance-2026-11-10.md).
-Use those exact sources for v5; documentation successors on main do not replace
+were not imported into this repository. The selected v5 successor sources,
+execution and justified reuse are recorded in the
+[November 14 results](https://github.com/edgeforge-suite/EdgeForge/blob/e33869e6ba595e280a4631dbf11e451fb33fe2a6/docs/handover-evidence/v5-dependency-acceptance-2026-11-14.md).
+Later independent approval is recorded separately. The
+[November 10 results](https://github.com/edgeforge-suite/EdgeForge/blob/92d0de224d127525b3b3db1365cf931188ccfffb/docs/handover-evidence/v5-acceptance-2026-11-10.md)
+retain the preceding selection's scope. Use the exact successor sources named in
+the November 14 results and [pairing guide](https://github.com/edgeforge-suite/EdgeForge/blob/e33869e6ba595e280a4631dbf11e451fb33fe2a6/docs/suite-release-pairing.md) for v5;
+documentation successors on main do not replace
 them. Tags and public Releases require separate authorization. When verified
 `v5.0.0` tags and Release records are available, use them for the published
 selection, validation and limitations; a package version alone is not a release.
@@ -137,7 +141,8 @@ Regeneration preserves designated developer-owned extension seams, not arbitrary
 edits to generated files. The [newcomer journey](docs/newcomer-journey.md) proves
 one executable service hook and additive change at its recorded revisions. Its
 managed-copy/build-path and database limitations still apply; selected-release
-acceptance is recorded separately in the coordinated acceptance results above.
+execution and justified reuse are recorded separately in the November 14
+successor results above; later independent approval is recorded separately.
 
 Generated applications need an authenticated TLS gateway with direct application
 ports inaccessible to untrusted clients, plus adopter-owned business, object,
