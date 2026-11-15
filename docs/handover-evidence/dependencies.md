@@ -4,13 +4,20 @@
 > asks for first, for **Studio's resolved Python dependency surface**. Part of the
 > handover-evidence set (the G10 index links these).
 >
-> **Snapshot:** 2026-11-02 (America/Chicago). Artifacts are **regeneratable** with named, pinned
+> **Snapshot:** 2026-11-13 (America/Chicago). Artifacts are **regeneratable** with named, pinned
 > tools (below).
 
-The current [public-content preparation](../public-content-preparation.md)
-changes only the transitive joserfc pin from 1.7.1 to qualified 1.7.6. The other
-94 reference versions are unchanged; current audit/SBOM/transitive licenses
-agree on all 95 packages. Separate clean Python 3.11/3.13 host checks do not
+The current dependency correction updates only transitive dnspython from 2.9.0
+to 2.9.2 and OpenTelemetry API from 1.45.1 to 1.45.2 for
+[GHSA-vvf4-9x63-8xvv](https://github.com/advisories/GHSA-vvf4-9x63-8xvv) and
+[GHSA-mf5v-w3w3-f6cg](https://github.com/advisories/GHSA-mf5v-w3w3-f6cg).
+The other 93 reference versions are unchanged; the regenerated audit, SBOM and
+transitive license inventory agree on all 95 packages. These outputs describe
+this constrained graph, not prior runtime or whole-image clearance.
+
+The preceding [public-content preparation](../public-content-preparation.md)
+changed only the transitive joserfc pin from 1.7.1 to qualified 1.7.6. Its
+November 2 snapshot remains historical. Separate clean Python 3.11/3.13 host checks do not
 update an old container image or clear embedded/private dependencies.
 
 The preceding [Authlib/dnspython correction](studio-audit-correction-2026-10-28.md)

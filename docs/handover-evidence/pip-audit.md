@@ -3,7 +3,7 @@
 > **Import-gate G4 evidence.** Vulnerability scan of the resolved Studio
 > dependency environment.
 >
-> **Generated:** 2026-11-02, with **pip-audit 2.9.0**.
+> **Generated:** 2026-11-13, with **pip-audit 2.9.0**.
 > Machine-readable copy: [`pip-audit.json`](pip-audit.json).
 
 ## Status
